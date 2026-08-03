@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
+from datetime import date
 from pathlib import Path
 
 import typer
 
+from vact.pipeline.backfill import backfill, incremental, write_coverage_report
 from vact.sources import house_rollcalls as house_source
 from vact.sources import legislators as legislator_source
 from vact.sources import senate_rollcalls as senate_source
@@ -120,6 +122,60 @@ def load_senate_roll_cmd(
     vote, members = senate_source.parse(path, lis_to_bioguide=_lis_crosswalk())
     vote_id = load_senate_vote(vote, members, warehouse_path=warehouse)
     typer.echo(f"Loaded {vote_id} ({len(members)} member votes).")
+
+
+@app.command("backfill")
+def backfill_cmd(
+    congress: int = typer.Option(119, "--congress"),
+    chamber: str = typer.Option("both", "--chamber", help="house|senate|both"),
+    start: str = typer.Option("2025-01-03", "--start", help="YYYY-MM-DD"),
+    end: str = typer.Option("today", "--end", help="YYYY-MM-DD or 'today'"),
+    force: bool = typer.Option(False, "--force", help="Re-download cached XML."),
+    warehouse: Path | None = typer.Option(None, "--warehouse"),
+) -> None:
+    """Fetch and MERGE-load roll calls for a date window."""
+    end_date = date.today() if end == "today" else date.fromisoformat(end)
+    start_date = date.fromisoformat(start)
+    counts = backfill(
+        congress=congress,
+        chamber=chamber,
+        start=start_date,
+        end=end_date,
+        force=force,
+        warehouse_path=warehouse,
+    )
+    typer.echo(
+        f"Backfill complete: house={counts['house']} senate={counts['senate']} "
+        f"({start_date} → {end_date})"
+    )
+
+
+@app.command("incremental")
+def incremental_cmd(
+    lookback_days: int = typer.Option(7, "--lookback-days"),
+    congress: int = typer.Option(119, "--congress"),
+    warehouse: Path | None = typer.Option(None, "--warehouse"),
+) -> None:
+    """Re-fetch lookback window (EVS is mutable) and pick up new rolls."""
+    counts = incremental(
+        lookback_days=lookback_days,
+        congress=congress,
+        warehouse_path=warehouse,
+    )
+    typer.echo(
+        f"Incremental refresh: house={counts['house']} senate={counts['senate']} "
+        f"(lookback_days={lookback_days})"
+    )
+
+
+@app.command("gaps")
+def gaps_cmd(
+    congress: int = typer.Option(119, "--congress"),
+    warehouse: Path | None = typer.Option(None, "--warehouse"),
+) -> None:
+    """Report warehouse vs upstream gaps and write coverage.md heatmap."""
+    path = write_coverage_report(congress=congress, warehouse_path=warehouse)
+    typer.echo(f"Wrote {path}")
 
 
 if __name__ == "__main__":
