@@ -1,12 +1,11 @@
--- dim_legislator: Virginia SCD2 dimension for the 119th Congress.
--- Natural key: (bioguide_id, term_start). lis_id retained for Senate roll-call
--- crosswalk (Prompt 3); bioguide_id remains the sole join key elsewhere.
+-- Deprecated standalone file: dim_legislator DDL now lives in sql/schema.sql.
+-- Kept so older apply_sql_file('ddl_dim_legislator.sql') callers still work.
 
 CREATE TABLE IF NOT EXISTS dim_legislator (
     bioguide_id       TEXT NOT NULL,
     govtrack_id       INTEGER,
     icpsr_id          INTEGER,
-    lis_id            TEXT,
+    lis_member_id     TEXT,
     full_name         TEXT NOT NULL,
     chamber           TEXT NOT NULL CHECK (chamber IN ('House', 'Senate')),
     state             TEXT NOT NULL CHECK (state = 'VA'),

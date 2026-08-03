@@ -41,13 +41,19 @@ combine them.
 
 Timestamps are stored as UTC ISO 8601. Vote dates are stored as `DATE`, not `TEXT`.
 
+## 8. No persisted summary metrics
+
+No computed metric is ever persisted as a stored value. Every count in every export
+is a live query at render time. (v1 Dashboard froze at 55 votes while the Votes tab
+grew to 341.)
+
 ## Stack
 
 - Python 3.11+
 - `uv` for dependency management
 - DuckDB warehouse (`data/warehouse/warehouse.duckdb`)
 - Pydantic v2 source contracts
-- Typer CLI (`vact`)
+- Typer CLI (`./bin/vact` or `python -m vact`)
 - pytest (+ pytest-httpx)
 
 ## Package layout
@@ -58,14 +64,23 @@ src/vact/
   models/        # Pydantic contracts for every source payload
   warehouse/     # DuckDB DDL, load functions, migrations
   transforms/    # dimensional modeling, classification
-  exports/       # Sheets, Parquet, CSV publishers
+  exports/       # Sheets (audit), static site, social cards
   cli.py         # Typer entrypoint
+config/          # impact rules, plain-language workflow inputs
+docs/            # generated static site (GitHub Pages)
 sql/             # DDL and analytic queries as .sql files
 tests/
 data/raw/        # gitignored landing zone
 data/warehouse/  # gitignored DuckDB file
+data/reports/    # coverage / review artifacts (committed when green)
 data/legacy/v1/  # frozen v1 spreadsheet exports (reference only)
 ```
+
+## Senate LIS resolution
+
+`dim_legislator` is Virginia-scoped SCD2. Senate roll calls include 100 members, so
+`lis_member_id → bioguide_id` resolves through a national crosswalk built from
+congress-legislators (not VA-only `dim_legislator` rows). Unresolved IDs hard-fail.
 
 ## Sequencing
 

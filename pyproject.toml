@@ -15,6 +15,9 @@ dependencies = [
     "pytest",
     "pytest-httpx",
     "polars",
+    "gspread",
+    "jinja2",
+    "pillow",
 ]
 
 [project.scripts]

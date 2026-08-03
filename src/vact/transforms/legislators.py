@@ -55,7 +55,7 @@ def dim_row_from_term(
         bioguide_id=record.id.bioguide,
         govtrack_id=record.id.govtrack,
         icpsr_id=record.id.icpsr,
-        lis_id=record.id.lis,
+        lis_member_id=record.id.lis,
         full_name=_full_name(record),
         chamber=chamber,
         state="VA",

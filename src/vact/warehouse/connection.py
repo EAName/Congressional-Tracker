@@ -1,4 +1,4 @@
-"""DuckDB connection helpers."""
+"""DuckDB connection helpers and schema bootstrap."""
 
 from __future__ import annotations
 
@@ -22,6 +22,16 @@ def apply_sql_file(conn: duckdb.DuckDBPyConnection, relative_sql: str) -> None:
     if not sql_path.exists():
         raise FileNotFoundError(sql_path)
     conn.execute(sql_path.read_text(encoding="utf-8"))
+
+
+def ensure_schema(conn: duckdb.DuckDBPyConnection) -> None:
+    """Apply star-schema DDL, category seed, indexes, and migrations (idempotent)."""
+    apply_sql_file(conn, "schema.sql")
+    from vact.warehouse.migrate import apply_migrations
+
+    apply_migrations(conn)
+    apply_sql_file(conn, "seed_vote_category_rules.sql")
+    apply_sql_file(conn, "ddl_indexes.sql")
 
 
 def ensure_warehouse_dirs() -> None:

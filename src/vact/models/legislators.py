@@ -111,7 +111,7 @@ class DimLegislatorRow(BaseModel):
     bioguide_id: str
     govtrack_id: int | None = None
     icpsr_id: int | None = None
-    lis_id: str | None = None
+    lis_member_id: str | None = None
     full_name: str
     chamber: Literal["House", "Senate"]
     state: str

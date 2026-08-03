@@ -11,7 +11,7 @@ from vact.sources import legislators as legislator_source
 from vact.sources import senate_rollcalls as senate_source
 from vact.transforms.legislators import build_dim_legislator_rows
 from vact.transforms.lis_crosswalk import build_lis_bioguide_crosswalk
-from vact.warehouse.load import upsert_dim_legislator
+from vact.warehouse.load import load_house_vote, load_senate_vote, upsert_dim_legislator
 
 app = typer.Typer(
     name="vact",
@@ -91,6 +91,35 @@ def fetch_senate_roll(
         f"{path} — roll {vote.roll_number} on {vote.vote_date} "
         f"({len(members)} members, VA={len(va)}, result={vote.vote_result})"
     )
+
+
+@app.command("load-house-roll")
+def load_house_roll_cmd(
+    year: int = typer.Argument(...),
+    roll_number: int = typer.Argument(...),
+    force: bool = typer.Option(False, "--force"),
+    warehouse: Path | None = typer.Option(None, "--warehouse"),
+) -> None:
+    """Fetch (if needed) and MERGE-load one House roll call into the warehouse."""
+    path = house_source.fetch(year, roll_number, force=force)
+    vote, members = house_source.parse(path)
+    vote_id = load_house_vote(vote, members, warehouse_path=warehouse)
+    typer.echo(f"Loaded {vote_id} ({len(members)} member votes).")
+
+
+@app.command("load-senate-roll")
+def load_senate_roll_cmd(
+    session: int = typer.Argument(...),
+    roll_number: int = typer.Argument(...),
+    congress: int = typer.Option(119, "--congress"),
+    force: bool = typer.Option(False, "--force"),
+    warehouse: Path | None = typer.Option(None, "--warehouse"),
+) -> None:
+    """Fetch (if needed) and MERGE-load one Senate roll call into the warehouse."""
+    path = senate_source.fetch(congress, session, roll_number, force=force)
+    vote, members = senate_source.parse(path, lis_to_bioguide=_lis_crosswalk())
+    vote_id = load_senate_vote(vote, members, warehouse_path=warehouse)
+    typer.echo(f"Loaded {vote_id} ({len(members)} member votes).")
 
 
 if __name__ == "__main__":
