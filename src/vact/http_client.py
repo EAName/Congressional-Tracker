@@ -40,13 +40,16 @@ def get_with_retry(
     *,
     max_attempts: int = 5,
     retry_on: Callable[[httpx.Response], bool] | None = None,
+    allow_statuses: set[int] | None = None,
 ) -> httpx.Response:
     """
     GET with exponential backoff (max 5 attempts).
 
-    Retries on transport errors and 5xx / 429 by default. Callers that need
-    to treat 404 as terminal should not use retry_on for 404.
+    Retries on transport errors and 5xx / 429 by default. Status codes in
+    `allow_statuses` (e.g. {404}) are returned without raising so callers can
+    treat them as terminal non-retryable outcomes.
     """
+    allowed = allow_statuses or set()
 
     @retry(
         reraise=True,
@@ -56,6 +59,8 @@ def get_with_retry(
     )
     def _get() -> httpx.Response:
         response = client.get(url)
+        if response.status_code in allowed:
+            return response
         if response.status_code in {429, 500, 502, 503, 504}:
             logger.warning(
                 "http_retryable_status",

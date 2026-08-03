@@ -6,6 +6,7 @@ from pathlib import Path
 
 import typer
 
+from vact.sources import house_rollcalls as house_source
 from vact.sources import legislators as legislator_source
 from vact.transforms.legislators import build_dim_legislator_rows
 from vact.warehouse.load import upsert_dim_legislator
@@ -50,6 +51,20 @@ def ingest_legislators(
     count = upsert_dim_legislator(rows, warehouse_path=warehouse)
     typer.echo(f"Upserted {count} dim_legislator rows (VA / 119th Congress).")
 
+
+@app.command("fetch-house-roll")
+def fetch_house_roll(
+    year: int = typer.Argument(..., help="Calendar year of the EVS file."),
+    roll_number: int = typer.Argument(..., help="House roll call number."),
+    force: bool = typer.Option(False, "--force", help="Re-download even if cached."),
+) -> None:
+    """Fetch one House Clerk roll-call XML into data/raw/house/."""
+    path = house_source.fetch(year, roll_number, force=force)
+    vote, members = house_source.parse(path)
+    typer.echo(
+        f"{path} — roll {vote.roll_number} on {vote.action_date} "
+        f"({len(members)} member votes, result={vote.vote_result})"
+    )
 
 if __name__ == "__main__":
     app()
