@@ -24,8 +24,12 @@ vact = "vact.cli:app"
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+# hatchling auto-discovers src/vact; keep sources explicit for editable installs
 [tool.hatch.build.targets.wheel]
 packages = ["src/vact"]
+
+[tool.hatch.build.targets.wheel.sources]
+"src/vact" = "vact"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
