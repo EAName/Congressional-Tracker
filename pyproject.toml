@@ -20,6 +20,12 @@ dependencies = [
 [project.scripts]
 vact = "vact.cli:app"
 
+[tool.uv]
+# Prefer non-editable installs so site-packages contains a real vact package.
+# Development uses bin/vact (PYTHONPATH=src) or `uv run --with-editable`.
+config-settings = { editable_mode = "compat" }
+
+
 [build-system]
 requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"

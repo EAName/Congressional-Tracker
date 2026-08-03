@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Durable CLI launcher. Puts src/ on PYTHONPATH, then runs Typer as a module.
+set -euo pipefail
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+export VACT_REPO_ROOT="${VACT_REPO_ROOT:-$ROOT}"
+export PYTHONPATH="${ROOT}/src${PYTHONPATH:+:$PYTHONPATH}"
+PY="${ROOT}/.venv/bin/python"
+if [[ ! -x "$PY" ]]; then
+  PY="python3"
+fi
+exec "$PY" -m vact "$@"
