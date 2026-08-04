@@ -183,17 +183,72 @@ def incremental_cmd(
     lookback_days: int = typer.Option(7, "--lookback-days"),
     congress: int = typer.Option(119, "--congress"),
     warehouse: Path | None = typer.Option(None, "--warehouse"),
+    notify: bool = typer.Option(
+        True,
+        "--notify/--no-notify",
+        help="Emit outreach signals for new party-line tagged votes.",
+    ),
 ) -> None:
     """Re-fetch lookback window (EVS is mutable) and pick up new rolls."""
+    from vact.pipeline.notify import find_party_line_splits, notify_outreach
+    from vact.paths import WAREHOUSE_PATH
+
     counts = incremental(
         lookback_days=lookback_days,
         congress=congress,
         warehouse_path=warehouse,
     )
+    changed = bool(counts.get("changed"))
+    new_ids = list(counts.get("new_vote_ids") or [])
     typer.echo(
         f"Incremental refresh: house={counts['house']} senate={counts['senate']} "
+        f"changed={changed} new_votes={len(new_ids)} "
         f"(lookback_days={lookback_days})"
     )
+    if not changed:
+        typer.echo("No content change — silent no-op (no notification).")
+        return
+    if notify and new_ids:
+        conn = connect(warehouse or WAREHOUSE_PATH)
+        try:
+            ensure_schema(conn)
+            signals = find_party_line_splits(conn, vote_ids=new_ids)
+        finally:
+            conn.close()
+        if signals:
+            notify_outreach(signals)
+            typer.echo(f"Outreach signals: {len(signals)} party-line tagged votes.")
+
+
+@app.command("dimensions")
+def dimensions_cmd(
+    force: bool = typer.Option(False, "--force", help="Rebuild even if upstream SHA matches."),
+    warehouse: Path | None = typer.Option(None, "--warehouse"),
+) -> None:
+    """Refresh dim_legislator / dim_district when congress-legislators SHA changes."""
+    from vact.pipeline.dimensions import refresh_dimensions
+    from vact.pipeline.notify import notify_pipeline_failure
+
+    result = refresh_dimensions(force=force, warehouse_path=warehouse)
+    if result.skipped:
+        typer.echo(f"Dimensions unchanged (sha={result.upstream_sha[:12]}).")
+        raise typer.Exit(code=0)
+    typer.echo(
+        f"Dimensions refreshed: sha={result.upstream_sha[:12]} "
+        f"legislators={result.legislator_rows} districts={result.district_rows} "
+        f"delegation_changed={result.delegation_changed}"
+    )
+    if result.delegation_changed:
+        # Seat change is news before it is a data issue — always surface.
+        notify_pipeline_failure(
+            "Virginia delegation dimension changed",
+            details={
+                "upstream_sha": result.upstream_sha,
+                "previous_sha": result.previous_sha,
+                "delegation_fp": result.delegation_fp,
+            },
+        )
+        typer.echo("Alerted: Virginia delegation fingerprint changed.")
 
 
 @app.command("gaps")

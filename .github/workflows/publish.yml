@@ -1,0 +1,114 @@
+name: Publish
+
+# Monday 08:00 ET (UTC 13:00), after dimensions. Also after a green Dimensions run.
+on:
+  schedule:
+    - cron: "0 13 * * 1"
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["Dimensions"]
+    types: [completed]
+
+concurrency:
+  group: vact-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    # Skip if Dimensions triggered this and failed.
+    if: >
+      github.event_name != 'workflow_run' ||
+      github.event.workflow_run.conclusion == 'success'
+    permissions:
+      contents: write
+      actions: read
+    env:
+      VACT_REPO_ROOT: ${{ github.workspace }}
+      VACT_SHEETS_ID: ${{ secrets.VACT_SHEETS_ID }}
+      VACT_NOTIFY_PIPELINE_WEBHOOK: ${{ secrets.VACT_NOTIFY_PIPELINE_WEBHOOK }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Gate on recent Ingest + Dimensions greens
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          # Latest Dimensions workflow must be success (within 2 days).
+          dim=$(gh run list --workflow dimensions.yml --limit 1 --json conclusion,createdAt -q '.[0]')
+          echo "dimensions: $dim"
+          echo "$dim" | grep -q '"conclusion":"success"' || {
+            echo "Refusing publish: latest Dimensions run is not success"
+            exit 1
+          }
+          # Latest Ingest in the last 5 days must not be failure (pending/success/skipped ok).
+          if gh run list --workflow ingest.yml --limit 5 --json conclusion,createdAt \
+            | grep -q '"conclusion":"failure"'; then
+            echo "Refusing publish: a recent Ingest run failed"
+            exit 1
+          fi
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install 3.11
+
+      - name: Sync dependencies
+        run: uv sync
+
+      - name: Cache raw + warehouse
+        uses: actions/cache@v4
+        with:
+          path: |
+            data/raw
+            data/warehouse
+          key: vact-data-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: |
+            vact-data-${{ runner.os }}-
+
+      - name: Write Sheets credentials (optional)
+        if: ${{ secrets.VACT_SHEETS_CREDENTIALS != '' }}
+        run: |
+          printenv VACT_SHEETS_CREDENTIALS_JSON > /tmp/vact-sheets.json
+          echo "VACT_SHEETS_CREDENTIALS=/tmp/vact-sheets.json" >> "$GITHUB_ENV"
+        env:
+          VACT_SHEETS_CREDENTIALS_JSON: ${{ secrets.VACT_SHEETS_CREDENTIALS }}
+
+      - name: Build site + social + gaps
+        run: |
+          set -euo pipefail
+          export PYTHONPATH=src
+          if [[ ! -f data/warehouse/warehouse.duckdb ]]; then
+            echo "No warehouse — cannot publish"
+            exit 1
+          fi
+          make site
+          ./bin/vact gaps
+
+      - name: Sheets push (optional)
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          export PYTHONPATH=src
+          if [[ -n "${VACT_SHEETS_CREDENTIALS:-}" && -n "${VACT_SHEETS_ID:-}" ]]; then
+            ./bin/vact sheets push
+          else
+            echo "Sheets credentials not configured; skipping push"
+          fi
+
+      - name: Commit docs/ and reports on green
+        run: |
+          set -euo pipefail
+          git config user.name "vact-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/ data/reports/*.md || true
+          if git diff --cached --quiet; then
+            echo "No publication artifacts changed"
+            exit 0
+          fi
+          git commit -m "chore: publish site and coverage artifacts [skip ci]"
+          git push

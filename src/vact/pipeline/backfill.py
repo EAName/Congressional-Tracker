@@ -17,6 +17,7 @@ from vact.sources import senate_rollcalls as senate
 from vact.transforms.lis_crosswalk import build_lis_bioguide_crosswalk
 from vact.warehouse.connection import connect, ensure_schema
 from vact.warehouse.load import load_house_vote, load_senate_vote
+from vact.warehouse.meta import warehouse_content_fingerprint
 
 logger = structlog.get_logger(__name__)
 
@@ -191,16 +192,23 @@ def _warehouse_votes_in_window(
     ).fetchall()
 
 
+def _vote_ids(conn: duckdb.DuckDBPyConnection) -> set[str]:
+    return {r[0] for r in conn.execute("SELECT vote_id FROM fact_vote").fetchall()}
+
+
 def incremental(
     *,
     lookback_days: int = 7,
     congress: int = 119,
     warehouse_path: Path | None = None,
     as_of: date | None = None,
-) -> dict[str, int]:
+) -> dict[str, object]:
     """
     Re-fetch and upsert every roll call with vote_date in the lookback window,
     then discover/load any newer rolls not yet in the warehouse.
+
+    Returns house/senate load counts plus `changed`, `new_vote_ids`, and
+    before/after fingerprints for silent no-op detection in CI.
     """
     if lookback_days < 0:
         raise ValueError("lookback_days must be >= 0")
@@ -210,6 +218,8 @@ def incremental(
     conn = connect(warehouse_path)
     try:
         ensure_schema(conn)
+        before_fp = warehouse_content_fingerprint(conn)
+        before_ids = _vote_ids(conn)
         refreshed = {"house": 0, "senate": 0}
         xw: dict[str, str] | None = None
 
@@ -272,7 +282,17 @@ def incremental(
                 load_senate_vote(vote, members, conn=conn)
                 refreshed["senate"] += 1
 
-        return refreshed
+        after_ids = _vote_ids(conn)
+        after_fp = warehouse_content_fingerprint(conn)
+        new_vote_ids = sorted(after_ids - before_ids)
+        return {
+            "house": refreshed["house"],
+            "senate": refreshed["senate"],
+            "changed": before_fp != after_fp or bool(new_vote_ids),
+            "new_vote_ids": new_vote_ids,
+            "fingerprint_before": before_fp,
+            "fingerprint_after": after_fp,
+        }
     finally:
         conn.close()
 

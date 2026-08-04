@@ -91,3 +91,10 @@ CREATE TABLE IF NOT EXISTS ref_vote_category_rule (
     type_regex     TEXT,   -- NULL means match-any for this column
     notes          TEXT
 );
+
+-- Opaque string metadata (upstream SHAs, refresh watermarks). Not metrics.
+CREATE TABLE IF NOT EXISTS warehouse_meta (
+    meta_key       TEXT PRIMARY KEY,
+    meta_value     TEXT NOT NULL,
+    updated_at_utc TIMESTAMP NOT NULL
+);

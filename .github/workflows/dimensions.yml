@@ -1,0 +1,67 @@
+name: Dimensions
+
+# Weekly Monday 06:00 ET (UTC 11:00).
+on:
+  schedule:
+    - cron: "0 11 * * 1"
+  workflow_dispatch:
+
+concurrency:
+  group: vact-dimensions
+  cancel-in-progress: false
+
+jobs:
+  dimensions:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      VACT_REPO_ROOT: ${{ github.workspace }}
+      VACT_NOTIFY_PIPELINE_WEBHOOK: ${{ secrets.VACT_NOTIFY_PIPELINE_WEBHOOK }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install 3.11
+
+      - name: Sync dependencies
+        run: uv sync
+
+      - name: Cache raw + warehouse
+        uses: actions/cache@v4
+        with:
+          path: |
+            data/raw
+            data/warehouse
+          key: vact-data-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: |
+            vact-data-${{ runner.os }}-
+
+      - name: Refresh dimensions when upstream SHA changes
+        run: |
+          set -euo pipefail
+          export PYTHONPATH=src
+          if [[ ! -f data/warehouse/warehouse.duckdb ]]; then
+            echo "No warehouse yet — ingest-legislators into a fresh file."
+            ./bin/vact ingest-legislators
+            ./bin/vact dimensions --force
+          else
+            ./bin/vact dimensions
+          fi
+
+      - name: Delegation completeness tests
+        run: |
+          set -euo pipefail
+          export PYTHONPATH=src
+          if ! uv run pytest -q tests/test_dim_legislator.py tests/test_districts.py; then
+            PYTHONPATH=src python - <<'PY'
+          from vact.pipeline.notify import notify_pipeline_failure
+          notify_pipeline_failure("dimensions workflow: delegation completeness tests failed")
+          PY
+            exit 1
+          fi

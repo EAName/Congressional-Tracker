@@ -106,6 +106,15 @@ unadjudicated `LLM` tags.
   categories; requires human summaries; every claim links to clerk/senate source.
 - Social (`vact social`): 1200×675 PNGs for Target Four.
 
+## Scheduling and notifications
+
+Makefile targets: `install`, `ingest`, `classify`, `test`, `site`, `publish`, `all`.
+Tiered GitHub Actions: Ingest (Tue–Sat), Dimensions (Mon), Publish (Mon after Dimensions).
+Publish refuses a red Dimensions or recent failed Ingest. Notifications fire only on
+(a) contract/pipeline failure (`VACT_NOTIFY_PIPELINE_WEBHOOK`) or (b) new tagged
+party-line VA splits (`VACT_NOTIFY_OUTREACH_WEBHOOK`). Silent no-ops when incremental
+finds no content change — consecutive greens must not train operators to ignore phones.
+
 ## Sequencing
 
 Build order is defined by the Prompt Kit (prompts 0–10). Do not skip ahead of the
