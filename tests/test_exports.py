@@ -112,11 +112,19 @@ def test_site_suppresses_procedural_and_requires_summary(tmp_path: Path) -> None
     index = (dest / "index.html").read_text(encoding="utf-8")
     assert "Democrats for Virginia" in index
     assert "VA-1" in index
+    assert 'id="categoryChart"' in index
+    assert 'id="impactChart"' in index
+    assert "heatmap" in index
+    assert (dest / "tracker.js").is_file()
+    assert (dest / "styles.css").is_file()
+    sources = (dest / "methodology.html").read_text(encoding="utf-8")
+    assert "clerk.house.gov" in sources
+    assert "senate.gov" in sources
     d1 = (dest / "district" / "1.html").read_text(encoding="utf-8")
     assert "Expands SBA 7(a) loans" in d1
     assert "Previous Question" not in d1  # procedural suppressed
     assert "https://clerk.house.gov" in d1
-    assert "generated_at_utc" not in d1.lower() or "Generated" in d1
+    assert "Generated" in d1
     # Missing summary vote must not appear; if code tried to render it, build would fail.
 
 

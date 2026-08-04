@@ -5,22 +5,52 @@
 {% block nav_delegation %}../delegation.html{% endblock %}
 {% block nav_methodology %}../methodology.html{% endblock %}
 {% block lede %}
-<p class="lede">{{ member.full_name }} · VA-{{ member.district_number }} · map_version {{ map_version }}</p>
+<p class="lede">{{ member.full_name }} · VA-{{ member.district_number }} · {{ member.party }} · {{ member.partisan_lean or 'lean TBD' }} · map_version {{ map_version }}</p>
 {% endblock %}
 {% block content %}
-{% if votes %}
-  {% for vote in votes %}
-  <article class="vote">
-    <time datetime="{{ vote.vote_date }}">{{ vote.vote_date }}</time>
-    <p class="summary">{{ vote.plain_language_summary }}</p>
-    <p>
-      <span class="pos-{{ vote.position }}">{{ vote.position }}</span>
-      · {{ vote.tags | join(', ') }}
-      · <a href="{{ vote.source_url }}" rel="noopener">Source</a>
-    </p>
-  </article>
-  {% endfor %}
-{% else %}
-  <p>No publication-ready votes yet for this district. Human plain-language summaries gate what appears here.</p>
-{% endif %}
+<section aria-labelledby="record-heading">
+  <h2 id="record-heading">Impact record</h2>
+  <p class="section-note">Live Yea/Nay on the four outreach tags. Publication-ready votes (human summaries) listed below.</p>
+  <div class="heat-wrap">
+    <table class="heatmap" style="min-width:0">
+      <thead>
+        <tr>
+          {% for tag in scorecard_tags %}
+          <th scope="col">{{ tag.replace('_', ' ').title() }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          {% for tag in scorecard_tags %}
+          {% set cell = heatmap.cells[tag] %}
+          <td><span class="heat {{ cell.tone }}">{{ cell.label }}</span></td>
+          {% endfor %}
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section aria-labelledby="votes-heading">
+  <h2 id="votes-heading">Publication-ready votes</h2>
+  {% if votes %}
+    {% for vote in votes %}
+    <article class="vote">
+      <time datetime="{{ vote.vote_date }}">{{ vote.vote_date }}</time>
+      <p class="summary">{{ vote.plain_language_summary }}</p>
+      <p>
+        <span class="pos-{{ vote.position }}">{{ vote.position }}</span>
+        · {{ vote.tags | join(', ') }}
+        · <a href="{{ vote.source_url }}" rel="noopener">Source</a>
+      </p>
+    </article>
+    {% endfor %}
+  {% else %}
+    <p class="section-note">No publication-ready votes yet for this district. Human plain-language summaries (&lt;25 words) gate what appears here; we never publish raw parliamentary questions.</p>
+  {% endif %}
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="../tracker.js" defer></script>
 {% endblock %}

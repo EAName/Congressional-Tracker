@@ -3,11 +3,15 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Target Four · Democrats for Virginia</title>
+  <title>Tracker · Democrats for Virginia</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
+  
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+<script src="tracker.js" defer></script>
+
 </head>
 <body>
   <div class="wrap">
@@ -15,49 +19,391 @@
       <p class="product">Congressional Vote Tracker</p>
       <h1 class="brand">Democrats for Virginia</h1>
       
-<p class="lede">Four districts remapped toward Democrats for 2026. Tap a card for the incumbent&rsquo;s recent publication-ready votes.</p>
+<p class="lede">Virginia&rsquo;s congressional record on small-business and cost-of-doing-business votes. Live warehouse counts, source links on every claim.</p>
 
       <nav aria-label="Primary">
-        <a href="index.html">Target Four</a>
+        <a href="index.html">Tracker</a>
         <a href="delegation.html">Delegation</a>
-        <a href="methodology.html">Methodology</a>
+        <a href="methodology.html">Sources</a>
       </nav>
     </header>
     <main>
       
-<section class="card-list" aria-label="Target districts">
-  
-  <a class="card" href="district/1.html">
-    <h2>VA-1</h2>
-    <p class="meta">Robert J. Wittman · Republican · D lean</p>
-    <p class="meta">0 publication-ready votes</p>
-  </a>
-  
-  <a class="card" href="district/2.html">
-    <h2>VA-2</h2>
-    <p class="meta">Jennifer A. Kiggans · Republican · D lean</p>
-    <p class="meta">0 publication-ready votes</p>
-  </a>
-  
-  <a class="card" href="district/5.html">
-    <h2>VA-5</h2>
-    <p class="meta">John J. McGuire III · Republican · D lean</p>
-    <p class="meta">0 publication-ready votes</p>
-  </a>
-  
-  <a class="card" href="district/6.html">
-    <h2>VA-6</h2>
-    <p class="meta">Ben Cline · Republican · D lean</p>
-    <p class="meta">0 publication-ready votes</p>
-  </a>
-  
+<div class="stat-row" aria-label="Corpus snapshot">
+  <div class="stat"><div class="n">1521</div><div class="k">Roll calls in warehouse</div></div>
+  <div class="stat"><div class="n">72</div><div class="k">Impact-tagged votes</div></div>
+  <div class="stat"><div class="n">0</div><div class="k">Human-summarized (site cards)</div></div>
+</div>
+
+<section aria-labelledby="mix-heading">
+  <h2 id="mix-heading">What is in the corpus</h2>
+  <p class="section-note">Live breakdowns from DuckDB. Category chart covers every roll call; impact chart is RULE/HUMAN tags only.</p>
+  <div class="chart-grid">
+    <div class="chart-panel">
+      <h3>Vote categories</h3>
+      <div class="chart-wrap">
+        <canvas id="categoryChart" data-chart='{"labels": ["PROCEDURAL", "CLOTURE", "PASSAGE", "NOMINATION", "AMENDMENT", "SUSPENSION", "MOTION_TO_RECOMMIT"], "values": [354, 279, 266, 216, 191, 143, 72]}' aria-label="Vote category doughnut chart"></canvas>
+      </div>
+    </div>
+    <div class="chart-panel">
+      <h3>Impact tags</h3>
+      <div class="chart-wrap">
+        <canvas id="impactChart" data-chart='{"labels": ["Federal Contracting", "Input Costs", "Workforce", "Access To Capital", "Health Costs", "Regulatory Burden"], "values": [21, 19, 13, 12, 6, 1]}' aria-label="Impact tag bar chart"></canvas>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="heat-heading">
+  <h2 id="heat-heading">Delegation heatmap</h2>
+  <p class="section-note">Yea/Nay on RULE and HUMAN tags (map_version 2026). Green = mostly Yea, red = mostly Nay, amber = split. Em dash = no tagged votes yet.</p>
+  <div class="heat-wrap">
+    <div class="heat-wrap-inner">
+  <table class="heatmap">
+    <thead>
+      <tr>
+        <th scope="col">Member</th>
+        
+        <th scope="col">Tax Burden</th>
+        
+        <th scope="col">Health Costs</th>
+        
+        <th scope="col">Access To Capital</th>
+        
+        <th scope="col">Input Costs</th>
+        
+      </tr>
+    </thead>
+    <tbody>
+      
+      <tr>
+        <td>
+          
+          <a href="district/1.html">Robert J. Wittman</a>
+          <span class="meta"> · VA-1</span>
+          
+        </td>
+        
+        
+        <td><span class="heat empty" title="TAX_BURDEN: 0 Yea, 0 Nay">—</span></td>
+        
+        
+        <td><span class="heat yea-heavy" title="HEALTH_COSTS: 3 Yea, 1 Nay">3Y/1N</span></td>
+        
+        
+        <td><span class="heat yea-heavy" title="ACCESS_TO_CAPITAL: 8 Yea, 1 Nay">8Y/1N</span></td>
+        
+        
+        <td><span class="heat yea-heavy" title="INPUT_COSTS: 8 Yea, 2 Nay">8Y/2N</span></td>
+        
+      </tr>
+      
+      <tr>
+        <td>
+          
+          <a href="district/2.html">Jennifer A. Kiggans</a>
+          <span class="meta"> · VA-2</span>
+          
+        </td>
+        
+        
+        <td><span class="heat empty" title="TAX_BURDEN: 0 Yea, 0 Nay">—</span></td>
+        
+        
+        <td><span class="heat split" title="HEALTH_COSTS: 2 Yea, 2 Nay">2Y/2N</span></td>
+        
+        
+        <td><span class="heat yea-heavy" title="ACCESS_TO_CAPITAL: 7 Yea, 1 Nay">7Y/1N</span></td>
+        
+        
+        <td><span class="heat yea-heavy" title="INPUT_COSTS: 8 Yea, 2 Nay">8Y/2N</span></td>
+        
+      </tr>
+      
+      <tr>
+        <td>
+          
+          <a href="district/3.html">Robert C. &#34;Bobby&#34; Scott</a>
+          <span class="meta"> · VA-3</span>
+          
+        </td>
+        
+        
+        <td><span class="heat empty" title="TAX_BURDEN: 0 Yea, 0 Nay">—</span></td>
+        
+        
+        <td><span class="heat nay-heavy" title="HEALTH_COSTS: 1 Yea, 3 Nay">1Y/3N</span></td>
+        
+        
+        <td><span class="heat split" title="ACCESS_TO_CAPITAL: 4 Yea, 5 Nay">4Y/5N</span></td>
+        
+        
+        <td><span class="heat nay-heavy" title="INPUT_COSTS: 2 Yea, 8 Nay">2Y/8N</span></td>
+        
+      </tr>
+      
+      <tr>
+        <td>
+          
+          <a href="district/4.html">Jennifer L. McClellan</a>
+          <span class="meta"> · VA-4</span>
+          
+        </td>
+        
+        
+        <td><span class="heat empty" title="TAX_BURDEN: 0 Yea, 0 Nay">—</span></td>
+        
+        
+        <td><span class="heat nay-heavy" title="HEALTH_COSTS: 1 Yea, 3 Nay">1Y/3N</span></td>
+        
+        
+        <td><span class="heat split" title="ACCESS_TO_CAPITAL: 4 Yea, 5 Nay">4Y/5N</span></td>
+        
+        
+        <td><span class="heat nay-heavy" title="INPUT_COSTS: 2 Yea, 8 Nay">2Y/8N</span></td>
+        
+      </tr>
+      
+      <tr>
+        <td>
+          
+          <a href="district/5.html">John J. McGuire III</a>
+          <span class="meta"> · VA-5</span>
+          
+        </td>
+        
+        
+        <td><span class="heat empty" title="TAX_BURDEN: 0 Yea, 0 Nay">—</span></td>
+        
+        
+        <td><span class="heat yea-heavy" title="HEALTH_COSTS: 3 Yea, 1 Nay">3Y/1N</span></td>
+        
+        
+        <td><span class="heat yea-heavy" title="ACCESS_TO_CAPITAL: 8 Yea, 1 Nay">8Y/1N</span></td>
+        
+        
+        <td><span class="heat yea-heavy" title="INPUT_COSTS: 8 Yea, 2 Nay">8Y/2N</span></td>
+        
+      </tr>
+      
+      <tr>
+        <td>
+          
+          <a href="district/6.html">Ben Cline</a>
+          <span class="meta"> · VA-6</span>
+          
+        </td>
+        
+        
+        <td><span class="heat empty" title="TAX_BURDEN: 0 Yea, 0 Nay">—</span></td>
+        
+        
+        <td><span class="heat yea-heavy" title="HEALTH_COSTS: 3 Yea, 1 Nay">3Y/1N</span></td>
+        
+        
+        <td><span class="heat yea-heavy" title="ACCESS_TO_CAPITAL: 8 Yea, 1 Nay">8Y/1N</span></td>
+        
+        
+        <td><span class="heat yea-heavy" title="INPUT_COSTS: 8 Yea, 2 Nay">8Y/2N</span></td>
+        
+      </tr>
+      
+      <tr>
+        <td>
+          
+          <a href="district/7.html">Eugene Simon Vindman</a>
+          <span class="meta"> · VA-7</span>
+          
+        </td>
+        
+        
+        <td><span class="heat empty" title="TAX_BURDEN: 0 Yea, 0 Nay">—</span></td>
+        
+        
+        <td><span class="heat nay-heavy" title="HEALTH_COSTS: 1 Yea, 3 Nay">1Y/3N</span></td>
+        
+        
+        <td><span class="heat split" title="ACCESS_TO_CAPITAL: 4 Yea, 5 Nay">4Y/5N</span></td>
+        
+        
+        <td><span class="heat nay-heavy" title="INPUT_COSTS: 3 Yea, 7 Nay">3Y/7N</span></td>
+        
+      </tr>
+      
+      <tr>
+        <td>
+          
+          <a href="district/8.html">Donald S. Beyer, Jr.</a>
+          <span class="meta"> · VA-8</span>
+          
+        </td>
+        
+        
+        <td><span class="heat empty" title="TAX_BURDEN: 0 Yea, 0 Nay">—</span></td>
+        
+        
+        <td><span class="heat split" title="HEALTH_COSTS: 1 Yea, 2 Nay">1Y/2N</span></td>
+        
+        
+        <td><span class="heat split" title="ACCESS_TO_CAPITAL: 4 Yea, 5 Nay">4Y/5N</span></td>
+        
+        
+        <td><span class="heat nay-heavy" title="INPUT_COSTS: 2 Yea, 8 Nay">2Y/8N</span></td>
+        
+      </tr>
+      
+      <tr>
+        <td>
+          
+          <a href="district/9.html">H. Morgan Griffith</a>
+          <span class="meta"> · VA-9</span>
+          
+        </td>
+        
+        
+        <td><span class="heat empty" title="TAX_BURDEN: 0 Yea, 0 Nay">—</span></td>
+        
+        
+        <td><span class="heat yea-heavy" title="HEALTH_COSTS: 3 Yea, 1 Nay">3Y/1N</span></td>
+        
+        
+        <td><span class="heat yea-heavy" title="ACCESS_TO_CAPITAL: 8 Yea, 1 Nay">8Y/1N</span></td>
+        
+        
+        <td><span class="heat yea-heavy" title="INPUT_COSTS: 8 Yea, 2 Nay">8Y/2N</span></td>
+        
+      </tr>
+      
+      <tr>
+        <td>
+          
+          <a href="district/10.html">Suhas Subramanyam</a>
+          <span class="meta"> · VA-10</span>
+          
+        </td>
+        
+        
+        <td><span class="heat empty" title="TAX_BURDEN: 0 Yea, 0 Nay">—</span></td>
+        
+        
+        <td><span class="heat nay-heavy" title="HEALTH_COSTS: 1 Yea, 3 Nay">1Y/3N</span></td>
+        
+        
+        <td><span class="heat split" title="ACCESS_TO_CAPITAL: 3 Yea, 5 Nay">3Y/5N</span></td>
+        
+        
+        <td><span class="heat nay-heavy" title="INPUT_COSTS: 2 Yea, 8 Nay">2Y/8N</span></td>
+        
+      </tr>
+      
+      <tr>
+        <td>
+          
+          <a href="district/11.html">James R. Walkinshaw</a>
+          <span class="meta"> · VA-11</span>
+          
+        </td>
+        
+        
+        <td><span class="heat empty" title="TAX_BURDEN: 0 Yea, 0 Nay">—</span></td>
+        
+        
+        <td><span class="heat nay-heavy" title="HEALTH_COSTS: 1 Yea, 3 Nay">1Y/3N</span></td>
+        
+        
+        <td><span class="heat yea-heavy" title="ACCESS_TO_CAPITAL: 1 Yea, 0 Nay">1Y/0N</span></td>
+        
+        
+        <td><span class="heat nay-heavy" title="INPUT_COSTS: 1 Yea, 7 Nay">1Y/7N</span></td>
+        
+      </tr>
+      
+      <tr>
+        <td>
+          
+          Mark R. Warner <span class="meta"> · Senate</span>
+          
+        </td>
+        
+        
+        <td><span class="heat empty" title="TAX_BURDEN: 0 Yea, 0 Nay">—</span></td>
+        
+        
+        <td><span class="heat yea-heavy" title="HEALTH_COSTS: 2 Yea, 0 Nay">2Y/0N</span></td>
+        
+        
+        <td><span class="heat nay-heavy" title="ACCESS_TO_CAPITAL: 0 Yea, 3 Nay">0Y/3N</span></td>
+        
+        
+        <td><span class="heat split" title="INPUT_COSTS: 6 Yea, 3 Nay">6Y/3N</span></td>
+        
+      </tr>
+      
+      <tr>
+        <td>
+          
+          Tim Kaine <span class="meta"> · Senate</span>
+          
+        </td>
+        
+        
+        <td><span class="heat empty" title="TAX_BURDEN: 0 Yea, 0 Nay">—</span></td>
+        
+        
+        <td><span class="heat yea-heavy" title="HEALTH_COSTS: 2 Yea, 0 Nay">2Y/0N</span></td>
+        
+        
+        <td><span class="heat nay-heavy" title="ACCESS_TO_CAPITAL: 0 Yea, 3 Nay">0Y/3N</span></td>
+        
+        
+        <td><span class="heat split" title="INPUT_COSTS: 6 Yea, 3 Nay">6Y/3N</span></td>
+        
+      </tr>
+      
+    </tbody>
+  </table>
+</div>
+  </div>
+</section>
+
+<section aria-labelledby="targets-heading">
+  <h2 id="targets-heading">Target Four</h2>
+  <p class="section-note">Districts shifted toward Democrats under the proposed 2026 map. Open a card for the district page.</p>
+  <div class="card-list">
+    
+    <a class="card" href="district/1.html">
+      <h2>VA-1</h2>
+      <p class="meta">Robert J. Wittman · Republican · D lean</p>
+      <p class="meta">0 publication-ready votes</p>
+    </a>
+    
+    <a class="card" href="district/2.html">
+      <h2>VA-2</h2>
+      <p class="meta">Jennifer A. Kiggans · Republican · D lean</p>
+      <p class="meta">0 publication-ready votes</p>
+    </a>
+    
+    <a class="card" href="district/5.html">
+      <h2>VA-5</h2>
+      <p class="meta">John J. McGuire III · Republican · D lean</p>
+      <p class="meta">0 publication-ready votes</p>
+    </a>
+    
+    <a class="card" href="district/6.html">
+      <h2>VA-6</h2>
+      <p class="meta">Ben Cline · Republican · D lean</p>
+      <p class="meta">0 publication-ready votes</p>
+    </a>
+    
+  </div>
 </section>
 
     </main>
     <footer class="site-footer">
-      <p>Generated 2026-08-04T00:15:07Z · live corpus 1521 votes · map_version 2026</p>
-      <p>Every claim links to clerk.house.gov or senate.gov. Procedural votes stay on the audit sheet.</p>
+      <p>Generated 2026-08-04T00:49:50Z · live corpus 1521 votes · 72 tagged · 0 publication-ready · map_version 2026</p>
+      <p>Counts are live queries against the warehouse. Procedural votes stay on the audit sheet.</p>
     </footer>
   </div>
+  
 </body>
 </html>

@@ -1,31 +1,14 @@
 {% extends "base.html" %}
 {% block title %}Delegation · {{ brand }}{% endblock %}
 {% block lede %}
-<p class="lede">All 13 Virginia members. Tag columns are live Yea/Nay counts on RULE and HUMAN classifications (map_version {{ map_version }}).</p>
+<p class="lede">All 13 Virginia members. Cells are live Yea/Nay counts on RULE and HUMAN impact tags (map_version {{ map_version }}).</p>
 {% endblock %}
 {% block content %}
-<table class="member-table">
-  <thead>
-    <tr>
-      <th>Member</th>
-      <th>District</th>
-      <th>Tax</th>
-      <th>Health</th>
-      <th>Capital</th>
-      <th>Inputs</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for m in members %}
-    <tr>
-      <td data-label="Member">{{ m.full_name }} <span class="meta">({{ m.party }})</span></td>
-      <td data-label="District">{% if m.district_number %}VA-{{ m.district_number }}{% else %}Senate{% endif %}</td>
-      <td data-label="Tax">{{ m.TAX_BURDEN }}</td>
-      <td data-label="Health">{{ m.HEALTH_COSTS }}</td>
-      <td data-label="Capital">{{ m.ACCESS_TO_CAPITAL }}</td>
-      <td data-label="Inputs">{{ m.INPUT_COSTS }}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+<section aria-labelledby="delegation-heat">
+  <h2 id="delegation-heat">Scorecard heatmap</h2>
+  <p class="section-note">Click a House member name to open their district page. Senate rows have no district page.</p>
+  <div class="heat-wrap">
+    {% include "_heatmap.html" %}
+  </div>
+</section>
 {% endblock %}

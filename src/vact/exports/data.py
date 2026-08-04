@@ -30,6 +30,16 @@ SCORECARD_TAGS = (
 # Tags shown on district pages (broader than the four scorecard columns).
 DISTRICT_PAGE_MAX_VOTES = 5
 
+ALL_IMPACT_TAGS = (
+    "ACCESS_TO_CAPITAL",
+    "TAX_BURDEN",
+    "FEDERAL_CONTRACTING",
+    "HEALTH_COSTS",
+    "INPUT_COSTS",
+    "REGULATORY_BURDEN",
+    "WORKFORCE",
+)
+
 
 def generated_at_utc() -> str:
     return datetime.now(UTC).replace(microsecond=0).isoformat().replace("+00:00", "Z")
@@ -38,6 +48,110 @@ def generated_at_utc() -> str:
 def corpus_vote_count(conn: duckdb.DuckDBPyConnection) -> int:
     row = conn.execute("SELECT count(*) FROM fact_vote").fetchone()
     return int(row[0]) if row else 0
+
+
+def vote_category_mix(conn: duckdb.DuckDBPyConnection) -> list[dict[str, Any]]:
+    """Live counts of fact_vote.vote_category (corpus composition chart)."""
+    rows = conn.execute(
+        """
+        SELECT vote_category, count(*) AS n
+        FROM fact_vote
+        GROUP BY 1
+        ORDER BY n DESC, vote_category
+        """
+    ).fetchall()
+    return [{"label": r[0], "count": int(r[1])} for r in rows]
+
+
+def impact_tag_mix(conn: duckdb.DuckDBPyConnection) -> list[dict[str, Any]]:
+    """Live counts of RULE/HUMAN impact tags (excludes naked LLM)."""
+    rows = conn.execute(
+        """
+        SELECT impact_tag, count(*) AS n
+        FROM bridge_vote_impact
+        WHERE classified_by IN ('RULE', 'HUMAN')
+        GROUP BY 1
+        ORDER BY n DESC, impact_tag
+        """
+    ).fetchall()
+    return [{"label": r[0], "count": int(r[1])} for r in rows]
+
+
+def tagged_vote_count(conn: duckdb.DuckDBPyConnection) -> int:
+    row = conn.execute(
+        """
+        SELECT count(DISTINCT vote_id)
+        FROM bridge_vote_impact
+        WHERE classified_by IN ('RULE', 'HUMAN')
+        """
+    ).fetchone()
+    return int(row[0]) if row else 0
+
+
+def publication_ready_count(conn: duckdb.DuckDBPyConnection) -> int:
+    """Tagged, non-suppressed votes with a human plain_language_summary."""
+    suppressed = sorted(SITE_SUPPRESSED_CATEGORIES)
+    ph = ", ".join("?" for _ in suppressed)
+    row = conn.execute(
+        f"""
+        SELECT count(DISTINCT v.vote_id)
+        FROM fact_vote v
+        JOIN bridge_vote_impact i ON i.vote_id = v.vote_id
+        JOIN dim_bill b ON b.bill_id = v.bill_id
+        WHERE i.classified_by IN ('RULE', 'HUMAN')
+          AND v.vote_category NOT IN ({ph})
+          AND b.plain_language_summary IS NOT NULL
+          AND length(trim(b.plain_language_summary)) > 0
+          AND NOT EXISTS (
+              SELECT 1 FROM bridge_vote_impact llm
+              WHERE llm.vote_id = v.vote_id AND llm.classified_by = 'LLM'
+          )
+        """,
+        suppressed,
+    ).fetchone()
+    return int(row[0]) if row else 0
+
+
+def heatmap_cell(yea: int, nay: int) -> dict[str, Any]:
+    """Encode a scorecard cell for CSS heatmap rendering (live counts only)."""
+    total = yea + nay
+    if total == 0:
+        return {
+            "label": "—",
+            "yea": 0,
+            "nay": 0,
+            "tone": "empty",
+            "pct_yea": None,
+        }
+    pct = yea / total
+    if pct >= 0.7:
+        tone = "yea-heavy"
+    elif pct <= 0.3:
+        tone = "nay-heavy"
+    else:
+        tone = "split"
+    return {
+        "label": f"{yea}Y/{nay}N",
+        "yea": yea,
+        "nay": nay,
+        "tone": tone,
+        "pct_yea": round(pct, 3),
+    }
+
+
+def heatmap_rows(
+    score_rows: list[dict[str, Any]],
+    *,
+    tags: tuple[str, ...] = SCORECARD_TAGS,
+) -> list[dict[str, Any]]:
+    out = []
+    for row in score_rows:
+        cells = {
+            tag: heatmap_cell(int(row.get(f"{tag}_yea") or 0), int(row.get(f"{tag}_nay") or 0))
+            for tag in tags
+        }
+        out.append({**row, "cells": cells})
+    return out
 
 
 def list_delegation(
