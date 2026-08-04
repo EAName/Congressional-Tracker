@@ -6,6 +6,7 @@ from datetime import date
 
 from vact.constants import CONGRESS_119_END, CONGRESS_119_START
 from vact.models.legislators import DimLegislatorRow, LegislatorRecord, LegislatorTerm
+from vact.transforms.districts import attach_map_districts
 
 
 def _term_overlaps_119th(term: LegislatorTerm) -> bool:
@@ -96,5 +97,6 @@ def build_dim_legislator_rows(
             seen.add(key)
             rows.append(dim_row_from_term(record, term, as_of=as_of))
 
+    rows = attach_map_districts(rows)
     rows.sort(key=lambda r: (r.chamber, r.district_current or 0, r.term_start, r.bioguide_id))
     return rows

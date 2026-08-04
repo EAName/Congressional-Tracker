@@ -10,6 +10,8 @@ CREATE TABLE IF NOT EXISTS dim_legislator (
     chamber           TEXT NOT NULL CHECK (chamber IN ('House', 'Senate')),
     state             TEXT NOT NULL CHECK (state = 'VA'),
     district_current  INTEGER,
+    district_2025     INTEGER,   -- district under the 2021 court-drawn map
+    district_2026     INTEGER,   -- district under the 2026 proposed map (numbering persists)
     party             TEXT,
     term_start        DATE NOT NULL,
     term_end          DATE NOT NULL,
@@ -17,6 +19,17 @@ CREATE TABLE IF NOT EXISTS dim_legislator (
     is_incumbent      BOOLEAN NOT NULL,
     website           TEXT,
     PRIMARY KEY (bioguide_id, term_start)
+);
+
+-- Geography differs by map_version even when district_number is unchanged.
+-- Every analytic/export MUST declare which map_version it is keyed to.
+CREATE TABLE IF NOT EXISTS dim_district (
+    district_number    INTEGER NOT NULL,
+    map_version        TEXT NOT NULL CHECK (map_version IN ('2021', '2026')),
+    incumbent_bioguide TEXT,
+    partisan_lean      TEXT,
+    is_target          BOOLEAN NOT NULL,
+    PRIMARY KEY (district_number, map_version)
 );
 
 CREATE TABLE IF NOT EXISTS dim_bill (

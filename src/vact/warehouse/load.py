@@ -7,7 +7,7 @@ from pathlib import Path
 import duckdb
 
 from vact.models.house_rollcalls import HouseMemberVoteRecord, HouseVoteRecord
-from vact.models.legislators import DimLegislatorRow
+from vact.models.legislators import DimDistrictRow, DimLegislatorRow
 from vact.models.senate_rollcalls import SenateMemberVoteRecord, SenateVoteRecord
 from vact.models.votes import VotePosition
 from vact.transforms.ids import (
@@ -23,8 +23,9 @@ from vact.warehouse.connection import connect, ensure_schema
 _UPSERT_LEGISLATOR = """
 INSERT INTO dim_legislator AS t (
     bioguide_id, govtrack_id, icpsr_id, lis_member_id, full_name, chamber, state,
-    district_current, party, term_start, term_end, first_elected, is_incumbent, website
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    district_current, district_2025, district_2026, party,
+    term_start, term_end, first_elected, is_incumbent, website
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 ON CONFLICT (bioguide_id, term_start) DO UPDATE SET
     govtrack_id = excluded.govtrack_id,
     icpsr_id = excluded.icpsr_id,
@@ -33,11 +34,23 @@ ON CONFLICT (bioguide_id, term_start) DO UPDATE SET
     chamber = excluded.chamber,
     state = excluded.state,
     district_current = excluded.district_current,
+    district_2025 = excluded.district_2025,
+    district_2026 = excluded.district_2026,
     party = excluded.party,
     term_end = excluded.term_end,
     first_elected = excluded.first_elected,
     is_incumbent = excluded.is_incumbent,
     website = excluded.website
+"""
+
+_UPSERT_DISTRICT = """
+INSERT INTO dim_district AS t (
+    district_number, map_version, incumbent_bioguide, partisan_lean, is_target
+) VALUES (?, ?, ?, ?, ?)
+ON CONFLICT (district_number, map_version) DO UPDATE SET
+    incumbent_bioguide = excluded.incumbent_bioguide,
+    partisan_lean = excluded.partisan_lean,
+    is_target = excluded.is_target
 """
 
 _UPSERT_BILL = """
@@ -115,6 +128,8 @@ def upsert_dim_legislator(
                 row.chamber,
                 row.state,
                 row.district_current,
+                row.district_2025,
+                row.district_2026,
                 row.party,
                 row.term_start,
                 row.term_end,
@@ -125,6 +140,35 @@ def upsert_dim_legislator(
             for row in rows
         ]
         db.executemany(_UPSERT_LEGISLATOR, payload)
+        return len(rows)
+    finally:
+        if owns_conn:
+            db.close()
+
+
+def upsert_dim_district(
+    rows: list[DimDistrictRow],
+    *,
+    conn: duckdb.DuckDBPyConnection | None = None,
+    warehouse_path: Path | None = None,
+) -> int:
+    owns_conn = conn is None
+    db = conn or connect(warehouse_path)
+    try:
+        ensure_schema(db)
+        if not rows:
+            return 0
+        payload = [
+            (
+                row.district_number,
+                row.map_version,
+                row.incumbent_bioguide,
+                row.partisan_lean,
+                row.is_target,
+            )
+            for row in rows
+        ]
+        db.executemany(_UPSERT_DISTRICT, payload)
         return len(rows)
     finally:
         if owns_conn:

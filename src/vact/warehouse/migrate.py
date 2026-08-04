@@ -36,6 +36,10 @@ def apply_migrations(conn: duckdb.DuckDBPyConnection) -> None:
             conn.execute(
                 "ALTER TABLE dim_legislator RENAME COLUMN lis_id TO lis_member_id"
             )
+        if "district_2025" not in cols:
+            conn.execute("ALTER TABLE dim_legislator ADD COLUMN district_2025 INTEGER")
+        if "district_2026" not in cols:
+            conn.execute("ALTER TABLE dim_legislator ADD COLUMN district_2026 INTEGER")
 
     if "dim_bill" in tables:
         cols = _columns(conn, "dim_bill")

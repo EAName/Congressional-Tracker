@@ -155,3 +155,13 @@ def test_warehouse_query_shape(warehouse_conn) -> None:
     ).fetchone()[0]
     assert house_districts == 11
     assert senators == 2
+
+
+def test_map_district_columns_populated(dim_rows) -> None:
+    for row in dim_rows:
+        if row.chamber == "House":
+            assert row.district_2025 == row.district_current
+            assert row.district_2026 == row.district_current
+        else:
+            assert row.district_2025 is None
+            assert row.district_2026 is None

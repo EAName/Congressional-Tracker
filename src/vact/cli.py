@@ -12,9 +12,15 @@ from vact.sources import house_rollcalls as house_source
 from vact.sources import legislators as legislator_source
 from vact.sources import senate_rollcalls as senate_source
 from vact.transforms import classify as classify_mod
+from vact.transforms.districts import build_dim_district_rows
 from vact.transforms.legislators import build_dim_legislator_rows
 from vact.transforms.lis_crosswalk import build_lis_bioguide_crosswalk
-from vact.warehouse.load import load_house_vote, load_senate_vote, upsert_dim_legislator
+from vact.warehouse.load import (
+    load_house_vote,
+    load_senate_vote,
+    upsert_dim_district,
+    upsert_dim_legislator,
+)
 
 app = typer.Typer(
     name="vact",
@@ -63,7 +69,22 @@ def ingest_legislators(
     legislator_source.parse_district_offices(paths["legislators-district-offices"])
     rows = build_dim_legislator_rows(records)
     count = upsert_dim_legislator(rows, warehouse_path=warehouse)
-    typer.echo(f"Upserted {count} dim_legislator rows (VA / 119th Congress).")
+    district_count = upsert_dim_district(
+        build_dim_district_rows(), warehouse_path=warehouse
+    )
+    typer.echo(
+        f"Upserted {count} dim_legislator rows (VA / 119th Congress); "
+        f"{district_count} dim_district rows (map_versions 2021+2026)."
+    )
+
+
+@app.command("ingest-districts")
+def ingest_districts(
+    warehouse: Path | None = typer.Option(None, "--warehouse"),
+) -> None:
+    """Upsert dim_district from config/districts.yaml (both map_versions)."""
+    count = upsert_dim_district(build_dim_district_rows(), warehouse_path=warehouse)
+    typer.echo(f"Upserted {count} dim_district rows (map_versions 2021+2026).")
 
 
 @app.command("fetch-house-roll")

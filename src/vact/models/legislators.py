@@ -116,6 +116,8 @@ class DimLegislatorRow(BaseModel):
     chamber: Literal["House", "Senate"]
     state: str
     district_current: int | None = None
+    district_2025: int | None = None  # 2021 court-drawn map
+    district_2026: int | None = None  # 2026 proposed map (numbering persists)
     party: str | None = None
     term_start: date
     term_end: date
@@ -129,3 +131,15 @@ class DimLegislatorRow(BaseModel):
         if value != "VA":
             raise ValueError(f"dim_legislator is VA-scoped; got state={value!r}")
         return value
+
+
+class DimDistrictRow(BaseModel):
+    """One congressional district under a named map_version."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    district_number: int
+    map_version: Literal["2021", "2026"]
+    incumbent_bioguide: str
+    partisan_lean: str
+    is_target: bool

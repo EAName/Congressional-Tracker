@@ -82,6 +82,13 @@ data/legacy/v1/  # frozen v1 spreadsheet exports (reference only)
 `lis_member_id → bioguide_id` resolves through a national crosswalk built from
 congress-legislators (not VA-only `dim_legislator` rows). Unresolved IDs hard-fail.
 
+## Map version (district geography)
+
+Every analytic query and every export that uses congressional geography MUST name
+`map_version` (`2021` or `2026`). Mixing 2021 voting geography with 2026 targeting
+attributes votes to the wrong electorate. District numbers persist across versions;
+`dim_district` carries lean and `is_target` per version. See `config/districts.yaml`.
+
 ## Sequencing
 
 Build order is defined by the Prompt Kit (prompts 0–10). Do not skip ahead of the

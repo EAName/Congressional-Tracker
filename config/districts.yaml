@@ -1,0 +1,49 @@
+# Virginia congressional district map crosswalk.
+#
+# map_version '2021' — court-drawn map used for 119th voting geography and,
+# after the May 2026 Virginia Supreme Court strike-down of the mid-decade
+# referendum, the map expected for the November 2026 general election.
+#
+# map_version '2026' — General Assembly / HB29 proposed mid-decade map that
+# voters authorized on 2026-04-21. District numbering persists; geography for
+# districts 1, 2, 5, and 6 shifted toward Democrats (is_target=true). Retained
+# for targeting analytics even though the court blocked enactment — every
+# export and analytic MUST name which map_version it is keyed to.
+#
+# Assumption: partisan_lean labels are qualitative lean bands for outreach
+# targeting, not Cook PVI points. Update from an audited lean source before
+# publishing a scorecard that cites lean numerically.
+
+referendum_date: "2026-04-21"
+target_districts_2026: [1, 2, 5, 6]
+
+maps:
+  "2021":
+    label: "2021 court-drawn"
+    districts:
+      1:  { incumbent_bioguide: W000804, partisan_lean: "R lean",  is_target: false }
+      2:  { incumbent_bioguide: K000399, partisan_lean: "Toss-up", is_target: false }
+      3:  { incumbent_bioguide: S000185, partisan_lean: "D solid", is_target: false }
+      4:  { incumbent_bioguide: M001227, partisan_lean: "D solid", is_target: false }
+      5:  { incumbent_bioguide: M001239, partisan_lean: "R solid", is_target: false }
+      6:  { incumbent_bioguide: C001118, partisan_lean: "R solid", is_target: false }
+      7:  { incumbent_bioguide: V000138, partisan_lean: "D lean",  is_target: false }
+      8:  { incumbent_bioguide: B001292, partisan_lean: "D solid", is_target: false }
+      9:  { incumbent_bioguide: G000568, partisan_lean: "R solid", is_target: false }
+      10: { incumbent_bioguide: S001230, partisan_lean: "D lean",  is_target: false }
+      11: { incumbent_bioguide: W000831, partisan_lean: "D solid", is_target: false }
+
+  "2026":
+    label: "2026 proposed (HB29; not enacted)"
+    districts:
+      1:  { incumbent_bioguide: W000804, partisan_lean: "D lean",  is_target: true }
+      2:  { incumbent_bioguide: K000399, partisan_lean: "D lean",  is_target: true }
+      3:  { incumbent_bioguide: S000185, partisan_lean: "D solid", is_target: false }
+      4:  { incumbent_bioguide: M001227, partisan_lean: "D solid", is_target: false }
+      5:  { incumbent_bioguide: M001239, partisan_lean: "D lean",  is_target: true }
+      6:  { incumbent_bioguide: C001118, partisan_lean: "D lean",  is_target: true }
+      7:  { incumbent_bioguide: V000138, partisan_lean: "D lean",  is_target: false }
+      8:  { incumbent_bioguide: B001292, partisan_lean: "D solid", is_target: false }
+      9:  { incumbent_bioguide: G000568, partisan_lean: "R solid", is_target: false }
+      10: { incumbent_bioguide: S001230, partisan_lean: "D lean",  is_target: false }
+      11: { incumbent_bioguide: W000831, partisan_lean: "D solid", is_target: false }
