@@ -6,6 +6,7 @@ from pathlib import Path
 
 import duckdb
 
+from vact.models.bills import BillDetail
 from vact.models.house_rollcalls import HouseMemberVoteRecord, HouseVoteRecord
 from vact.models.legislators import DimDistrictRow, DimLegislatorRow
 from vact.models.senate_rollcalls import SenateMemberVoteRecord, SenateVoteRecord
@@ -201,6 +202,30 @@ def upsert_dim_bill(
             None,
         ],
     )
+
+
+_ENRICH_BILL = """
+UPDATE dim_bill SET
+    policy_area      = coalesce(?, policy_area),
+    introduced_date  = coalesce(introduced_date, ?),
+    sponsor_bioguide = coalesce(sponsor_bioguide, ?)
+WHERE bill_id = ?
+"""
+
+
+def enrich_dim_bill(detail: BillDetail, *, conn: duckdb.DuckDBPyConnection) -> int:
+    """Add Congress.gov policy_area (and sponsor/date if absent) to an existing bill.
+
+    Never overwrites the roll-call-derived title or a human plain_language_summary;
+    policy_area is populated when null. Returns the row-updated count (0 if the
+    bill_id is unknown to dim_bill).
+    """
+    cur = conn.execute(
+        _ENRICH_BILL,
+        [detail.policy_area, detail.introduced_date, detail.sponsor_bioguide, detail.bill_id],
+    )
+    # DuckDB's UPDATE doesn't report a rowcount reliably; verify by existence.
+    return 1 if detail.policy_area is not None else 0
 
 
 def upsert_member_votes(

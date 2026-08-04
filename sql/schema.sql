@@ -81,6 +81,21 @@ CREATE TABLE IF NOT EXISTS bridge_vote_impact (
     PRIMARY KEY (vote_id, impact_tag)
 );
 
+-- Adjudicated valence: does a YEA on this (vote, impact_tag) advance the
+-- measured axis (+1) or oppose it (-1)? This is INPUT data (a political
+-- judgment), not a computed metric, so it is persisted — unlike signed
+-- scores, which are always recomputed live at render time (AGENTS.md §8).
+-- Decoupled from bridge_vote_impact so reclassify/promote never wipe it.
+-- valence: +1 pro-axis on YEA, -1 anti-axis on YEA. 0/absent = not scoreable.
+CREATE TABLE IF NOT EXISTS fact_vote_valence (
+    vote_id        TEXT NOT NULL,
+    impact_tag     TEXT NOT NULL,
+    valence        INTEGER NOT NULL CHECK (valence IN (-1, 0, 1)),
+    valence_source TEXT NOT NULL CHECK (valence_source IN ('RULE', 'LLM', 'HUMAN')),
+    adjudicated_at_utc TIMESTAMP,
+    PRIMARY KEY (vote_id, impact_tag)
+);
+
 -- Ordered rule table for vote_category derivation. Lower priority wins
 -- (evaluated via MIN(priority) among matching regex rules).
 CREATE TABLE IF NOT EXISTS ref_vote_category_rule (

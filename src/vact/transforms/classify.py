@@ -37,6 +37,14 @@ IMPACT_TAGS = (
 
 EXCLUDED_CATEGORIES = frozenset({"NOMINATION", "CLOTURE"})
 
+# Categories whose votes carry no bill-level subject of their own: the vote is on
+# an amendment, not the underlying bill. Inheriting the bill's title/policy_area
+# mis-tags them — e.g. an NDAA gender-care or AUMF-repeal amendment inheriting
+# FEDERAL_CONTRACTING from a bill titled "...Procurement...". These are classified
+# on their own vote_question text only; absent amendment-level text they go
+# untagged rather than borrowing the bill's identity.
+OWN_TEXT_ONLY_CATEGORIES = frozenset({"AMENDMENT"})
+
 
 @dataclass(frozen=True)
 class Classification:
@@ -52,6 +60,7 @@ class Rulebook:
     exclude_categories: set[str]
     tag_patterns: dict[str, list[re.Pattern[str]]]
     llm_eligible_patterns: list[re.Pattern[str]]
+    policy_area_tags: dict[str, tuple[str, ...]]
 
 
 def load_rulebook(path: Path | None = None) -> Rulebook:
@@ -70,11 +79,19 @@ def load_rulebook(path: Path | None = None) -> Rulebook:
         re.compile(p, re.IGNORECASE) for p in (payload.get("llm_eligible_patterns") or [])
     ]
     excludes = set(payload.get("exclude_categories") or list(EXCLUDED_CATEGORIES))
+    policy_area_tags: dict[str, tuple[str, ...]] = {}
+    for area, tags in (payload.get("policy_area_tags") or {}).items():
+        tag_tuple = tuple(tags or [])
+        for tag in tag_tuple:
+            if tag not in IMPACT_TAGS:
+                raise ValueError(f"unknown impact tag in policy_area_tags[{area}]: {tag}")
+        policy_area_tags[area] = tag_tuple
     return Rulebook(
         version=int(payload.get("version") or 1),
         exclude_categories=excludes,
         tag_patterns=tag_patterns,
         llm_eligible_patterns=llm_patterns,
+        policy_area_tags=policy_area_tags,
     )
 
 
@@ -101,19 +118,29 @@ def classify_rules(
 ) -> list[Classification]:
     if vote_category in rulebook.exclude_categories:
         return []
-    text = _corpus_text(vote_question, title, short_title, policy_area)
-    hits: list[Classification] = []
+    # Amendment votes carry no bill-level subject of their own; classify on the
+    # vote_question alone so they don't inherit the parent bill's tag (see
+    # OWN_TEXT_ONLY_CATEGORIES). Absent amendment text this yields no tags.
+    if vote_category in OWN_TEXT_ONLY_CATEGORIES:
+        title = short_title = policy_area = None
+    # policy_area is matched via the explicit curated map below, not regex, so it
+    # is excluded from the free-text corpus here.
+    text = _corpus_text(vote_question, title, short_title, None)
+    tags: list[str] = []
+    seen: set[str] = set()
     for tag, patterns in rulebook.tag_patterns.items():
-        if any(p.search(text) for p in patterns):
-            hits.append(
-                Classification(
-                    vote_id=vote_id,
-                    impact_tag=tag,
-                    confidence=1.0,
-                    classified_by="RULE",
-                )
-            )
-    return hits
+        if tag not in seen and any(p.search(text) for p in patterns):
+            tags.append(tag)
+            seen.add(tag)
+    if policy_area:
+        for tag in rulebook.policy_area_tags.get(policy_area, ()):
+            if tag not in seen:
+                tags.append(tag)
+                seen.add(tag)
+    return [
+        Classification(vote_id=vote_id, impact_tag=tag, confidence=1.0, classified_by="RULE")
+        for tag in tags
+    ]
 
 
 def is_llm_eligible(text: str, rulebook: Rulebook) -> bool:
@@ -321,11 +348,12 @@ def classify_corpus(
                 rule_rows.extend(hits)
                 continue
 
+            own_text_only = vote["vote_category"] in OWN_TEXT_ONLY_CATEGORIES
             text = _corpus_text(
                 vote["vote_question"],
-                vote["title"],
-                vote["short_title"],
-                vote["policy_area"],
+                None if own_text_only else vote["title"],
+                None if own_text_only else vote["short_title"],
+                None if own_text_only else vote["policy_area"],
             )
             if not enable_llm or not is_llm_eligible(text, rulebook):
                 continue

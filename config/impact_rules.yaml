@@ -9,6 +9,22 @@ exclude_categories:
   - NOMINATION
   - CLOTURE
 
+# Curated Congress.gov policy_area → impact tag mapping (populated by
+# `vact ingest-bills`). policy_area is a single, human-assigned topic label per
+# bill, so mapping it directly is precise and drift-resistant — a far stronger
+# signal than title regex. Applied to non-amendment votes only (amendments carry
+# no bill-level subject; see OWN_TEXT_ONLY_CATEGORIES). Only unambiguous mappings
+# live here; broad labels (Commerce, Finance, Economics and Public Finance) are
+# deliberately omitted and left to title patterns, because they span many themes.
+# Over-inclusion is acceptable: valence adjudication (valence=0) is the second
+# gate, so a mapped-but-irrelevant vote is caught before it ever scores.
+policy_area_tags:
+  Energy: [INPUT_COSTS]
+  Taxation: [TAX_BURDEN]
+  Health: [HEALTH_COSTS]
+  Labor and Employment: [WORKFORCE]
+  Environmental Protection: [REGULATORY_BURDEN]
+
 tags:
   ACCESS_TO_CAPITAL:
     - pattern: 'SBA|Small Business Administration|7\(a\)|504\b|CDFI|community development financial'
@@ -69,13 +85,26 @@ tags:
       notes: wage and labor rules
     - pattern: 'apprenticeship|workforce development|career and technical|CTE\b'
       notes: training pipeline
-    - pattern: 'immigration|H-1B|H-2B|work visa|border|asylum|E-Verify'
-      notes: labor supply / immigration
+    - pattern: 'immigration|H-1B|H-2B|work visa|border security|border patrol|southern border|border enforcement|asylum|E-Verify'
+      notes: >-
+        labor supply / immigration. NB: bare "border" was removed — it false-matched
+        "cross-border" energy/trade bills (e.g. hr-3062). Immigration-context border
+        phrases are enumerated instead. "immigration" still tags immigration-enforcement
+        bills (e.g. hr-2056) as WORKFORCE by design; handle those with valence=0.
     - pattern: 'paid leave|child care|family leave'
       notes: workforce participation costs
 
 # Stage-2 eligibility: residual votes whose text matches these (appropriations /
 # reconciliation / trade vehicles) may be sent to the LLM classifier.
+#
+# DECISION (audit, step 3): the Stage-2 LLM stays OFF by default and omnibus
+# vehicles (consolidated/continuing appropriations, reconciliation, budget
+# resolutions, rescissions — Congress.gov policy_area "Economics and Public
+# Finance") are intentionally LEFT UNTAGGED. A single small-business theme cannot
+# honestly describe a bill that funds the whole government; forcing one would be a
+# fabricated signal. These patterns are retained only so that, if an operator
+# opts into the LLM (`classify` without --no-llm, with an LLM key), trade/tariff
+# vehicles can still be surfaced for review — never auto-published.
 llm_eligible_patterns:
   - '(?i)appropriat'
   - '(?i)reconcil'

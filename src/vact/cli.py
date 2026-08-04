@@ -34,6 +34,8 @@ summaries_app = typer.Typer(help="Plain-language bill summary workflow.")
 app.add_typer(summaries_app, name="summaries")
 sheets_app = typer.Typer(help="Google Sheets audit export.")
 app.add_typer(sheets_app, name="sheets")
+valence_app = typer.Typer(help="Vote valence adjudication (scoring-frame input).")
+app.add_typer(valence_app, name="valence")
 
 
 @app.callback()
@@ -278,6 +280,32 @@ def contracts_cmd(
     typer.echo("All warehouse contracts passed.")
 
 
+@app.command("ingest-bills")
+def ingest_bills_cmd(
+    api_key: str = typer.Option(
+        None,
+        "--api-key",
+        envvar="CONGRESS_API_KEY",
+        help="Congress.gov API key (or set CONGRESS_API_KEY).",
+    ),
+    force: bool = typer.Option(False, "--force", help="Re-fetch bills that already have a policy_area."),
+    limit: int | None = typer.Option(None, "--limit", help="Cap the number of bills fetched."),
+    warehouse: Path | None = typer.Option(None, "--warehouse"),
+) -> None:
+    """Enrich dim_bill with Congress.gov policy_area (classification signal)."""
+    from vact.pipeline import bills as bills_pipeline
+
+    if not api_key:
+        raise typer.BadParameter("set CONGRESS_API_KEY (e.g. in .env) or pass --api-key")
+    stats = bills_pipeline.ingest_bills(api_key=api_key, warehouse_path=warehouse, force=force, limit=limit)
+    typer.echo(
+        "Bill enrichment complete: "
+        f"scanned={stats['scanned']} enriched={stats['enriched']} "
+        f"with_policy_area={stats['with_policy_area']} "
+        f"not_found={stats['not_found']} errors={stats['errors']}"
+    )
+
+
 @app.command("classify")
 def classify_cmd(
     new_only: bool = typer.Option(
@@ -446,6 +474,146 @@ def social_cmd(
     for path in paths:
         typer.echo(str(path))
     typer.echo(f"Wrote {len(paths)} social cards.")
+
+
+@valence_app.command("propose")
+def valence_propose_cmd(
+    all_: bool = typer.Option(
+        False,
+        "--all",
+        help="Re-propose even for pairs that already carry a valence.",
+    ),
+    warehouse: Path | None = typer.Option(None, "--warehouse"),
+) -> None:
+    """Write RULE-proposed valence from config (PROPOSALS — promote to HUMAN before publishing)."""
+    from vact.analysis.scoring import load_scoring_config, propose_valence
+
+    conn = connect(warehouse)
+    try:
+        ensure_schema(conn)
+        stats = propose_valence(conn, load_scoring_config(), new_only=not all_)
+    finally:
+        conn.close()
+    typer.echo(
+        "Valence propose complete: "
+        f"proposed={stats['proposed']} "
+        f"skipped_existing={stats['skipped_existing']} "
+        f"unmatched={stats['unmatched']}"
+    )
+
+
+@valence_app.command("set", context_settings={"ignore_unknown_options": True})
+def valence_set_cmd(
+    vote_id: str = typer.Argument(..., help="fact_vote.vote_id, e.g. h-119-1-156"),
+    impact_tag: str = typer.Argument(..., help="Impact tag, e.g. FEDERAL_CONTRACTING"),
+    valence: int = typer.Argument(..., help="+1 pro-axis on YEA, -1 anti-axis, 0 not scoreable"),
+    warehouse: Path | None = typer.Option(None, "--warehouse"),
+) -> None:
+    """Record a human-adjudicated valence (classified_by=HUMAN)."""
+    from vact.analysis.scoring import set_valence
+
+    conn = connect(warehouse)
+    try:
+        ensure_schema(conn)
+        set_valence(
+            conn, vote_id=vote_id, impact_tag=impact_tag, valence=valence, source="HUMAN"
+        )
+    finally:
+        conn.close()
+    typer.echo(f"Set valence[{vote_id}, {impact_tag}] = {valence:+d} (HUMAN).")
+
+
+@app.command("deviations")
+def deviations_cmd(
+    map_version: str = typer.Option("2021", "--map-version", help="Operative map (default 2021)."),
+    warehouse: Path | None = typer.Option(None, "--warehouse"),
+) -> None:
+    """Within-party deviation report (defection detection) → reports/party_deviations.md."""
+    from vact.analysis.deviations import (
+        compute_party_deviations,
+        write_deviations_report,
+    )
+    from vact.analysis.scoring import load_scoring_config
+
+    conn = connect(warehouse)
+    try:
+        ensure_schema(conn)
+        rows = compute_party_deviations(conn, load_scoring_config(), map_version=map_version)
+    finally:
+        conn.close()
+    dest = write_deviations_report(map_version=map_version, warehouse_path=warehouse)
+    typer.echo(f"Deviations report → {dest} ({len(rows)} member-theme deviations)")
+    for r in rows[:8]:
+        typer.echo(
+            f"  {r.full_name:<22} {r.impact_tag:<18} dev={r.deviation:+.2f} "
+            f"({len(r.defection_votes)} defection votes)"
+        )
+
+
+@app.command("score")
+def score_cmd(
+    map_version: str = typer.Option("2021", "--map-version", help="Operative map (default 2021)."),
+    write: bool = typer.Option(
+        False, "--write", help="Also write data/reports/scores_frame.csv."
+    ),
+    warehouse: Path | None = typer.Option(None, "--warehouse"),
+) -> None:
+    """Build the live signed scoring frame (per member × theme) and summarize it."""
+    import csv as _csv
+
+    from vact.analysis.scoring import build_scores_frame, load_scoring_config
+    from vact.transforms.classify import REPORTS_DIR
+
+    conn = connect(warehouse)
+    try:
+        ensure_schema(conn)
+        cfg = load_scoring_config()
+        frame = build_scores_frame(conn, cfg, map_version=map_version)
+        rule_valence = conn.execute(
+            "SELECT count(*) FROM fact_vote_valence WHERE valence_source = 'RULE'"
+        ).fetchone()
+    finally:
+        conn.close()
+
+    if not frame:
+        typer.echo(
+            "Scoring frame is empty. Adjudicate valence first: "
+            "`vact valence propose` then review, or `vact valence set ...`."
+        )
+        return
+
+    sufficient = [r for r in frame if r["sufficient"]]
+    typer.echo(
+        f"Scoring frame (map {map_version}): {len(frame)} member×theme cells, "
+        f"{len(sufficient)} sufficient (n_contested ≥ {cfg.min_contested})."
+    )
+    if rule_valence and int(rule_valence[0]) > 0:
+        typer.echo(
+            f"⚠  {int(rule_valence[0])} valence rows are un-promoted RULE proposals — "
+            "review and `vact valence set` before publishing a scorecard."
+        )
+    top = sorted(
+        (r for r in sufficient if r["signed_score"] is not None),
+        key=lambda r: abs(r["signed_score"]),
+        reverse=True,
+    )[:10]
+    for r in top:
+        typer.echo(
+            f"  {r['full_name']:<22} {r['impact_tag']:<20} "
+            f"score={r['signed_score']:+.2f} "
+            f"[{r['wilson_low']:+.2f},{r['wilson_high']:+.2f}] "
+            f"{r['n_yea']}Y/{r['n_nay']}N n={r['n_contested']}"
+        )
+
+    if write:
+        REPORTS_DIR.mkdir(parents=True, exist_ok=True)
+        out = REPORTS_DIR / "scores_frame.csv"
+        fieldnames = list(frame[0].keys())
+        with out.open("w", newline="", encoding="utf-8") as fh:
+            writer = _csv.DictWriter(fh, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(frame)
+        typer.echo(f"Wrote {out}")
 
 
 if __name__ == "__main__":

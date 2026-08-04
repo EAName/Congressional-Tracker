@@ -98,6 +98,27 @@ validity is Virginia-scoped: non-VA members appear in `fact_member_vote` without
 `exports/publication.py` and refuse votes missing `plain_language_summary` or carrying
 unadjudicated `LLM` tags.
 
+## Scoring frame (analysis layer)
+
+The signed scoring frame is the base-pack substrate every analysis prompt (9–13)
+consumes. It lives in `analysis/scoring.py` and is configured by `config/scoring.yaml`.
+
+- **Valence is the only persisted input.** `fact_vote_valence(vote_id, impact_tag,
+  valence, valence_source)` records a political judgment — does a YEA advance the
+  measured axis (`+1`) or oppose it (`-1`)? It is decoupled from `bridge_vote_impact`
+  so `reclassify`/`promote` never wipe it. `RULE` valence (`vact valence propose`) is a
+  PROPOSAL and must be promoted to `HUMAN` (`vact valence set`) before a scorecard
+  publishes — same adjudication gate as LLM impact tags.
+- **Scoreable filter**: a `(vote, tag)` pair enters a score only if its `vote_category`
+  is in `scoreable.include_categories` AND an adjudicated valence of `±1` exists.
+  Procedural votes never enter any likelihood; this filter is reused by the deviation
+  report and the IRT model.
+- **Signed scores are never persisted** (AGENTS.md §8). `build_scores_frame()` recomputes
+  them live: per `(member, theme)` a `[-1, +1]` score with a Wilson band, raw
+  `n_yea`/`n_nay` counts, `n_contested` (YEA/NAY only), `absence_rate` (NOT_VOTING
+  counted separately — an absence is never an anti-axis vote), and a `sufficient` flag
+  (`n_contested >= sufficiency.min_contested`). Run with `vact score [--write]`.
+
 ## Publication surfaces
 
 - Sheets (`vact sheets preflight|push`): audit layer. Env `VACT_SHEETS_CREDENTIALS` +

@@ -5,7 +5,7 @@ VACT := ./bin/vact
 UV := uv
 PYTEST := PYTHONPATH=src VACT_REPO_ROOT=$(CURDIR) .venv/bin/pytest
 
-.PHONY: install ingest classify test site social publish all dimensions contracts gaps
+.PHONY: install ingest classify score deviations test site social publish all dimensions contracts gaps
 
 install:
 	$(UV) sync
@@ -17,6 +17,12 @@ ingest:
 
 classify:
 	$(VACT) classify --new-only --no-llm
+
+score:
+	$(VACT) score --write
+
+deviations:
+	$(VACT) deviations
 
 test:
 	$(PYTEST) -q

@@ -1,0 +1,86 @@
+# Scoring frame configuration for the VA Congressional Tracker analysis layer.
+#
+# This file parameterizes the signed scoring frame that Prompts 9-13 consume.
+# Nothing here is a stored metric — signed scores are recomputed live from
+# fact_member_vote x fact_vote x fact_vote_valence every time the frame is
+# built (AGENTS.md §8). The only persisted input is `valence` (a political
+# judgment), adjudicated into fact_vote_valence.
+
+version: 1
+
+# The measured axis. A positive signed score means the member, on the votes
+# where a position advanced this axis, tended to advance it. The axis label is
+# descriptive only; direction lives entirely in per-vote valence.
+axis:
+  name: small_business_climate
+  description: >-
+    Positive = a YEA advances the small-business / affordability axis
+    (lower input costs, easier access to capital, lighter compliance burden).
+
+# The scoreable filter (base-pack Prompt 3/4 substrate). A (vote, tag) pair is
+# scoreable iff the vote_category is included here AND an adjudicated valence of
+# +1 or -1 exists. Procedural noise never enters a score.
+scoreable:
+  include_categories:
+    - PASSAGE
+    - AMENDMENT
+  exclude_categories:
+    - PROCEDURAL
+    - CLOTURE
+    - NOMINATION
+    - SUSPENSION
+    - MOTION_TO_RECOMMIT
+  # Special-rule resolutions — a chamber adopting the terms of floor debate for
+  # another bill — surface as bill_type hres/sres with a "Providing for
+  # consideration of ..." title and land in vote_category PASSAGE ("On Agreeing
+  # to the Resolution"). They are procedural, not policy positions, and inherit
+  # the underlying bill's impact tag, so they must be excluded from scoring.
+  # (The vote_category classifier only sees vote_question/vote_type and cannot
+  # tell these apart from a substantive resolution without bill context; the
+  # filter lives here, where "what counts as a policy vote" belongs.)
+  exclude_rule_resolutions: true
+  rule_resolution_bill_types: [hres, sres]
+  rule_resolution_title_pattern: '(?i)^\s*providing for consideration'
+
+# A member-theme cell is `sufficient` (eligible to seed a party baseline or be
+# published on its own) only with at least this many contested scoreable votes.
+# "Contested" counts a member's own YEA/NAY; NOT_VOTING/PRESENT are excluded
+# and reported separately as absences.
+sufficiency:
+  min_contested: 3
+
+# Wilson score interval z (1.96 = 90% is 1.645; 1.96 = 95%). The band is
+# rendered on every signed score — no bare point estimates downstream.
+wilson:
+  z: 1.96
+
+# Shared thresholds for the analysis layer. Prompts 9/11/12 read from here so
+# nothing is hardcoded. Their own blocks (deviations, target_threshold,
+# min_brief_votes) slot in under this same namespace.
+analysis:
+  min_eligible_for_display: 3
+  # Within-party deviation report (defection detection). The party baseline is
+  # the weighted median (by n_contested) signed score among sufficient members of
+  # the caucus; a member-theme is reported only if it clears
+  # min_eligible_for_display AND has at least min_defection_votes roll calls where
+  # the member's axis-direction opposed their party's majority on that same vote.
+  deviations:
+    baseline: weighted_median
+    min_defection_votes: 1
+
+# OPTIONAL rule-proposed valence. These are PROPOSALS ONLY — written with
+# valence_source='RULE' and meant to be reviewed and promoted to HUMAN before a
+# scorecard is published, exactly like LLM impact tags. Direction is a genuine
+# political judgment; keep this set conservative and let humans own it. Patterns
+# are matched case-insensitively against the same corpus text as impact_rules
+# (vote_question || title || short_title || policy_area).
+valence_rules:
+  ACCESS_TO_CAPITAL:
+    - { pattern: 'expand|increase.*lending|reauthoriz|establish.*fund|grant program', valence: 1 }
+    - { pattern: 'rescind|repeal|terminate|eliminate.*program|cut.*funding', valence: -1 }
+  TAX_BURDEN:
+    - { pattern: 'tax relief|tax cut|expensing|deduction|credit', valence: 1 }
+    - { pattern: 'tax increase|raise.*rate|surtax', valence: -1 }
+  REGULATORY_BURDEN:
+    - { pattern: 'regulatory relief|reduce.*paperwork|repeal.*rule|exempt', valence: 1 }
+    - { pattern: 'new.*mandate|reporting requirement|disclosure requirement', valence: -1 }
