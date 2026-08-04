@@ -9,6 +9,7 @@ import pytest
 
 from vact.models.legislators import DimLegislatorRow
 from vact.transforms.districts import (
+    TARGET_DISTRICTS_2021,
     TARGET_DISTRICTS_2026,
     attach_map_districts,
     build_dim_district_rows,
@@ -27,7 +28,7 @@ def test_dim_district_shape() -> None:
     }
 
 
-def test_2026_targets_are_exactly_four() -> None:
+def test_targets_per_map_version() -> None:
     rows = build_dim_district_rows()
     targets_2026 = {
         r.district_number for r in rows if r.map_version == "2026" and r.is_target
@@ -36,7 +37,7 @@ def test_2026_targets_are_exactly_four() -> None:
         r.district_number for r in rows if r.map_version == "2021" and r.is_target
     }
     assert targets_2026 == TARGET_DISTRICTS_2026 == {1, 2, 5, 6}
-    assert targets_2021 == set()
+    assert targets_2021 == TARGET_DISTRICTS_2021 == {1, 2}
 
 
 def test_attach_map_districts_house_and_senate() -> None:

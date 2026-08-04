@@ -42,6 +42,8 @@ TAB_README = "README"
 TAB_TARGET = "Target Four"
 TAB_FULL = "Full Delegation"
 TAB_DETAIL = "Vote Detail"
+TAB_SCORES = "Signed Scores"
+TAB_DEVIATIONS = "Party Deviations"
 
 # Hand-built v1 stubs. Deleted on every push so the share link is not the
 # Vacant-VA-11 roster.
@@ -58,6 +60,11 @@ WORKBOOK_TITLE = "VA Congressional Vote Tracker"
 
 # Match the press site: tags with live density (no empty TAX_BURDEN column).
 SHEETS_SCORECARD_TAGS = SITE_SCORECARD_TAGS
+
+# Operative court-drawn map for Sheets Dashboard / Target / Full Delegation.
+# Analysis tabs share the same constant via ANALYSIS_MAP_VERSION.
+DASHBOARD_MAP_VERSION = "2021"
+ANALYSIS_MAP_VERSION = DASHBOARD_MAP_VERSION
 
 DEFAULT_OAUTH_CLIENT = Path.home() / ".config" / "gspread" / "credentials.json"
 DEFAULT_OAUTH_TOKEN = Path.home() / ".config" / "gspread" / "authorized_user.json"
@@ -268,6 +275,142 @@ def _scorecard_matrix(rows: list[dict[str, Any]]) -> list[list[Any]]:
     return out
 
 
+def build_signed_scores_matrix(
+    conn,
+    *,
+    map_version: str = ANALYSIS_MAP_VERSION,
+) -> list[list[Any]]:
+    """Live signed scoring frame as a Sheets rectangle (one row per member-theme)."""
+    from vact.analysis.scoring import build_scores_frame, load_scoring_config
+
+    header = [
+        "Member",
+        "Party",
+        "Chamber",
+        "District",
+        "Map",
+        "Theme",
+        "Signed Score",
+        "Wilson Low",
+        "Wilson High",
+        "N Contested",
+        "N Pro",
+        "N Yea",
+        "N Nay",
+        "N Not Voting",
+        "N Present",
+        "Sufficient",
+        "Absence Rate",
+        "Bioguide",
+    ]
+    frame = build_scores_frame(conn, load_scoring_config(), map_version=map_version)
+    # Stable audit order: theme, then |score| desc among sufficient, then name.
+    frame = sorted(
+        frame,
+        key=lambda r: (
+            str(r["impact_tag"]),
+            0 if r.get("sufficient") else 1,
+            -abs(r["signed_score"] or 0.0),
+            str(r["full_name"]),
+        ),
+    )
+    out: list[list[Any]] = [header]
+    for r in frame:
+        out.append(
+            [
+                r["full_name"],
+                r["party"],
+                r["chamber"],
+                r["district_number"] if r["district_number"] is not None else "Statewide",
+                r["map_version"],
+                r["impact_tag"],
+                r["signed_score"],
+                r["wilson_low"],
+                r["wilson_high"],
+                r["n_contested"],
+                r["n_pro"],
+                r["n_yea"],
+                r["n_nay"],
+                r["n_not_voting"],
+                r["n_present"],
+                "Yes" if r["sufficient"] else "No",
+                r["absence_rate"],
+                r["bioguide_id"],
+            ]
+        )
+    return out
+
+
+def build_party_deviations_matrix(
+    conn,
+    *,
+    map_version: str = ANALYSIS_MAP_VERSION,
+) -> list[list[Any]]:
+    """Within-party defections: one row per (member, theme, defection vote)."""
+    from vact.analysis.deviations import compute_party_deviations
+    from vact.analysis.scoring import load_scoring_config
+
+    header = [
+        "Member",
+        "Party",
+        "Chamber",
+        "District",
+        "Map",
+        "Theme",
+        "Signed Score",
+        "Party Baseline",
+        "Deviation",
+        "N Contested",
+        "Absence Rate",
+        "N Defection Votes",
+        "Vote Date",
+        "Bill",
+        "Position",
+        "Member Axis Direction",
+        "Party Majority Direction",
+        "Plain Language Summary",
+        "Source Link",
+        "Bioguide",
+        "Vote ID",
+    ]
+    deviations = compute_party_deviations(
+        conn, load_scoring_config(), map_version=map_version
+    )
+    out: list[list[Any]] = [header]
+    for r in deviations:
+        district = r.district_number if r.district_number is not None else "Statewide"
+        base = [
+            r.full_name,
+            r.party,
+            r.chamber,
+            district,
+            map_version,
+            r.impact_tag,
+            r.signed_score,
+            r.party_baseline,
+            r.deviation,
+            r.n_contested,
+            r.absence_rate,
+            len(r.defection_votes),
+        ]
+        for d in r.defection_votes:
+            out.append(
+                base
+                + [
+                    d.vote_date,
+                    d.bill_id or d.vote_id,
+                    d.position,
+                    d.member_direction,
+                    d.party_majority_direction,
+                    d.plain_language_summary or "",
+                    d.source_link or "",
+                    r.bioguide_id,
+                    d.vote_id,
+                ]
+            )
+    return out
+
+
 def build_readme_values(
     *,
     generated_at: str,
@@ -281,8 +424,15 @@ def build_readme_values(
         ["corpus_vote_count", corpus_votes],
         ["tagged_vote_count", tagged],
         ["publication_ready_count", ready],
-        ["map_version", "2026"],
-        ["primary_surface", "Dashboard tab (charts + Target Four + Full Delegation scorecards)"],
+        ["map_version_dashboard", DASHBOARD_MAP_VERSION],
+        ["map_version_analysis", ANALYSIS_MAP_VERSION],
+        ["primary_surface", "Dashboard tab (charts + Target seats + Full Delegation scorecards)"],
+        [
+            "analysis_tabs",
+            f"{TAB_SCORES}: live signed scores + Wilson bands; "
+            f"{TAB_DEVIATIONS}: within-party defections with source links "
+            f"(map={ANALYSIS_MAP_VERSION}).",
+        ],
         [
             "sources",
             "House Clerk EVS (clerk.house.gov); Senate LIS (senate.gov); "
@@ -291,7 +441,9 @@ def build_readme_values(
         [
             "methodology",
             "Impact tags from config/impact_rules.yaml (RULE) or human promote (HUMAN). "
-            "Unadjudicated LLM tags never appear.",
+            "Unadjudicated LLM tags never appear. Signed scores require fact_vote_valence. "
+            f"Target seats come from config/districts.yaml is_target under map "
+            f"{DASHBOARD_MAP_VERSION} (VA-1 / VA-2 until Prompt 11 baselines).",
         ],
         [
             "procedural_caveat",
@@ -322,10 +474,16 @@ def build_dashboard_layout(
     categories = vote_category_mix(conn)
     tags = impact_tag_mix(conn)
     target_members = scorecard_rows(
-        conn, target_four(conn, map_version="2026"), tags=SHEETS_SCORECARD_TAGS
+        conn,
+        target_four(conn, map_version=DASHBOARD_MAP_VERSION),
+        tags=SHEETS_SCORECARD_TAGS,
+        map_version=DASHBOARD_MAP_VERSION,
     )
     full_members = scorecard_rows(
-        conn, list_delegation(conn, map_version="2026"), tags=SHEETS_SCORECARD_TAGS
+        conn,
+        list_delegation(conn, map_version=DASHBOARD_MAP_VERSION),
+        tags=SHEETS_SCORECARD_TAGS,
+        map_version=DASHBOARD_MAP_VERSION,
     )
     targets = _scorecard_matrix(target_members)
     full = _scorecard_matrix(full_members)
@@ -350,7 +508,7 @@ def build_dashboard_layout(
     rows: list[list[Any]] = [
         pad(["VA Congressional Vote Tracker"]),
         pad(["Democrats for Virginia · Small Business Caucus"]),
-        pad(["Updated (UTC)", ts, "Map", "2026"]),
+        pad(["Updated (UTC)", ts, "Map", DASHBOARD_MAP_VERSION]),
         pad(
             [
                 "Official roll calls",
@@ -370,7 +528,7 @@ def build_dashboard_layout(
         blank_row(),
         pad(
             [
-                "TARGET FOUR — proposed 2026 map seats leaning toward Democrats",
+                "TARGET SEATS — 2021 court-drawn map (VA-1 · VA-2)",
             ]
         ),
     ]
@@ -455,10 +613,16 @@ def build_tab_payloads(
     ts = generated_at or generated_at_utc()
     dashboard, _meta = build_dashboard_layout(conn, generated_at=ts)
     targets = scorecard_rows(
-        conn, target_four(conn, map_version="2026"), tags=SHEETS_SCORECARD_TAGS
+        conn,
+        target_four(conn, map_version=DASHBOARD_MAP_VERSION),
+        tags=SHEETS_SCORECARD_TAGS,
+        map_version=DASHBOARD_MAP_VERSION,
     )
     full = scorecard_rows(
-        conn, list_delegation(conn, map_version="2026"), tags=SHEETS_SCORECARD_TAGS
+        conn,
+        list_delegation(conn, map_version=DASHBOARD_MAP_VERSION),
+        tags=SHEETS_SCORECARD_TAGS,
+        map_version=DASHBOARD_MAP_VERSION,
     )
     votes = corpus_vote_count(conn)
     tagged = tagged_vote_count(conn)
@@ -479,6 +643,8 @@ def build_tab_payloads(
         TAB_DASHBOARD: dashboard,
         TAB_TARGET: _scorecard_matrix(targets),
         TAB_FULL: _scorecard_matrix(full),
+        TAB_SCORES: build_signed_scores_matrix(conn),
+        TAB_DEVIATIONS: build_party_deviations_matrix(conn),
         TAB_DETAIL: detail,
         TAB_README: build_readme_values(
             generated_at=ts, corpus_votes=votes, tagged=tagged, ready=ready
@@ -1156,7 +1322,15 @@ def push(*, warehouse_path: Path | None = None) -> dict[str, int]:
 
     counts: dict[str, int] = {}
     # Write Dashboard first, then supporting tabs.
-    order = [TAB_DASHBOARD, TAB_TARGET, TAB_FULL, TAB_DETAIL, TAB_README]
+    order = [
+        TAB_DASHBOARD,
+        TAB_TARGET,
+        TAB_FULL,
+        TAB_SCORES,
+        TAB_DEVIATIONS,
+        TAB_DETAIL,
+        TAB_README,
+    ]
     for title in order:
         values = payloads[title]
         ncols = max((len(r) for r in values), default=1)
@@ -1181,29 +1355,30 @@ def push(*, warehouse_path: Path | None = None) -> dict[str, int]:
     except Exception as err:  # noqa: BLE001
         logger.warning("sheets_format_skipped", error=str(err))
 
-    try:
-        detail = sh.worksheet(TAB_DETAIL)
-        detail.freeze(rows=1)
-        sh.batch_update(
-            {
-                "requests": [
-                    {
-                        "setBasicFilter": {
-                            "filter": {
-                                "range": {
-                                    "sheetId": detail.id,
-                                    "startRowIndex": 0,
-                                    "startColumnIndex": 0,
-                                    "endColumnIndex": len(payloads[TAB_DETAIL][0]),
+    for title in (TAB_DETAIL, TAB_SCORES, TAB_DEVIATIONS):
+        try:
+            ws = sh.worksheet(title)
+            ws.freeze(rows=1)
+            sh.batch_update(
+                {
+                    "requests": [
+                        {
+                            "setBasicFilter": {
+                                "filter": {
+                                    "range": {
+                                        "sheetId": ws.id,
+                                        "startRowIndex": 0,
+                                        "startColumnIndex": 0,
+                                        "endColumnIndex": len(payloads[title][0]),
+                                    }
                                 }
                             }
                         }
-                    }
-                ]
-            }
-        )
-    except Exception as err:  # noqa: BLE001
-        logger.warning("sheets_detail_filter_skipped", error=str(err))
+                    ]
+                }
+            )
+        except Exception as err:  # noqa: BLE001
+            logger.warning("sheets_filter_skipped", tab=title, error=str(err))
 
     # Product tab order after Dashboard.
     try:

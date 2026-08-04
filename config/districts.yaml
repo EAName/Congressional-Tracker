@@ -15,14 +15,18 @@
 # publishing a scorecard that cites lean numerically.
 
 referendum_date: "2026-04-21"
+# 2021 court-drawn: political prior for outreach (Prompt 11) until numeric
+# lean baselines replace this with derive_targets(). VA-5/VA-6 stay safe R.
+target_districts_2021: [1, 2]
+# 2026 proposed (blocked by court): four GOP seats flipped toward D leans.
 target_districts_2026: [1, 2, 5, 6]
 
 maps:
   "2021":
     label: "2021 court-drawn"
     districts:
-      1:  { incumbent_bioguide: W000804, partisan_lean: "R lean",  is_target: false }
-      2:  { incumbent_bioguide: K000399, partisan_lean: "Toss-up", is_target: false }
+      1:  { incumbent_bioguide: W000804, partisan_lean: "R lean",  is_target: true }
+      2:  { incumbent_bioguide: K000399, partisan_lean: "Toss-up", is_target: true }
       3:  { incumbent_bioguide: S000185, partisan_lean: "D solid", is_target: false }
       4:  { incumbent_bioguide: M001227, partisan_lean: "D solid", is_target: false }
       5:  { incumbent_bioguide: M001239, partisan_lean: "R solid", is_target: false }

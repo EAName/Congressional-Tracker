@@ -7,7 +7,7 @@ from typing import Any
 
 import duckdb
 
-from vact.transforms.districts import TARGET_DISTRICTS_2026, require_map_version
+from vact.transforms.districts import TARGET_DISTRICTS_BY_MAP, require_map_version
 
 # District / social surfaces. Audit Sheets may show a broader category set.
 SITE_SUPPRESSED_CATEGORIES = frozenset(
@@ -252,19 +252,24 @@ def target_four(
     *,
     map_version: str = "2026",
 ) -> list[dict[str, Any]]:
-    require_map_version(map_version)
-    members = list_delegation(conn, map_version=map_version)
-    targets = [
-        m
-        for m in members
-        if m["chamber"] == "House" and m["district_number"] in TARGET_DISTRICTS_2026
+    """House seats flagged is_target for the named map_version.
+
+    Prefers dim_district.is_target; falls back to TARGET_DISTRICTS_BY_MAP when
+    the warehouse still lacks target flags for that map.
+    """
+    mv = require_map_version(map_version)
+    members = list_delegation(conn, map_version=mv)
+    flagged = [
+        m for m in members if m["chamber"] == "House" and m.get("is_target")
     ]
-    # Prefer is_target from dim_district; fall back to TARGET_DISTRICTS_2026.
-    if any(m.get("is_target") for m in members if m["chamber"] == "House"):
+    if flagged:
+        targets = flagged
+    else:
+        fallback = TARGET_DISTRICTS_BY_MAP[mv]
         targets = [
             m
             for m in members
-            if m["chamber"] == "House" and m.get("is_target")
+            if m["chamber"] == "House" and m["district_number"] in fallback
         ]
     targets.sort(key=lambda m: m["district_number"] or 0)
     return targets
@@ -294,6 +299,7 @@ def member_scorecard_row(
     member: dict[str, Any],
     *,
     tags: tuple[str, ...] = SCORECARD_TAGS,
+    map_version: str = "2026",
 ) -> dict[str, Any]:
     row = {
         "bioguide_id": member["bioguide_id"],
@@ -303,7 +309,7 @@ def member_scorecard_row(
         "district_number": member.get("district_number"),
         "partisan_lean": member.get("partisan_lean"),
         "is_target": member.get("is_target"),
-        "map_version": "2026",
+        "map_version": require_map_version(map_version),
     }
     for tag in tags:
         hit = conn.execute(
@@ -327,8 +333,12 @@ def scorecard_rows(
     members: list[dict[str, Any]],
     *,
     tags: tuple[str, ...] = SCORECARD_TAGS,
+    map_version: str = "2026",
 ) -> list[dict[str, Any]]:
-    return [member_scorecard_row(conn, m, tags=tags) for m in members]
+    return [
+        member_scorecard_row(conn, m, tags=tags, map_version=map_version)
+        for m in members
+    ]
 
 
 def district_votes_for_member(

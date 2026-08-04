@@ -91,20 +91,34 @@ def test_build_tab_payloads(tmp_path: Path) -> None:
             "README",
             "Target Four",
             "Full Delegation",
+            "Signed Scores",
+            "Party Deviations",
             "Vote Detail",
         }
         assert payloads["README"][1][1] == "2026-08-03T00:00:00Z"
+        assert payloads["Signed Scores"][0][0] == "Member"
+        assert payloads["Signed Scores"][0][6] == "Signed Score"
+        assert payloads["Party Deviations"][0][0] == "Member"
+        assert payloads["Party Deviations"][0][8] == "Deviation"
+        # Without adjudicated valence the analysis tabs are header-only.
+        assert len(payloads["Signed Scores"]) == 1
+        assert len(payloads["Party Deviations"]) == 1
         dash = payloads["Dashboard"]
         assert dash[0][0] == "VA Congressional Vote Tracker"
-        assert any("TARGET FOUR" in str(r[0]) for r in dash if r)
+        assert any("TARGET SEATS" in str(r[0]) for r in dash if r)
         # Chart source headers live off to the right (col N).
         assert dash[0][13] == "Vote category"
         assert "Access To Capital" in payloads["Target Four"][0] or "Access to Capital" in str(
             payloads["Target Four"][0]
         )
-        # Target Four header + up to 4 members
+        # Target header + VA-1 / VA-2 under 2021 map.
         assert payloads["Target Four"][0][0] == "Member"
-        assert len(payloads["Target Four"]) >= 2
+        assert len(payloads["Target Four"]) == 3  # header + 2 targets
+        assert {row[3] for row in payloads["Target Four"][1:]} == {1, 2}
+        assert all(row[4] == "2021" for row in payloads["Target Four"][1:])
+        assert all(row[4] == "2021" for row in payloads["Full Delegation"][1:])
+        # Snapshot Map column on Dashboard.
+        assert dash[2][2] == "Map" and dash[2][3] == "2021"
         # Vote Detail must not include LLM confidence; procedural may appear (audit).
         detail_text = " ".join(str(c) for row in payloads["Vote Detail"] for c in row)
         assert "ACCESS_TO_CAPITAL" in detail_text

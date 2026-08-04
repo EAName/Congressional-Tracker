@@ -16,8 +16,15 @@ DISTRICTS_CONFIG_PATH = REPO_ROOT / "config" / "districts.yaml"
 MapVersion = Literal["2021", "2026"]
 MAP_VERSIONS: tuple[MapVersion, ...] = ("2021", "2026")
 
+# 2021 court-drawn outreach set (Prompt 11 political prior): VA-1 / VA-2.
+TARGET_DISTRICTS_2021: frozenset[int] = frozenset({1, 2})
 # Four GOP-held seats the proposed 2026 map shifted toward Democrats.
 TARGET_DISTRICTS_2026: frozenset[int] = frozenset({1, 2, 5, 6})
+
+TARGET_DISTRICTS_BY_MAP: dict[MapVersion, frozenset[int]] = {
+    "2021": TARGET_DISTRICTS_2021,
+    "2026": TARGET_DISTRICTS_2026,
+}
 
 
 @dataclass(frozen=True)
@@ -39,12 +46,13 @@ def load_district_specs(path: Path | None = None) -> list[DistrictSpec]:
             f"districts.yaml must define maps 2021 and 2026; got {sorted(maps)}"
         )
 
-    configured_targets = frozenset(int(x) for x in (payload.get("target_districts_2026") or []))
-    if configured_targets != TARGET_DISTRICTS_2026:
-        raise ValueError(
-            f"target_districts_2026 must equal {sorted(TARGET_DISTRICTS_2026)}; "
-            f"got {sorted(configured_targets)}"
-        )
+    for map_version, expected in TARGET_DISTRICTS_BY_MAP.items():
+        key = f"target_districts_{map_version}"
+        configured = frozenset(int(x) for x in (payload.get(key) or []))
+        if configured != expected:
+            raise ValueError(
+                f"{key} must equal {sorted(expected)}; got {sorted(configured)}"
+            )
 
     specs: list[DistrictSpec] = []
     for map_version in MAP_VERSIONS:
@@ -54,17 +62,15 @@ def load_district_specs(path: Path | None = None) -> list[DistrictSpec]:
                 f"map {map_version} must define districts 1-11; "
                 f"got {sorted(int(k) for k in districts)}"
             )
+        expected_targets = TARGET_DISTRICTS_BY_MAP[map_version]
         for raw_num, entry in districts.items():
             num = int(raw_num)
             is_target = bool(entry["is_target"])
-            if map_version == "2026":
-                if is_target != (num in TARGET_DISTRICTS_2026):
-                    raise ValueError(
-                        f"VA-{num} map 2026 is_target={is_target} disagrees with "
-                        f"TARGET_DISTRICTS_2026"
-                    )
-            elif is_target:
-                raise ValueError(f"map 2021 must not mark VA-{num} as target")
+            if is_target != (num in expected_targets):
+                raise ValueError(
+                    f"VA-{num} map {map_version} is_target={is_target} disagrees "
+                    f"with target_districts_{map_version}={sorted(expected_targets)}"
+                )
             specs.append(
                 DistrictSpec(
                     district_number=num,
