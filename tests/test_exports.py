@@ -87,12 +87,17 @@ def test_build_tab_payloads(tmp_path: Path) -> None:
     try:
         payloads = build_tab_payloads(conn, generated_at="2026-08-03T00:00:00Z")
         assert set(payloads) == {
+            "Dashboard",
             "README",
             "Target Four",
             "Full Delegation",
             "Vote Detail",
         }
         assert payloads["README"][1][1] == "2026-08-03T00:00:00Z"
+        dash = payloads["Dashboard"]
+        assert dash[0][0] == "VA Congressional Vote Tracker"
+        assert any(r and r[0] == "Vote category" for r in dash)
+        assert any("TARGET FOUR" in str(r[0]) for r in dash if r)
         # Target Four header + up to 4 members
         assert payloads["Target Four"][0][0] == "Member"
         assert len(payloads["Target Four"]) >= 2
@@ -173,3 +178,4 @@ def test_readme_states_procedural_caveat() -> None:
     rows = build_readme_values(generated_at="t", corpus_votes=10)
     blob = " ".join(str(c) for r in rows for c in r)
     assert "NAY on a procedural vote is not evidence" in blob
+    assert "Dashboard" in blob
