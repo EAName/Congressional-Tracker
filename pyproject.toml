@@ -2,7 +2,7 @@
 name = "va-congressional-tracker"
 version = "0.2.0"
 description = "Normalized, idempotent ingest pipeline for Virginia congressional roll calls"
-readme = "AGENTS.md"
+readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "httpx",
