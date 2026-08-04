@@ -14,15 +14,16 @@ import structlog
 
 from vact.exports.data import (
     SITE_SCORECARD_TAGS,
-    build_outreach_stories,
     corpus_vote_count,
+    display_category,
     generated_at_utc,
+    impact_tag_mix,
     list_delegation,
-    publication_funnel,
     publication_ready_count,
     scorecard_rows,
     tagged_vote_count,
     target_four,
+    vote_category_mix,
     vote_detail_audit_rows,
 )
 from vact.paths import REPO_ROOT
@@ -309,220 +310,138 @@ def build_dashboard_layout(
     generated_at: str | None = None,
 ) -> tuple[list[list[Any]], dict[str, Any]]:
     """
-    Outreach-first Dashboard: publish funnel, story queue, featured Target Four
-    detail, then Target Four scorecard. Category telemetry stays on README.
+    Build the Dashboard rectangle plus chart source coordinates (1-based).
+
+    Left side (A–L): title, snapshot, Target Four, Full Delegation.
+    Right side (N–R): chart source tables (kept out of the primary read path).
     """
     ts = generated_at or generated_at_utc()
     votes = corpus_vote_count(conn)
     tagged = tagged_vote_count(conn)
     ready = publication_ready_count(conn)
-    funnel = publication_funnel(conn)
-    stories = build_outreach_stories(conn, limit=12)
+    categories = vote_category_mix(conn)
+    tags = impact_tag_mix(conn)
     target_members = scorecard_rows(
         conn, target_four(conn, map_version="2026"), tags=SHEETS_SCORECARD_TAGS
     )
+    full_members = scorecard_rows(
+        conn, list_delegation(conn, map_version="2026"), tags=SHEETS_SCORECARD_TAGS
+    )
     targets = _scorecard_matrix(target_members)
+    full = _scorecard_matrix(full_members)
 
-    width = 16
+    # Chart sources live in columns N–R (1-based cols 14–18) so the scorecard leads.
+    chart_col_cat = 14  # N
+    chart_col_tag = 17  # Q
+    chart_header_row = 1
+    chart_data_start = 2
+    n_cat = max(len(categories), 1)
+    n_tag = max(len(tags), 1)
+    chart_height = max(n_cat, n_tag)
+    chart_data_end = chart_data_start + chart_height - 1
+    width = max(18, chart_col_tag + 1)
 
     def blank_row() -> list[Any]:
         return [""] * width
 
     def pad(row: list[Any]) -> list[Any]:
-        return list(row) + [""] * max(0, width - len(row))
+        return list(row) + [""] * (width - len(row))
 
     rows: list[list[Any]] = [
         pad(["VA Congressional Vote Tracker"]),
-        pad(["Democrats for Virginia · Small Business Caucus — outreach Dashboard"]),
-        pad(["Updated (UTC)", ts, "Map", "2026", "Roll calls", votes, "Tagged votes", tagged]),
+        pad(["Democrats for Virginia · Small Business Caucus"]),
+        pad(["Updated (UTC)", ts, "Map", "2026"]),
+        pad(
+            [
+                "Official roll calls",
+                votes,
+                "Impact-tagged votes",
+                tagged,
+                "Virginia members",
+                13,
+            ]
+        ),
+        pad(
+            [
+                "Sources",
+                "House Clerk · Senate LIS · congress-legislators",
+            ]
+        ),
         blank_row(),
-        pad(["READY TO PUBLISH — narrative briefs, not missing votes"]),
+        pad(
+            [
+                "TARGET FOUR — proposed 2026 map seats leaning toward Democrats",
+            ]
+        ),
     ]
-    funnel_header_row = len(rows) + 1  # 1-based
-    rows.append(pad(["Stage", "Count"]))
-    for item in funnel:
-        rows.append(pad([item["stage"], item["count"]]))
-    funnel_end_row = len(rows)  # 1-based inclusive last data
-
-    rows.append(blank_row())
-    rows.append(
-        pad(
-            [
-                "STORY QUEUE — party-line tagged votes scored for Target Four disagreement. "
-                "Higher score = better outreach claim. Summary ready = human brief exists."
-            ]
-        )
-    )
-    story_header_row = len(rows) + 1
-    rows.append(
-        pad(
-            [
-                "Rank",
-                "Score",
-                "Date",
-                "Bill",
-                "Title",
-                "Tags",
-                "Dem caucus",
-                "GOP caucus",
-                "Target Four vs Dems",
-                "Summary ready",
-                "Source",
-            ]
-        )
-    )
-    for i, story in enumerate(stories, start=1):
-        rows.append(
-            pad(
-                [
-                    i,
-                    story["score"],
-                    story["vote_date"],
-                    story["bill_id"],
-                    story["short_title"],
-                    ", ".join(story["tags"]),
-                    story["dem_position"],
-                    story["gop_position"],
-                    story["target_disagree_n"],
-                    "Yes" if story["summary_ready"] else "No",
-                    story["source_url"],
-                ]
-            )
-        )
-    story_end_row = len(rows)
-
-    rows.append(blank_row())
-    featured = stories[0] if stories else None
-    rows.append(pad(["FEATURED STORY — top of queue (Target Four vs Dem caucus)"]))
-    featured_start = len(rows) + 1
-    if featured is None:
-        rows.append(pad(["No party-line tagged splits in the current warehouse window."]))
-        featured_detail_rows = 1
-    else:
-        rows.append(
-            pad(
-                [
-                    "Date",
-                    featured["vote_date"],
-                    "Bill",
-                    featured["bill_id"],
-                    "Dem caucus",
-                    featured["dem_position"],
-                    "Category",
-                    featured["vote_category"],
-                ]
-            )
-        )
-        rows.append(pad(["Title", featured["title"]]))
-        rows.append(
-            pad(
-                [
-                    "Tags",
-                    ", ".join(featured["tags"]),
-                    "Summary ready",
-                    "Yes" if featured["summary_ready"] else "No — needs plain_language_summary",
-                ]
-            )
-        )
-        rows.append(pad(["Source", featured["source_url"]]))
-        rows.append(
-            pad(
-                [
-                    "Member",
-                    "District",
-                    "Position",
-                    "Agrees with Dem caucus?",
-                ]
-            )
-        )
-        for pos in featured["target_positions"]:
-            rows.append(
-                pad(
-                    [
-                        pos["full_name"],
-                        pos["district_number"],
-                        pos["position"],
-                        "No" if pos["disagrees_with_dems"] else "Yes",
-                    ]
-                )
-            )
-        if not featured["target_positions"]:
-            rows.append(pad(["(no Target Four positions on this roll call)"]))
-        featured_detail_rows = len(rows) - featured_start + 1
-
-    rows.append(blank_row())
-    rows.append(
-        pad(
-            [
-                "TARGET FOUR SCORECARD — live Yea/Nay theme cells (Full Delegation tab has all 13)"
-            ]
-        )
-    )
     target_start = len(rows) + 1
     for block_row in targets:
-        rows.append(pad(list(block_row)))
+        rows.append(pad(block_row))
 
     rows.append(blank_row())
     rows.append(
         pad(
             [
-                "Full Delegation scorecard → open the Full Delegation tab.",
+                "FULL DELEGATION — Yea / Nay on impact-tagged votes",
             ]
         )
     )
+    rows.append(
+        pad(
+            [
+                "Green cells lean Yea · red lean Nay · dash = no tagged votes yet in that theme",
+            ]
+        )
+    )
+    full_start = len(rows) + 1
+    for block_row in full:
+        rows.append(pad(block_row))
 
-    # Chart sources far right: funnel already in place; story scores for bar chart.
-    chart_story_col = 14  # N
-    while len(rows) < 2:
+    # Ensure enough rows for chart source block.
+    while len(rows) < chart_data_end:
         rows.append(blank_row())
-    rows[0][chart_story_col - 1] = "Story"
-    rows[0][chart_story_col] = "Score"
-    for i, story in enumerate(stories):
-        r_idx = 1 + i
+
+    # Write chart headers/data into N and Q columns (0-based indexes 13 and 16).
+    rows[0][chart_col_cat - 1] = "Vote category"
+    rows[0][chart_col_cat] = "Count"
+    rows[0][chart_col_tag - 1] = "Impact tag"
+    rows[0][chart_col_tag] = "Count"
+    for i in range(chart_height):
+        r_idx = chart_data_start - 1 + i
         while len(rows) <= r_idx:
             rows.append(blank_row())
-        label = f"{story['vote_date']} · {story['bill_id'] or story['vote_id']}"
-        rows[r_idx][chart_story_col - 1] = label
-        rows[r_idx][chart_story_col] = story["score"]
+        cat = categories[i] if i < len(categories) else {"label": "", "count": ""}
+        tag = tags[i] if i < len(tags) else {"label": "", "count": ""}
+        rows[r_idx][chart_col_cat - 1] = display_category(str(cat["label"])) if cat["label"] else ""
+        rows[r_idx][chart_col_cat] = cat["count"]
+        rows[r_idx][chart_col_tag - 1] = (
+            str(tag["label"]).replace("_", " ").title() if tag["label"] else ""
+        )
+        rows[r_idx][chart_col_tag] = tag["count"]
 
     meta = {
         "sheet_title": TAB_DASHBOARD,
-        "funnel_header_row": funnel_header_row,
-        "funnel_start_row": funnel_header_row + 1,
-        "funnel_end_row": funnel_end_row,
-        "funnel_col": 0,
-        "story_header_row": story_header_row,
-        "story_start_row": story_header_row + 1,
-        "story_end_row": story_end_row,
-        "story_chart_header_row": 1,
-        "story_chart_start_row": 2,
-        "story_chart_end_row": 1 + max(len(stories), 1),
-        "story_chart_col": chart_story_col - 1,
-        "n_stories": len(stories),
-        "n_funnel": len(funnel),
-        "featured_start_row": featured_start,
+        "category_header_row": chart_header_row,
+        "category_start_row": chart_data_start,
+        "category_end_row": chart_data_end,
+        "impact_header_row": chart_header_row,
+        "impact_start_row": chart_data_start,
+        "impact_end_row": chart_data_end,
+        "category_col": chart_col_cat - 1,  # 0-based
+        "impact_col": chart_col_tag - 1,
+        "n_categories": len(categories),
+        "n_tags": len(tags),
         "target_header_row": target_start,
         "target_rows": len(targets),
-        "score_col_start": 7,
+        "full_header_row": full_start,
+        "full_rows": len(full),
+        "score_col_start": 7,  # 0-based: first impact tag col
         "score_col_end": 7 + len(SHEETS_SCORECARD_TAGS),
         "ncols": width,
         "generated_at": ts,
         "corpus_votes": votes,
         "tagged": tagged,
         "ready": ready,
-        # legacy keys unused by new charts; keep format helper safe
-        "full_header_row": target_start,
-        "full_rows": 0,
-        "n_categories": 0,
-        "n_tags": 0,
-        "category_col": 0,
-        "impact_col": 0,
-        "category_header_row": 1,
-        "category_start_row": 1,
-        "category_end_row": 1,
-        "impact_header_row": 1,
-        "impact_start_row": 1,
-        "impact_end_row": 1,
     }
     return rows, meta
 
@@ -695,29 +614,78 @@ def _delete_embedded_charts(sh, sheet_id: int) -> None:
 
 
 def _add_dashboard_charts(sh, ws, meta: dict[str, Any]) -> None:
-    """Funnel column chart + story-queue score bars."""
+    """Replace Dashboard embedded charts (pie categories + bar impact tags)."""
     sheet_id = ws.id
     _delete_embedded_charts(sh, sheet_id)
 
-    funnel_header = int(meta["funnel_header_row"]) - 1
-    funnel_end = int(meta["funnel_end_row"])
-    story_header = int(meta["story_chart_header_row"]) - 1
-    story_end = int(meta["story_chart_end_row"])
-    story_col = int(meta["story_chart_col"])
-    n_stories = int(meta.get("n_stories") or 0)
+    header_idx = meta["category_header_row"] - 1
+    cat_end_excl = meta["category_end_row"]
+    impact_header_idx = meta["impact_header_row"] - 1
+    impact_end_excl = meta["impact_end_row"]
+    cat_col = int(meta["category_col"])
+    tag_col = int(meta["impact_col"])
 
-    requests: list[dict[str, Any]] = [
+    requests = [
         {
             "addChart": {
                 "chart": {
                     "spec": {
-                        "title": "Ready to publish funnel",
+                        "title": "Roll-call mix",
+                        "pieChart": {
+                            "legendPosition": "RIGHT_LEGEND",
+                            "domain": {
+                                "sourceRange": {
+                                    "sources": [
+                                        {
+                                            "sheetId": sheet_id,
+                                            "startRowIndex": header_idx,
+                                            "endRowIndex": cat_end_excl,
+                                            "startColumnIndex": cat_col,
+                                            "endColumnIndex": cat_col + 1,
+                                        }
+                                    ]
+                                }
+                            },
+                            "series": {
+                                "sourceRange": {
+                                    "sources": [
+                                        {
+                                            "sheetId": sheet_id,
+                                            "startRowIndex": header_idx,
+                                            "endRowIndex": cat_end_excl,
+                                            "startColumnIndex": cat_col + 1,
+                                            "endColumnIndex": cat_col + 2,
+                                        }
+                                    ]
+                                }
+                            },
+                        },
+                    },
+                    "position": {
+                        "overlayPosition": {
+                            "anchorCell": {
+                                "sheetId": sheet_id,
+                                "rowIndex": 0,
+                                "columnIndex": 8,
+                            },
+                            "widthPixels": 380,
+                            "heightPixels": 250,
+                        }
+                    },
+                }
+            }
+        },
+        {
+            "addChart": {
+                "chart": {
+                    "spec": {
+                        "title": "Small-business impact themes",
                         "basicChart": {
                             "chartType": "COLUMN",
                             "legendPosition": "NO_LEGEND",
                             "axis": [
-                                {"position": "BOTTOM_AXIS", "title": "Stage"},
-                                {"position": "LEFT_AXIS", "title": "Count"},
+                                {"position": "BOTTOM_AXIS", "title": "Theme"},
+                                {"position": "LEFT_AXIS", "title": "Votes"},
                             ],
                             "domains": [
                                 {
@@ -726,10 +694,10 @@ def _add_dashboard_charts(sh, ws, meta: dict[str, Any]) -> None:
                                             "sources": [
                                                 {
                                                     "sheetId": sheet_id,
-                                                    "startRowIndex": funnel_header,
-                                                    "endRowIndex": funnel_end,
-                                                    "startColumnIndex": 0,
-                                                    "endColumnIndex": 1,
+                                                    "startRowIndex": impact_header_idx,
+                                                    "endRowIndex": impact_end_excl,
+                                                    "startColumnIndex": tag_col,
+                                                    "endColumnIndex": tag_col + 1,
                                                 }
                                             ]
                                         }
@@ -743,10 +711,10 @@ def _add_dashboard_charts(sh, ws, meta: dict[str, Any]) -> None:
                                             "sources": [
                                                 {
                                                     "sheetId": sheet_id,
-                                                    "startRowIndex": funnel_header,
-                                                    "endRowIndex": funnel_end,
-                                                    "startColumnIndex": 1,
-                                                    "endColumnIndex": 2,
+                                                    "startRowIndex": impact_header_idx,
+                                                    "endRowIndex": impact_end_excl,
+                                                    "startColumnIndex": tag_col + 1,
+                                                    "endColumnIndex": tag_col + 2,
                                                 }
                                             ]
                                         }
@@ -762,90 +730,21 @@ def _add_dashboard_charts(sh, ws, meta: dict[str, Any]) -> None:
                             "anchorCell": {
                                 "sheetId": sheet_id,
                                 "rowIndex": 0,
-                                "columnIndex": 8,
+                                "columnIndex": 11,
                             },
-                            "widthPixels": 360,
-                            "heightPixels": 220,
+                            "widthPixels": 380,
+                            "heightPixels": 250,
                         }
                     },
                 }
             }
-        }
+        },
     ]
-
-    if n_stories > 0:
-        requests.append(
-            {
-                "addChart": {
-                    "chart": {
-                        "spec": {
-                            "title": "Story queue scores",
-                            "basicChart": {
-                                "chartType": "BAR",
-                                "legendPosition": "NO_LEGEND",
-                                "axis": [
-                                    {"position": "LEFT_AXIS", "title": "Story"},
-                                    {"position": "BOTTOM_AXIS", "title": "Score"},
-                                ],
-                                "domains": [
-                                    {
-                                        "domain": {
-                                            "sourceRange": {
-                                                "sources": [
-                                                    {
-                                                        "sheetId": sheet_id,
-                                                        "startRowIndex": story_header,
-                                                        "endRowIndex": story_end,
-                                                        "startColumnIndex": story_col,
-                                                        "endColumnIndex": story_col + 1,
-                                                    }
-                                                ]
-                                            }
-                                        }
-                                    }
-                                ],
-                                "series": [
-                                    {
-                                        "series": {
-                                            "sourceRange": {
-                                                "sources": [
-                                                    {
-                                                        "sheetId": sheet_id,
-                                                        "startRowIndex": story_header,
-                                                        "endRowIndex": story_end,
-                                                        "startColumnIndex": story_col + 1,
-                                                        "endColumnIndex": story_col + 2,
-                                                    }
-                                                ]
-                                            }
-                                        },
-                                        "targetAxis": "BOTTOM_AXIS",
-                                    }
-                                ],
-                                "headerCount": 1,
-                            },
-                        },
-                        "position": {
-                            "overlayPosition": {
-                                "anchorCell": {
-                                    "sheetId": sheet_id,
-                                    "rowIndex": 0,
-                                    "columnIndex": 12,
-                                },
-                                "widthPixels": 420,
-                                "heightPixels": 280,
-                            }
-                        },
-                    }
-                }
-            }
-        )
-
     sh.batch_update({"requests": requests})
     logger.info(
         "sheets_dashboard_charts",
-        funnel=meta.get("n_funnel"),
-        stories=n_stories,
+        categories=meta["n_categories"],
+        tags=meta["n_tags"],
     )
 
 
@@ -1023,11 +922,11 @@ def _format_workbook(sh, dash_meta: dict[str, Any]) -> None:
         },
     ]
 
-    # Section title rows (1-based).
-    title_rows = [dash_meta["target_header_row"] - 1]
-    if int(dash_meta.get("full_rows") or 0) > 0:
-        title_rows.append(dash_meta["full_header_row"] - 2)
-    for title_row in title_rows:
+    # Section title rows (1-based) sit one above Target header and two above Full header.
+    for title_row in (
+        dash_meta["target_header_row"] - 1,
+        dash_meta["full_header_row"] - 2,
+    ):
         if title_row < 1:
             continue
         requests.append(
@@ -1055,12 +954,10 @@ def _format_workbook(sh, dash_meta: dict[str, Any]) -> None:
         )
 
     # Scorecard header rows on Dashboard + dedicated tabs.
-    header_specs = [
+    for sheet_id, row_1based in (
         (dash.id, dash_meta["target_header_row"]),
-    ]
-    if int(dash_meta.get("full_rows") or 0) > 0:
-        header_specs.append((dash.id, dash_meta["full_header_row"]))
-    for sheet_id, row_1based in header_specs:
+        (dash.id, dash_meta["full_header_row"]),
+    ):
         requests.append(
             {
                 "repeatCell": {
@@ -1126,16 +1023,15 @@ def _format_workbook(sh, dash_meta: dict[str, Any]) -> None:
             end_col=sc1,
         )
     )
-    if int(dash_meta.get("full_rows") or 0) > 0:
-        requests.extend(
-            _score_conditional_rules(
-                dash.id,
-                start_row=dash_meta["full_header_row"],
-                end_row=dash_meta["full_header_row"] + dash_meta["full_rows"] - 1,
-                start_col=sc0,
-                end_col=sc1,
-            )
+    requests.extend(
+        _score_conditional_rules(
+            dash.id,
+            start_row=dash_meta["full_header_row"],
+            end_row=dash_meta["full_header_row"] + dash_meta["full_rows"] - 1,
+            start_col=sc0,
+            end_col=sc1,
         )
+    )
     t_vals = target.get_all_values()
     f_vals = full.get_all_values()
     if len(t_vals) > 1:
