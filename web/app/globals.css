@@ -509,10 +509,6 @@ a:hover {
   font-family: var(--font-body);
 }
 
-.heatmap-svg {
-  min-width: 520px;
-}
-
 .scale-cap {
   margin: 0.55rem 0.35rem 0.15rem;
   font-size: 0.72rem;
