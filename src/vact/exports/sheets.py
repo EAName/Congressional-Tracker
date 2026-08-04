@@ -13,8 +13,9 @@ from typing import Any, Sequence
 import structlog
 
 from vact.exports.data import (
-    SCORECARD_TAGS,
+    SITE_SCORECARD_TAGS,
     corpus_vote_count,
+    display_category,
     generated_at_utc,
     impact_tag_mix,
     list_delegation,
@@ -42,8 +43,8 @@ TAB_TARGET = "Target Four"
 TAB_FULL = "Full Delegation"
 TAB_DETAIL = "Vote Detail"
 
-# Hand-built v1 stubs. Renamed + hidden on every push so the share link is not
-# the Vacant-VA-11 roster.
+# Hand-built v1 stubs. Deleted on every push so the share link is not the
+# Vacant-VA-11 roster.
 LEGACY_TAB_TITLES = (
     "Legislators",
     "Votes",
@@ -55,6 +56,9 @@ LEGACY_PREFIX = "_Archive · "
 
 WORKBOOK_TITLE = "VA Congressional Vote Tracker"
 
+# Match the press site: tags with live density (no empty TAX_BURDEN column).
+SHEETS_SCORECARD_TAGS = SITE_SCORECARD_TAGS
+
 DEFAULT_OAUTH_CLIENT = Path.home() / ".config" / "gspread" / "credentials.json"
 DEFAULT_OAUTH_TOKEN = Path.home() / ".config" / "gspread" / "authorized_user.json"
 LOCAL_OAUTH_CLIENT = REPO_ROOT / "secrets" / "oauth_client.json"
@@ -65,10 +69,10 @@ SCORECARD_HEADER = [
     "Party",
     "Chamber",
     "District",
-    "Map version",
-    "Partisan lean",
-    "Is target",
-    *[f"{t} (Y/N)" for t in SCORECARD_TAGS],
+    "Map",
+    "Lean",
+    "Target",
+    *[t.replace("_", " ").title() for t in SHEETS_SCORECARD_TAGS],
 ]
 
 
@@ -256,9 +260,9 @@ def _scorecard_matrix(rows: list[dict[str, Any]]) -> list[list[Any]]:
                 r["chamber"],
                 r["district_number"] if r["district_number"] is not None else "Statewide",
                 r["map_version"],
-                r.get("partisan_lean") or "",
-                "YES" if r.get("is_target") else "NO",
-                *[r[t] for t in SCORECARD_TAGS],
+                r.get("partisan_lean") or "—",
+                "Yes" if r.get("is_target") else "No",
+                *[r[t] for t in SHEETS_SCORECARD_TAGS],
             ]
         )
     return out
@@ -306,12 +310,10 @@ def build_dashboard_layout(
     generated_at: str | None = None,
 ) -> tuple[list[list[Any]], dict[str, Any]]:
     """
-    Build the Dashboard rectangle plus chart source coordinates (1-based rows).
+    Build the Dashboard rectangle plus chart source coordinates (1-based).
 
-    Layout:
-      rows 1-5  title + snapshot stats
-      rows 7+   category mix (A:B) and impact mix (D:E) — chart sources
-      then      Target Four scorecard, then Full Delegation scorecard
+    Left side (A–L): title, snapshot, Target Four, Full Delegation.
+    Right side (N–R): chart source tables (kept out of the primary read path).
     """
     ts = generated_at or generated_at_utc()
     votes = corpus_vote_count(conn)
@@ -319,106 +321,103 @@ def build_dashboard_layout(
     ready = publication_ready_count(conn)
     categories = vote_category_mix(conn)
     tags = impact_tag_mix(conn)
-    targets = _scorecard_matrix(scorecard_rows(conn, target_four(conn, map_version="2026")))
-    full = _scorecard_matrix(scorecard_rows(conn, list_delegation(conn, map_version="2026")))
+    target_members = scorecard_rows(
+        conn, target_four(conn, map_version="2026"), tags=SHEETS_SCORECARD_TAGS
+    )
+    full_members = scorecard_rows(
+        conn, list_delegation(conn, map_version="2026"), tags=SHEETS_SCORECARD_TAGS
+    )
+    targets = _scorecard_matrix(target_members)
+    full = _scorecard_matrix(full_members)
 
-    # Dual-column chart sources start at row 7.
-    chart_header_row = 7
-    chart_data_start = 8
+    # Chart sources live in columns N–R (1-based cols 14–18) so the scorecard leads.
+    chart_col_cat = 14  # N
+    chart_col_tag = 17  # Q
+    chart_header_row = 1
+    chart_data_start = 2
     n_cat = max(len(categories), 1)
     n_tag = max(len(tags), 1)
     chart_height = max(n_cat, n_tag)
     chart_data_end = chart_data_start + chart_height - 1
+    width = max(18, chart_col_tag + 1)
+
+    def blank_row() -> list[Any]:
+        return [""] * width
+
+    def pad(row: list[Any]) -> list[Any]:
+        return list(row) + [""] * (width - len(row))
 
     rows: list[list[Any]] = [
-        ["VA Congressional Vote Tracker", "", "", "", "", "", "", ""],
-        ["Democrats for Virginia · Small Business Caucus", "", "", "", "", "", "", ""],
-        ["Generated (UTC)", ts, "Map version", "2026", "", "", "", ""],
-        [
-            "Roll calls in warehouse",
-            votes,
-            "Impact-tagged votes",
-            tagged,
-            "Human-summarized (site cards)",
-            ready,
-            "",
-            "",
-        ],
-        [
-            "Sources",
-            "clerk.house.gov · senate.gov LIS · congress-legislators",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-        ],
-        [],  # row 6 blank
-        ["Vote category", "Count", "", "Impact tag", "Count", "", "", ""],
-    ]
-
-    for i in range(chart_height):
-        cat = categories[i] if i < len(categories) else {"label": "", "count": ""}
-        tag = tags[i] if i < len(tags) else {"label": "", "count": ""}
-        tag_label = (
-            str(tag["label"]).replace("_", " ").title() if tag["label"] else ""
-        )
-        rows.append(
+        pad(["VA Congressional Vote Tracker"]),
+        pad(["Democrats for Virginia · Small Business Caucus"]),
+        pad(["Updated (UTC)", ts, "Map", "2026"]),
+        pad(
             [
-                cat["label"],
-                cat["count"],
-                "",
-                tag_label,
-                tag["count"],
-                "",
-                "",
-                "",
+                "Official roll calls",
+                votes,
+                "Impact-tagged votes",
+                tagged,
+                "Virginia members",
+                13,
+            ]
+        ),
+        pad(
+            [
+                "Sources",
+                "House Clerk · Senate LIS · congress-legislators",
+            ]
+        ),
+        blank_row(),
+        pad(
+            [
+                "TARGET FOUR — proposed 2026 map seats leaning toward Democrats",
+            ]
+        ),
+    ]
+    target_start = len(rows) + 1
+    for block_row in targets:
+        rows.append(pad(block_row))
+
+    rows.append(blank_row())
+    rows.append(
+        pad(
+            [
+                "FULL DELEGATION — Yea / Nay on impact-tagged votes",
             ]
         )
-
-    rows.append([])
-    rows.append(
-        [
-            "TARGET FOUR — districts under the proposed 2026 map leaning toward Democrats",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-        ]
-    )
-    target_start = len(rows) + 1  # 1-based next row
-    rows.extend(targets)
-    rows.append([])
-    rows.append(
-        [
-            "FULL DELEGATION — live Yea/Nay on RULE and HUMAN impact tags",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-        ]
     )
     rows.append(
-        [
-            "Note: TAX_BURDEN is empty until RULE or HUMAN tags land. Em dash = no tagged votes yet.",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-        ]
+        pad(
+            [
+                "Green cells lean Yea · red lean Nay · dash = no tagged votes yet in that theme",
+            ]
+        )
     )
     full_start = len(rows) + 1
-    rows.extend(full)
+    for block_row in full:
+        rows.append(pad(block_row))
+
+    # Ensure enough rows for chart source block.
+    while len(rows) < chart_data_end:
+        rows.append(blank_row())
+
+    # Write chart headers/data into N and Q columns (0-based indexes 13 and 16).
+    rows[0][chart_col_cat - 1] = "Vote category"
+    rows[0][chart_col_cat] = "Count"
+    rows[0][chart_col_tag - 1] = "Impact tag"
+    rows[0][chart_col_tag] = "Count"
+    for i in range(chart_height):
+        r_idx = chart_data_start - 1 + i
+        while len(rows) <= r_idx:
+            rows.append(blank_row())
+        cat = categories[i] if i < len(categories) else {"label": "", "count": ""}
+        tag = tags[i] if i < len(tags) else {"label": "", "count": ""}
+        rows[r_idx][chart_col_cat - 1] = display_category(str(cat["label"])) if cat["label"] else ""
+        rows[r_idx][chart_col_cat] = cat["count"]
+        rows[r_idx][chart_col_tag - 1] = (
+            str(tag["label"]).replace("_", " ").title() if tag["label"] else ""
+        )
+        rows[r_idx][chart_col_tag] = tag["count"]
 
     meta = {
         "sheet_title": TAB_DASHBOARD,
@@ -428,10 +427,17 @@ def build_dashboard_layout(
         "impact_header_row": chart_header_row,
         "impact_start_row": chart_data_start,
         "impact_end_row": chart_data_end,
+        "category_col": chart_col_cat - 1,  # 0-based
+        "impact_col": chart_col_tag - 1,
         "n_categories": len(categories),
         "n_tags": len(tags),
         "target_header_row": target_start,
+        "target_rows": len(targets),
         "full_header_row": full_start,
+        "full_rows": len(full),
+        "score_col_start": 7,  # 0-based: first impact tag col
+        "score_col_end": 7 + len(SHEETS_SCORECARD_TAGS),
+        "ncols": width,
         "generated_at": ts,
         "corpus_votes": votes,
         "tagged": tagged,
@@ -448,8 +454,12 @@ def build_tab_payloads(
     """Build complete value rectangles in memory (live queries)."""
     ts = generated_at or generated_at_utc()
     dashboard, _meta = build_dashboard_layout(conn, generated_at=ts)
-    targets = scorecard_rows(conn, target_four(conn, map_version="2026"))
-    full = scorecard_rows(conn, list_delegation(conn, map_version="2026"))
+    targets = scorecard_rows(
+        conn, target_four(conn, map_version="2026"), tags=SHEETS_SCORECARD_TAGS
+    )
+    full = scorecard_rows(
+        conn, list_delegation(conn, map_version="2026"), tags=SHEETS_SCORECARD_TAGS
+    )
     votes = corpus_vote_count(conn)
     tagged = tagged_vote_count(conn)
     ready = publication_ready_count(conn)
@@ -608,25 +618,19 @@ def _add_dashboard_charts(sh, ws, meta: dict[str, Any]) -> None:
     sheet_id = ws.id
     _delete_embedded_charts(sh, sheet_id)
 
-    cat_start = meta["category_start_row"] - 1  # 0-based
-    cat_end = meta["category_end_row"]  # exclusive in Sheets API when +0 for end?
-    # Google Sheets API: endRowIndex is exclusive.
-    cat_end_excl = meta["category_end_row"]  # already 1-based end; exclusive = same number if start is 0-based...
-    # header is row 7 (1-based) = index 6; data rows 8..end inclusive → startRowIndex=6 includes header for pie
-    # Pie chart source typically includes header.
     header_idx = meta["category_header_row"] - 1
-    cat_end_excl = meta["category_end_row"]  # exclusive end = last data row (1-based) works as exclusive if we want rows header..last
-    # For range covering rows 7..14 inclusive: startRowIndex=6, endRowIndex=14
-
+    cat_end_excl = meta["category_end_row"]
     impact_header_idx = meta["impact_header_row"] - 1
     impact_end_excl = meta["impact_end_row"]
+    cat_col = int(meta["category_col"])
+    tag_col = int(meta["impact_col"])
 
     requests = [
         {
             "addChart": {
                 "chart": {
                     "spec": {
-                        "title": "Vote categories (full corpus)",
+                        "title": "Roll-call mix",
                         "pieChart": {
                             "legendPosition": "RIGHT_LEGEND",
                             "domain": {
@@ -636,8 +640,8 @@ def _add_dashboard_charts(sh, ws, meta: dict[str, Any]) -> None:
                                             "sheetId": sheet_id,
                                             "startRowIndex": header_idx,
                                             "endRowIndex": cat_end_excl,
-                                            "startColumnIndex": 0,
-                                            "endColumnIndex": 1,
+                                            "startColumnIndex": cat_col,
+                                            "endColumnIndex": cat_col + 1,
                                         }
                                     ]
                                 }
@@ -649,8 +653,8 @@ def _add_dashboard_charts(sh, ws, meta: dict[str, Any]) -> None:
                                             "sheetId": sheet_id,
                                             "startRowIndex": header_idx,
                                             "endRowIndex": cat_end_excl,
-                                            "startColumnIndex": 1,
-                                            "endColumnIndex": 2,
+                                            "startColumnIndex": cat_col + 1,
+                                            "endColumnIndex": cat_col + 2,
                                         }
                                     ]
                                 }
@@ -661,11 +665,11 @@ def _add_dashboard_charts(sh, ws, meta: dict[str, Any]) -> None:
                         "overlayPosition": {
                             "anchorCell": {
                                 "sheetId": sheet_id,
-                                "rowIndex": 6,
-                                "columnIndex": 6,
+                                "rowIndex": 0,
+                                "columnIndex": 8,
                             },
-                            "widthPixels": 420,
-                            "heightPixels": 280,
+                            "widthPixels": 380,
+                            "heightPixels": 250,
                         }
                     },
                 }
@@ -675,12 +679,12 @@ def _add_dashboard_charts(sh, ws, meta: dict[str, Any]) -> None:
             "addChart": {
                 "chart": {
                     "spec": {
-                        "title": "Impact tags (RULE + HUMAN)",
+                        "title": "Small-business impact themes",
                         "basicChart": {
                             "chartType": "COLUMN",
                             "legendPosition": "NO_LEGEND",
                             "axis": [
-                                {"position": "BOTTOM_AXIS", "title": "Tag"},
+                                {"position": "BOTTOM_AXIS", "title": "Theme"},
                                 {"position": "LEFT_AXIS", "title": "Votes"},
                             ],
                             "domains": [
@@ -692,8 +696,8 @@ def _add_dashboard_charts(sh, ws, meta: dict[str, Any]) -> None:
                                                     "sheetId": sheet_id,
                                                     "startRowIndex": impact_header_idx,
                                                     "endRowIndex": impact_end_excl,
-                                                    "startColumnIndex": 3,
-                                                    "endColumnIndex": 4,
+                                                    "startColumnIndex": tag_col,
+                                                    "endColumnIndex": tag_col + 1,
                                                 }
                                             ]
                                         }
@@ -709,8 +713,8 @@ def _add_dashboard_charts(sh, ws, meta: dict[str, Any]) -> None:
                                                     "sheetId": sheet_id,
                                                     "startRowIndex": impact_header_idx,
                                                     "endRowIndex": impact_end_excl,
-                                                    "startColumnIndex": 4,
-                                                    "endColumnIndex": 5,
+                                                    "startColumnIndex": tag_col + 1,
+                                                    "endColumnIndex": tag_col + 2,
                                                 }
                                             ]
                                         }
@@ -725,11 +729,11 @@ def _add_dashboard_charts(sh, ws, meta: dict[str, Any]) -> None:
                         "overlayPosition": {
                             "anchorCell": {
                                 "sheetId": sheet_id,
-                                "rowIndex": 6,
-                                "columnIndex": 12,
+                                "rowIndex": 0,
+                                "columnIndex": 11,
                             },
-                            "widthPixels": 420,
-                            "heightPixels": 280,
+                            "widthPixels": 380,
+                            "heightPixels": 250,
                         }
                     },
                 }
@@ -742,6 +746,386 @@ def _add_dashboard_charts(sh, ws, meta: dict[str, Any]) -> None:
         categories=meta["n_categories"],
         tags=meta["n_tags"],
     )
+
+
+def _score_conditional_rules(
+    sheet_id: int,
+    *,
+    start_row: int,
+    end_row: int,
+    start_col: int,
+    end_col: int,
+) -> list[dict[str, Any]]:
+    """Color Yea/Nay text cells by majority (custom formulas, 1-based A1 via R1C1)."""
+    # Sheets custom formulas are evaluated per cell; relative refs from top-left.
+    # start_row/end_row/start_col/end_col are 0-based indices for GridRange.
+    return [
+        {
+            "addConditionalFormatRule": {
+                "rule": {
+                    "ranges": [
+                        {
+                            "sheetId": sheet_id,
+                            "startRowIndex": start_row,
+                            "endRowIndex": end_row,
+                            "startColumnIndex": start_col,
+                            "endColumnIndex": end_col,
+                        }
+                    ],
+                    "booleanRule": {
+                        "condition": {
+                            "type": "CUSTOM_FORMULA",
+                            "values": [
+                                {
+                                    "userEnteredValue": (
+                                        '=AND(ISNUMBER(VALUE(REGEXEXTRACT(INDIRECT("R"&ROW()&"C"&COLUMN()'
+                                        ',FALSE),"^(\\d+)"))),'
+                                        'ISNUMBER(VALUE(REGEXEXTRACT(INDIRECT("R"&ROW()&"C"&COLUMN()'
+                                        ',FALSE),"/ (\\d+)"))),'
+                                        'VALUE(REGEXEXTRACT(INDIRECT("R"&ROW()&"C"&COLUMN(),FALSE),"^(\\d+)"))'
+                                        '>VALUE(REGEXEXTRACT(INDIRECT("R"&ROW()&"C"&COLUMN(),FALSE),"/ (\\d+)")))'
+                                    )
+                                }
+                            ],
+                        },
+                        "format": {
+                            "backgroundColor": {"red": 0.85, "green": 0.94, "blue": 0.89},
+                            "textFormat": {
+                                "foregroundColor": {"red": 0.11, "green": 0.42, "blue": 0.28},
+                                "bold": True,
+                            },
+                        },
+                    },
+                },
+                "index": 0,
+            }
+        },
+        {
+            "addConditionalFormatRule": {
+                "rule": {
+                    "ranges": [
+                        {
+                            "sheetId": sheet_id,
+                            "startRowIndex": start_row,
+                            "endRowIndex": end_row,
+                            "startColumnIndex": start_col,
+                            "endColumnIndex": end_col,
+                        }
+                    ],
+                    "booleanRule": {
+                        "condition": {
+                            "type": "CUSTOM_FORMULA",
+                            "values": [
+                                {
+                                    "userEnteredValue": (
+                                        '=AND(ISNUMBER(VALUE(REGEXEXTRACT(INDIRECT("R"&ROW()&"C"&COLUMN()'
+                                        ',FALSE),"^(\\d+)"))),'
+                                        'ISNUMBER(VALUE(REGEXEXTRACT(INDIRECT("R"&ROW()&"C"&COLUMN()'
+                                        ',FALSE),"/ (\\d+)"))),'
+                                        'VALUE(REGEXEXTRACT(INDIRECT("R"&ROW()&"C"&COLUMN(),FALSE),"^(\\d+)"))'
+                                        '<VALUE(REGEXEXTRACT(INDIRECT("R"&ROW()&"C"&COLUMN(),FALSE),"/ (\\d+)")))'
+                                    )
+                                }
+                            ],
+                        },
+                        "format": {
+                            "backgroundColor": {"red": 0.95, "green": 0.84, "blue": 0.87},
+                            "textFormat": {
+                                "foregroundColor": {"red": 0.60, "green": 0.18, "blue": 0.27},
+                                "bold": True,
+                            },
+                        },
+                    },
+                },
+                "index": 1,
+            }
+        },
+    ]
+
+
+def _format_workbook(sh, dash_meta: dict[str, Any]) -> None:
+    """Bold titles, freeze headers, column widths, conditional score colors."""
+    dash = sh.worksheet(TAB_DASHBOARD)
+    target = sh.worksheet(TAB_TARGET)
+    full = sh.worksheet(TAB_FULL)
+    detail = sh.worksheet(TAB_DETAIL)
+
+    # Drop previous conditional rules so each push is deterministic.
+    del_reqs: list[dict[str, Any]] = []
+    meta = sh.fetch_sheet_metadata()
+    for sheet in meta.get("sheets", []):
+        props = sheet.get("properties") or {}
+        if props.get("title") not in {TAB_DASHBOARD, TAB_TARGET, TAB_FULL, TAB_DETAIL}:
+            continue
+        for _ in sheet.get("conditionalFormats") or []:
+            del_reqs.append(
+                {
+                    "deleteConditionalFormatRule": {
+                        "sheetId": props["sheetId"],
+                        "index": 0,
+                    }
+                }
+            )
+    if del_reqs:
+        sh.batch_update({"requests": del_reqs})
+
+    navy = {"red": 0.06, "green": 0.18, "blue": 0.32}
+    band = {"red": 0.93, "green": 0.95, "blue": 0.97}
+    sc0 = int(dash_meta["score_col_start"])
+    sc1 = int(dash_meta["score_col_end"])
+    requests: list[dict[str, Any]] = [
+        {
+            "repeatCell": {
+                "range": {
+                    "sheetId": dash.id,
+                    "startRowIndex": 0,
+                    "endRowIndex": 1,
+                    "startColumnIndex": 0,
+                    "endColumnIndex": 7,
+                },
+                "cell": {
+                    "userEnteredFormat": {
+                        "textFormat": {
+                            "fontSize": 18,
+                            "bold": True,
+                            "foregroundColor": navy,
+                        }
+                    }
+                },
+                "fields": "userEnteredFormat.textFormat",
+            }
+        },
+        {
+            "repeatCell": {
+                "range": {
+                    "sheetId": dash.id,
+                    "startRowIndex": 1,
+                    "endRowIndex": 2,
+                    "startColumnIndex": 0,
+                    "endColumnIndex": 7,
+                },
+                "cell": {
+                    "userEnteredFormat": {
+                        "textFormat": {
+                            "fontSize": 11,
+                            "italic": True,
+                            "foregroundColor": {
+                                "red": 0.29,
+                                "green": 0.36,
+                                "blue": 0.44,
+                            },
+                        }
+                    }
+                },
+                "fields": "userEnteredFormat.textFormat",
+            }
+        },
+    ]
+
+    # Section title rows (1-based) sit one above Target header and two above Full header.
+    for title_row in (
+        dash_meta["target_header_row"] - 1,
+        dash_meta["full_header_row"] - 2,
+    ):
+        if title_row < 1:
+            continue
+        requests.append(
+            {
+                "repeatCell": {
+                    "range": {
+                        "sheetId": dash.id,
+                        "startRowIndex": title_row - 1,
+                        "endRowIndex": title_row,
+                        "startColumnIndex": 0,
+                        "endColumnIndex": 7,
+                    },
+                    "cell": {
+                        "userEnteredFormat": {
+                            "textFormat": {
+                                "bold": True,
+                                "fontSize": 12,
+                                "foregroundColor": navy,
+                            }
+                        }
+                    },
+                    "fields": "userEnteredFormat.textFormat",
+                }
+            }
+        )
+
+    # Scorecard header rows on Dashboard + dedicated tabs.
+    for sheet_id, row_1based in (
+        (dash.id, dash_meta["target_header_row"]),
+        (dash.id, dash_meta["full_header_row"]),
+    ):
+        requests.append(
+            {
+                "repeatCell": {
+                    "range": {
+                        "sheetId": sheet_id,
+                        "startRowIndex": row_1based - 1,
+                        "endRowIndex": row_1based,
+                        "startColumnIndex": 0,
+                        "endColumnIndex": sc1,
+                    },
+                    "cell": {
+                        "userEnteredFormat": {
+                            "textFormat": {"bold": True, "foregroundColor": navy},
+                            "backgroundColor": band,
+                        }
+                    },
+                    "fields": "userEnteredFormat(textFormat,backgroundColor)",
+                }
+            }
+        )
+
+    for ws in (target, full, detail):
+        requests.append(
+            {
+                "updateSheetProperties": {
+                    "properties": {
+                        "sheetId": ws.id,
+                        "gridProperties": {"frozenRowCount": 1},
+                    },
+                    "fields": "gridProperties.frozenRowCount",
+                }
+            }
+        )
+        end_col = len(SCORECARD_HEADER) if ws in (target, full) else 9
+        requests.append(
+            {
+                "repeatCell": {
+                    "range": {
+                        "sheetId": ws.id,
+                        "startRowIndex": 0,
+                        "endRowIndex": 1,
+                        "startColumnIndex": 0,
+                        "endColumnIndex": end_col,
+                    },
+                    "cell": {
+                        "userEnteredFormat": {
+                            "textFormat": {"bold": True, "foregroundColor": navy},
+                            "backgroundColor": band,
+                        }
+                    },
+                    "fields": "userEnteredFormat(textFormat,backgroundColor)",
+                }
+            }
+        )
+
+    # Conditional score colors.
+    requests.extend(
+        _score_conditional_rules(
+            dash.id,
+            start_row=dash_meta["target_header_row"],
+            end_row=dash_meta["target_header_row"] + dash_meta["target_rows"] - 1,
+            start_col=sc0,
+            end_col=sc1,
+        )
+    )
+    requests.extend(
+        _score_conditional_rules(
+            dash.id,
+            start_row=dash_meta["full_header_row"],
+            end_row=dash_meta["full_header_row"] + dash_meta["full_rows"] - 1,
+            start_col=sc0,
+            end_col=sc1,
+        )
+    )
+    t_vals = target.get_all_values()
+    f_vals = full.get_all_values()
+    if len(t_vals) > 1:
+        requests.extend(
+            _score_conditional_rules(
+                target.id,
+                start_row=1,
+                end_row=len(t_vals),
+                start_col=sc0,
+                end_col=sc1,
+            )
+        )
+    if len(f_vals) > 1:
+        requests.extend(
+            _score_conditional_rules(
+                full.id,
+                start_row=1,
+                end_row=len(f_vals),
+                start_col=sc0,
+                end_col=sc1,
+            )
+        )
+
+    detail_n = max(2, len(detail.get_all_values()))
+    for value, bg, fg in (
+        (
+            "YEA",
+            {"red": 0.85, "green": 0.94, "blue": 0.89},
+            {"red": 0.11, "green": 0.42, "blue": 0.28},
+        ),
+        (
+            "NAY",
+            {"red": 0.95, "green": 0.84, "blue": 0.87},
+            {"red": 0.60, "green": 0.18, "blue": 0.27},
+        ),
+    ):
+        requests.append(
+            {
+                "addConditionalFormatRule": {
+                    "rule": {
+                        "ranges": [
+                            {
+                                "sheetId": detail.id,
+                                "startRowIndex": 1,
+                                "endRowIndex": detail_n,
+                                "startColumnIndex": 6,
+                                "endColumnIndex": 7,
+                            }
+                        ],
+                        "booleanRule": {
+                            "condition": {
+                                "type": "TEXT_EQ",
+                                "values": [{"userEnteredValue": value}],
+                            },
+                            "format": {
+                                "backgroundColor": bg,
+                                "textFormat": {
+                                    "foregroundColor": fg,
+                                    "bold": True,
+                                },
+                            },
+                        },
+                    },
+                    "index": 0 if value == "YEA" else 1,
+                }
+            }
+        )
+
+    for ws, widths in (
+        (dash, [220, 120, 90, 70, 55, 80, 65, 110, 110, 110, 110, 120]),
+        (target, [200, 110, 80, 70, 50, 80, 60, 110, 110, 110, 110, 120]),
+        (full, [200, 110, 80, 70, 50, 80, 60, 110, 110, 110, 110, 120]),
+        (detail, [180, 90, 70, 100, 110, 280, 80, 160, 280]),
+    ):
+        for i, px in enumerate(widths):
+            requests.append(
+                {
+                    "updateDimensionProperties": {
+                        "range": {
+                            "sheetId": ws.id,
+                            "dimension": "COLUMNS",
+                            "startIndex": i,
+                            "endIndex": i + 1,
+                        },
+                        "properties": {"pixelSize": px},
+                        "fields": "pixelSize",
+                    }
+                }
+            )
+
+    for i in range(0, len(requests), 40):
+        sh.batch_update({"requests": requests[i : i + 40]})
+    logger.info("sheets_formatted", requests=len(requests))
+
 
 
 def push(*, warehouse_path: Path | None = None) -> dict[str, int]:
@@ -791,6 +1175,11 @@ def push(*, warehouse_path: Path | None = None) -> dict[str, int]:
         _add_dashboard_charts(sh, dash, dash_meta)
     except Exception as err:  # noqa: BLE001 — data is still useful without charts
         logger.warning("sheets_charts_skipped", error=str(err))
+
+    try:
+        _format_workbook(sh, dash_meta)
+    except Exception as err:  # noqa: BLE001
+        logger.warning("sheets_format_skipped", error=str(err))
 
     try:
         detail = sh.worksheet(TAB_DETAIL)

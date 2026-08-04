@@ -96,8 +96,12 @@ def test_build_tab_payloads(tmp_path: Path) -> None:
         assert payloads["README"][1][1] == "2026-08-03T00:00:00Z"
         dash = payloads["Dashboard"]
         assert dash[0][0] == "VA Congressional Vote Tracker"
-        assert any(r and r[0] == "Vote category" for r in dash)
         assert any("TARGET FOUR" in str(r[0]) for r in dash if r)
+        # Chart source headers live off to the right (col N).
+        assert dash[0][13] == "Vote category"
+        assert "Access To Capital" in payloads["Target Four"][0] or "Access to Capital" in str(
+            payloads["Target Four"][0]
+        )
         # Target Four header + up to 4 members
         assert payloads["Target Four"][0][0] == "Member"
         assert len(payloads["Target Four"]) >= 2
