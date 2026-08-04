@@ -4,7 +4,6 @@ import { useMemo, useState } from "react";
 import EvidenceBars from "@/components/EvidenceBars";
 import ForestPlot from "@/components/ForestPlot";
 import PartySpread from "@/components/PartySpread";
-import ScoreHeatmap from "@/components/ScoreHeatmap";
 import type { Deviation, Meta, Party, Score } from "@/lib/types";
 import { shortName, themeLabel } from "@/lib/types";
 
@@ -139,22 +138,6 @@ export default function Dashboard({
           the median.
         </p>
         <PartySpread rows={rows} theme={theme} flagged={flagged} />
-      </div>
-
-      <div className="viz-block">
-        <h3 className="viz-title">Member × theme heatmap</h3>
-        <p className="viz-lede">
-          Sufficient cells only. Color encodes signed score on the affordability axis. Click a
-          column header or cell to retarget the forest plot.
-        </p>
-        <ScoreHeatmap
-          scores={scores}
-          themes={themes}
-          onThemeSelect={(t) => {
-            setTheme(t);
-            setExpanded(null);
-          }}
-        />
       </div>
 
       <div className="viz-block">
