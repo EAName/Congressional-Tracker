@@ -1,0 +1,119 @@
+[
+  {
+    "bioguide_id": "W000804",
+    "full_name": "Robert J. Wittman",
+    "party": "Republican",
+    "chamber": "House",
+    "district_number": 1,
+    "partisan_lean": "R lean",
+    "is_target": true
+  },
+  {
+    "bioguide_id": "K000399",
+    "full_name": "Jennifer A. Kiggans",
+    "party": "Republican",
+    "chamber": "House",
+    "district_number": 2,
+    "partisan_lean": "Toss-up",
+    "is_target": true
+  },
+  {
+    "bioguide_id": "S000185",
+    "full_name": "Robert C. \"Bobby\" Scott",
+    "party": "Democrat",
+    "chamber": "House",
+    "district_number": 3,
+    "partisan_lean": "D solid",
+    "is_target": false
+  },
+  {
+    "bioguide_id": "M001227",
+    "full_name": "Jennifer L. McClellan",
+    "party": "Democrat",
+    "chamber": "House",
+    "district_number": 4,
+    "partisan_lean": "D solid",
+    "is_target": false
+  },
+  {
+    "bioguide_id": "M001239",
+    "full_name": "John J. McGuire III",
+    "party": "Republican",
+    "chamber": "House",
+    "district_number": 5,
+    "partisan_lean": "R solid",
+    "is_target": false
+  },
+  {
+    "bioguide_id": "C001118",
+    "full_name": "Ben Cline",
+    "party": "Republican",
+    "chamber": "House",
+    "district_number": 6,
+    "partisan_lean": "R solid",
+    "is_target": false
+  },
+  {
+    "bioguide_id": "V000138",
+    "full_name": "Eugene Simon Vindman",
+    "party": "Democrat",
+    "chamber": "House",
+    "district_number": 7,
+    "partisan_lean": "D lean",
+    "is_target": false
+  },
+  {
+    "bioguide_id": "B001292",
+    "full_name": "Donald S. Beyer, Jr.",
+    "party": "Democrat",
+    "chamber": "House",
+    "district_number": 8,
+    "partisan_lean": "D solid",
+    "is_target": false
+  },
+  {
+    "bioguide_id": "G000568",
+    "full_name": "H. Morgan Griffith",
+    "party": "Republican",
+    "chamber": "House",
+    "district_number": 9,
+    "partisan_lean": "R solid",
+    "is_target": false
+  },
+  {
+    "bioguide_id": "S001230",
+    "full_name": "Suhas Subramanyam",
+    "party": "Democrat",
+    "chamber": "House",
+    "district_number": 10,
+    "partisan_lean": "D lean",
+    "is_target": false
+  },
+  {
+    "bioguide_id": "W000831",
+    "full_name": "James R. Walkinshaw",
+    "party": "Democrat",
+    "chamber": "House",
+    "district_number": 11,
+    "partisan_lean": "D solid",
+    "is_target": false
+  },
+  {
+    "bioguide_id": "W000805",
+    "full_name": "Mark R. Warner",
+    "party": "Democrat",
+    "chamber": "Senate",
+    "district_number": null,
+    "partisan_lean": null,
+    "is_target": false
+  },
+  {
+    "bioguide_id": "K000384",
+    "full_name": "Tim Kaine",
+    "party": "Democrat",
+    "chamber": "Senate",
+    "district_number": null,
+    "partisan_lean": null,
+    "is_target": false
+  }
+]

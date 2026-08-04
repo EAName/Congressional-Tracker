@@ -1,0 +1,18 @@
+{
+  "generated_at_utc": "2026-08-04T05:26:37Z",
+  "map_version": "2021",
+  "axis": {
+    "name": "small_business_climate",
+    "description": "Positive = a YEA advances the small-business / affordability axis (lower input costs, easier access to capital, lighter compliance burden)."
+  },
+  "themes": [
+    "ACCESS_TO_CAPITAL",
+    "FEDERAL_CONTRACTING",
+    "HEALTH_COSTS",
+    "INPUT_COSTS",
+    "REGULATORY_BURDEN",
+    "TAX_BURDEN",
+    "WORKFORCE"
+  ],
+  "sufficient_min": 3
+}

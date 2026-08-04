@@ -462,6 +462,21 @@ def site_cmd(
     typer.echo(f"Site built → {dest}")
 
 
+@app.command("export-web")
+def export_web_cmd(
+    map_version: str = typer.Option("2021", "--map-version", help="Operative map (default 2021)."),
+    out: Path | None = typer.Option(None, "--out", help="Output dir (default web/data/)."),
+    warehouse: Path | None = typer.Option(None, "--warehouse"),
+) -> None:
+    """Export analysis JSON (scores, deviations, delegation) for the Next.js dashboard."""
+    from vact.exports.web import export_web
+
+    paths = export_web(map_version=map_version, out_dir=out, warehouse_path=warehouse)
+    for p in paths:
+        typer.echo(f"  wrote {p}")
+    typer.echo(f"Exported {len(paths)} JSON files for the web app.")
+
+
 @app.command("social")
 def social_cmd(
     out: Path | None = typer.Option(None, "--out", help="PNG output directory."),

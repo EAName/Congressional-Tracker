@@ -1,0 +1,94 @@
+[
+  {
+    "bioguide_id": "V000138",
+    "full_name": "Eugene Simon Vindman",
+    "party": "Democrat",
+    "district_number": 7,
+    "theme": "INPUT_COSTS",
+    "signed_score": -0.5,
+    "party_baseline": -1.0,
+    "deviation": 0.5,
+    "n_contested": 4,
+    "defection_votes": [
+      {
+        "vote_id": "h-119-1-324",
+        "vote_date": "2025-12-11",
+        "bill_id": "hr-3638-119",
+        "summary": null,
+        "position": "YEA",
+        "source_link": "https://clerk.house.gov/evs/2025/roll324.xml"
+      }
+    ]
+  },
+  {
+    "bioguide_id": "V000138",
+    "full_name": "Eugene Simon Vindman",
+    "party": "Democrat",
+    "district_number": 7,
+    "theme": "REGULATORY_BURDEN",
+    "signed_score": -0.5385,
+    "party_baseline": -0.8462,
+    "deviation": 0.3077,
+    "n_contested": 13,
+    "defection_votes": [
+      {
+        "vote_id": "h-119-1-114",
+        "vote_date": "2025-05-01",
+        "bill_id": "hjres-88-119",
+        "summary": null,
+        "position": "YEA",
+        "source_link": "https://clerk.house.gov/evs/2025/roll114.xml"
+      },
+      {
+        "vote_id": "h-119-1-358",
+        "vote_date": "2025-12-18",
+        "bill_id": "hr-1366-119",
+        "summary": null,
+        "position": "YEA",
+        "source_link": "https://clerk.house.gov/evs/2025/roll358.xml"
+      }
+    ]
+  },
+  {
+    "bioguide_id": "K000399",
+    "full_name": "Jennifer A. Kiggans",
+    "party": "Republican",
+    "district_number": 2,
+    "theme": "REGULATORY_BURDEN",
+    "signed_score": 1.0,
+    "party_baseline": 0.8462,
+    "deviation": 0.1538,
+    "n_contested": 13,
+    "defection_votes": [
+      {
+        "vote_id": "h-119-2-164",
+        "vote_date": "2026-05-13",
+        "bill_id": "hr-1346-119",
+        "summary": null,
+        "position": "YEA",
+        "source_link": "https://clerk.house.gov/evs/2026/roll164.xml"
+      }
+    ]
+  },
+  {
+    "bioguide_id": "W000804",
+    "full_name": "Robert J. Wittman",
+    "party": "Republican",
+    "district_number": 1,
+    "theme": "REGULATORY_BURDEN",
+    "signed_score": 1.0,
+    "party_baseline": 0.8462,
+    "deviation": 0.1538,
+    "n_contested": 12,
+    "defection_votes": [
+      {
+        "vote_id": "h-119-2-164",
+        "vote_date": "2026-05-13",
+        "bill_id": "hr-1346-119",
+        "summary": null,
+        "position": "YEA",
+        "source_link": "https://clerk.house.gov/evs/2026/roll164.xml"
+      }
+    ]
+  }
+]
