@@ -106,8 +106,11 @@ def test_build_tab_payloads(tmp_path: Path) -> None:
         dash = payloads["Dashboard"]
         assert dash[0][0] == "VA Congressional Vote Tracker"
         assert any("TARGET SEATS" in str(r[0]) for r in dash if r)
-        # Chart source headers live off to the right (col N).
-        assert dash[0][13] == "Vote category"
+        # Chart source headers live past the scorecard (gutter after Workforce).
+        score_ncols = len(payloads["Target Four"][0])
+        assert score_ncols == 12
+        assert dash[0][score_ncols] == ""  # one-col gutter
+        assert dash[0][score_ncols + 1] == "Vote category"
         assert "Access To Capital" in payloads["Target Four"][0] or "Access to Capital" in str(
             payloads["Target Four"][0]
         )

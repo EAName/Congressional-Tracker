@@ -464,8 +464,9 @@ def build_dashboard_layout(
     """
     Build the Dashboard rectangle plus chart source coordinates (1-based).
 
-    Left side (A–L): title, snapshot, Target Four, Full Delegation.
-    Right side (N–R): chart source tables (kept out of the primary read path).
+    Left: title, snapshot, Target seats, Full Delegation scorecards.
+    Right of the scorecard: chart source tables, then floating charts over that gutter
+    (never over the Yea/Nay cells).
     """
     ts = generated_at or generated_at_utc()
     votes = corpus_vote_count(conn)
@@ -488,16 +489,19 @@ def build_dashboard_layout(
     targets = _scorecard_matrix(target_members)
     full = _scorecard_matrix(full_members)
 
-    # Chart sources live in columns N–R (1-based cols 14–18) so the scorecard leads.
-    chart_col_cat = 14  # N
-    chart_col_tag = 17  # Q
+    # Scorecard width: identity cols + theme cols. Chart sources sit past a
+    # one-column gutter so they never share cells with Yea/Nay scores.
+    score_ncols = len(SCORECARD_HEADER)
+    chart_col_cat = score_ncols + 2  # 1-based
+    chart_col_tag = chart_col_cat + 3
     chart_header_row = 1
     chart_data_start = 2
     n_cat = max(len(categories), 1)
     n_tag = max(len(tags), 1)
     chart_height = max(n_cat, n_tag)
     chart_data_end = chart_data_start + chart_height - 1
-    width = max(18, chart_col_tag + 1)
+    # Room for source tables + floating charts to their right.
+    width = max(chart_col_tag + 1 + 8, score_ncols + 16)
 
     def blank_row() -> list[Any]:
         return [""] * width
@@ -559,7 +563,7 @@ def build_dashboard_layout(
     while len(rows) < chart_data_end:
         rows.append(blank_row())
 
-    # Write chart headers/data into N and Q columns (0-based indexes 13 and 16).
+    # Chart headers/data live only in the gutter columns, never scorecard cols.
     rows[0][chart_col_cat - 1] = "Vote category"
     rows[0][chart_col_cat] = "Count"
     rows[0][chart_col_tag - 1] = "Impact tag"
@@ -587,6 +591,8 @@ def build_dashboard_layout(
         "impact_end_row": chart_data_end,
         "category_col": chart_col_cat - 1,  # 0-based
         "impact_col": chart_col_tag - 1,
+        "chart_anchor_col": chart_col_tag + 1,  # 0-based: right of source tables
+        "score_ncols": score_ncols,
         "n_categories": len(categories),
         "n_tags": len(tags),
         "target_header_row": target_start,
@@ -790,6 +796,8 @@ def _add_dashboard_charts(sh, ws, meta: dict[str, Any]) -> None:
     impact_end_excl = meta["impact_end_row"]
     cat_col = int(meta["category_col"])
     tag_col = int(meta["impact_col"])
+    # Float charts to the right of scorecard + source tables — never over Yea/Nay.
+    anchor_col = int(meta.get("chart_anchor_col", tag_col + 2))
 
     requests = [
         {
@@ -832,7 +840,7 @@ def _add_dashboard_charts(sh, ws, meta: dict[str, Any]) -> None:
                             "anchorCell": {
                                 "sheetId": sheet_id,
                                 "rowIndex": 0,
-                                "columnIndex": 8,
+                                "columnIndex": anchor_col,
                             },
                             "widthPixels": 380,
                             "heightPixels": 250,
@@ -895,11 +903,11 @@ def _add_dashboard_charts(sh, ws, meta: dict[str, Any]) -> None:
                         "overlayPosition": {
                             "anchorCell": {
                                 "sheetId": sheet_id,
-                                "rowIndex": 0,
-                                "columnIndex": 11,
+                                "rowIndex": 14,
+                                "columnIndex": anchor_col,
                             },
-                            "widthPixels": 380,
-                            "heightPixels": 250,
+                            "widthPixels": 420,
+                            "heightPixels": 260,
                         }
                     },
                 }
@@ -911,6 +919,7 @@ def _add_dashboard_charts(sh, ws, meta: dict[str, Any]) -> None:
         "sheets_dashboard_charts",
         categories=meta["n_categories"],
         tags=meta["n_tags"],
+        chart_anchor_col=anchor_col,
     )
 
 
@@ -1334,8 +1343,8 @@ def push(*, warehouse_path: Path | None = None) -> dict[str, int]:
     for title in order:
         values = payloads[title]
         ncols = max((len(r) for r in values), default=1)
-        # Dashboard needs width for chart anchors past column L.
-        min_cols = 18 if title == TAB_DASHBOARD else ncols
+        # Dashboard needs width for chart sources + floating chart anchors.
+        min_cols = int(dash_meta.get("ncols") or 26) if title == TAB_DASHBOARD else ncols
         ws = _ensure_worksheet(
             sh, title, rows=len(values) + 5, cols=max(ncols, min_cols)
         )
