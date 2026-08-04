@@ -74,15 +74,35 @@ def ingest_house_year(
 ) -> int:
     rolls = house.discover(year, force=force)
     loaded = 0
+    skipped = 0
     for roll_number in sorted(rolls):
         path = house.fetch(year, roll_number, force=force)
-        vote, members = house.parse(path)
+        try:
+            vote, members = house.parse(path)
+        except house.HouseRollUnsupported as err:
+            skipped += 1
+            logger.warning(
+                "house_roll_skipped",
+                year=year,
+                roll_number=roll_number,
+                reason=str(err),
+            )
+            continue
         if vote.action_date < start or vote.action_date > end:
             continue
         load_house_vote(vote, members, conn=conn)
         loaded += 1
         if loaded % 25 == 0:
-            logger.info("house_backfill_progress", year=year, loaded=loaded, of=len(rolls))
+            logger.info(
+                "house_backfill_progress",
+                year=year,
+                loaded=loaded,
+                skipped=skipped,
+                of=len(rolls),
+            )
+    logger.info(
+        "house_year_complete", year=year, loaded=loaded, skipped=skipped, discovered=len(rolls)
+    )
     return loaded
 
 

@@ -39,6 +39,10 @@ class HouseRollNotFound(LookupError):
     """Raised when the Clerk returns HTTP 404 for a roll call."""
 
 
+class HouseRollUnsupported(ValueError):
+    """Raised for EVS formats that are not Yea/Nay member votes (e.g. Speaker)."""
+
+
 def roll_url(year: int, roll_number: int) -> str:
     return f"{EVS_BASE}/{year}/roll{roll_number:03d}.xml"
 
@@ -78,6 +82,11 @@ def _parse_totals(meta: ET.Element) -> HouseVoteTotals:
         raise ValueError("missing vote-totals")
     by_vote = totals_block.find("totals-by-vote")
     if by_vote is None:
+        if totals_block.find("totals-by-candidate") is not None:
+            question = _text(meta, "vote-question") or ""
+            raise HouseRollUnsupported(
+                f"candidate-ballot roll call (e.g. Speaker election): {question!r}"
+            )
         raise ValueError("missing totals-by-vote")
     return HouseVoteTotals(
         yea=int(_text(by_vote, "yea-total") or "0"),
