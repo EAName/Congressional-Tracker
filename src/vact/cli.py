@@ -11,6 +11,7 @@ from vact.pipeline.backfill import backfill, incremental, write_coverage_report
 from vact.sources import house_rollcalls as house_source
 from vact.sources import legislators as legislator_source
 from vact.sources import senate_rollcalls as senate_source
+from vact.transforms import classify as classify_mod
 from vact.transforms.legislators import build_dim_legislator_rows
 from vact.transforms.lis_crosswalk import build_lis_bioguide_crosswalk
 from vact.warehouse.load import load_house_vote, load_senate_vote, upsert_dim_legislator
@@ -20,6 +21,8 @@ app = typer.Typer(
     help="VA Congressional Tracker — ingest, classify, and report.",
     no_args_is_help=True,
 )
+summaries_app = typer.Typer(help="Plain-language bill summary workflow.")
+app.add_typer(summaries_app, name="summaries")
 
 
 @app.callback()
@@ -176,6 +179,95 @@ def gaps_cmd(
     """Report warehouse vs upstream gaps and write coverage.md heatmap."""
     path = write_coverage_report(congress=congress, warehouse_path=warehouse)
     typer.echo(f"Wrote {path}")
+
+
+@app.command("classify")
+def classify_cmd(
+    new_only: bool = typer.Option(
+        False,
+        "--new-only",
+        help="Only classify votes with no existing bridge_vote_impact rows.",
+    ),
+    no_llm: bool = typer.Option(
+        False,
+        "--no-llm",
+        help="Skip Stage-2 LLM assist (rules only).",
+    ),
+    warehouse: Path | None = typer.Option(None, "--warehouse"),
+) -> None:
+    """Stage-1 rulebook (+ optional Stage-2 LLM) → bridge_vote_impact."""
+    stats = classify_mod.classify_corpus(
+        new_only=new_only,
+        enable_llm=not no_llm,
+        warehouse_path=warehouse,
+    )
+    typer.echo(
+        "Classify complete: "
+        f"scanned={stats['votes_scanned']} "
+        f"excluded_personnel={stats['excluded_personnel']} "
+        f"rule_tags={stats['rule_tags_written']} "
+        f"llm_tags={stats['llm_tags_written']} "
+        f"queued={stats['review_queue_rows']}"
+    )
+
+
+@app.command("promote")
+def promote_cmd(
+    queue: Path | None = typer.Option(
+        None,
+        "--queue",
+        help="Path to adjudicated review_queue.csv",
+        exists=True,
+        dir_okay=False,
+        readable=True,
+        resolve_path=True,
+    ),
+    warehouse: Path | None = typer.Option(None, "--warehouse"),
+) -> None:
+    """Promote human-adjudicated review_queue rows as classified_by=HUMAN."""
+    n = classify_mod.promote_review_queue(queue_path=queue, warehouse_path=warehouse)
+    typer.echo(f"Promoted {n} HUMAN impact tag rows.")
+
+
+@summaries_app.command("pending")
+def summaries_pending_cmd(
+    warehouse: Path | None = typer.Option(None, "--warehouse"),
+) -> None:
+    """List tagged votes whose bills lack a human plain_language_summary."""
+    rows = classify_mod.list_summaries_pending(warehouse_path=warehouse)
+    if not rows:
+        typer.echo("No tagged bills missing plain_language_summary.")
+        return
+    typer.echo(f"{len(rows)} tagged bill-votes need plain_language_summary (<25 words, human):")
+    for row in rows:
+        tags = ",".join(row["tags"] or [])
+        title = (row["title"] or "")[:80]
+        typer.echo(
+            f"{row['vote_date']}  {row['vote_id']}  {row['bill_id']}  [{tags}]  {title}"
+        )
+
+
+@app.command("reclassify")
+def reclassify_cmd(
+    all_: bool = typer.Option(
+        False,
+        "--all",
+        help="Re-run the full rulebook over fact_vote.",
+    ),
+    confirm: bool = typer.Option(
+        False,
+        "--confirm",
+        help="Required. Refuses without this flag.",
+    ),
+    warehouse: Path | None = typer.Option(None, "--warehouse"),
+) -> None:
+    """Full rulebook reclassify. Writes reclassify_diff.md before applying."""
+    if not all_:
+        raise typer.BadParameter("pass --all (partial reclassify is not supported)")
+    if not confirm:
+        raise typer.BadParameter("refusing without --confirm")
+    path = classify_mod.reclassify_all(confirm=True, warehouse_path=warehouse)
+    typer.echo(f"Reclassify complete. Diff: {path}")
 
 
 if __name__ == "__main__":

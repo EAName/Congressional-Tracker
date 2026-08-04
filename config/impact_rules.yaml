@@ -1,0 +1,85 @@
+# Impact taxonomy rulebook for VA Congressional Tracker.
+# Rules are evaluated in file order within each tag. A vote may receive multiple tags.
+# Patterns are Python regex, matched case-insensitively against:
+#   vote_question | bill title | bill short_title | policy_area (joined with " || ")
+
+version: 1
+
+exclude_categories:
+  - NOMINATION
+  - CLOTURE
+
+tags:
+  ACCESS_TO_CAPITAL:
+    - pattern: 'SBA|Small Business Administration|7\(a\)|504\b|CDFI|community development financial'
+      notes: SBA lending and CDFI credit channels
+    - pattern: 'small business loan|lending|credit union.*small|Export-Import|EXIM'
+      notes: general small-business credit
+    - pattern: 'Entrepreneur|start-?up|venture|SBIC|venture capital'
+      notes: entrepreneurship capital
+
+  TAX_BURDEN:
+    - pattern: 'pass[- ]through|qualified business income|section 199A|QBI'
+      notes: pass-through deduction
+    - pattern: 'expensing|bonus depreciation|section 179|depreciation'
+      notes: capital cost recovery
+    - pattern: 'estimated tax|payroll tax|self-employment tax|corporate tax|tax rate|tax cut|tax relief'
+      notes: tax payments and rates
+    - pattern: 'opportunity zone|research credit|R&D tax'
+      notes: targeted tax provisions
+
+  FEDERAL_CONTRACTING:
+    - pattern: '8\(a\)|set[- ]aside|small business concern|HUBZone|WOSB|SDVOSB|SWaM'
+      notes: socioeconomic contracting
+    - pattern: 'prompt pay|payment terms|contracting|procurement|GSA schedule'
+      notes: federal procurement terms
+    - pattern: 'Buy American|Buy America|domestic preference|Made in America'
+      notes: domestic procurement preferences
+
+  HEALTH_COSTS:
+    - pattern: 'affordable care|ACA\b|premium tax credit|exchange subsid|marketplace'
+      notes: exchange coverage
+    - pattern: 'association health|self-employed|small group|health insurance|Medicaid'
+      notes: insurance costs for small employers / self-employed
+    - pattern: 'prescription drug|insulin|pharmacy benefit|PBM'
+      notes: drug cost drivers
+
+  INPUT_COSTS:
+    - pattern: 'tariff|duties|trade authority|Section 232|Section 301|USMCA|trade agreement'
+      notes: trade and tariffs
+    - pattern: 'energy price|crude oil|natural gas|electricity rate|fuel price|gasoline'
+      notes: energy inputs
+    - pattern: 'supply chain|semiconductor|CHIPS|critical mineral|\bport\b|freight'
+      notes: supply chain inputs (word-boundaried port; avoids matching support)
+
+  REGULATORY_BURDEN:
+    - pattern: 'paperwork|regulatory flex|Regulatory Flexibility|REG Flex|compliance cost'
+      notes: paperwork / RFA
+    - pattern: 'beneficial ownership|CTA\b|corporate transparency|BOI\b'
+      notes: ownership reporting
+    - pattern: 'reporting mandate|disclosure requirement|EPA rule|SEC rule|fiduciary'
+      notes: reporting and agency rules
+    - pattern: 'NEPA|permitting|environmental review'
+      notes: permitting burden
+
+  WORKFORCE:
+    - pattern: 'independent contractor|employee classification|ABC test|joint employer'
+      notes: worker classification
+    - pattern: 'minimum wage|overtime|Fair Labor|NLRA|collective bargaining'
+      notes: wage and labor rules
+    - pattern: 'apprenticeship|workforce development|career and technical|CTE\b'
+      notes: training pipeline
+    - pattern: 'immigration|H-1B|H-2B|work visa|border|asylum|E-Verify'
+      notes: labor supply / immigration
+    - pattern: 'paid leave|child care|family leave'
+      notes: workforce participation costs
+
+# Stage-2 eligibility: residual votes whose text matches these (appropriations /
+# reconciliation / trade vehicles) may be sent to the LLM classifier.
+llm_eligible_patterns:
+  - '(?i)appropriat'
+  - '(?i)reconcil'
+  - '(?i)continuing resolution|\bCR\b'
+  - '(?i)omnibus'
+  - '(?i)tariff|trade|USMCA|customs'
+  - '(?i)one big beautiful|fiscal|budget'
