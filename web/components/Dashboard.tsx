@@ -1,7 +1,10 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import EvidenceBars from "@/components/EvidenceBars";
 import ForestPlot from "@/components/ForestPlot";
+import PartySpread from "@/components/PartySpread";
+import ScoreHeatmap from "@/components/ScoreHeatmap";
 import type { Deviation, Meta, Party, Score } from "@/lib/types";
 import { shortName, themeLabel } from "@/lib/types";
 
@@ -128,6 +131,48 @@ export default function Dashboard({
       ) : (
         <p className="cap">No members clear the threshold for this filter.</p>
       )}
+
+      <div className="viz-block">
+        <h3 className="viz-title">Party spread</h3>
+        <p className="viz-lede">
+          Same theme as above, D and R on separate lanes — shows how wide the caucus is, not just
+          the median.
+        </p>
+        <PartySpread rows={rows} theme={theme} flagged={flagged} />
+      </div>
+
+      <div className="viz-block">
+        <h3 className="viz-title">Member × theme heatmap</h3>
+        <p className="viz-lede">
+          Sufficient cells only. Color encodes signed score on the affordability axis. Click a
+          column header or cell to retarget the forest plot.
+        </p>
+        <ScoreHeatmap
+          scores={scores}
+          themes={themes}
+          onThemeSelect={(t) => {
+            setTheme(t);
+            setExpanded(null);
+          }}
+        />
+      </div>
+
+      <div className="viz-block">
+        <h3 className="viz-title">Evidence density</h3>
+        <p className="viz-lede">
+          How many contested member-votes back each theme. Thin bars mean wider Wilson bands on
+          the forest plot.
+        </p>
+        <EvidenceBars
+          scores={scores}
+          themes={themes}
+          activeTheme={theme}
+          onThemeSelect={(t) => {
+            setTheme(t);
+            setExpanded(null);
+          }}
+        />
+      </div>
 
       <h2 className="sec-title" style={{ marginTop: "2.4rem" }}>
         Within-party defections
