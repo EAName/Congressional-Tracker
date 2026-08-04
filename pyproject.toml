@@ -17,6 +17,7 @@ dependencies = [
     "polars",
     "gspread",
     "google-auth",
+    "google-auth-oauthlib",
     "jinja2",
     "pillow",
 ]

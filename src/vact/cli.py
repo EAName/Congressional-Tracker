@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 from datetime import date
 from pathlib import Path
 
@@ -366,9 +367,24 @@ def reclassify_cmd(
     typer.echo(f"Reclassify complete. Diff: {path}")
 
 
+@sheets_app.command("auth")
+def sheets_auth_cmd() -> None:
+    """Browser OAuth login (Desktop client). Saves token for later push/preflight."""
+    from vact.exports import sheets as sheets_mod
+
+    os.environ.setdefault("VACT_SHEETS_AUTH", "oauth")
+    try:
+        path = sheets_mod.run_oauth_login()
+    except sheets_mod.SheetsConfigError as err:
+        typer.echo(str(err), err=True)
+        raise typer.Exit(code=2) from err
+    typer.echo(f"OAuth token saved → {path}")
+    typer.echo("Next: VACT_SHEETS_AUTH=oauth ./bin/vact sheets preflight && ./bin/vact sheets push")
+
+
 @sheets_app.command("preflight")
 def sheets_preflight_cmd() -> None:
-    """Authenticate and verify the service account can read the target sheet."""
+    """Authenticate and verify the account can read the target sheet."""
     from vact.exports import sheets as sheets_mod
 
     try:
@@ -381,7 +397,7 @@ def sheets_preflight_cmd() -> None:
         raise typer.Exit(code=1) from err
     typer.echo(
         f"Sheets preflight ok: {result['spreadsheet']} "
-        f"(service account {result['service_account']})"
+        f"(auth={result.get('auth')} account={result.get('account')})"
     )
 
 
