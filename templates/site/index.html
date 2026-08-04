@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Target Four · {{ brand }}{% endblock %}
+{% block lede %}
+<p class="lede">Four districts remapped toward Democrats for 2026. Tap a card for the incumbent&rsquo;s recent publication-ready votes.</p>
+{% endblock %}
+{% block content %}
+<section class="card-list" aria-label="Target districts">
+  {% for card in targets %}
+  <a class="card" href="district/{{ card.member.district_number }}.html">
+    <h2>VA-{{ card.member.district_number }}</h2>
+    <p class="meta">{{ card.member.full_name }} · {{ card.member.party }} · {{ card.member.partisan_lean or 'lean TBD' }}</p>
+    <p class="meta">{{ card.votes|length }} publication-ready vote{{ '' if card.votes|length == 1 else 's' }}</p>
+  </a>
+  {% else %}
+  <p>No target-district incumbents found for map_version {{ map_version }}.</p>
+  {% endfor %}
+</section>
+{% endblock %}

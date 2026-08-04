@@ -98,6 +98,14 @@ validity is Virginia-scoped: non-VA members appear in `fact_member_vote` without
 `exports/publication.py` and refuse votes missing `plain_language_summary` or carrying
 unadjudicated `LLM` tags.
 
+## Publication surfaces
+
+- Sheets (`vact sheets preflight|push`): audit layer. Env `VACT_SHEETS_CREDENTIALS` +
+  `VACT_SHEETS_ID`. Never clear before write.
+- Static site (`vact site` → `docs/`): primary activist surface. Suppresses procedural
+  categories; requires human summaries; every claim links to clerk/senate source.
+- Social (`vact social`): 1200×675 PNGs for Target Four.
+
 ## Sequencing
 
 Build order is defined by the Prompt Kit (prompts 0–10). Do not skip ahead of the

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}VA-{{ member.district_number }} · {{ brand }}{% endblock %}
+{% block css_href %}../styles.css{% endblock %}
+{% block nav_index %}../index.html{% endblock %}
+{% block nav_delegation %}../delegation.html{% endblock %}
+{% block nav_methodology %}../methodology.html{% endblock %}
+{% block lede %}
+<p class="lede">{{ member.full_name }} · VA-{{ member.district_number }} · map_version {{ map_version }}</p>
+{% endblock %}
+{% block content %}
+{% if votes %}
+  {% for vote in votes %}
+  <article class="vote">
+    <time datetime="{{ vote.vote_date }}">{{ vote.vote_date }}</time>
+    <p class="summary">{{ vote.plain_language_summary }}</p>
+    <p>
+      <span class="pos-{{ vote.position }}">{{ vote.position }}</span>
+      · {{ vote.tags | join(', ') }}
+      · <a href="{{ vote.source_url }}" rel="noopener">Source</a>
+    </p>
+  </article>
+  {% endfor %}
+{% else %}
+  <p>No publication-ready votes yet for this district. Human plain-language summaries gate what appears here.</p>
+{% endif %}
+{% endblock %}

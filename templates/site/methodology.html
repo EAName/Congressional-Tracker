@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Methodology · {{ brand }}{% endblock %}
+{% block lede %}
+<p class="lede">How this tracker assigns impact tags, what it excludes, and why a volunteer can defend every number on these pages.</p>
+{% endblock %}
+{% block content %}
+<section>
+  <h2>Tags</h2>
+  <p>Seven non-exclusive impact tags come from a versioned rulebook in <code>config/impact_rules.yaml</code> (confidence 1.0, classified_by = RULE). Optional LLM assist never ships to this site until a human promotes the row.</p>
+  <h2>Excluded from district pages</h2>
+  <p>PROCEDURAL, CLOTURE, NOMINATION, SUSPENSION, and MOTION_TO_RECOMMIT stay on the Sheets audit tab. They are real votes and rhetorically indefensible as policy evidence, which is the worst combination to hand a volunteer.</p>
+  <h2>Plain language</h2>
+  <p>Every vote on a district page has a human-written <code>plain_language_summary</code> under 25 words. We never publish the raw parliamentary <code>vote_question</code>; if a summary is missing, the build refuses that row.</p>
+  <h2>Sources</h2>
+  <p>House Clerk EVS and Senate LIS. Each claim carries an inline source link. Last refresh is stamped in the footer as <code>generated_at_utc</code> against a live corpus count of {{ corpus_vote_count }}.</p>
+  <h2>Map version</h2>
+  <p>These pages are keyed to map_version <strong>{{ map_version }}</strong>. Mixing 2021 voting geography with 2026 targeting attributes a vote to the wrong electorate.</p>
+</section>
+{% endblock %}

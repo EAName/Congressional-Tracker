@@ -31,6 +31,8 @@ app = typer.Typer(
 )
 summaries_app = typer.Typer(help="Plain-language bill summary workflow.")
 app.add_typer(summaries_app, name="summaries")
+sheets_app = typer.Typer(help="Google Sheets audit export.")
+app.add_typer(sheets_app, name="sheets")
 
 
 @app.callback()
@@ -307,6 +309,72 @@ def reclassify_cmd(
         raise typer.BadParameter("refusing without --confirm")
     path = classify_mod.reclassify_all(confirm=True, warehouse_path=warehouse)
     typer.echo(f"Reclassify complete. Diff: {path}")
+
+
+@sheets_app.command("preflight")
+def sheets_preflight_cmd() -> None:
+    """Authenticate and verify the service account can read the target sheet."""
+    from vact.exports import sheets as sheets_mod
+
+    try:
+        result = sheets_mod.preflight()
+    except sheets_mod.SheetsConfigError as err:
+        typer.echo(str(err), err=True)
+        raise typer.Exit(code=2) from err
+    except RuntimeError as err:
+        typer.echo(str(err), err=True)
+        raise typer.Exit(code=1) from err
+    typer.echo(
+        f"Sheets preflight ok: {result['spreadsheet']} "
+        f"(service account {result['service_account']})"
+    )
+
+
+@sheets_app.command("push")
+def sheets_push_cmd(
+    warehouse: Path | None = typer.Option(None, "--warehouse"),
+) -> None:
+    """Push README, Target Four, Full Delegation, and Vote Detail tabs."""
+    from vact.exports import sheets as sheets_mod
+
+    try:
+        counts = sheets_mod.push(warehouse_path=warehouse)
+    except sheets_mod.SheetsConfigError as err:
+        typer.echo(str(err), err=True)
+        raise typer.Exit(code=2) from err
+    except RuntimeError as err:
+        typer.echo(str(err), err=True)
+        raise typer.Exit(code=1) from err
+    for tab, n in counts.items():
+        typer.echo(f"  {tab}: {n} rows")
+    typer.echo("Sheets push complete.")
+
+
+@app.command("site")
+def site_cmd(
+    out: Path | None = typer.Option(None, "--out", help="Output directory (default docs/)."),
+    warehouse: Path | None = typer.Option(None, "--warehouse"),
+    map_version: str = typer.Option("2026", "--map-version"),
+) -> None:
+    """Build the activist static site into docs/ (GitHub Pages)."""
+    from vact.exports.site import build_site
+
+    dest = build_site(out_dir=out, warehouse_path=warehouse, map_version=map_version)
+    typer.echo(f"Site built → {dest}")
+
+
+@app.command("social")
+def social_cmd(
+    out: Path | None = typer.Option(None, "--out", help="PNG output directory."),
+    warehouse: Path | None = typer.Option(None, "--warehouse"),
+) -> None:
+    """Generate 1200×675 social cards for the Target Four districts."""
+    from vact.exports.social import build_social_cards
+
+    paths = build_social_cards(out_dir=out, warehouse_path=warehouse)
+    for path in paths:
+        typer.echo(str(path))
+    typer.echo(f"Wrote {len(paths)} social cards.")
 
 
 if __name__ == "__main__":

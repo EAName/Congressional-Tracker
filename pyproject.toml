@@ -16,6 +16,7 @@ dependencies = [
     "pytest-httpx",
     "polars",
     "gspread",
+    "google-auth",
     "jinja2",
     "pillow",
 ]
