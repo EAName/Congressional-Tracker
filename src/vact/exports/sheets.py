@@ -295,7 +295,7 @@ def build_readme_values(
         ],
         [
             "legacy_tabs",
-            "Old hand-built Legislators/Votes/Dashboard stubs are renamed _Archive · * and hidden.",
+            "Old hand-built Legislators/Votes stubs are deleted on each push.",
         ],
     ]
 
@@ -532,47 +532,25 @@ def _col_letter(n: int) -> str:
     return "".join(reversed(letters))
 
 
-def _archive_legacy_tabs(sh) -> list[str]:
-    """Rename + hide hand-built v1 stubs so they are not the product surface."""
-    archived: list[str] = []
-    requests: list[dict[str, Any]] = []
-    for ws in sh.worksheets():
+def _purge_legacy_tabs(sh) -> list[str]:
+    """
+    Delete hand-built v1 stubs (and prior _Archive · copies) so the share link
+    cannot land on Vacant-VA-11 roster content.
+    """
+    purged: list[str] = []
+    # Refresh worksheet list each delete; gspread ids stay valid.
+    for ws in list(sh.worksheets()):
         title = ws.title
-        if title.startswith(LEGACY_PREFIX):
-            requests.append(
-                {
-                    "updateSheetProperties": {
-                        "properties": {"sheetId": ws.id, "hidden": True},
-                        "fields": "hidden",
-                    }
-                }
-            )
-            archived.append(title)
+        is_legacy = title in LEGACY_TAB_TITLES or title.startswith(LEGACY_PREFIX)
+        if not is_legacy:
             continue
-        if title not in LEGACY_TAB_TITLES:
-            continue
-        new_title = f"{LEGACY_PREFIX}{title}"
-        # Avoid collision if a prior push already archived under this name.
-        existing = {w.title for w in sh.worksheets()}
-        if new_title in existing:
-            new_title = f"{LEGACY_PREFIX}{title} ({ws.id})"
-        requests.append(
-            {
-                "updateSheetProperties": {
-                    "properties": {
-                        "sheetId": ws.id,
-                        "title": new_title,
-                        "hidden": True,
-                    },
-                    "fields": "title,hidden",
-                }
-            }
-        )
-        archived.append(new_title)
-    if requests:
-        sh.batch_update({"requests": requests})
-        logger.info("sheets_legacy_archived", tabs=archived)
-    return archived
+        if len(sh.worksheets()) <= 1:
+            logger.warning("sheets_purge_skipped_last_sheet", title=title)
+            break
+        sh.del_worksheet(ws)
+        purged.append(title)
+        logger.info("sheets_legacy_deleted", tab=title)
+    return purged
 
 
 def _set_workbook_title(sh, title: str = WORKBOOK_TITLE) -> None:
@@ -785,8 +763,8 @@ def push(*, warehouse_path: Path | None = None) -> dict[str, int]:
     finally:
         conn.close()
 
-    # Archive stubs before writing so index-0 is not a hidden mess mid-flight.
-    archived = _archive_legacy_tabs(sh)
+    # Remove stubs before writing so product tabs are the only visible sheets.
+    purged = _purge_legacy_tabs(sh)
     try:
         _set_workbook_title(sh)
     except Exception as err:  # noqa: BLE001
@@ -838,5 +816,26 @@ def push(*, warehouse_path: Path | None = None) -> dict[str, int]:
     except Exception as err:  # noqa: BLE001
         logger.warning("sheets_detail_filter_skipped", error=str(err))
 
-    counts["_archived"] = len(archived)
+    # Product tab order after Dashboard.
+    try:
+        requests = []
+        for idx, title in enumerate(order):
+            ws = sh.worksheet(title)
+            requests.append(
+                {
+                    "updateSheetProperties": {
+                        "properties": {
+                            "sheetId": ws.id,
+                            "index": idx,
+                            "hidden": False,
+                        },
+                        "fields": "index,hidden",
+                    }
+                }
+            )
+        sh.batch_update({"requests": requests})
+    except Exception as err:  # noqa: BLE001
+        logger.warning("sheets_reorder_skipped", error=str(err))
+
+    counts["_purged"] = len(purged)
     return counts
