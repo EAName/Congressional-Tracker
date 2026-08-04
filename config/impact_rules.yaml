@@ -27,12 +27,6 @@ tags:
       notes: tax payments and rates
     - pattern: 'opportunity zone|research credit|R&D tax'
       notes: targeted tax provisions
-    - pattern: 'Internal Revenue|IRC\b|excise tax|capital gains|estate tax|gift tax|wealth tax'
-      notes: IRC and capital/estate taxation
-    - pattern: 'tax credit|tax deduction|withholding|IRS\b|taxpayer'
-      notes: credits, deductions, administration
-    - pattern: 'TCJA|Tax Cuts and Jobs|business interest limitation|section 163\(j\)'
-      notes: major business tax statutes
 
   FEDERAL_CONTRACTING:
     - pattern: '8\(a\)|set[- ]aside|small business concern|HUBZone|WOSB|SDVOSB|SWaM'
@@ -67,12 +61,6 @@ tags:
       notes: reporting and agency rules
     - pattern: 'NEPA|permitting|environmental review'
       notes: permitting burden
-    - pattern: 'OSHA|CFPB|FDA rule|FCC rule|unfunded mandate|notice and comment|\bAPA\b'
-      notes: agency rulemakings and mandates
-    - pattern: 'overregulat|deregulat|red tape|compliance burden|guidance document'
-      notes: regulatory burden framing
-    - pattern: 'major rule|economically significant|OIRA|Paperwork Reduction'
-      notes: regulatory process controls
 
   WORKFORCE:
     - pattern: 'independent contractor|employee classification|ABC test|joint employer'

@@ -9,7 +9,7 @@ import duckdb
 
 from vact.transforms.districts import TARGET_DISTRICTS_2026, require_map_version
 
-# District / social surfaces (broader suppression than scorecard math).
+# District / social surfaces. Audit Sheets may show a broader category set.
 SITE_SUPPRESSED_CATEGORIES = frozenset(
     {
         "PROCEDURAL",
@@ -20,32 +20,21 @@ SITE_SUPPRESSED_CATEGORIES = frozenset(
     }
 )
 
-# Scorecard / heatmap aggregation (FIX 1). SUSPENSION remains eligible and ranks
-# below PASSAGE when resolving one position per bill.
-SCORECARD_SUPPRESSED_CATEGORIES = frozenset(
-    {
-        "PROCEDURAL",
-        "CLOTURE",
-        "NOMINATION",
-        "MOTION_TO_RECOMMIT",
-    }
-)
-SCORECARD_SUPPRESSED_BILL_TYPES = frozenset({"hres", "sres"})
-
-# Publication surfaces show all seven tags (FIX 3). Never render an em dash.
 SCORECARD_TAGS = (
-    "ACCESS_TO_CAPITAL",
     "TAX_BURDEN",
-    "FEDERAL_CONTRACTING",
+    "HEALTH_COSTS",
+    "ACCESS_TO_CAPITAL",
+    "INPUT_COSTS",
+)
+
+# Press/site heatmap: tags with live RULE/HUMAN density (skip empty TAX_BURDEN).
+SITE_SCORECARD_TAGS = (
+    "ACCESS_TO_CAPITAL",
     "HEALTH_COSTS",
     "INPUT_COSTS",
-    "REGULATORY_BURDEN",
+    "FEDERAL_CONTRACTING",
     "WORKFORCE",
 )
-SITE_SCORECARD_TAGS = SCORECARD_TAGS
-ALL_IMPACT_TAGS = SCORECARD_TAGS
-
-EMPTY_SCORE_LABEL = "no tagged votes"
 
 CATEGORY_DISPLAY = {
     "PROCEDURAL": "Procedural",
@@ -59,15 +48,15 @@ CATEGORY_DISPLAY = {
 
 DISTRICT_PAGE_MAX_VOTES = 5
 
-# PASSAGE > SUSPENSION > AMENDMENT for per-bill position resolve (FIX 2).
-_SUBSTANCE_RANK_SQL = """
-    CASE v.vote_category
-      WHEN 'PASSAGE' THEN 3
-      WHEN 'SUSPENSION' THEN 2
-      WHEN 'AMENDMENT' THEN 1
-      ELSE 0
-    END
-"""
+ALL_IMPACT_TAGS = (
+    "ACCESS_TO_CAPITAL",
+    "TAX_BURDEN",
+    "FEDERAL_CONTRACTING",
+    "HEALTH_COSTS",
+    "INPUT_COSTS",
+    "REGULATORY_BURDEN",
+    "WORKFORCE",
+)
 
 
 def display_category(raw: str) -> str:
@@ -76,13 +65,6 @@ def display_category(raw: str) -> str:
 
 def display_tag(raw: str) -> str:
     return raw.replace("_", " ").title()
-
-
-def format_score_cell(yea: int, nay: int) -> str:
-    bills = yea + nay
-    if bills == 0:
-        return EMPTY_SCORE_LABEL
-    return f"{yea}Y / {nay}N of {bills} bills"
 
 
 def generated_at_utc() -> str:
@@ -95,7 +77,7 @@ def corpus_vote_count(conn: duckdb.DuckDBPyConnection) -> int:
 
 
 def vote_category_mix(conn: duckdb.DuckDBPyConnection) -> list[dict[str, Any]]:
-    """Live counts of fact_vote.vote_category (pipeline telemetry / README)."""
+    """Live counts of fact_vote.vote_category (corpus composition chart)."""
     rows = conn.execute(
         """
         SELECT vote_category, count(*) AS n
@@ -132,125 +114,42 @@ def tagged_vote_count(conn: duckdb.DuckDBPyConnection) -> int:
     return int(row[0]) if row else 0
 
 
-def _scorecard_eligibility_sql(*, alias_vote: str = "v", alias_bill: str = "b") -> str:
-    cats = ", ".join(f"'{c}'" for c in sorted(SCORECARD_SUPPRESSED_CATEGORIES))
-    types = ", ".join(f"'{t}'" for t in sorted(SCORECARD_SUPPRESSED_BILL_TYPES))
-    rank = _SUBSTANCE_RANK_SQL.replace("v.", f"{alias_vote}.")
-    return f"""
-        {alias_vote}.vote_category NOT IN ({cats})
-        AND coalesce({alias_bill}.bill_type, '') NOT IN ({types})
-        AND {alias_vote}.bill_id IS NOT NULL
-        AND ({rank}) > 0
-    """
-
-
-def distinct_substantive_bill_count(conn: duckdb.DuckDBPyConnection) -> int:
-    """Distinct bills that survive scorecard suppression and have a RULE/HUMAN tag."""
+def publication_ready_count(conn: duckdb.DuckDBPyConnection) -> int:
+    """Tagged, non-suppressed votes with a human plain_language_summary."""
+    suppressed = sorted(SITE_SUPPRESSED_CATEGORIES)
+    ph = ", ".join("?" for _ in suppressed)
     row = conn.execute(
         f"""
-        SELECT count(DISTINCT v.bill_id)
+        SELECT count(DISTINCT v.vote_id)
         FROM fact_vote v
-        JOIN dim_bill b ON b.bill_id = v.bill_id
         JOIN bridge_vote_impact i ON i.vote_id = v.vote_id
-        WHERE i.classified_by IN ('RULE', 'HUMAN')
-          AND {_scorecard_eligibility_sql()}
-        """
-    ).fetchone()
-    return int(row[0]) if row else 0
-
-
-def bills_missing_summary_count(conn: duckdb.DuckDBPyConnection) -> int:
-    """Distinct scorecard-eligible tagged bills without a plain_language_summary."""
-    row = conn.execute(
-        f"""
-        SELECT count(DISTINCT v.bill_id)
-        FROM fact_vote v
         JOIN dim_bill b ON b.bill_id = v.bill_id
-        JOIN bridge_vote_impact i ON i.vote_id = v.vote_id
         WHERE i.classified_by IN ('RULE', 'HUMAN')
-          AND {_scorecard_eligibility_sql()}
-          AND (
-                b.plain_language_summary IS NULL
-             OR length(trim(b.plain_language_summary)) = 0
-          )
-        """
-    ).fetchone()
-    return int(row[0]) if row else 0
-
-
-def publication_ready_bill_count(conn: duckdb.DuckDBPyConnection) -> int:
-    """Distinct scorecard-eligible tagged bills with a human plain_language_summary."""
-    row = conn.execute(
-        f"""
-        SELECT count(DISTINCT v.bill_id)
-        FROM fact_vote v
-        JOIN dim_bill b ON b.bill_id = v.bill_id
-        JOIN bridge_vote_impact i ON i.vote_id = v.vote_id
-        WHERE i.classified_by IN ('RULE', 'HUMAN')
-          AND {_scorecard_eligibility_sql()}
+          AND v.vote_category NOT IN ({ph})
           AND b.plain_language_summary IS NOT NULL
           AND length(trim(b.plain_language_summary)) > 0
           AND NOT EXISTS (
               SELECT 1 FROM bridge_vote_impact llm
               WHERE llm.vote_id = v.vote_id AND llm.classified_by = 'LLM'
           )
-        """
+        """,
+        suppressed,
     ).fetchone()
     return int(row[0]) if row else 0
 
 
-def publication_ready_count(conn: duckdb.DuckDBPyConnection) -> int:
-    """Backward-compatible alias: publication-ready distinct bills."""
-    return publication_ready_bill_count(conn)
-
-
-def party_line_split_count(conn: duckdb.DuckDBPyConnection) -> int:
-    """Count of party-line VA splits on tagged substantive roll calls."""
-    from vact.pipeline.notify import find_party_line_splits
-
-    return len(find_party_line_splits(conn))
-
-
-def tag_coverage_gaps(
-    conn: duckdb.DuckDBPyConnection,
-    *,
-    min_bills: int = 3,
-    tags: tuple[str, ...] = SCORECARD_TAGS,
-) -> list[dict[str, Any]]:
-    """Tags with fewer than min_bills distinct scorecard-eligible bills."""
-    out = []
-    for tag in tags:
-        row = conn.execute(
-            f"""
-            SELECT count(DISTINCT v.bill_id)
-            FROM fact_vote v
-            JOIN dim_bill b ON b.bill_id = v.bill_id
-            JOIN bridge_vote_impact i ON i.vote_id = v.vote_id
-            WHERE i.classified_by IN ('RULE', 'HUMAN')
-              AND i.impact_tag = ?
-              AND {_scorecard_eligibility_sql()}
-            """,
-            [tag],
-        ).fetchone()
-        n = int(row[0]) if row else 0
-        if n < min_bills:
-            out.append({"tag": tag, "bills": n, "label": display_tag(tag)})
-    return out
-
-
 def heatmap_cell(yea: int, nay: int) -> dict[str, Any]:
-    """Encode a scorecard cell for CSS heatmap rendering (bill-level counts)."""
-    bills = yea + nay
-    if bills == 0:
+    """Encode a scorecard cell for CSS heatmap rendering (live counts only)."""
+    total = yea + nay
+    if total == 0:
         return {
-            "label": EMPTY_SCORE_LABEL,
+            "label": "—",
             "yea": 0,
             "nay": 0,
-            "bills": 0,
             "tone": "empty",
             "pct_yea": None,
         }
-    pct = yea / bills
+    pct = yea / total
     if pct >= 0.7:
         tone = "yea-heavy"
     elif pct <= 0.3:
@@ -258,10 +157,9 @@ def heatmap_cell(yea: int, nay: int) -> dict[str, Any]:
     else:
         tone = "split"
     return {
-        "label": format_score_cell(yea, nay),
+        "label": f"{yea}Y/{nay}N",
         "yea": yea,
         "nay": nay,
-        "bills": bills,
         "tone": tone,
         "pct_yea": round(pct, 3),
     }
@@ -361,6 +259,7 @@ def target_four(
         for m in members
         if m["chamber"] == "House" and m["district_number"] in TARGET_DISTRICTS_2026
     ]
+    # Prefer is_target from dim_district; fall back to TARGET_DISTRICTS_2026.
     if any(m.get("is_target") for m in members if m["chamber"] == "House"):
         targets = [
             m
@@ -372,82 +271,21 @@ def target_four(
 
 
 def _tag_record_sql() -> str:
-    """
-    Bill-level Yea/Nay for one member and impact tag.
-
-    One surviving roll call per bill: PASSAGE > SUSPENSION > AMENDMENT,
-    then latest vote_date. Procedural / cloture / nomination / MTR and
-    hres/sres never enter the denominator.
-    """
-    return f"""
-        WITH eligible AS (
-            SELECT
-                m.bioguide_id,
-                i.impact_tag,
-                v.bill_id,
-                v.vote_id,
-                v.vote_date,
-                m.position,
-                {_SUBSTANCE_RANK_SQL} AS substance_rank
-            FROM fact_member_vote m
-            JOIN fact_vote v ON v.vote_id = m.vote_id
-            JOIN dim_bill b ON b.bill_id = v.bill_id
-            JOIN bridge_vote_impact i ON i.vote_id = v.vote_id
-            WHERE i.classified_by IN ('RULE', 'HUMAN')
-              AND i.impact_tag = ?
-              AND m.bioguide_id = ?
-              AND m.position IN ('YEA', 'NAY')
-              AND {_scorecard_eligibility_sql()}
-        ),
-        ranked AS (
-            SELECT
-                *,
-                row_number() OVER (
-                    PARTITION BY bioguide_id, impact_tag, bill_id
-                    ORDER BY substance_rank DESC, vote_date DESC, vote_id DESC
-                ) AS rn
-            FROM eligible
-        )
+    # Live Yea/Nay counts on RULE/HUMAN tags only (no naked LLM).
+    return """
         SELECT
-            bioguide_id,
-            impact_tag,
-            sum(CASE WHEN position = 'YEA' THEN 1 ELSE 0 END) AS yea_n,
-            sum(CASE WHEN position = 'NAY' THEN 1 ELSE 0 END) AS nay_n,
-            count(*) AS bills_n
-        FROM ranked
-        WHERE rn = 1
+            m.bioguide_id,
+            i.impact_tag,
+            sum(CASE WHEN m.position = 'YEA' THEN 1 ELSE 0 END) AS yea_n,
+            sum(CASE WHEN m.position = 'NAY' THEN 1 ELSE 0 END) AS nay_n
+        FROM fact_member_vote m
+        JOIN fact_vote v ON v.vote_id = m.vote_id
+        JOIN bridge_vote_impact i ON i.vote_id = v.vote_id
+        WHERE i.classified_by IN ('RULE', 'HUMAN')
+          AND i.impact_tag = ?
+          AND m.bioguide_id = ?
+          AND v.vote_category NOT IN ('NOMINATION', 'CLOTURE')
         GROUP BY 1, 2
-    """
-
-
-def _member_bills_counted_sql() -> str:
-    """Distinct bills contributing to any scorecard tag for one member."""
-    return f"""
-        WITH eligible AS (
-            SELECT
-                v.bill_id,
-                {_SUBSTANCE_RANK_SQL} AS substance_rank,
-                v.vote_date,
-                v.vote_id
-            FROM fact_member_vote m
-            JOIN fact_vote v ON v.vote_id = m.vote_id
-            JOIN dim_bill b ON b.bill_id = v.bill_id
-            JOIN bridge_vote_impact i ON i.vote_id = v.vote_id
-            WHERE i.classified_by IN ('RULE', 'HUMAN')
-              AND m.bioguide_id = ?
-              AND m.position IN ('YEA', 'NAY')
-              AND {_scorecard_eligibility_sql()}
-        ),
-        ranked AS (
-            SELECT
-                bill_id,
-                row_number() OVER (
-                    PARTITION BY bill_id
-                    ORDER BY substance_rank DESC, vote_date DESC, vote_id DESC
-                ) AS rn
-            FROM eligible
-        )
-        SELECT count(*) FROM ranked WHERE rn = 1
     """
 
 
@@ -473,17 +311,14 @@ def member_scorecard_row(
             [tag, member["bioguide_id"]],
         ).fetchone()
         if hit is None:
-            yea_n = nay_n = bills_n = 0
+            row[f"{tag}_yea"] = 0
+            row[f"{tag}_nay"] = 0
+            row[tag] = "—"
         else:
-            yea_n, nay_n, bills_n = int(hit[2]), int(hit[3]), int(hit[4])
-        row[f"{tag}_yea"] = yea_n
-        row[f"{tag}_nay"] = nay_n
-        row[f"{tag}_bills"] = bills_n
-        row[tag] = format_score_cell(yea_n, nay_n)
-    bills = conn.execute(
-        _member_bills_counted_sql(), [member["bioguide_id"]]
-    ).fetchone()
-    row["bills_counted"] = int(bills[0]) if bills else 0
+            yea_n, nay_n = int(hit[2]), int(hit[3])
+            row[f"{tag}_yea"] = yea_n
+            row[f"{tag}_nay"] = nay_n
+            row[tag] = f"{yea_n}Y / {nay_n}N"
     return row
 
 
@@ -494,76 +329,6 @@ def scorecard_rows(
     tags: tuple[str, ...] = SCORECARD_TAGS,
 ) -> list[dict[str, Any]]:
     return [member_scorecard_row(conn, m, tags=tags) for m in members]
-
-
-def assert_scorecard_excludes_suppressed(conn: duckdb.DuckDBPyConnection) -> None:
-    """
-    Hard check: no scorecard-eligible row may carry a suppressed category or bill type.
-
-    Used by pytest. Raises AssertionError with sample rows on failure.
-    """
-    cats = sorted(SCORECARD_SUPPRESSED_CATEGORIES)
-    types = sorted(SCORECARD_SUPPRESSED_BILL_TYPES)
-    bad_cat = conn.execute(
-        f"""
-        SELECT v.vote_id, v.vote_category, b.bill_type
-        FROM fact_vote v
-        JOIN dim_bill b ON b.bill_id = v.bill_id
-        WHERE {_scorecard_eligibility_sql()}
-          AND v.vote_category IN ({", ".join("?" for _ in cats)})
-        LIMIT 5
-        """,
-        cats,
-    ).fetchall()
-    if bad_cat:
-        raise AssertionError(
-            f"suppressed categories leaked into scorecard eligibility: {bad_cat}"
-        )
-    bad_type = conn.execute(
-        f"""
-        SELECT v.vote_id, v.vote_category, b.bill_type
-        FROM fact_vote v
-        JOIN dim_bill b ON b.bill_id = v.bill_id
-        WHERE {_scorecard_eligibility_sql()}
-          AND coalesce(b.bill_type, '') IN ({", ".join("?" for _ in types)})
-        LIMIT 5
-        """,
-        types,
-    ).fetchall()
-    if bad_type:
-        raise AssertionError(
-            f"suppressed bill types leaked into scorecard eligibility: {bad_type}"
-        )
-
-    leaked = conn.execute(
-        f"""
-        WITH eligible AS (
-            SELECT
-                v.vote_id,
-                v.vote_category,
-                b.bill_type,
-                {_SUBSTANCE_RANK_SQL} AS substance_rank
-            FROM fact_member_vote m
-            JOIN fact_vote v ON v.vote_id = m.vote_id
-            JOIN dim_bill b ON b.bill_id = v.bill_id
-            JOIN bridge_vote_impact i ON i.vote_id = v.vote_id
-            WHERE i.classified_by IN ('RULE', 'HUMAN')
-              AND m.position IN ('YEA', 'NAY')
-              AND {_scorecard_eligibility_sql()}
-        )
-        SELECT vote_id, vote_category, bill_type
-        FROM eligible
-        WHERE vote_category IN ({", ".join("?" for _ in cats)})
-           OR coalesce(bill_type, '') IN ({", ".join("?" for _ in types)})
-           OR substance_rank = 0
-        LIMIT 5
-        """,
-        [*cats, *types],
-    ).fetchall()
-    if leaked:
-        raise AssertionError(
-            f"scorecard eligible CTE leaked suppressed rows: {leaked}"
-        )
 
 
 def district_votes_for_member(

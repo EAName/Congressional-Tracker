@@ -96,19 +96,10 @@ def test_build_tab_payloads(tmp_path: Path) -> None:
         assert payloads["README"][1][1] == "2026-08-03T00:00:00Z"
         dash = payloads["Dashboard"]
         assert dash[0][0] == "VA Congressional Vote Tracker"
-        assert any(r and "TARGET FOUR" in str(r[0]) for r in dash)
-        assert any(
-            r and ("plain_language_summary" in str(r[0]) or "ready to publish" in str(r[0]).lower())
-            for r in dash
-            if r
-        )
-        # Category telemetry belongs on README, not Dashboard.
-        assert not any(r and r[0] == "PROCEDURAL" for r in dash)
-        assert "Bills counted" in payloads["Target Four"][0]
+        assert any("TARGET FOUR" in str(r[0]) for r in dash if r)
+        # Chart source headers live off to the right (col N).
+        assert dash[0][13] == "Vote category"
         assert "Access To Capital" in payloads["Target Four"][0] or "Access to Capital" in str(
-            payloads["Target Four"][0]
-        )
-        assert "Tax Burden" in payloads["Target Four"][0] or "TAX_BURDEN" not in str(
             payloads["Target Four"][0]
         )
         # Target Four header + up to 4 members

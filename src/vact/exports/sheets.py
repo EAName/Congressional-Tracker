@@ -13,16 +13,15 @@ from typing import Any, Sequence
 import structlog
 
 from vact.exports.data import (
-    SCORECARD_TAGS,
-    bills_missing_summary_count,
+    SITE_SCORECARD_TAGS,
     corpus_vote_count,
-    distinct_substantive_bill_count,
+    display_category,
     generated_at_utc,
+    impact_tag_mix,
     list_delegation,
-    party_line_split_count,
     publication_ready_count,
     scorecard_rows,
-    tag_coverage_gaps,
+    tagged_vote_count,
     target_four,
     vote_category_mix,
     vote_detail_audit_rows,
@@ -57,7 +56,8 @@ LEGACY_PREFIX = "_Archive · "
 
 WORKBOOK_TITLE = "VA Congressional Vote Tracker"
 
-SHEETS_SCORECARD_TAGS = SCORECARD_TAGS
+# Match the press site: tags with live density (no empty TAX_BURDEN column).
+SHEETS_SCORECARD_TAGS = SITE_SCORECARD_TAGS
 
 DEFAULT_OAUTH_CLIENT = Path.home() / ".config" / "gspread" / "credentials.json"
 DEFAULT_OAUTH_TOKEN = Path.home() / ".config" / "gspread" / "authorized_user.json"
@@ -72,7 +72,6 @@ SCORECARD_HEADER = [
     "Map",
     "Lean",
     "Target",
-    "Bills counted",
     *[t.replace("_", " ").title() for t in SHEETS_SCORECARD_TAGS],
 ]
 
@@ -263,7 +262,6 @@ def _scorecard_matrix(rows: list[dict[str, Any]]) -> list[list[Any]]:
                 r["map_version"],
                 r.get("partisan_lean") or "—",
                 "Yes" if r.get("is_target") else "No",
-                r.get("bills_counted", 0),
                 *[r[t] for t in SHEETS_SCORECARD_TAGS],
             ]
         )
@@ -276,25 +274,15 @@ def build_readme_values(
     corpus_votes: int,
     tagged: int = 0,
     ready: int = 0,
-    category_mix: list[dict[str, Any]] | None = None,
 ) -> list[list[Any]]:
-    rows = [
+    return [
         ["Field", "Value"],
         ["generated_at_utc", generated_at],
         ["corpus_vote_count", corpus_votes],
         ["tagged_vote_count", tagged],
-        ["publication_ready_bills", ready],
+        ["publication_ready_count", ready],
         ["map_version", "2026"],
-        [
-            "primary_surface",
-            "Dashboard tab (Target Four bill-level scorecard; Full Delegation tab for all 13)",
-        ],
-        [
-            "scorecard_denominator",
-            "Distinct bills after suppressing PROCEDURAL/CLOTURE/NOMINATION/"
-            "MOTION_TO_RECOMMIT and hres/sres; one position per bill "
-            "(PASSAGE > SUSPENSION > AMENDMENT).",
-        ],
+        ["primary_surface", "Dashboard tab (charts + Target Four + Full Delegation scorecards)"],
         [
             "sources",
             "House Clerk EVS (clerk.house.gov); Senate LIS (senate.gov); "
@@ -313,13 +301,7 @@ def build_readme_values(
             "legacy_tabs",
             "Old hand-built Legislators/Votes stubs are deleted on each push.",
         ],
-        [],
-        ["Pipeline telemetry — vote_category counts (not reader-facing)"],
-        ["vote_category", "count"],
     ]
-    for item in category_mix or []:
-        rows.append([item["label"], item["count"]])
-    return rows
 
 
 def build_dashboard_layout(
@@ -328,117 +310,138 @@ def build_dashboard_layout(
     generated_at: str | None = None,
 ) -> tuple[list[list[Any]], dict[str, Any]]:
     """
-    Reader-facing Dashboard (FIX 4).
+    Build the Dashboard rectangle plus chart source coordinates (1-based).
 
-    Row 1  title / map / generated_at
-    Row 3  publication banner
-    Row 5  four metrics
-    Row 8  Target Four scorecard
-    Row 15 coverage gaps
-    Row 20 link to Full Delegation
+    Left side (A–L): title, snapshot, Target Four, Full Delegation.
+    Right side (N–R): chart source tables (kept out of the primary read path).
     """
     ts = generated_at or generated_at_utc()
     votes = corpus_vote_count(conn)
-    substantive = distinct_substantive_bill_count(conn)
-    splits = party_line_split_count(conn)
+    tagged = tagged_vote_count(conn)
     ready = publication_ready_count(conn)
-    missing = bills_missing_summary_count(conn)
-    gaps = tag_coverage_gaps(conn, min_bills=3)
+    categories = vote_category_mix(conn)
+    tags = impact_tag_mix(conn)
     target_members = scorecard_rows(
         conn, target_four(conn, map_version="2026"), tags=SHEETS_SCORECARD_TAGS
     )
+    full_members = scorecard_rows(
+        conn, list_delegation(conn, map_version="2026"), tags=SHEETS_SCORECARD_TAGS
+    )
     targets = _scorecard_matrix(target_members)
-    ncols = len(SCORECARD_HEADER)
+    full = _scorecard_matrix(full_members)
+
+    # Chart sources live in columns N–R (1-based cols 14–18) so the scorecard leads.
+    chart_col_cat = 14  # N
+    chart_col_tag = 17  # Q
+    chart_header_row = 1
+    chart_data_start = 2
+    n_cat = max(len(categories), 1)
+    n_tag = max(len(tags), 1)
+    chart_height = max(n_cat, n_tag)
+    chart_data_end = chart_data_start + chart_height - 1
+    width = max(18, chart_col_tag + 1)
+
+    def blank_row() -> list[Any]:
+        return [""] * width
 
     def pad(row: list[Any]) -> list[Any]:
-        return list(row) + [""] * max(0, ncols - len(row))
+        return list(row) + [""] * (width - len(row))
 
-    # Fixed row map (1-based) — pad with blanks to align sections.
-    grid: dict[int, list[Any]] = {}
-    grid[1] = pad(["VA Congressional Vote Tracker", "Map 2026", ts])
-    grid[2] = pad(["Democrats for Virginia · Small Business Caucus"])
-    if ready == 0:
-        banner = (
-            f"PUBLICATION BLOCKED — {missing} distinct substantive bills still lack "
-            "a plain_language_summary. Scorecard cells are live; vote briefs are not."
+    rows: list[list[Any]] = [
+        pad(["VA Congressional Vote Tracker"]),
+        pad(["Democrats for Virginia · Small Business Caucus"]),
+        pad(["Updated (UTC)", ts, "Map", "2026"]),
+        pad(
+            [
+                "Official roll calls",
+                votes,
+                "Impact-tagged votes",
+                tagged,
+                "Virginia members",
+                13,
+            ]
+        ),
+        pad(
+            [
+                "Sources",
+                "House Clerk · Senate LIS · congress-legislators",
+            ]
+        ),
+        blank_row(),
+        pad(
+            [
+                "TARGET FOUR — proposed 2026 map seats leaning toward Democrats",
+            ]
+        ),
+    ]
+    target_start = len(rows) + 1
+    for block_row in targets:
+        rows.append(pad(block_row))
+
+    rows.append(blank_row())
+    rows.append(
+        pad(
+            [
+                "FULL DELEGATION — Yea / Nay on impact-tagged votes",
+            ]
         )
-    else:
-        banner = (
-            f"{ready} distinct bills ready to publish · {missing} still need summaries."
+    )
+    rows.append(
+        pad(
+            [
+                "Green cells lean Yea · red lean Nay · dash = no tagged votes yet in that theme",
+            ]
         )
-    grid[3] = pad([banner])
-    grid[4] = pad([])
-    grid[5] = pad(
-        [
-            "Roll calls ingested",
-            votes,
-            "Distinct substantive bills",
-            substantive,
-            "Party-line splits",
-            splits,
-            "Bills ready to publish",
-            ready,
-        ]
     )
-    grid[6] = pad([])
-    grid[7] = pad(
-        [
-            "TARGET FOUR — districts leaning Democratic under the 2026 map. "
-            "Procedural votes and House/Senate resolutions excluded. "
-            "Cells are distinct bills (PASSAGE > SUSPENSION > AMENDMENT).",
-        ]
-    )
-    # Target Four table starts at row 8.
-    for i, row in enumerate(targets):
-        grid[8 + i] = pad(row)
-    after_targets = 8 + len(targets)  # next free 1-based row
+    full_start = len(rows) + 1
+    for block_row in full:
+        rows.append(pad(block_row))
 
-    # Coverage gaps prefer row 15; if Target Four spilled past 14, place after a blank.
-    gap_row = max(15, after_targets + 1)
-    grid[gap_row] = pad(["COVERAGE GAPS — tags with fewer than 3 distinct substantive bills"])
-    if gaps:
-        for j, g in enumerate(gaps):
-            grid[gap_row + 1 + j] = pad(
-                [g["label"], f"{g['bills']} distinct bill(s)"]
-            )
-        gap_end = gap_row + 1 + len(gaps)
-    else:
-        grid[gap_row + 1] = pad(["None — every published tag has at least 3 bills."])
-        gap_end = gap_row + 2
+    # Ensure enough rows for chart source block.
+    while len(rows) < chart_data_end:
+        rows.append(blank_row())
 
-    link_row = max(20, gap_end + 1)
-    grid[link_row] = pad(
-        [
-            "Full Delegation scorecard → open the Full Delegation tab "
-            "(all 13 members; same bill-level denominator).",
-        ]
-    )
-
-    max_row = max(grid)
-    rows = [pad([]) for _ in range(max_row)]
-    for r, vals in grid.items():
-        rows[r - 1] = vals
+    # Write chart headers/data into N and Q columns (0-based indexes 13 and 16).
+    rows[0][chart_col_cat - 1] = "Vote category"
+    rows[0][chart_col_cat] = "Count"
+    rows[0][chart_col_tag - 1] = "Impact tag"
+    rows[0][chart_col_tag] = "Count"
+    for i in range(chart_height):
+        r_idx = chart_data_start - 1 + i
+        while len(rows) <= r_idx:
+            rows.append(blank_row())
+        cat = categories[i] if i < len(categories) else {"label": "", "count": ""}
+        tag = tags[i] if i < len(tags) else {"label": "", "count": ""}
+        rows[r_idx][chart_col_cat - 1] = display_category(str(cat["label"])) if cat["label"] else ""
+        rows[r_idx][chart_col_cat] = cat["count"]
+        rows[r_idx][chart_col_tag - 1] = (
+            str(tag["label"]).replace("_", " ").title() if tag["label"] else ""
+        )
+        rows[r_idx][chart_col_tag] = tag["count"]
 
     meta = {
         "sheet_title": TAB_DASHBOARD,
-        "banner_row": 3,
-        "metrics_row": 5,
-        "target_header_row": 8,
+        "category_header_row": chart_header_row,
+        "category_start_row": chart_data_start,
+        "category_end_row": chart_data_end,
+        "impact_header_row": chart_header_row,
+        "impact_start_row": chart_data_start,
+        "impact_end_row": chart_data_end,
+        "category_col": chart_col_cat - 1,  # 0-based
+        "impact_col": chart_col_tag - 1,
+        "n_categories": len(categories),
+        "n_tags": len(tags),
+        "target_header_row": target_start,
         "target_rows": len(targets),
-        "gap_row": gap_row,
-        "link_row": link_row,
-        "score_col_start": 8,  # first tag col after Bills counted
-        "score_col_end": 8 + len(SHEETS_SCORECARD_TAGS),
-        "publication_ready": ready,
-        "missing_summaries": missing,
-        "ncols": ncols,
+        "full_header_row": full_start,
+        "full_rows": len(full),
+        "score_col_start": 7,  # 0-based: first impact tag col
+        "score_col_end": 7 + len(SHEETS_SCORECARD_TAGS),
+        "ncols": width,
         "generated_at": ts,
         "corpus_votes": votes,
-        "substantive_bills": substantive,
-        "party_line_splits": splits,
-        # No embedded category charts on Dashboard.
-        "n_categories": 0,
-        "n_tags": 0,
+        "tagged": tagged,
+        "ready": ready,
     }
     return rows, meta
 
@@ -458,8 +461,8 @@ def build_tab_payloads(
         conn, list_delegation(conn, map_version="2026"), tags=SHEETS_SCORECARD_TAGS
     )
     votes = corpus_vote_count(conn)
+    tagged = tagged_vote_count(conn)
     ready = publication_ready_count(conn)
-    categories = vote_category_mix(conn)
     detail_header = [
         "Member",
         "Party",
@@ -478,11 +481,7 @@ def build_tab_payloads(
         TAB_FULL: _scorecard_matrix(full),
         TAB_DETAIL: detail,
         TAB_README: build_readme_values(
-            generated_at=ts,
-            corpus_votes=votes,
-            tagged=sum(c["count"] for c in categories),
-            ready=ready,
-            category_mix=categories,
+            generated_at=ts, corpus_votes=votes, tagged=tagged, ready=ready
         ),
     }
 
@@ -615,9 +614,138 @@ def _delete_embedded_charts(sh, sheet_id: int) -> None:
 
 
 def _add_dashboard_charts(sh, ws, meta: dict[str, Any]) -> None:
-    """Dashboard no longer embeds category telemetry charts (FIX 4)."""
-    _delete_embedded_charts(sh, ws.id)
-    logger.info("sheets_dashboard_charts_cleared")
+    """Replace Dashboard embedded charts (pie categories + bar impact tags)."""
+    sheet_id = ws.id
+    _delete_embedded_charts(sh, sheet_id)
+
+    header_idx = meta["category_header_row"] - 1
+    cat_end_excl = meta["category_end_row"]
+    impact_header_idx = meta["impact_header_row"] - 1
+    impact_end_excl = meta["impact_end_row"]
+    cat_col = int(meta["category_col"])
+    tag_col = int(meta["impact_col"])
+
+    requests = [
+        {
+            "addChart": {
+                "chart": {
+                    "spec": {
+                        "title": "Roll-call mix",
+                        "pieChart": {
+                            "legendPosition": "RIGHT_LEGEND",
+                            "domain": {
+                                "sourceRange": {
+                                    "sources": [
+                                        {
+                                            "sheetId": sheet_id,
+                                            "startRowIndex": header_idx,
+                                            "endRowIndex": cat_end_excl,
+                                            "startColumnIndex": cat_col,
+                                            "endColumnIndex": cat_col + 1,
+                                        }
+                                    ]
+                                }
+                            },
+                            "series": {
+                                "sourceRange": {
+                                    "sources": [
+                                        {
+                                            "sheetId": sheet_id,
+                                            "startRowIndex": header_idx,
+                                            "endRowIndex": cat_end_excl,
+                                            "startColumnIndex": cat_col + 1,
+                                            "endColumnIndex": cat_col + 2,
+                                        }
+                                    ]
+                                }
+                            },
+                        },
+                    },
+                    "position": {
+                        "overlayPosition": {
+                            "anchorCell": {
+                                "sheetId": sheet_id,
+                                "rowIndex": 0,
+                                "columnIndex": 8,
+                            },
+                            "widthPixels": 380,
+                            "heightPixels": 250,
+                        }
+                    },
+                }
+            }
+        },
+        {
+            "addChart": {
+                "chart": {
+                    "spec": {
+                        "title": "Small-business impact themes",
+                        "basicChart": {
+                            "chartType": "COLUMN",
+                            "legendPosition": "NO_LEGEND",
+                            "axis": [
+                                {"position": "BOTTOM_AXIS", "title": "Theme"},
+                                {"position": "LEFT_AXIS", "title": "Votes"},
+                            ],
+                            "domains": [
+                                {
+                                    "domain": {
+                                        "sourceRange": {
+                                            "sources": [
+                                                {
+                                                    "sheetId": sheet_id,
+                                                    "startRowIndex": impact_header_idx,
+                                                    "endRowIndex": impact_end_excl,
+                                                    "startColumnIndex": tag_col,
+                                                    "endColumnIndex": tag_col + 1,
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ],
+                            "series": [
+                                {
+                                    "series": {
+                                        "sourceRange": {
+                                            "sources": [
+                                                {
+                                                    "sheetId": sheet_id,
+                                                    "startRowIndex": impact_header_idx,
+                                                    "endRowIndex": impact_end_excl,
+                                                    "startColumnIndex": tag_col + 1,
+                                                    "endColumnIndex": tag_col + 2,
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "targetAxis": "LEFT_AXIS",
+                                }
+                            ],
+                            "headerCount": 1,
+                        },
+                    },
+                    "position": {
+                        "overlayPosition": {
+                            "anchorCell": {
+                                "sheetId": sheet_id,
+                                "rowIndex": 0,
+                                "columnIndex": 11,
+                            },
+                            "widthPixels": 380,
+                            "heightPixels": 250,
+                        }
+                    },
+                }
+            }
+        },
+    ]
+    sh.batch_update({"requests": requests})
+    logger.info(
+        "sheets_dashboard_charts",
+        categories=meta["n_categories"],
+        tags=meta["n_tags"],
+    )
 
 
 def _score_conditional_rules(
@@ -716,12 +844,13 @@ def _score_conditional_rules(
 
 
 def _format_workbook(sh, dash_meta: dict[str, Any]) -> None:
-    """Bold titles, banner color, freeze headers, conditional score colors by ratio."""
+    """Bold titles, freeze headers, column widths, conditional score colors."""
     dash = sh.worksheet(TAB_DASHBOARD)
     target = sh.worksheet(TAB_TARGET)
     full = sh.worksheet(TAB_FULL)
     detail = sh.worksheet(TAB_DETAIL)
 
+    # Drop previous conditional rules so each push is deterministic.
     del_reqs: list[dict[str, Any]] = []
     meta = sh.fetch_sheet_metadata()
     for sheet in meta.get("sheets", []):
@@ -744,14 +873,6 @@ def _format_workbook(sh, dash_meta: dict[str, Any]) -> None:
     band = {"red": 0.93, "green": 0.95, "blue": 0.97}
     sc0 = int(dash_meta["score_col_start"])
     sc1 = int(dash_meta["score_col_end"])
-    banner_row = int(dash_meta["banner_row"]) - 1
-    ready = int(dash_meta.get("publication_ready") or 0)
-    banner_bg = (
-        {"red": 0.95, "green": 0.84, "blue": 0.84}
-        if ready == 0
-        else {"red": 0.85, "green": 0.93, "blue": 0.88}
-    )
-
     requests: list[dict[str, Any]] = [
         {
             "repeatCell": {
@@ -760,7 +881,7 @@ def _format_workbook(sh, dash_meta: dict[str, Any]) -> None:
                     "startRowIndex": 0,
                     "endRowIndex": 1,
                     "startColumnIndex": 0,
-                    "endColumnIndex": 3,
+                    "endColumnIndex": 7,
                 },
                 "cell": {
                     "userEnteredFormat": {
@@ -778,64 +899,85 @@ def _format_workbook(sh, dash_meta: dict[str, Any]) -> None:
             "repeatCell": {
                 "range": {
                     "sheetId": dash.id,
-                    "startRowIndex": banner_row,
-                    "endRowIndex": banner_row + 1,
+                    "startRowIndex": 1,
+                    "endRowIndex": 2,
                     "startColumnIndex": 0,
-                    "endColumnIndex": max(sc1, 8),
-                },
-                "cell": {
-                    "userEnteredFormat": {
-                        "textFormat": {"bold": True, "foregroundColor": navy},
-                        "backgroundColor": banner_bg,
-                    }
-                },
-                "fields": "userEnteredFormat(textFormat,backgroundColor)",
-            }
-        },
-        {
-            "repeatCell": {
-                "range": {
-                    "sheetId": dash.id,
-                    "startRowIndex": int(dash_meta["target_header_row"]) - 1,
-                    "endRowIndex": int(dash_meta["target_header_row"]),
-                    "startColumnIndex": 0,
-                    "endColumnIndex": sc1,
-                },
-                "cell": {
-                    "userEnteredFormat": {
-                        "textFormat": {"bold": True, "foregroundColor": navy},
-                        "backgroundColor": band,
-                    }
-                },
-                "fields": "userEnteredFormat(textFormat,backgroundColor)",
-            }
-        },
-    ]
-
-    # Target Four intro (row 7).
-    requests.append(
-        {
-            "repeatCell": {
-                "range": {
-                    "sheetId": dash.id,
-                    "startRowIndex": 6,
-                    "endRowIndex": 7,
-                    "startColumnIndex": 0,
-                    "endColumnIndex": 8,
+                    "endColumnIndex": 7,
                 },
                 "cell": {
                     "userEnteredFormat": {
                         "textFormat": {
-                            "bold": True,
                             "fontSize": 11,
-                            "foregroundColor": navy,
+                            "italic": True,
+                            "foregroundColor": {
+                                "red": 0.29,
+                                "green": 0.36,
+                                "blue": 0.44,
+                            },
                         }
                     }
                 },
                 "fields": "userEnteredFormat.textFormat",
             }
-        }
-    )
+        },
+    ]
+
+    # Section title rows (1-based) sit one above Target header and two above Full header.
+    for title_row in (
+        dash_meta["target_header_row"] - 1,
+        dash_meta["full_header_row"] - 2,
+    ):
+        if title_row < 1:
+            continue
+        requests.append(
+            {
+                "repeatCell": {
+                    "range": {
+                        "sheetId": dash.id,
+                        "startRowIndex": title_row - 1,
+                        "endRowIndex": title_row,
+                        "startColumnIndex": 0,
+                        "endColumnIndex": 7,
+                    },
+                    "cell": {
+                        "userEnteredFormat": {
+                            "textFormat": {
+                                "bold": True,
+                                "fontSize": 12,
+                                "foregroundColor": navy,
+                            }
+                        }
+                    },
+                    "fields": "userEnteredFormat.textFormat",
+                }
+            }
+        )
+
+    # Scorecard header rows on Dashboard + dedicated tabs.
+    for sheet_id, row_1based in (
+        (dash.id, dash_meta["target_header_row"]),
+        (dash.id, dash_meta["full_header_row"]),
+    ):
+        requests.append(
+            {
+                "repeatCell": {
+                    "range": {
+                        "sheetId": sheet_id,
+                        "startRowIndex": row_1based - 1,
+                        "endRowIndex": row_1based,
+                        "startColumnIndex": 0,
+                        "endColumnIndex": sc1,
+                    },
+                    "cell": {
+                        "userEnteredFormat": {
+                            "textFormat": {"bold": True, "foregroundColor": navy},
+                            "backgroundColor": band,
+                        }
+                    },
+                    "fields": "userEnteredFormat(textFormat,backgroundColor)",
+                }
+            }
+        )
 
     for ws in (target, full, detail):
         requests.append(
@@ -871,13 +1013,21 @@ def _format_workbook(sh, dash_meta: dict[str, Any]) -> None:
             }
         )
 
-    t_header = int(dash_meta["target_header_row"])
-    t_rows = int(dash_meta["target_rows"])
+    # Conditional score colors.
     requests.extend(
         _score_conditional_rules(
             dash.id,
-            start_row=t_header,
-            end_row=t_header + t_rows - 1,
+            start_row=dash_meta["target_header_row"],
+            end_row=dash_meta["target_header_row"] + dash_meta["target_rows"] - 1,
+            start_col=sc0,
+            end_col=sc1,
+        )
+    )
+    requests.extend(
+        _score_conditional_rules(
+            dash.id,
+            start_row=dash_meta["full_header_row"],
+            end_row=dash_meta["full_header_row"] + dash_meta["full_rows"] - 1,
             start_col=sc0,
             end_col=sc1,
         )
@@ -950,11 +1100,10 @@ def _format_workbook(sh, dash_meta: dict[str, Any]) -> None:
             }
         )
 
-    tag_widths = [120] * len(SHEETS_SCORECARD_TAGS)
     for ws, widths in (
-        (dash, [220, 100, 180, 70, 55, 80, 65, 90, *tag_widths]),
-        (target, [200, 110, 80, 70, 50, 80, 60, 90, *tag_widths]),
-        (full, [200, 110, 80, 70, 50, 80, 60, 90, *tag_widths]),
+        (dash, [220, 120, 90, 70, 55, 80, 65, 110, 110, 110, 110, 120]),
+        (target, [200, 110, 80, 70, 50, 80, 60, 110, 110, 110, 110, 120]),
+        (full, [200, 110, 80, 70, 50, 80, 60, 110, 110, 110, 110, 120]),
         (detail, [180, 90, 70, 100, 110, 280, 80, 160, 280]),
     ):
         for i, px in enumerate(widths):
