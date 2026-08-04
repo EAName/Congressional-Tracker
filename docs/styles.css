@@ -290,7 +290,7 @@ section { margin: 2.25rem 0; }
 .heat.yea-heavy { background: #d8efe4; color: var(--ok); }
 .heat.nay-heavy { background: #f3d7de; color: var(--nay); }
 .heat.split { background: #f3e6cf; color: var(--split); }
-.heat.empty { background: var(--empty); color: var(--muted); font-weight: 500; }
+.heat.empty { background: var(--empty); color: var(--muted); font-weight: 500; font-size: 0.68rem; min-width: 5.5rem; }
 
 .district-heat {
   display: grid;
