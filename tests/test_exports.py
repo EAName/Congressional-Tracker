@@ -96,9 +96,10 @@ def test_build_tab_payloads(tmp_path: Path) -> None:
         assert payloads["README"][1][1] == "2026-08-03T00:00:00Z"
         dash = payloads["Dashboard"]
         assert dash[0][0] == "VA Congressional Vote Tracker"
-        assert any("TARGET FOUR" in str(r[0]) for r in dash if r)
-        # Chart source headers live off to the right (col N).
-        assert dash[0][13] == "Vote category"
+        assert any(r and str(r[0]).startswith("STORY QUEUE") for r in dash if r)
+        assert any(r and str(r[0]).startswith("READY TO PUBLISH") for r in dash if r)
+        assert any(r and str(r[0]).startswith("FEATURED STORY") for r in dash if r)
+        assert any(r and "TARGET FOUR SCORECARD" in str(r[0]) for r in dash if r)
         assert "Access To Capital" in payloads["Target Four"][0] or "Access to Capital" in str(
             payloads["Target Four"][0]
         )
