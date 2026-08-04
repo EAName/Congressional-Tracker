@@ -47,3 +47,28 @@ def apply_migrations(conn: duckdb.DuckDBPyConnection) -> None:
             conn.execute(
                 "ALTER TABLE dim_bill ADD COLUMN plain_language_summary TEXT"
             )
+
+    if "fact_vote" in tables:
+        cols = _columns(conn, "fact_vote")
+        if "present_total" not in cols:
+            conn.execute("ALTER TABLE fact_vote ADD COLUMN present_total INTEGER")
+        if "not_voting_total" not in cols:
+            conn.execute(
+                "ALTER TABLE fact_vote ADD COLUMN not_voting_total INTEGER"
+            )
+        # Backfill present/NV from member rows when null (Prompt 8 columns).
+        conn.execute(
+            """
+            UPDATE fact_vote v
+            SET
+                present_total = (
+                    SELECT count(*) FROM fact_member_vote m
+                    WHERE m.vote_id = v.vote_id AND m.position = 'PRESENT'
+                ),
+                not_voting_total = (
+                    SELECT count(*) FROM fact_member_vote m
+                    WHERE m.vote_id = v.vote_id AND m.position = 'NOT_VOTING'
+                )
+            WHERE v.present_total IS NULL OR v.not_voting_total IS NULL
+            """
+        )

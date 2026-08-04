@@ -15,6 +15,8 @@ from vact.transforms import classify as classify_mod
 from vact.transforms.districts import build_dim_district_rows
 from vact.transforms.legislators import build_dim_legislator_rows
 from vact.transforms.lis_crosswalk import build_lis_bioguide_crosswalk
+from vact.warehouse.connection import connect, ensure_schema
+from vact.warehouse.contracts import assert_all_warehouse_contracts
 from vact.warehouse.load import (
     load_house_vote,
     load_senate_vote,
@@ -200,6 +202,22 @@ def gaps_cmd(
     """Report warehouse vs upstream gaps and write coverage.md heatmap."""
     path = write_coverage_report(congress=congress, warehouse_path=warehouse)
     typer.echo(f"Wrote {path}")
+
+
+@app.command("contracts")
+def contracts_cmd(
+    warehouse: Path | None = typer.Option(None, "--warehouse"),
+) -> None:
+    """Run source, referential, and freshness warehouse contracts."""
+    from vact.paths import WAREHOUSE_PATH
+
+    conn = connect(warehouse or WAREHOUSE_PATH)
+    try:
+        ensure_schema(conn)
+        assert_all_warehouse_contracts(conn)
+    finally:
+        conn.close()
+    typer.echo("All warehouse contracts passed.")
 
 
 @app.command("classify")

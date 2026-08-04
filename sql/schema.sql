@@ -61,6 +61,8 @@ CREATE TABLE IF NOT EXISTS fact_vote (
     bill_id         TEXT,              -- FK to dim_bill; NULL for pure nominations without PN id
     yea_total       INTEGER,
     nay_total       INTEGER,
+    present_total   INTEGER,
+    not_voting_total INTEGER,
     source_url      TEXT
 );
 

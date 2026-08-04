@@ -19,6 +19,7 @@ from vact.transforms.ids import (
 )
 from vact.transforms.vote_category import classify_vote_category
 from vact.warehouse.connection import connect, ensure_schema
+from vact.warehouse.contracts import assert_member_totals_match
 
 _UPSERT_LEGISLATOR = """
 INSERT INTO dim_legislator AS t (
@@ -75,8 +76,8 @@ _UPSERT_VOTE = """
 INSERT INTO fact_vote AS t (
     vote_id, congress, session, chamber, roll_number, vote_date,
     vote_question, vote_type, vote_category, result, passed, bill_id,
-    yea_total, nay_total, source_url
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    yea_total, nay_total, present_total, not_voting_total, source_url
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 ON CONFLICT (vote_id) DO UPDATE SET
     congress = excluded.congress,
     session = excluded.session,
@@ -91,6 +92,8 @@ ON CONFLICT (vote_id) DO UPDATE SET
     bill_id = excluded.bill_id,
     yea_total = excluded.yea_total,
     nay_total = excluded.nay_total,
+    present_total = excluded.present_total,
+    not_voting_total = excluded.not_voting_total,
     source_url = excluded.source_url
 """
 
@@ -226,6 +229,15 @@ def load_house_vote(
     try:
         ensure_schema(db)
         vote_id = canonical_vote_id("House", vote.congress, vote.session, vote.roll_number)
+        member_positions = [m.position for m in members]
+        assert_member_totals_match(
+            vote_id=vote_id,
+            positions=member_positions,
+            yea=vote.totals.yea,
+            nay=vote.totals.nay,
+            present=vote.totals.present,
+            not_voting=vote.totals.not_voting,
+        )
         question = vote.vote_question or ""
         category = classify_vote_category(question, vote.vote_type, conn=db)
         bill = parse_bill_ref(vote.legis_num, vote.congress)
@@ -249,6 +261,8 @@ def load_house_vote(
                 bill.bill_id if bill else None,
                 vote.totals.yea,
                 vote.totals.nay,
+                vote.totals.present,
+                vote.totals.not_voting,
                 vote.source_url,
             ],
         )
@@ -276,6 +290,14 @@ def load_senate_vote(
     try:
         ensure_schema(db)
         vote_id = canonical_vote_id("Senate", vote.congress, vote.session, vote.roll_number)
+        assert_member_totals_match(
+            vote_id=vote_id,
+            positions=[m.position for m in members],
+            yea=vote.totals.yea,
+            nay=vote.totals.nay,
+            present=vote.totals.present,
+            not_voting=vote.totals.not_voting,
+        )
         question = vote.vote_question or vote.vote_question_text or ""
         category = classify_vote_category(question, None, conn=db)
 
@@ -309,6 +331,8 @@ def load_senate_vote(
                 bill.bill_id if bill else None,
                 vote.totals.yea,
                 vote.totals.nay,
+                vote.totals.present,
+                vote.totals.not_voting,
                 vote.source_url,
             ],
         )

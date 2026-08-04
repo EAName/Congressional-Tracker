@@ -89,6 +89,15 @@ Every analytic query and every export that uses congressional geography MUST nam
 attributes votes to the wrong electorate. District numbers persist across versions;
 `dim_district` carries lean and `is_target` per version. See `config/districts.yaml`.
 
+## Contract tests
+
+`vact contracts` (and `tests/test_contracts.py`) enforce ingest reconciliation. Member
+totals must match source XML exactly or the load fails. Bioguide→`dim_legislator`
+validity is Virginia-scoped: non-VA members appear in `fact_member_vote` without a
+`dim_legislator` row by design (Prompt 1). Activist-facing publication queries live in
+`exports/publication.py` and refuse votes missing `plain_language_summary` or carrying
+unadjudicated `LLM` tags.
+
 ## Sequencing
 
 Build order is defined by the Prompt Kit (prompts 0–10). Do not skip ahead of the
