@@ -4,32 +4,35 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{% block title %}{{ brand }} · {{ product }}{% endblock %}</title>
+  <meta name="description" content="{{ brand }} track of Virginia House and Senate votes on small-business and cost-of-doing-business issues. Official roll-call sources on every claim." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="{% block css_href %}styles.css{% endblock %}" />
   {% block head_extra %}{% endblock %}
 </head>
 <body>
-  <div class="wrap">
-    <header class="site-header">
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="masthead">
+    <div class="masthead-inner wrap">
       <p class="product">{{ product }}</p>
       <h1 class="brand">{{ brand }}</h1>
       {% block lede %}{% endblock %}
-      <nav aria-label="Primary">
+      <nav class="nav" aria-label="Primary">
         <a href="{% block nav_index %}index.html{% endblock %}">Tracker</a>
         <a href="{% block nav_delegation %}delegation.html{% endblock %}">Delegation</a>
         <a href="{% block nav_methodology %}methodology.html{% endblock %}">Sources</a>
       </nav>
-    </header>
-    <main>
-      {% block content %}{% endblock %}
-    </main>
-    <footer class="site-footer">
-      <p>Generated {{ generated_at_utc }} · live corpus {{ corpus_vote_count }} votes · {{ tagged_vote_count }} tagged · {{ publication_ready_count }} publication-ready · map_version {{ map_version }}</p>
-      <p>Counts are live queries against the warehouse. Procedural votes stay on the audit sheet.</p>
-    </footer>
-  </div>
+    </div>
+  </header>
+  <main id="main" class="wrap">
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="site-footer wrap">
+    <p>{{ brand }} · {{ product }}</p>
+    <p>Updated {{ generated_at_utc }} · {{ corpus_vote_count }} roll calls · {{ tagged_vote_count }} tagged for small-business impact · map {{ map_version }}</p>
+    <p>Positions are from official House Clerk and Senate roll-call records. <a href="{% block footer_sources %}methodology.html{% endblock %}">How we source and count</a>.</p>
+  </footer>
   {% block scripts %}{% endblock %}
 </body>
 </html>

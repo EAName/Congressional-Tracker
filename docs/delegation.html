@@ -4,31 +4,42 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Delegation · Democrats for Virginia</title>
+  <meta name="description" content="Democrats for Virginia track of Virginia House and Senate votes on small-business and cost-of-doing-business issues. Official roll-call sources on every claim." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
   
 </head>
 <body>
-  <div class="wrap">
-    <header class="site-header">
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="masthead">
+    <div class="masthead-inner wrap">
       <p class="product">Congressional Vote Tracker</p>
       <h1 class="brand">Democrats for Virginia</h1>
       
-<p class="lede">All 13 Virginia members. Cells are live Yea/Nay counts on RULE and HUMAN impact tags (map_version 2026).</p>
+<p class="lede">Live scorecard for all 13 Virginia seats. House names open a district page.</p>
 
-      <nav aria-label="Primary">
+      <nav class="nav" aria-label="Primary">
         <a href="index.html">Tracker</a>
         <a href="delegation.html">Delegation</a>
         <a href="methodology.html">Sources</a>
       </nav>
-    </header>
-    <main>
-      
-<section aria-labelledby="delegation-heat">
-  <h2 id="delegation-heat">Scorecard heatmap</h2>
-  <p class="section-note">Click a House member name to open their district page. Senate rows have no district page.</p>
+    </div>
+  </header>
+  <main id="main" class="wrap">
+    
+<section class="reveal" aria-labelledby="delegation-heat">
+  <div class="section-head">
+    <h2 id="delegation-heat">Scorecard</h2>
+    <p class="section-note">Cells are Yea / Nay counts on impact-tagged votes under map 2026.</p>
+  </div>
+  <div class="legend" aria-hidden="true">
+    <span><i class="swatch yea-heavy"></i> Mostly Yea</span>
+    <span><i class="swatch nay-heavy"></i> Mostly Nay</span>
+    <span><i class="swatch split"></i> Split</span>
+    <span><i class="swatch empty"></i> No tagged votes</span>
+  </div>
   <div class="heat-wrap">
     <div class="heat-wrap-inner">
   <table class="heatmap">
@@ -36,13 +47,15 @@
       <tr>
         <th scope="col">Member</th>
         
-        <th scope="col">Tax Burden</th>
+        <th scope="col">Access To Capital</th>
         
         <th scope="col">Health Costs</th>
         
-        <th scope="col">Access To Capital</th>
-        
         <th scope="col">Input Costs</th>
+        
+        <th scope="col">Federal Contracting</th>
+        
+        <th scope="col">Workforce</th>
         
       </tr>
     </thead>
@@ -52,21 +65,24 @@
         <td>
           
           <a href="district/1.html">Robert J. Wittman</a>
-          <span class="meta"> · VA-1</span>
+          <span class="meta">VA-1</span>
           
         </td>
         
         
-        <td><span class="heat empty" title="TAX_BURDEN: 0 Yea, 0 Nay">—</span></td>
+        <td><span class="heat yea-heavy" title="Access To Capital: 8 Yea, 1 Nay">8Y/1N</span></td>
         
         
-        <td><span class="heat yea-heavy" title="HEALTH_COSTS: 3 Yea, 1 Nay">3Y/1N</span></td>
+        <td><span class="heat yea-heavy" title="Health Costs: 3 Yea, 1 Nay">3Y/1N</span></td>
         
         
-        <td><span class="heat yea-heavy" title="ACCESS_TO_CAPITAL: 8 Yea, 1 Nay">8Y/1N</span></td>
+        <td><span class="heat yea-heavy" title="Input Costs: 8 Yea, 2 Nay">8Y/2N</span></td>
         
         
-        <td><span class="heat yea-heavy" title="INPUT_COSTS: 8 Yea, 2 Nay">8Y/2N</span></td>
+        <td><span class="heat split" title="Federal Contracting: 13 Yea, 7 Nay">13Y/7N</span></td>
+        
+        
+        <td><span class="heat yea-heavy" title="Workforce: 8 Yea, 2 Nay">8Y/2N</span></td>
         
       </tr>
       
@@ -74,21 +90,24 @@
         <td>
           
           <a href="district/2.html">Jennifer A. Kiggans</a>
-          <span class="meta"> · VA-2</span>
+          <span class="meta">VA-2</span>
           
         </td>
         
         
-        <td><span class="heat empty" title="TAX_BURDEN: 0 Yea, 0 Nay">—</span></td>
+        <td><span class="heat yea-heavy" title="Access To Capital: 7 Yea, 1 Nay">7Y/1N</span></td>
         
         
-        <td><span class="heat split" title="HEALTH_COSTS: 2 Yea, 2 Nay">2Y/2N</span></td>
+        <td><span class="heat split" title="Health Costs: 2 Yea, 2 Nay">2Y/2N</span></td>
         
         
-        <td><span class="heat yea-heavy" title="ACCESS_TO_CAPITAL: 7 Yea, 1 Nay">7Y/1N</span></td>
+        <td><span class="heat yea-heavy" title="Input Costs: 8 Yea, 2 Nay">8Y/2N</span></td>
         
         
-        <td><span class="heat yea-heavy" title="INPUT_COSTS: 8 Yea, 2 Nay">8Y/2N</span></td>
+        <td><span class="heat split" title="Federal Contracting: 14 Yea, 7 Nay">14Y/7N</span></td>
+        
+        
+        <td><span class="heat yea-heavy" title="Workforce: 7 Yea, 2 Nay">7Y/2N</span></td>
         
       </tr>
       
@@ -96,21 +115,24 @@
         <td>
           
           <a href="district/3.html">Robert C. &#34;Bobby&#34; Scott</a>
-          <span class="meta"> · VA-3</span>
+          <span class="meta">VA-3</span>
           
         </td>
         
         
-        <td><span class="heat empty" title="TAX_BURDEN: 0 Yea, 0 Nay">—</span></td>
+        <td><span class="heat split" title="Access To Capital: 4 Yea, 5 Nay">4Y/5N</span></td>
         
         
-        <td><span class="heat nay-heavy" title="HEALTH_COSTS: 1 Yea, 3 Nay">1Y/3N</span></td>
+        <td><span class="heat nay-heavy" title="Health Costs: 1 Yea, 3 Nay">1Y/3N</span></td>
         
         
-        <td><span class="heat split" title="ACCESS_TO_CAPITAL: 4 Yea, 5 Nay">4Y/5N</span></td>
+        <td><span class="heat nay-heavy" title="Input Costs: 2 Yea, 8 Nay">2Y/8N</span></td>
         
         
-        <td><span class="heat nay-heavy" title="INPUT_COSTS: 2 Yea, 8 Nay">2Y/8N</span></td>
+        <td><span class="heat nay-heavy" title="Federal Contracting: 3 Yea, 18 Nay">3Y/18N</span></td>
+        
+        
+        <td><span class="heat split" title="Workforce: 5 Yea, 5 Nay">5Y/5N</span></td>
         
       </tr>
       
@@ -118,21 +140,24 @@
         <td>
           
           <a href="district/4.html">Jennifer L. McClellan</a>
-          <span class="meta"> · VA-4</span>
+          <span class="meta">VA-4</span>
           
         </td>
         
         
-        <td><span class="heat empty" title="TAX_BURDEN: 0 Yea, 0 Nay">—</span></td>
+        <td><span class="heat split" title="Access To Capital: 4 Yea, 5 Nay">4Y/5N</span></td>
         
         
-        <td><span class="heat nay-heavy" title="HEALTH_COSTS: 1 Yea, 3 Nay">1Y/3N</span></td>
+        <td><span class="heat nay-heavy" title="Health Costs: 1 Yea, 3 Nay">1Y/3N</span></td>
         
         
-        <td><span class="heat split" title="ACCESS_TO_CAPITAL: 4 Yea, 5 Nay">4Y/5N</span></td>
+        <td><span class="heat nay-heavy" title="Input Costs: 2 Yea, 8 Nay">2Y/8N</span></td>
         
         
-        <td><span class="heat nay-heavy" title="INPUT_COSTS: 2 Yea, 8 Nay">2Y/8N</span></td>
+        <td><span class="heat nay-heavy" title="Federal Contracting: 3 Yea, 18 Nay">3Y/18N</span></td>
+        
+        
+        <td><span class="heat split" title="Workforce: 5 Yea, 5 Nay">5Y/5N</span></td>
         
       </tr>
       
@@ -140,21 +165,24 @@
         <td>
           
           <a href="district/5.html">John J. McGuire III</a>
-          <span class="meta"> · VA-5</span>
+          <span class="meta">VA-5</span>
           
         </td>
         
         
-        <td><span class="heat empty" title="TAX_BURDEN: 0 Yea, 0 Nay">—</span></td>
+        <td><span class="heat yea-heavy" title="Access To Capital: 8 Yea, 1 Nay">8Y/1N</span></td>
         
         
-        <td><span class="heat yea-heavy" title="HEALTH_COSTS: 3 Yea, 1 Nay">3Y/1N</span></td>
+        <td><span class="heat yea-heavy" title="Health Costs: 3 Yea, 1 Nay">3Y/1N</span></td>
         
         
-        <td><span class="heat yea-heavy" title="ACCESS_TO_CAPITAL: 8 Yea, 1 Nay">8Y/1N</span></td>
+        <td><span class="heat yea-heavy" title="Input Costs: 8 Yea, 2 Nay">8Y/2N</span></td>
         
         
-        <td><span class="heat yea-heavy" title="INPUT_COSTS: 8 Yea, 2 Nay">8Y/2N</span></td>
+        <td><span class="heat yea-heavy" title="Federal Contracting: 18 Yea, 3 Nay">18Y/3N</span></td>
+        
+        
+        <td><span class="heat yea-heavy" title="Workforce: 8 Yea, 2 Nay">8Y/2N</span></td>
         
       </tr>
       
@@ -162,21 +190,24 @@
         <td>
           
           <a href="district/6.html">Ben Cline</a>
-          <span class="meta"> · VA-6</span>
+          <span class="meta">VA-6</span>
           
         </td>
         
         
-        <td><span class="heat empty" title="TAX_BURDEN: 0 Yea, 0 Nay">—</span></td>
+        <td><span class="heat yea-heavy" title="Access To Capital: 8 Yea, 1 Nay">8Y/1N</span></td>
         
         
-        <td><span class="heat yea-heavy" title="HEALTH_COSTS: 3 Yea, 1 Nay">3Y/1N</span></td>
+        <td><span class="heat yea-heavy" title="Health Costs: 3 Yea, 1 Nay">3Y/1N</span></td>
         
         
-        <td><span class="heat yea-heavy" title="ACCESS_TO_CAPITAL: 8 Yea, 1 Nay">8Y/1N</span></td>
+        <td><span class="heat yea-heavy" title="Input Costs: 8 Yea, 2 Nay">8Y/2N</span></td>
         
         
-        <td><span class="heat yea-heavy" title="INPUT_COSTS: 8 Yea, 2 Nay">8Y/2N</span></td>
+        <td><span class="heat yea-heavy" title="Federal Contracting: 19 Yea, 2 Nay">19Y/2N</span></td>
+        
+        
+        <td><span class="heat yea-heavy" title="Workforce: 8 Yea, 2 Nay">8Y/2N</span></td>
         
       </tr>
       
@@ -184,21 +215,24 @@
         <td>
           
           <a href="district/7.html">Eugene Simon Vindman</a>
-          <span class="meta"> · VA-7</span>
+          <span class="meta">VA-7</span>
           
         </td>
         
         
-        <td><span class="heat empty" title="TAX_BURDEN: 0 Yea, 0 Nay">—</span></td>
+        <td><span class="heat split" title="Access To Capital: 4 Yea, 5 Nay">4Y/5N</span></td>
         
         
-        <td><span class="heat nay-heavy" title="HEALTH_COSTS: 1 Yea, 3 Nay">1Y/3N</span></td>
+        <td><span class="heat nay-heavy" title="Health Costs: 1 Yea, 3 Nay">1Y/3N</span></td>
         
         
-        <td><span class="heat split" title="ACCESS_TO_CAPITAL: 4 Yea, 5 Nay">4Y/5N</span></td>
+        <td><span class="heat nay-heavy" title="Input Costs: 3 Yea, 7 Nay">3Y/7N</span></td>
         
         
-        <td><span class="heat nay-heavy" title="INPUT_COSTS: 3 Yea, 7 Nay">3Y/7N</span></td>
+        <td><span class="heat nay-heavy" title="Federal Contracting: 5 Yea, 16 Nay">5Y/16N</span></td>
+        
+        
+        <td><span class="heat split" title="Workforce: 5 Yea, 5 Nay">5Y/5N</span></td>
         
       </tr>
       
@@ -206,21 +240,24 @@
         <td>
           
           <a href="district/8.html">Donald S. Beyer, Jr.</a>
-          <span class="meta"> · VA-8</span>
+          <span class="meta">VA-8</span>
           
         </td>
         
         
-        <td><span class="heat empty" title="TAX_BURDEN: 0 Yea, 0 Nay">—</span></td>
+        <td><span class="heat split" title="Access To Capital: 4 Yea, 5 Nay">4Y/5N</span></td>
         
         
-        <td><span class="heat split" title="HEALTH_COSTS: 1 Yea, 2 Nay">1Y/2N</span></td>
+        <td><span class="heat split" title="Health Costs: 1 Yea, 2 Nay">1Y/2N</span></td>
         
         
-        <td><span class="heat split" title="ACCESS_TO_CAPITAL: 4 Yea, 5 Nay">4Y/5N</span></td>
+        <td><span class="heat nay-heavy" title="Input Costs: 2 Yea, 8 Nay">2Y/8N</span></td>
         
         
-        <td><span class="heat nay-heavy" title="INPUT_COSTS: 2 Yea, 8 Nay">2Y/8N</span></td>
+        <td><span class="heat nay-heavy" title="Federal Contracting: 3 Yea, 18 Nay">3Y/18N</span></td>
+        
+        
+        <td><span class="heat split" title="Workforce: 5 Yea, 5 Nay">5Y/5N</span></td>
         
       </tr>
       
@@ -228,21 +265,24 @@
         <td>
           
           <a href="district/9.html">H. Morgan Griffith</a>
-          <span class="meta"> · VA-9</span>
+          <span class="meta">VA-9</span>
           
         </td>
         
         
-        <td><span class="heat empty" title="TAX_BURDEN: 0 Yea, 0 Nay">—</span></td>
+        <td><span class="heat yea-heavy" title="Access To Capital: 8 Yea, 1 Nay">8Y/1N</span></td>
         
         
-        <td><span class="heat yea-heavy" title="HEALTH_COSTS: 3 Yea, 1 Nay">3Y/1N</span></td>
+        <td><span class="heat yea-heavy" title="Health Costs: 3 Yea, 1 Nay">3Y/1N</span></td>
         
         
-        <td><span class="heat yea-heavy" title="ACCESS_TO_CAPITAL: 8 Yea, 1 Nay">8Y/1N</span></td>
+        <td><span class="heat yea-heavy" title="Input Costs: 8 Yea, 2 Nay">8Y/2N</span></td>
         
         
-        <td><span class="heat yea-heavy" title="INPUT_COSTS: 8 Yea, 2 Nay">8Y/2N</span></td>
+        <td><span class="heat yea-heavy" title="Federal Contracting: 16 Yea, 5 Nay">16Y/5N</span></td>
+        
+        
+        <td><span class="heat yea-heavy" title="Workforce: 8 Yea, 2 Nay">8Y/2N</span></td>
         
       </tr>
       
@@ -250,21 +290,24 @@
         <td>
           
           <a href="district/10.html">Suhas Subramanyam</a>
-          <span class="meta"> · VA-10</span>
+          <span class="meta">VA-10</span>
           
         </td>
         
         
-        <td><span class="heat empty" title="TAX_BURDEN: 0 Yea, 0 Nay">—</span></td>
+        <td><span class="heat split" title="Access To Capital: 3 Yea, 5 Nay">3Y/5N</span></td>
         
         
-        <td><span class="heat nay-heavy" title="HEALTH_COSTS: 1 Yea, 3 Nay">1Y/3N</span></td>
+        <td><span class="heat nay-heavy" title="Health Costs: 1 Yea, 3 Nay">1Y/3N</span></td>
         
         
-        <td><span class="heat split" title="ACCESS_TO_CAPITAL: 3 Yea, 5 Nay">3Y/5N</span></td>
+        <td><span class="heat nay-heavy" title="Input Costs: 2 Yea, 8 Nay">2Y/8N</span></td>
         
         
-        <td><span class="heat nay-heavy" title="INPUT_COSTS: 2 Yea, 8 Nay">2Y/8N</span></td>
+        <td><span class="heat nay-heavy" title="Federal Contracting: 3 Yea, 18 Nay">3Y/18N</span></td>
+        
+        
+        <td><span class="heat split" title="Workforce: 5 Yea, 5 Nay">5Y/5N</span></td>
         
       </tr>
       
@@ -272,63 +315,72 @@
         <td>
           
           <a href="district/11.html">James R. Walkinshaw</a>
-          <span class="meta"> · VA-11</span>
+          <span class="meta">VA-11</span>
           
         </td>
         
         
-        <td><span class="heat empty" title="TAX_BURDEN: 0 Yea, 0 Nay">—</span></td>
+        <td><span class="heat yea-heavy" title="Access To Capital: 1 Yea, 0 Nay">1Y/0N</span></td>
         
         
-        <td><span class="heat nay-heavy" title="HEALTH_COSTS: 1 Yea, 3 Nay">1Y/3N</span></td>
+        <td><span class="heat nay-heavy" title="Health Costs: 1 Yea, 3 Nay">1Y/3N</span></td>
         
         
-        <td><span class="heat yea-heavy" title="ACCESS_TO_CAPITAL: 1 Yea, 0 Nay">1Y/0N</span></td>
+        <td><span class="heat nay-heavy" title="Input Costs: 1 Yea, 7 Nay">1Y/7N</span></td>
         
         
-        <td><span class="heat nay-heavy" title="INPUT_COSTS: 1 Yea, 7 Nay">1Y/7N</span></td>
+        <td><span class="heat nay-heavy" title="Federal Contracting: 2 Yea, 16 Nay">2Y/16N</span></td>
+        
+        
+        <td><span class="heat nay-heavy" title="Workforce: 1 Yea, 4 Nay">1Y/4N</span></td>
         
       </tr>
       
       <tr>
         <td>
           
-          Mark R. Warner <span class="meta"> · Senate</span>
+          Mark R. Warner <span class="meta">Senate</span>
           
         </td>
         
         
-        <td><span class="heat empty" title="TAX_BURDEN: 0 Yea, 0 Nay">—</span></td>
+        <td><span class="heat nay-heavy" title="Access To Capital: 0 Yea, 3 Nay">0Y/3N</span></td>
         
         
-        <td><span class="heat yea-heavy" title="HEALTH_COSTS: 2 Yea, 0 Nay">2Y/0N</span></td>
+        <td><span class="heat yea-heavy" title="Health Costs: 2 Yea, 0 Nay">2Y/0N</span></td>
         
         
-        <td><span class="heat nay-heavy" title="ACCESS_TO_CAPITAL: 0 Yea, 3 Nay">0Y/3N</span></td>
+        <td><span class="heat split" title="Input Costs: 6 Yea, 3 Nay">6Y/3N</span></td>
         
         
-        <td><span class="heat split" title="INPUT_COSTS: 6 Yea, 3 Nay">6Y/3N</span></td>
+        <td><span class="heat empty" title="Federal Contracting: 0 Yea, 0 Nay">—</span></td>
+        
+        
+        <td><span class="heat yea-heavy" title="Workforce: 3 Yea, 0 Nay">3Y/0N</span></td>
         
       </tr>
       
       <tr>
         <td>
           
-          Tim Kaine <span class="meta"> · Senate</span>
+          Tim Kaine <span class="meta">Senate</span>
           
         </td>
         
         
-        <td><span class="heat empty" title="TAX_BURDEN: 0 Yea, 0 Nay">—</span></td>
+        <td><span class="heat nay-heavy" title="Access To Capital: 0 Yea, 3 Nay">0Y/3N</span></td>
         
         
-        <td><span class="heat yea-heavy" title="HEALTH_COSTS: 2 Yea, 0 Nay">2Y/0N</span></td>
+        <td><span class="heat yea-heavy" title="Health Costs: 2 Yea, 0 Nay">2Y/0N</span></td>
         
         
-        <td><span class="heat nay-heavy" title="ACCESS_TO_CAPITAL: 0 Yea, 3 Nay">0Y/3N</span></td>
+        <td><span class="heat split" title="Input Costs: 6 Yea, 3 Nay">6Y/3N</span></td>
         
         
-        <td><span class="heat split" title="INPUT_COSTS: 6 Yea, 3 Nay">6Y/3N</span></td>
+        <td><span class="heat empty" title="Federal Contracting: 0 Yea, 0 Nay">—</span></td>
+        
+        
+        <td><span class="heat yea-heavy" title="Workforce: 3 Yea, 0 Nay">3Y/0N</span></td>
         
       </tr>
       
@@ -338,12 +390,12 @@
   </div>
 </section>
 
-    </main>
-    <footer class="site-footer">
-      <p>Generated 2026-08-04T00:49:50Z · live corpus 1521 votes · 72 tagged · 0 publication-ready · map_version 2026</p>
-      <p>Counts are live queries against the warehouse. Procedural votes stay on the audit sheet.</p>
-    </footer>
-  </div>
+  </main>
+  <footer class="site-footer wrap">
+    <p>Democrats for Virginia · Congressional Vote Tracker</p>
+    <p>Updated 2026-08-04T01:00:31Z · 1521 roll calls · 72 tagged for small-business impact · map 2026</p>
+    <p>Positions are from official House Clerk and Senate roll-call records. <a href="methodology.html">How we source and count</a>.</p>
+  </footer>
   
 </body>
 </html>

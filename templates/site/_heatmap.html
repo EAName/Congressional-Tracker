@@ -14,14 +14,14 @@
         <td>
           {% if row.district_number %}
           <a href="{% if heatmap_prefix is defined %}{{ heatmap_prefix }}{% endif %}district/{{ row.district_number }}.html">{{ row.full_name }}</a>
-          <span class="meta"> · VA-{{ row.district_number }}</span>
+          <span class="meta">VA-{{ row.district_number }}</span>
           {% else %}
-          {{ row.full_name }} <span class="meta"> · Senate</span>
+          {{ row.full_name }} <span class="meta">Senate</span>
           {% endif %}
         </td>
         {% for tag in scorecard_tags %}
         {% set cell = row.cells[tag] %}
-        <td><span class="heat {{ cell.tone }}" title="{{ tag }}: {{ cell.yea }} Yea, {{ cell.nay }} Nay">{{ cell.label }}</span></td>
+        <td><span class="heat {{ cell.tone }}" title="{{ tag.replace('_', ' ').title() }}: {{ cell.yea }} Yea, {{ cell.nay }} Nay">{{ cell.label }}</span></td>
         {% endfor %}
       </tr>
       {% endfor %}

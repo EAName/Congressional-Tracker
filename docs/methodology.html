@@ -4,62 +4,76 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Sources · Democrats for Virginia</title>
+  <meta name="description" content="Democrats for Virginia track of Virginia House and Senate votes on small-business and cost-of-doing-business issues. Official roll-call sources on every claim." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
   
 </head>
 <body>
-  <div class="wrap">
-    <header class="site-header">
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="masthead">
+    <div class="masthead-inner wrap">
       <p class="product">Congressional Vote Tracker</p>
       <h1 class="brand">Democrats for Virginia</h1>
       
-<p class="lede">Where every number comes from, what is excluded, and how often the warehouse refreshes.</p>
+<p class="lede">Independent roll-call sources, how impact tags are assigned, and what we refuse to publish without a human summary.</p>
 
-      <nav aria-label="Primary">
+      <nav class="nav" aria-label="Primary">
         <a href="index.html">Tracker</a>
         <a href="delegation.html">Delegation</a>
         <a href="methodology.html">Sources</a>
       </nav>
-    </header>
-    <main>
-      
-<section class="sources" aria-labelledby="sources-heading">
-  <h2 id="sources-heading">Data sources</h2>
+    </div>
+  </header>
+  <main id="main" class="wrap">
+    
+<section class="sources reveal" aria-labelledby="sources-heading">
+  <div class="section-head">
+    <h2 id="sources-heading">Primary sources</h2>
+  </div>
   <dl>
     <dt>House roll calls</dt>
-    <dd>U.S. House Clerk EVS XML (<code>clerk.house.gov</code>), member-level Aye/No positions resolved to Bioguide IDs.</dd>
+    <dd>U.S. House Clerk electronic voting system (EVS) XML published at clerk.house.gov. Member positions are Aye / No / Present / Not Voting, joined to Bioguide IDs.</dd>
     <dt>Senate roll calls</dt>
-    <dd>Senate LIS XML (<code>senate.gov</code>). LIS member IDs map to Bioguide via a national congress-legislators crosswalk.</dd>
+    <dd>Senate Legislative Information System (LIS) XML at senate.gov. LIS member IDs are mapped to Bioguide IDs via the national congress-legislators roster.</dd>
     <dt>Delegation roster</dt>
-    <dd><code>unitedstates/congress-legislators</code> YAML. Virginia seats are SCD2 on <code>(bioguide_id, term_start)</code>.</dd>
-    <dt>District geography</dt>
-    <dd><code>config/districts.yaml</code> stores map_version <strong>2021</strong> and <strong>2026</strong>. These pages are keyed to <strong>2026</strong>.</dd>
-    <dt>Impact tags</dt>
-    <dd>Deterministic rules in <code>config/impact_rules.yaml</code> (classified_by = RULE). Human promotions win. Naked LLM tags never appear here.</dd>
+    <dd>unitedstates/congress-legislators. Virginia seats are versioned by term so mid-Congress changes (for example a special election) appear with correct dates.</dd>
+    <dt>District map</dt>
+    <dd>These pages use map version <strong>2026</strong> (proposed redistricting lean for Target Four). Source lean table: project <code>config/districts.yaml</code>.</dd>
   </dl>
 </section>
 
-<section aria-labelledby="gate-heading">
-  <h2 id="gate-heading">Publication gates</h2>
-  <p>District vote cards require a human <code>plain_language_summary</code> under 25 words. We never fall back to <code>vote_question</code>.</p>
-  <p>Suppressed on district pages (audit sheet only): PROCEDURAL, CLOTURE, NOMINATION, SUSPENSION, MOTION_TO_RECOMMIT.</p>
-  <p>Live snapshot: 1521 roll calls · 72 tagged · 0 publication-ready · generated 2026-08-04T00:49:50Z.</p>
-</section>
-
-<section aria-labelledby="method-heading">
-  <h2 id="method-heading">How to read the heatmap</h2>
-  <p>Each cell is Yea count / Nay count for that member on votes carrying the column&rsquo;s impact tag. Green means mostly Yea; red mostly Nay; amber split; em dash means no tagged votes yet. Counts are recomputed from the warehouse at render time.</p>
-</section>
-
-    </main>
-    <footer class="site-footer">
-      <p>Generated 2026-08-04T00:49:50Z · live corpus 1521 votes · 72 tagged · 0 publication-ready · map_version 2026</p>
-      <p>Counts are live queries against the warehouse. Procedural votes stay on the audit sheet.</p>
-    </footer>
+<section class="reveal" aria-labelledby="tags-heading">
+  <div class="section-head">
+    <h2 id="tags-heading">How impact tags work</h2>
   </div>
+  <p>Votes are tagged for small-business relevance by deterministic rules (keyword and bill-area matches). Human reviewers can promote or override. Model-only guesses never appear on this site or the public scorecard.</p>
+</section>
+
+<section class="reveal" aria-labelledby="gate-heading">
+  <div class="section-head">
+    <h2 id="gate-heading">What does not appear on district pages</h2>
+  </div>
+  <p>Narrative vote cards require a human plain-language summary under 25 words. We never substitute the parliamentary vote question.</p>
+  <p>Procedural, cloture, nomination, suspension, and motion-to-recommit categories stay off district briefs; they remain in the audit sheet for internal review. A Nay on procedure is not treated as a policy position.</p>
+  <p class="meta">Snapshot 2026-08-04T01:00:31Z · 1521 roll calls · 72 tagged · 0 briefs ready for publication.</p>
+</section>
+
+<section class="reveal" aria-labelledby="method-heading">
+  <div class="section-head">
+    <h2 id="method-heading">How to read the scorecard</h2>
+  </div>
+  <p>Each cell is Yea count / Nay count for that member on votes carrying the column&rsquo;s impact tag. Green means mostly Yea; red mostly Nay; amber split; dash means no tagged votes yet. Counts refresh when this site is rebuilt from the warehouse.</p>
+</section>
+
+  </main>
+  <footer class="site-footer wrap">
+    <p>Democrats for Virginia · Congressional Vote Tracker</p>
+    <p>Updated 2026-08-04T01:00:31Z · 1521 roll calls · 72 tagged for small-business impact · map 2026</p>
+    <p>Positions are from official House Clerk and Senate roll-call records. <a href="methodology.html">How we source and count</a>.</p>
+  </footer>
   
 </body>
 </html>

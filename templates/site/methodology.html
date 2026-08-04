@@ -1,34 +1,45 @@
 {% extends "base.html" %}
 {% block title %}Sources · {{ brand }}{% endblock %}
 {% block lede %}
-<p class="lede">Where every number comes from, what is excluded, and how often the warehouse refreshes.</p>
+<p class="lede">Independent roll-call sources, how impact tags are assigned, and what we refuse to publish without a human summary.</p>
 {% endblock %}
 {% block content %}
-<section class="sources" aria-labelledby="sources-heading">
-  <h2 id="sources-heading">Data sources</h2>
+<section class="sources reveal" aria-labelledby="sources-heading">
+  <div class="section-head">
+    <h2 id="sources-heading">Primary sources</h2>
+  </div>
   <dl>
     <dt>House roll calls</dt>
-    <dd>U.S. House Clerk EVS XML (<code>clerk.house.gov</code>), member-level Aye/No positions resolved to Bioguide IDs.</dd>
+    <dd>U.S. House Clerk electronic voting system (EVS) XML published at clerk.house.gov. Member positions are Aye / No / Present / Not Voting, joined to Bioguide IDs.</dd>
     <dt>Senate roll calls</dt>
-    <dd>Senate LIS XML (<code>senate.gov</code>). LIS member IDs map to Bioguide via a national congress-legislators crosswalk.</dd>
+    <dd>Senate Legislative Information System (LIS) XML at senate.gov. LIS member IDs are mapped to Bioguide IDs via the national congress-legislators roster.</dd>
     <dt>Delegation roster</dt>
-    <dd><code>unitedstates/congress-legislators</code> YAML. Virginia seats are SCD2 on <code>(bioguide_id, term_start)</code>.</dd>
-    <dt>District geography</dt>
-    <dd><code>config/districts.yaml</code> stores map_version <strong>2021</strong> and <strong>2026</strong>. These pages are keyed to <strong>{{ map_version }}</strong>.</dd>
-    <dt>Impact tags</dt>
-    <dd>Deterministic rules in <code>config/impact_rules.yaml</code> (classified_by = RULE). Human promotions win. Naked LLM tags never appear here.</dd>
+    <dd>unitedstates/congress-legislators. Virginia seats are versioned by term so mid-Congress changes (for example a special election) appear with correct dates.</dd>
+    <dt>District map</dt>
+    <dd>These pages use map version <strong>{{ map_version }}</strong> (proposed redistricting lean for Target Four). Source lean table: project <code>config/districts.yaml</code>.</dd>
   </dl>
 </section>
 
-<section aria-labelledby="gate-heading">
-  <h2 id="gate-heading">Publication gates</h2>
-  <p>District vote cards require a human <code>plain_language_summary</code> under 25 words. We never fall back to <code>vote_question</code>.</p>
-  <p>Suppressed on district pages (audit sheet only): PROCEDURAL, CLOTURE, NOMINATION, SUSPENSION, MOTION_TO_RECOMMIT.</p>
-  <p>Live snapshot: {{ corpus_vote_count }} roll calls · {{ tagged_vote_count }} tagged · {{ publication_ready_count }} publication-ready · generated {{ generated_at_utc }}.</p>
+<section class="reveal" aria-labelledby="tags-heading">
+  <div class="section-head">
+    <h2 id="tags-heading">How impact tags work</h2>
+  </div>
+  <p>Votes are tagged for small-business relevance by deterministic rules (keyword and bill-area matches). Human reviewers can promote or override. Model-only guesses never appear on this site or the public scorecard.</p>
 </section>
 
-<section aria-labelledby="method-heading">
-  <h2 id="method-heading">How to read the heatmap</h2>
-  <p>Each cell is Yea count / Nay count for that member on votes carrying the column&rsquo;s impact tag. Green means mostly Yea; red mostly Nay; amber split; em dash means no tagged votes yet. Counts are recomputed from the warehouse at render time.</p>
+<section class="reveal" aria-labelledby="gate-heading">
+  <div class="section-head">
+    <h2 id="gate-heading">What does not appear on district pages</h2>
+  </div>
+  <p>Narrative vote cards require a human plain-language summary under 25 words. We never substitute the parliamentary vote question.</p>
+  <p>Procedural, cloture, nomination, suspension, and motion-to-recommit categories stay off district briefs; they remain in the audit sheet for internal review. A Nay on procedure is not treated as a policy position.</p>
+  <p class="meta">Snapshot {{ generated_at_utc }} · {{ corpus_vote_count }} roll calls · {{ tagged_vote_count }} tagged · {{ publication_ready_count }} briefs ready for publication.</p>
+</section>
+
+<section class="reveal" aria-labelledby="method-heading">
+  <div class="section-head">
+    <h2 id="method-heading">How to read the scorecard</h2>
+  </div>
+  <p>Each cell is Yea count / Nay count for that member on votes carrying the column&rsquo;s impact tag. Green means mostly Yea; red mostly Nay; amber split; dash means no tagged votes yet. Counts refresh when this site is rebuilt from the warehouse.</p>
 </section>
 {% endblock %}

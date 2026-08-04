@@ -10,8 +10,9 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 from markupsafe import Markup
 
 from vact.exports.data import (
-    SCORECARD_TAGS,
+    SITE_SCORECARD_TAGS,
     corpus_vote_count,
+    display_category,
     district_votes_for_member,
     generated_at_utc,
     heatmap_rows,
@@ -80,19 +81,21 @@ def build_site(
             votes_for = district_votes_for_member(
                 conn, bioguide_id=member["bioguide_id"]
             )
-            score = scorecard_rows(conn, [member])[0]
+            score = scorecard_rows(conn, [member], tags=SITE_SCORECARD_TAGS)[0]
             target_cards.append(
                 {
                     "member": member,
                     "votes": votes_for,
                     "score": score,
-                    "heatmap": heatmap_rows([score])[0],
+                    "heatmap": heatmap_rows([score], tags=SITE_SCORECARD_TAGS)[0],
                 }
             )
 
         delegation = list_delegation(conn, map_version=map_version)
-        delegation_scores = scorecard_rows(conn, delegation)
-        heat = heatmap_rows(delegation_scores)
+        delegation_scores = scorecard_rows(
+            conn, delegation, tags=SITE_SCORECARD_TAGS
+        )
+        heat = heatmap_rows(delegation_scores, tags=SITE_SCORECARD_TAGS)
 
         house_members = [m for m in delegation if m["chamber"] == "House"]
         district_pages = []
@@ -103,13 +106,13 @@ def build_site(
             votes_for = district_votes_for_member(
                 conn, bioguide_id=member["bioguide_id"]
             )
-            score = scorecard_rows(conn, [member])[0]
+            score = scorecard_rows(conn, [member], tags=SITE_SCORECARD_TAGS)[0]
             district_pages.append(
                 {
                     "member": member,
                     "votes": votes_for,
                     "score": score,
-                    "heatmap": heatmap_rows([score])[0],
+                    "heatmap": heatmap_rows([score], tags=SITE_SCORECARD_TAGS)[0],
                 }
             )
 
@@ -122,11 +125,11 @@ def build_site(
             "map_version": map_version,
             "brand": "Democrats for Virginia",
             "product": "Congressional Vote Tracker",
-            "scorecard_tags": SCORECARD_TAGS,
+            "scorecard_tags": SITE_SCORECARD_TAGS,
             "category_mix": categories,
             "impact_mix": tags,
             "category_chart": {
-                "labels": [c["label"] for c in categories],
+                "labels": [display_category(c["label"]) for c in categories],
                 "values": [c["count"] for c in categories],
             },
             "impact_chart": {

@@ -1,12 +1,20 @@
 {% extends "base.html" %}
 {% block title %}Delegation · {{ brand }}{% endblock %}
 {% block lede %}
-<p class="lede">All 13 Virginia members. Cells are live Yea/Nay counts on RULE and HUMAN impact tags (map_version {{ map_version }}).</p>
+<p class="lede">Live scorecard for all 13 Virginia seats. House names open a district page.</p>
 {% endblock %}
 {% block content %}
-<section aria-labelledby="delegation-heat">
-  <h2 id="delegation-heat">Scorecard heatmap</h2>
-  <p class="section-note">Click a House member name to open their district page. Senate rows have no district page.</p>
+<section class="reveal" aria-labelledby="delegation-heat">
+  <div class="section-head">
+    <h2 id="delegation-heat">Scorecard</h2>
+    <p class="section-note">Cells are Yea / Nay counts on impact-tagged votes under map {{ map_version }}.</p>
+  </div>
+  <div class="legend" aria-hidden="true">
+    <span><i class="swatch yea-heavy"></i> Mostly Yea</span>
+    <span><i class="swatch nay-heavy"></i> Mostly Nay</span>
+    <span><i class="swatch split"></i> Split</span>
+    <span><i class="swatch empty"></i> No tagged votes</span>
+  </div>
   <div class="heat-wrap">
     {% include "_heatmap.html" %}
   </div>

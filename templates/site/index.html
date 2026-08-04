@@ -1,57 +1,83 @@
 {% extends "base.html" %}
-{% block title %}Tracker · {{ brand }}{% endblock %}
+{% block title %}{{ product }} · {{ brand }}{% endblock %}
 {% block head_extra %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
 <script src="tracker.js" defer></script>
 {% endblock %}
 {% block lede %}
-<p class="lede">Virginia&rsquo;s congressional record on small-business and cost-of-doing-business votes. Live warehouse counts, source links on every claim.</p>
+<p class="lede">How Virginia&rsquo;s congressional delegation votes on small business, capital, health costs, and the cost of doing business. Every cell is grounded in a public roll call.</p>
+<p class="hero-cta">
+  <a class="btn btn-primary" href="#record">See the record</a>
+  <a class="btn btn-ghost" href="methodology.html">Sources &amp; method</a>
+</p>
 {% endblock %}
 {% block content %}
-<div class="stat-row" aria-label="Corpus snapshot">
-  <div class="stat"><div class="n">{{ corpus_vote_count }}</div><div class="k">Roll calls in warehouse</div></div>
-  <div class="stat"><div class="n">{{ tagged_vote_count }}</div><div class="k">Impact-tagged votes</div></div>
-  <div class="stat"><div class="n">{{ publication_ready_count }}</div><div class="k">Human-summarized (site cards)</div></div>
-</div>
-
-<section aria-labelledby="mix-heading">
-  <h2 id="mix-heading">What is in the corpus</h2>
-  <p class="section-note">Live breakdowns from DuckDB. Category chart covers every roll call; impact chart is RULE/HUMAN tags only.</p>
-  <div class="chart-grid">
-    <div class="chart-panel">
-      <h3>Vote categories</h3>
-      <div class="chart-wrap">
-        <canvas id="categoryChart" data-chart='{{ category_chart | tojson }}' aria-label="Vote category doughnut chart"></canvas>
-      </div>
-    </div>
-    <div class="chart-panel">
-      <h3>Impact tags</h3>
-      <div class="chart-wrap">
-        <canvas id="impactChart" data-chart='{{ impact_chart | tojson }}' aria-label="Impact tag bar chart"></canvas>
-      </div>
-    </div>
-  </div>
+<section class="snapshot reveal" aria-label="At a glance">
+  <div class="stat"><div class="n">{{ corpus_vote_count }}</div><div class="k">Official roll calls tracked</div></div>
+  <div class="stat"><div class="n">{{ tagged_vote_count }}</div><div class="k">Votes tagged for small-business impact</div></div>
+  <div class="stat"><div class="n">13</div><div class="k">Virginia members on the scorecard</div></div>
 </section>
 
-<section aria-labelledby="heat-heading">
-  <h2 id="heat-heading">Delegation heatmap</h2>
-  <p class="section-note">Yea/Nay on RULE and HUMAN tags (map_version {{ map_version }}). Green = mostly Yea, red = mostly Nay, amber = split. Em dash = no tagged votes yet.</p>
-  <div class="heat-wrap">
-    {% include "_heatmap.html" %}
+<section id="record" class="reveal" aria-labelledby="targets-heading">
+  <div class="section-head">
+    <h2 id="targets-heading">Target Four</h2>
+    <p class="section-note">Districts that move toward Democrats under the proposed {{ map_version }} map. Open a district for the full record.</p>
   </div>
-</section>
-
-<section aria-labelledby="targets-heading">
-  <h2 id="targets-heading">Target Four</h2>
-  <p class="section-note">Districts shifted toward Democrats under the proposed 2026 map. Open a card for the district page.</p>
   <div class="card-list">
     {% for card in targets %}
     <a class="card" href="district/{{ card.member.district_number }}.html">
-      <h2>VA-{{ card.member.district_number }}</h2>
-      <p class="meta">{{ card.member.full_name }} · {{ card.member.party }} · {{ card.member.partisan_lean or 'lean TBD' }}</p>
-      <p class="meta">{{ card.votes|length }} publication-ready vote{{ '' if card.votes|length == 1 else 's' }}</p>
+      <div class="card-top">
+        <h3>VA-{{ card.member.district_number }}</h3>
+        <span class="lean">{{ card.member.partisan_lean or 'Lean TBD' }}</span>
+      </div>
+      <p class="name">{{ card.member.full_name }}</p>
+      <p class="meta">{{ card.member.party }}</p>
+      <div class="mini-heat" aria-label="Impact record">
+        {% for tag in scorecard_tags %}
+        {% set cell = card.heatmap.cells[tag] %}
+        <span class="heat {{ cell.tone }}" title="{{ tag | replace('_', ' ') | title }}: {{ cell.yea }} Yea, {{ cell.nay }} Nay">{{ cell.label }}</span>
+        {% endfor %}
+      </div>
     </a>
     {% endfor %}
+  </div>
+</section>
+
+<section class="reveal" aria-labelledby="heat-heading">
+  <div class="section-head">
+    <h2 id="heat-heading">Full delegation scorecard</h2>
+    <p class="section-note">Yea / Nay on impact-tagged votes. Green leans Yea, red leans Nay, amber is split. A dash means no tagged votes in that column yet.</p>
+  </div>
+  <div class="legend" aria-hidden="true">
+    <span><i class="swatch yea-heavy"></i> Mostly Yea</span>
+    <span><i class="swatch nay-heavy"></i> Mostly Nay</span>
+    <span><i class="swatch split"></i> Split</span>
+    <span><i class="swatch empty"></i> No tagged votes</span>
+  </div>
+  <div class="heat-wrap">
+    {% include "_heatmap.html" %}
+  </div>
+  <p class="section-note tight"><a href="delegation.html">Open full-width delegation page</a></p>
+</section>
+
+<section class="reveal" aria-labelledby="mix-heading">
+  <div class="section-head">
+    <h2 id="mix-heading">What Virginia is voting on</h2>
+    <p class="section-note">Composition of the tracked Congress, then which small-business impact themes appear most often.</p>
+  </div>
+  <div class="chart-grid">
+    <div class="chart-panel">
+      <h3>Roll-call mix</h3>
+      <div class="chart-wrap">
+        <canvas id="categoryChart" data-chart='{{ category_chart | tojson }}' aria-label="Vote category chart"></canvas>
+      </div>
+    </div>
+    <div class="chart-panel">
+      <h3>Small-business impact themes</h3>
+      <div class="chart-wrap">
+        <canvas id="impactChart" data-chart='{{ impact_chart | tojson }}' aria-label="Impact tag chart"></canvas>
+      </div>
+    </div>
   </div>
 </section>
 {% endblock %}

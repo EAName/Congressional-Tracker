@@ -1,4 +1,4 @@
-/* Chart bootstrapping for the static tracker pages. */
+/* Chart bootstrapping + soft reveal for the press-facing tracker. */
 (function () {
   function boot(id, config) {
     var el = document.getElementById(id);
@@ -10,14 +10,14 @@
   }
 
   var palette = [
-    "#143a5c",
+    "#0f2f52",
     "#c45c26",
-    "#1f6b4a",
-    "#8b2942",
-    "#4a6074",
-    "#9a6b2f",
+    "#1b6b48",
+    "#9a2f46",
+    "#4a5d70",
+    "#8a6528",
     "#2f6f8f",
-    "#6b4c9a",
+    "#5c6b7a",
   ];
 
   boot("categoryChart", function (payload) {
@@ -36,8 +36,12 @@
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        cutout: "58%",
         plugins: {
-          legend: { position: "bottom", labels: { boxWidth: 12, font: { size: 11 } } },
+          legend: {
+            position: "bottom",
+            labels: { boxWidth: 10, font: { size: 11, family: "Sora" } },
+          },
         },
       },
     };
@@ -51,8 +55,8 @@
         datasets: [
           {
             data: payload.values,
-            backgroundColor: "#143a5c",
-            borderRadius: 4,
+            backgroundColor: "#0f2f52",
+            borderRadius: 3,
           },
         ],
       },
@@ -61,8 +65,19 @@
         maintainAspectRatio: false,
         plugins: { legend: { display: false } },
         scales: {
-          x: { ticks: { maxRotation: 45, minRotation: 0, font: { size: 10 } } },
-          y: { beginAtZero: true, ticks: { precision: 0 } },
+          x: {
+            ticks: {
+              maxRotation: 40,
+              minRotation: 0,
+              font: { size: 10, family: "Sora" },
+            },
+            grid: { display: false },
+          },
+          y: {
+            beginAtZero: true,
+            ticks: { precision: 0, font: { family: "Sora" } },
+            grid: { color: "rgba(15, 47, 82, 0.08)" },
+          },
         },
       },
     };

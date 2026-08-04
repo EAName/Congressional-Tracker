@@ -27,7 +27,25 @@ SCORECARD_TAGS = (
     "INPUT_COSTS",
 )
 
-# Tags shown on district pages (broader than the four scorecard columns).
+# Press/site heatmap: tags with live RULE/HUMAN density (skip empty TAX_BURDEN).
+SITE_SCORECARD_TAGS = (
+    "ACCESS_TO_CAPITAL",
+    "HEALTH_COSTS",
+    "INPUT_COSTS",
+    "FEDERAL_CONTRACTING",
+    "WORKFORCE",
+)
+
+CATEGORY_DISPLAY = {
+    "PROCEDURAL": "Procedural",
+    "CLOTURE": "Cloture",
+    "PASSAGE": "Passage",
+    "NOMINATION": "Nomination",
+    "AMENDMENT": "Amendment",
+    "SUSPENSION": "Suspension",
+    "MOTION_TO_RECOMMIT": "Motion to recommit",
+}
+
 DISTRICT_PAGE_MAX_VOTES = 5
 
 ALL_IMPACT_TAGS = (
@@ -39,6 +57,14 @@ ALL_IMPACT_TAGS = (
     "REGULATORY_BURDEN",
     "WORKFORCE",
 )
+
+
+def display_category(raw: str) -> str:
+    return CATEGORY_DISPLAY.get(raw, raw.replace("_", " ").title())
+
+
+def display_tag(raw: str) -> str:
+    return raw.replace("_", " ").title()
 
 
 def generated_at_utc() -> str:
@@ -299,8 +325,10 @@ def member_scorecard_row(
 def scorecard_rows(
     conn: duckdb.DuckDBPyConnection,
     members: list[dict[str, Any]],
+    *,
+    tags: tuple[str, ...] = SCORECARD_TAGS,
 ) -> list[dict[str, Any]]:
-    return [member_scorecard_row(conn, m) for m in members]
+    return [member_scorecard_row(conn, m, tags=tags) for m in members]
 
 
 def district_votes_for_member(
