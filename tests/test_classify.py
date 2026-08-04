@@ -24,19 +24,23 @@ def warehouse(tmp_path: Path) -> Path:
     ensure_schema(conn)
     conn.execute(
         """
-        INSERT INTO fact_vote VALUES
+        INSERT INTO fact_vote (
+            vote_id, congress, session, chamber, roll_number, vote_date,
+            vote_question, vote_type, vote_category, result, passed, bill_id,
+            yea_total, nay_total, present_total, not_voting_total, source_url
+        ) VALUES
           ('h-119-1-100', 119, 1, 'House', 100, DATE '2025-03-01',
            'On Passage of the Small Business Administration 7(a) Lending Act',
-           'YEA-AND-NAY', 'PASSAGE', 'Passed', TRUE, NULL, 220, 200, 'http://x'),
+           'YEA-AND-NAY', 'PASSAGE', 'Passed', TRUE, NULL, 220, 200, 0, 0, 'http://x'),
           ('h-119-1-101', 119, 1, 'House', 101, DATE '2025-03-02',
            'On the Nomination', 'YEA-AND-NAY', 'NOMINATION', 'Confirmed', TRUE,
-           NULL, 300, 100, 'http://x'),
+           NULL, 300, 100, 0, 0, 'http://x'),
           ('h-119-1-102', 119, 1, 'House', 102, DATE '2025-03-03',
            'Motion to Invoke Cloture', 'YEA-AND-NAY', 'CLOTURE', 'Agreed to', TRUE,
-           NULL, 60, 40, 'http://x'),
+           NULL, 60, 40, 0, 0, 'http://x'),
           ('h-119-1-103', 119, 1, 'House', 103, DATE '2025-03-04',
            'On Passage of tariff and trade authority bill',
-           'YEA-AND-NAY', 'PASSAGE', 'Passed', TRUE, 'hr-1-119', 210, 210, 'http://x')
+           'YEA-AND-NAY', 'PASSAGE', 'Passed', TRUE, 'hr-1-119', 210, 210, 0, 0, 'http://x')
         """
     )
     conn.execute(
