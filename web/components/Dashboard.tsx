@@ -7,6 +7,13 @@ import { shortName, themeLabel } from "@/lib/types";
 
 const fmt = (v: number) => (v >= 0 ? "+" : "") + v.toFixed(2);
 
+function median(vals: number[]): number | undefined {
+  if (!vals.length) return undefined;
+  const s = [...vals].sort((a, b) => a - b);
+  const mid = Math.floor(s.length / 2);
+  return s.length % 2 ? s[mid] : (s[mid - 1] + s[mid]) / 2;
+}
+
 export default function Dashboard({
   scores,
   deviations,
@@ -16,7 +23,6 @@ export default function Dashboard({
   deviations: Deviation[];
   meta: Meta;
 }) {
-  // Only themes with at least one sufficient member are worth charting.
   const themes = useMemo(() => {
     const counts = new Map<string, number>();
     for (const s of scores) {
@@ -47,8 +53,27 @@ export default function Dashboard({
 
   const flagged = useMemo(() => new Set(themeDevs.map((d) => d.bioguide_id)), [themeDevs]);
 
+  const partyBaselines = useMemo(() => {
+    const byTheme = scores.filter((s) => s.theme === theme && s.sufficient);
+    return {
+      Democrat: median(byTheme.filter((s) => s.party === "Democrat").map((s) => s.signed_score)),
+      Republican: median(
+        byTheme.filter((s) => s.party === "Republican").map((s) => s.signed_score),
+      ),
+    };
+  }, [scores, theme]);
+
   return (
-    <>
+    <section className="section" aria-labelledby="scorecard-heading">
+      <h2 id="scorecard-heading" className="sec-title">
+        Signed climate scores
+      </h2>
+      <p className="sec-lede">
+        One number per member and theme: share of contested votes that advanced the small-business
+        / affordability axis, mapped to [&minus;1, +1]. Horizontal bars are 95% Wilson intervals —
+        wide bands mean thin evidence, not noise to ignore.
+      </p>
+
       <div className="controls">
         <div className="tabs" role="tablist" aria-label="Theme">
           {themes.map((t) => (
@@ -86,60 +111,79 @@ export default function Dashboard({
         <span>
           <i style={{ background: "var(--flag)" }} /> crossed their caucus
         </span>
+        <span style={{ color: "var(--ink3)" }}>dashed lines = party medians</span>
       </div>
       <p className="cap">
-        {themeLabel(theme)} &middot; {rows.length} members with &ge; {meta.sufficient_min} contested
-        votes
+        {themeLabel(theme)} · {rows.length} members with ≥ {meta.sufficient_min} contested votes ·
+        map {meta.map_version}
       </p>
 
       {rows.length > 0 ? (
-        <ForestPlot rows={rows} flagged={flagged} onSelect={(b) => setExpanded(b)} />
+        <ForestPlot
+          rows={rows}
+          flagged={flagged}
+          partyBaselines={partyBaselines}
+          onSelect={(b) => setExpanded(b)}
+        />
       ) : (
         <p className="cap">No members clear the threshold for this filter.</p>
       )}
 
-      <h2 className="sec-h">Within-party defections</h2>
-      <p className="sec-s">
-        Members whose deviation from their caucus baseline is backed by specific crossover votes.
-        Click a card for the votes.
+      <h2 className="sec-title" style={{ marginTop: "2.4rem" }}>
+        Within-party defections
+      </h2>
+      <p className="sec-lede">
+        Deviation from the caucus baseline, only when at least one roll call shows the member
+        crossing the party majority on the same axis-scored vote. Expand a row for sources.
       </p>
+
       {themeDevs.length === 0 ? (
         <p className="cap">No qualifying defections for this filter.</p>
       ) : (
-        <div className="cards">
+        <div className="defections">
           {themeDevs.map((d) => {
             const open = expanded === d.bioguide_id;
             return (
-              <div
-                key={d.bioguide_id}
-                className="card"
-                aria-expanded={open}
-                onClick={() => setExpanded(open ? null : d.bioguide_id)}
-              >
-                <p className="who" style={{ color: d.party === "Democrat" ? "var(--dem)" : "var(--rep)" }}>
-                  {shortName(d.full_name)}
-                </p>
-                <p className="meta">
-                  {d.party} &middot; VA-{d.district_number} &middot; {d.defection_votes.length}{" "}
-                  crossover vote{d.defection_votes.length > 1 ? "s" : ""}
-                </p>
-                <p className="big">
-                  {fmt(d.deviation)}
-                  <small>vs caucus {fmt(d.party_baseline)}</small>
-                </p>
+              <div key={d.bioguide_id}>
+                <button
+                  type="button"
+                  className="def-row"
+                  aria-expanded={open}
+                  onClick={() => setExpanded(open ? null : d.bioguide_id)}
+                >
+                  <div>
+                    <p className={`def-who ${d.party === "Democrat" ? "dem" : "rep"}`}>
+                      {shortName(d.full_name)}
+                    </p>
+                    <p className="def-meta">
+                      {d.party} · VA-{d.district_number} · {d.defection_votes.length} crossover
+                      vote{d.defection_votes.length === 1 ? "" : "s"}
+                    </p>
+                  </div>
+                  <p className="def-score">
+                    {fmt(d.deviation)}
+                    <small>vs caucus {fmt(d.party_baseline)}</small>
+                  </p>
+                  <span className="def-hint">{open ? "Hide votes" : "Show votes"}</span>
+                </button>
                 {open && (
                   <ul className="votes">
                     {d.defection_votes.map((v) => (
                       <li key={v.vote_id}>
-                        <span className="pos">{v.position}</span> &middot; {v.vote_date} &middot;{" "}
+                        <span className="pos">{v.position}</span> · {v.vote_date} ·{" "}
                         {v.source_link ? (
-                          <a href={v.source_link} target="_blank" rel="noreferrer">
+                          <a
+                            href={v.source_link}
+                            target="_blank"
+                            rel="noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                          >
                             {v.bill_id ?? v.vote_id}
                           </a>
                         ) : (
                           (v.bill_id ?? v.vote_id)
                         )}
-                        {v.summary ? ` — ${v.summary}` : ""}
+                        {v.summary ? ` — ${v.summary}` : " — (no adjudicated summary yet)"}
                       </li>
                     ))}
                   </ul>
@@ -149,6 +193,6 @@ export default function Dashboard({
           })}
         </div>
       )}
-    </>
+    </section>
   );
 }

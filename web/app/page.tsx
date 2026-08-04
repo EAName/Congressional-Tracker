@@ -1,31 +1,53 @@
 import Dashboard from "@/components/Dashboard";
-import type { Deviation, Meta, Score } from "@/lib/types";
+import TargetStrip from "@/components/TargetStrip";
+import type { Deviation, Member, Meta, Score } from "@/lib/types";
+import delegationJson from "@/data/delegation.json";
 import deviationsJson from "@/data/deviations.json";
 import metaJson from "@/data/meta.json";
 import scoresJson from "@/data/scores.json";
 
 export default function Page() {
-  const scores = scoresJson as unknown as Score[];
-  const deviations = deviationsJson as unknown as Deviation[];
-  const meta = metaJson as unknown as Meta;
+  const scores = scoresJson as Score[];
+  const deviations = deviationsJson as Deviation[];
+  const meta = metaJson as Meta;
+  const delegation = delegationJson as Member[];
 
   return (
-    <main className="wrap">
-      <h1 className="h1">Virginia delegation — small-business climate scorecard</h1>
-      <p className="sub">
-        Each member&rsquo;s signed score per theme, from <strong>&minus;1</strong> (consistently
-        opposed the small-business / affordability axis) to <strong>+1</strong> (consistently
-        advanced it). The line is the 95% Wilson interval &mdash; honest uncertainty given how few
-        votes each rests on. Hover a point for detail; click a defector to see the votes that drove
-        their break with the caucus.
-      </p>
-      <Dashboard scores={scores} deviations={deviations} meta={meta} />
-      <footer>
-        Signed score = 2&middot;(share of contested votes advancing the axis) &minus; 1, over
-        scoring-representative passage votes with an adjudicated valence. Bands are 95% Wilson
-        intervals. Operative 2021 court-drawn map. Generated {meta.generated_at_utc} from live
-        warehouse data; procedural, nomination, and un-adjudicated votes excluded.
-      </footer>
-    </main>
+    <div className="shell">
+      <header className="hero">
+        <div className="hero-inner">
+          <p className="product">Congressional Vote Tracker</p>
+          <h1 className="brand">Democrats for Virginia</h1>
+          <p className="lede">
+            Where the Virginia delegation stands on the small-business and affordability axis — with
+            honest uncertainty, within-party breaks called out, and every claim tied to an official
+            roll call.
+          </p>
+          <div className="hero-meta">
+            <span>
+              Map <strong>{meta.map_version} court-drawn</strong>
+            </span>
+            <span>
+              Axis <strong>{meta.axis.name.replaceAll("_", " ")}</strong>
+            </span>
+            <span>
+              Generated <strong>{meta.generated_at_utc}</strong>
+            </span>
+          </div>
+        </div>
+      </header>
+
+      <main className="main">
+        <TargetStrip members={delegation} />
+        <Dashboard scores={scores} deviations={deviations} meta={meta} />
+        <footer className="site-foot">
+          Signed score = 2·(share of contested votes advancing the axis) − 1, over
+          scoring-representative passage and amendment votes with an adjudicated valence. Bands are
+          95% Wilson intervals. Procedural, nomination, cloture, and un-adjudicated votes are
+          excluded. Party median lines on the forest plot are descriptive guides, not the weighted
+          baseline used for defection detection. Sources: House Clerk EVS · Senate LIS.
+        </footer>
+      </main>
+    </div>
   );
 }
