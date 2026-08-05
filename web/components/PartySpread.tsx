@@ -31,7 +31,6 @@ function beeswarm(
         return Math.hypot(dx, dy) < p.r + radius - 0.5;
       });
       if (!hit) break;
-      // Alternate above / below the lane center.
       const step = Math.ceil(guard / 2) * (radius * 1.55);
       y = cy + (guard % 2 === 0 ? step : -step);
     }
@@ -44,12 +43,21 @@ export default function PartySpread({
   rows,
   theme,
   flagged,
+  focusId,
+  selectedId,
+  onHover,
+  onSelect,
 }: {
   rows: Score[];
   theme: string;
   flagged: Set<string>;
+  focusId: string | null;
+  selectedId: string | null;
+  onHover: (id: string | null) => void;
+  onSelect: (id: string) => void;
 }) {
-  const [hover, setHover] = useState<{ score: Score; x: number; y: number } | null>(null);
+  const [tip, setTip] = useState<{ score: Score; x: number; y: number } | null>(null);
+  const active = focusId ?? selectedId;
 
   const layout = useMemo(() => {
     const dem = rows.filter((r) => r.party === "Democrat");
@@ -131,42 +139,63 @@ export default function PartySpread({
         <text x={10} y={PAD_T + LANE_H * 0.55 + 4} fontSize={11} fontWeight={700} fill="var(--dem)">
           Dem
         </text>
-        <text x={10} y={PAD_T + LANE_H + LANE_H * 0.55 + 4} fontSize={11} fontWeight={700} fill="var(--rep)">
+        <text
+          x={10}
+          y={PAD_T + LANE_H + LANE_H * 0.55 + 4}
+          fontSize={11}
+          fontWeight={700}
+          fill="var(--rep)"
+        >
           Rep
         </text>
 
         {[...layout.demPts, ...layout.repPts].map((p) => {
           const isFlag = flagged.has(p.score.bioguide_id);
-          const color =
-            isFlag ? "var(--flag)" : p.score.party === "Democrat" ? "var(--dem)" : "var(--rep)";
+          const isActive = active === p.id;
+          const isSelected = selectedId === p.id;
+          const color = isFlag
+            ? "var(--flag)"
+            : p.score.party === "Democrat"
+              ? "var(--dem)"
+              : "var(--rep)";
           return (
             <circle
               key={p.id}
               cx={p.x}
               cy={p.y}
-              r={isFlag ? 8 : 6.5}
+              r={isActive ? 9.5 : isFlag ? 8 : 6.5}
               fill={color}
-              stroke="var(--surface)"
-              strokeWidth={1.6}
-              opacity={0.92}
-              style={{ cursor: "default" }}
-              onMouseEnter={(e) => setHover({ score: p.score, x: e.clientX, y: e.clientY })}
-              onMouseMove={(e) => setHover({ score: p.score, x: e.clientX, y: e.clientY })}
-              onMouseLeave={() => setHover(null)}
+              stroke={isSelected ? "var(--navy)" : "var(--surface)"}
+              strokeWidth={isSelected ? 2.6 : 1.6}
+              opacity={active != null && !isActive ? 0.2 : 0.95}
+              className="viz-hit"
+              style={{ cursor: "pointer" }}
+              onMouseEnter={(e) => {
+                onHover(p.id);
+                setTip({ score: p.score, x: e.clientX, y: e.clientY });
+              }}
+              onMouseMove={(e) => setTip({ score: p.score, x: e.clientX, y: e.clientY })}
+              onMouseLeave={() => {
+                onHover(null);
+                setTip(null);
+              }}
+              onClick={() => onSelect(p.id)}
             />
           );
         })}
       </svg>
       <p className="scale-cap">
-        {themeLabel(theme)} · each point is a member&rsquo;s signed score; vertical stacking is
-        collision only. Gold = crossed caucus majority in this theme.
+        {themeLabel(theme)} · hover to link with the forest plot · click to select. Gold = crossed
+        caucus.
       </p>
-      {hover && (
-        <div className="tooltip" style={{ left: hover.x, top: hover.y }}>
+      {tip && (
+        <div className="tooltip" style={{ left: tip.x, top: tip.y }}>
           <strong>
-            {shortName(hover.score.full_name)} · {fmtScore(hover.score.signed_score)}
+            {shortName(tip.score.full_name)} · {fmtScore(tip.score.signed_score)}
           </strong>
-          {hover.score.party} · n={hover.score.n_contested}
+          Wilson [{fmtScore(tip.score.wilson_low)}, {fmtScore(tip.score.wilson_high)}]
+          <br />
+          {tip.score.n_yea}Y / {tip.score.n_nay}N · n={tip.score.n_contested}
         </div>
       )}
     </div>

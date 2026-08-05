@@ -1,15 +1,15 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import type { Score } from "@/lib/types";
 import { themeLabel } from "@/lib/types";
 
 const W = 720;
-const H = 220;
+const H = 240;
 const PAD_L = 128;
 const PAD_R = 24;
-const PAD_T = 16;
-const PAD_B = 48;
+const PAD_T = 28;
+const PAD_B = 52;
 
 export default function EvidenceBars({
   scores,
@@ -22,6 +22,11 @@ export default function EvidenceBars({
   activeTheme?: string;
   onThemeSelect?: (theme: string) => void;
 }) {
+  const [hoverTheme, setHoverTheme] = useState<string | null>(null);
+  const [tip, setTip] = useState<{ theme: string; x: number; y: number; votes: number; members: number } | null>(
+    null,
+  );
+
   const bars = useMemo(() => {
     return themes.map((theme) => {
       const cells = scores.filter((s) => s.theme === theme && s.sufficient);
@@ -58,11 +63,36 @@ export default function EvidenceBars({
           const x = PAD_L + i * (barW + gap);
           const y = PAD_T + innerH - h;
           const active = b.theme === activeTheme;
+          const hot = b.theme === hoverTheme;
           return (
             <g
               key={b.theme}
-              style={{ cursor: onThemeSelect ? "pointer" : "default" }}
+              className="viz-hit"
+              style={{ cursor: "pointer" }}
               onClick={() => onThemeSelect?.(b.theme)}
+              onMouseEnter={(e) => {
+                setHoverTheme(b.theme);
+                setTip({
+                  theme: b.theme,
+                  votes: b.memberVotes,
+                  members: b.members,
+                  x: e.clientX,
+                  y: e.clientY,
+                });
+              }}
+              onMouseMove={(e) =>
+                setTip({
+                  theme: b.theme,
+                  votes: b.memberVotes,
+                  members: b.members,
+                  x: e.clientX,
+                  y: e.clientY,
+                })
+              }
+              onMouseLeave={() => {
+                setHoverTheme(null);
+                setTip(null);
+              }}
             >
               <rect
                 x={x}
@@ -70,8 +100,8 @@ export default function EvidenceBars({
                 width={barW}
                 height={Math.max(h, 2)}
                 rx={3}
-                fill={active ? "var(--navy)" : "var(--dem)"}
-                opacity={active ? 1 : 0.78}
+                fill={active ? "var(--navy)" : hot ? "var(--accent)" : "var(--dem)"}
+                opacity={active || hot ? 1 : 0.72}
               />
               <text
                 x={x + barW / 2}
@@ -101,9 +131,16 @@ export default function EvidenceBars({
         })}
       </svg>
       <p className="scale-cap">
-        Sum of contested Yea/Nay tallies across members with a sufficient cell in that theme
-        (member-votes, not unique roll calls).
+        Click a bar to switch the forest plot theme. Hover for member count and vote depth.
       </p>
+      {tip && (
+        <div className="tooltip" style={{ left: tip.x, top: tip.y }}>
+          <strong>{themeLabel(tip.theme)}</strong>
+          {tip.votes} contested member-votes · {tip.members} sufficient members
+          <br />
+          Click to focus this theme
+        </div>
+      )}
     </div>
   );
 }

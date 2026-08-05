@@ -3,6 +3,7 @@
 import { useId, useMemo, useState } from "react";
 import type { Score } from "@/lib/types";
 import { shortName } from "@/lib/types";
+import { fmtScore } from "@/lib/viz";
 
 const W = 760;
 const PAD_L = 178;
@@ -18,9 +19,7 @@ const partyColor = (p: string | null, flagged: boolean) => {
   return "var(--ink3)";
 };
 
-const fmt = (v: number) => (v >= 0 ? "+" : "") + v.toFixed(2);
-
-interface Hover {
+interface Tip {
   row: Score;
   x: number;
   y: number;
@@ -29,16 +28,22 @@ interface Hover {
 export default function ForestPlot({
   rows,
   flagged,
+  focusId,
+  selectedId,
+  onHover,
   onSelect,
   partyBaselines,
 }: {
   rows: Score[];
   flagged: Set<string>;
-  onSelect: (bioguide: string) => void;
+  focusId: string | null;
+  selectedId: string | null;
+  onHover: (id: string | null) => void;
+  onSelect: (id: string) => void;
   partyBaselines?: { Democrat?: number; Republican?: number };
 }) {
   const gid = useId().replace(/:/g, "");
-  const [hover, setHover] = useState<Hover | null>(null);
+  const [tip, setTip] = useState<Tip | null>(null);
 
   const sorted = useMemo(
     () =>
@@ -51,6 +56,7 @@ export default function ForestPlot({
   const H = PAD_T + sorted.length * ROW_H + PAD_B;
   const x = (v: number) => PAD_L + ((Math.max(-1, Math.min(1, v)) + 1) / 2) * (W - PAD_L - PAD_R);
   const ticks = [-1, -0.5, 0, 0.5, 1];
+  const active = focusId ?? selectedId;
 
   return (
     <div className="plot-frame">
@@ -77,7 +83,6 @@ export default function ForestPlot({
             fill={`url(#axis-${gid})`}
           />
 
-          {/* Axis labels */}
           <text x={PAD_L} y={12} fontSize={9.5} fill="var(--ink3)" textAnchor="start">
             opposed axis
           </text>
@@ -139,30 +144,36 @@ export default function ForestPlot({
           {sorted.map((r, i) => {
             const cy = PAD_T + i * ROW_H + ROW_H / 2;
             const isFlagged = flagged.has(r.bioguide_id);
+            const isActive = active === r.bioguide_id;
+            const isSelected = selectedId === r.bioguide_id;
             const color = partyColor(r.party, isFlagged);
-            const delay = `${0.03 * i}s`;
+            const dim = active != null && !isActive;
             return (
               <g
                 key={r.bioguide_id}
-                style={{
-                  cursor: isFlagged ? "pointer" : "default",
-                  opacity: 0,
-                  animation: `rise 0.45s ${delay} ease-out forwards`,
+                className="viz-hit"
+                opacity={dim ? 0.22 : 1}
+                style={{ cursor: "pointer" }}
+                onMouseEnter={(e) => {
+                  onHover(r.bioguide_id);
+                  setTip({ row: r, x: e.clientX, y: e.clientY });
                 }}
-                onMouseEnter={(e) => setHover({ row: r, x: e.clientX, y: e.clientY })}
-                onMouseMove={(e) => setHover({ row: r, x: e.clientX, y: e.clientY })}
-                onMouseLeave={() => setHover(null)}
-                onClick={() => isFlagged && onSelect(r.bioguide_id)}
+                onMouseMove={(e) => setTip({ row: r, x: e.clientX, y: e.clientY })}
+                onMouseLeave={() => {
+                  onHover(null);
+                  setTip(null);
+                }}
+                onClick={() => onSelect(r.bioguide_id)}
               >
-                {isFlagged && (
+                {(isFlagged || isSelected) && (
                   <rect
                     x={4}
                     y={cy - ROW_H / 2 + 2}
                     width={W - 8}
                     height={ROW_H - 4}
                     rx={3}
-                    fill="var(--flag-soft)"
-                    opacity={0.85}
+                    fill={isSelected ? "var(--dem-soft)" : "var(--flag-soft)"}
+                    opacity={0.9}
                   />
                 )}
                 <text x={14} y={cy - 2} fontSize={13} fontWeight={600} fill="var(--ink)">
@@ -171,15 +182,13 @@ export default function ForestPlot({
                 <text x={14} y={cy + 12} fontSize={10.5} fill="var(--ink3)">
                   {r.district_number ? `VA-${r.district_number}` : r.chamber} · n={r.n_contested}
                 </text>
-
-                {/* Wilson band */}
                 <line
                   x1={x(r.wilson_low)}
                   y1={cy}
                   x2={x(r.wilson_high)}
                   y2={cy}
                   stroke={color}
-                  strokeWidth={3}
+                  strokeWidth={isActive ? 4 : 3}
                   strokeLinecap="round"
                   opacity={0.35}
                 />
@@ -204,10 +213,10 @@ export default function ForestPlot({
                 <circle
                   cx={x(r.signed_score)}
                   cy={cy}
-                  r={hover?.row.bioguide_id === r.bioguide_id ? 7.5 : 5.8}
+                  r={isActive ? 8 : 5.8}
                   fill={color}
-                  stroke="var(--surface)"
-                  strokeWidth={1.8}
+                  stroke={isSelected ? "var(--navy)" : "var(--surface)"}
+                  strokeWidth={isSelected ? 2.4 : 1.8}
                 />
                 {isFlagged && (
                   <text
@@ -226,14 +235,15 @@ export default function ForestPlot({
           })}
         </svg>
 
-        {hover && (
-          <div className="tooltip" style={{ left: hover.x, top: hover.y }}>
+        {tip && (
+          <div className="tooltip" style={{ left: tip.x, top: tip.y }}>
             <strong>
-              {shortName(hover.row.full_name)} · {fmt(hover.row.signed_score)}
+              {shortName(tip.row.full_name)} · {fmtScore(tip.row.signed_score)}
             </strong>
-            Wilson [{fmt(hover.row.wilson_low)}, {fmt(hover.row.wilson_high)}]
+            Wilson [{fmtScore(tip.row.wilson_low)}, {fmtScore(tip.row.wilson_high)}]
             <br />
-            {hover.row.n_yea}Y / {hover.row.n_nay}N contested
+            {tip.row.n_yea}Y / {tip.row.n_nay}N · click to focus
+            {flagged.has(tip.row.bioguide_id) ? " · opens defections" : ""}
           </div>
         )}
       </div>

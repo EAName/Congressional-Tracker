@@ -394,8 +394,13 @@ a:hover {
 }
 
 .def-row:hover,
-.def-row[aria-expanded="true"] {
+.def-row[aria-expanded="true"],
+.def-row-lit {
   background: linear-gradient(90deg, var(--flag-soft), transparent 70%);
+}
+
+.viz-hit {
+  transition: opacity 0.12s ease;
 }
 
 .def-who {

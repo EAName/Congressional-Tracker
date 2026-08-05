@@ -1,10 +1,12 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import DelegationStrip from "@/components/DelegationStrip";
 import EvidenceBars from "@/components/EvidenceBars";
 import ForestPlot from "@/components/ForestPlot";
 import PartySpread from "@/components/PartySpread";
-import type { Deviation, Meta, Party, Score } from "@/lib/types";
+import TargetProfiles from "@/components/TargetProfiles";
+import type { Deviation, Member, Meta, Party, Score } from "@/lib/types";
 import { shortName, themeLabel } from "@/lib/types";
 
 const fmt = (v: number) => (v >= 0 ? "+" : "") + v.toFixed(2);
@@ -20,10 +22,12 @@ export default function Dashboard({
   scores,
   deviations,
   meta,
+  delegation,
 }: {
   scores: Score[];
   deviations: Deviation[];
   meta: Meta;
+  delegation: Member[];
 }) {
   const themes = useMemo(() => {
     const counts = new Map<string, number>();
@@ -36,6 +40,8 @@ export default function Dashboard({
   const [theme, setTheme] = useState(themes[0] ?? meta.themes[0]);
   const [party, setParty] = useState<Party | "all">("all");
   const [expanded, setExpanded] = useState<string | null>(null);
+  const [focusId, setFocusId] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const rows = useMemo(
     () =>
@@ -65,6 +71,20 @@ export default function Dashboard({
     };
   }, [scores, theme]);
 
+  const selectMember = (id: string) => {
+    setSelectedId((prev) => (prev === id ? null : id));
+    if (flagged.has(id)) {
+      setExpanded(id);
+    }
+  };
+
+  const linked = {
+    focusId,
+    selectedId,
+    onHover: setFocusId,
+    onSelect: selectMember,
+  };
+
   return (
     <section className="section" aria-labelledby="scorecard-heading">
       <h2 id="scorecard-heading" className="sec-title">
@@ -72,8 +92,8 @@ export default function Dashboard({
       </h2>
       <p className="sec-lede">
         One number per member and theme: share of contested votes that advanced the small-business
-        / affordability axis, mapped to [&minus;1, +1]. Horizontal bars are 95% Wilson intervals —
-        wide bands mean thin evidence, not noise to ignore.
+        / affordability axis, mapped to [&minus;1, +1]. Hover links charts; click a member to select
+        them across the page.
       </p>
 
       <div className="controls">
@@ -113,11 +133,12 @@ export default function Dashboard({
         <span>
           <i style={{ background: "var(--flag)" }} /> crossed their caucus
         </span>
-        <span style={{ color: "var(--ink3)" }}>dashed lines = party medians</span>
+        <span style={{ color: "var(--ink3)" }}>hover = linked · click = select</span>
       </div>
       <p className="cap">
         {themeLabel(theme)} · {rows.length} members with ≥ {meta.sufficient_min} contested votes ·
         map {meta.map_version}
+        {selectedId ? " · member selected" : ""}
       </p>
 
       {rows.length > 0 ? (
@@ -125,7 +146,7 @@ export default function Dashboard({
           rows={rows}
           flagged={flagged}
           partyBaselines={partyBaselines}
-          onSelect={(b) => setExpanded(b)}
+          {...linked}
         />
       ) : (
         <p className="cap">No members clear the threshold for this filter.</p>
@@ -134,17 +155,48 @@ export default function Dashboard({
       <div className="viz-block">
         <h3 className="viz-title">Party spread</h3>
         <p className="viz-lede">
-          Same theme as above, D and R on separate lanes — shows how wide the caucus is, not just
-          the median.
+          Same theme, D and R on separate lanes — caucus width, not just the median.
         </p>
-        <PartySpread rows={rows} theme={theme} flagged={flagged} />
+        <PartySpread rows={rows} theme={theme} flagged={flagged} {...linked} />
+      </div>
+
+      <div className="viz-block">
+        <h3 className="viz-title">Delegation strip</h3>
+        <p className="viz-lede">
+          District order for the active theme. Target seats marked in gold. Click any seat to
+          select.
+        </p>
+        <DelegationStrip
+          scores={scores}
+          theme={theme}
+          delegation={delegation}
+          flagged={flagged}
+          {...linked}
+        />
+      </div>
+
+      <div className="viz-block">
+        <h3 className="viz-title">Target seats vs caucus</h3>
+        <p className="viz-lede">
+          VA-1 / VA-2 across every sufficient theme. Dot = member · tick = party median. Click a
+          theme row to jump the forest plot.
+        </p>
+        <TargetProfiles
+          scores={scores}
+          themes={themes}
+          delegation={delegation}
+          onThemeSelect={(t) => {
+            setTheme(t);
+            setExpanded(null);
+          }}
+          {...linked}
+        />
       </div>
 
       <div className="viz-block">
         <h3 className="viz-title">Evidence density</h3>
         <p className="viz-lede">
-          How many contested member-votes back each theme. Thin bars mean wider Wilson bands on
-          the forest plot.
+          Contested member-votes per theme. Thin bars mean wider Wilson bands above.
         </p>
         <EvidenceBars
           scores={scores}
@@ -161,8 +213,8 @@ export default function Dashboard({
         Within-party defections
       </h2>
       <p className="sec-lede">
-        Deviation from the caucus baseline, only when at least one roll call shows the member
-        crossing the party majority on the same axis-scored vote. Expand a row for sources.
+        Deviation from the caucus baseline when at least one roll call shows a crossover. Selecting
+        a flagged member from any chart opens their votes here.
       </p>
 
       {themeDevs.length === 0 ? (
@@ -171,13 +223,20 @@ export default function Dashboard({
         <div className="defections">
           {themeDevs.map((d) => {
             const open = expanded === d.bioguide_id;
+            const lit =
+              focusId === d.bioguide_id || selectedId === d.bioguide_id || open;
             return (
-              <div key={d.bioguide_id}>
+              <div key={d.bioguide_id} id={`def-${d.bioguide_id}`}>
                 <button
                   type="button"
-                  className="def-row"
+                  className={`def-row${lit ? " def-row-lit" : ""}`}
                   aria-expanded={open}
-                  onClick={() => setExpanded(open ? null : d.bioguide_id)}
+                  onMouseEnter={() => setFocusId(d.bioguide_id)}
+                  onMouseLeave={() => setFocusId(null)}
+                  onClick={() => {
+                    setSelectedId(d.bioguide_id);
+                    setExpanded(open ? null : d.bioguide_id);
+                  }}
                 >
                   <div>
                     <p className={`def-who ${d.party === "Democrat" ? "dem" : "rep"}`}>

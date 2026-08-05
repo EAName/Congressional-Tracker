@@ -39,7 +39,12 @@ export default function Page() {
 
       <main className="main">
         <TargetStrip members={delegation} />
-        <Dashboard scores={scores} deviations={deviations} meta={meta} />
+        <Dashboard
+          scores={scores}
+          deviations={deviations}
+          meta={meta}
+          delegation={delegation}
+        />
         <footer className="site-foot">
           Signed score = 2·(share of contested votes advancing the axis) − 1, over
           scoring-representative passage and amendment votes with an adjudicated valence. Bands are
