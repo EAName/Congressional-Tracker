@@ -14,18 +14,15 @@ export default function Page() {
 
   return (
     <div className="shell">
-      <header className="hero">
-        <div className="hero-inner">
-          <p className="product">Congressional Vote Tracker</p>
-          <h1 className="brand">Democrats for Virginia</h1>
-          <p className="lede">
-            Where the Virginia delegation stands on the small-business and affordability axis — with
-            honest uncertainty, within-party breaks called out, and every claim tied to an official
-            roll call.
-          </p>
-          <div className="hero-meta">
+      <header className="topbar">
+        <div className="topbar-inner">
+          <div className="brand-block">
+            <p className="product">Congressional Vote Tracker</p>
+            <h1 className="brand">Democrats for Virginia</h1>
+          </div>
+          <div className="top-meta">
             <span>
-              Map <strong>{meta.map_version} court-drawn</strong>
+              Map <strong>{meta.map_version}</strong>
             </span>
             <span>
               Axis <strong>{meta.axis.name.replaceAll("_", " ")}</strong>
@@ -37,7 +34,7 @@ export default function Page() {
         </div>
       </header>
 
-      <main className="main">
+      <div className="workspace">
         <TargetStrip members={delegation} />
         <Dashboard
           scores={scores}
@@ -46,13 +43,12 @@ export default function Page() {
           delegation={delegation}
         />
         <footer className="site-foot">
-          Signed score = 2·(share of contested votes advancing the axis) − 1, over
-          scoring-representative passage and amendment votes with an adjudicated valence. Bands are
-          95% Wilson intervals. Procedural, nomination, cloture, and un-adjudicated votes are
-          excluded. Party median lines on the forest plot are descriptive guides, not the weighted
-          baseline used for defection detection. Sources: House Clerk EVS · Senate LIS.
+          Signed score = 2·(share of contested votes advancing the axis) − 1. Wilson bands are 95%
+          intervals. Compare reports whether intervals overlap under current vote depth —
+          separation is suggestive, not a formal hypothesis test. Procedural and un-adjudicated
+          votes excluded. Sources: House Clerk EVS · Senate LIS.
         </footer>
-      </main>
+      </div>
     </div>
   );
 }

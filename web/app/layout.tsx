@@ -4,7 +4,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Congressional Vote Tracker · Democrats for Virginia",
   description:
-    "Signed small-business climate scores and within-party defections for the Virginia congressional delegation. Operative 2021 court-drawn map.",
+    "Dark modular scorecard: signed small-business climate scores, Wilson compare mode, and within-party defections for the Virginia delegation.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

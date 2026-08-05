@@ -1,9 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import CompareOverlay from "@/components/CompareOverlay";
 import DelegationStrip from "@/components/DelegationStrip";
 import EvidenceBars from "@/components/EvidenceBars";
 import ForestPlot from "@/components/ForestPlot";
+import Module from "@/components/Module";
 import PartySpread from "@/components/PartySpread";
 import TargetProfiles from "@/components/TargetProfiles";
 import type { Deviation, Member, Meta, Party, Score } from "@/lib/types";
@@ -42,6 +44,8 @@ export default function Dashboard({
   const [expanded, setExpanded] = useState<string | null>(null);
   const [focusId, setFocusId] = useState<string | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [compareA, setCompareA] = useState<string | null>(null);
+  const [compareB, setCompareB] = useState<string | null>(null);
 
   const rows = useMemo(
     () =>
@@ -71,11 +75,29 @@ export default function Dashboard({
     };
   }, [scores, theme]);
 
+  // Keep compare pins valid for the active theme/party filter.
+  useEffect(() => {
+    const ids = new Set(rows.map((r) => r.bioguide_id));
+    if (compareA && !ids.has(compareA)) setCompareA(null);
+    if (compareB && !ids.has(compareB)) setCompareB(null);
+  }, [rows, compareA, compareB]);
+
+  // Default compare pins: target seats when present in the filtered rows.
+  useEffect(() => {
+    if (compareA || compareB || rows.length < 2) return;
+    const targets = delegation
+      .filter((m) => m.is_target)
+      .map((m) => m.bioguide_id)
+      .filter((id) => rows.some((r) => r.bioguide_id === id));
+    if (targets.length >= 2) {
+      setCompareA(targets[0]);
+      setCompareB(targets[1]);
+    }
+  }, [theme, party, rows, delegation, compareA, compareB]);
+
   const selectMember = (id: string) => {
     setSelectedId((prev) => (prev === id ? null : id));
-    if (flagged.has(id)) {
-      setExpanded(id);
-    }
+    if (flagged.has(id)) setExpanded(id);
   };
 
   const linked = {
@@ -85,87 +107,100 @@ export default function Dashboard({
     onSelect: selectMember,
   };
 
+  const pinFromSelection = () => {
+    if (!selectedId) return;
+    if (!compareA) setCompareA(selectedId);
+    else if (!compareB && selectedId !== compareA) setCompareB(selectedId);
+    else if (selectedId !== compareA) setCompareB(selectedId);
+  };
+
   return (
-    <section className="section" aria-labelledby="scorecard-heading">
-      <h2 id="scorecard-heading" className="sec-title">
-        Signed climate scores
-      </h2>
-      <p className="sec-lede">
-        One number per member and theme: share of contested votes that advanced the small-business
-        / affordability axis, mapped to [&minus;1, +1]. Hover links charts; click a member to select
-        them across the page.
-      </p>
-
-      <div className="controls">
-        <div className="tabs" role="tablist" aria-label="Theme">
-          {themes.map((t) => (
-            <button
-              key={t}
-              className="tab"
-              role="tab"
-              aria-pressed={t === theme}
-              onClick={() => {
-                setTheme(t);
-                setExpanded(null);
-              }}
-            >
-              {themeLabel(t)}
-            </button>
-          ))}
+    <div className="module-grid">
+      <Module
+        title="Controls"
+        kicker="Theme and party filter every module below"
+        span={12}
+      >
+        <div className="controls" style={{ border: 0, marginBottom: 0 }}>
+          <div className="tabs" role="tablist" aria-label="Theme">
+            {themes.map((t) => (
+              <button
+                key={t}
+                className="tab"
+                role="tab"
+                aria-pressed={t === theme}
+                onClick={() => {
+                  setTheme(t);
+                  setExpanded(null);
+                }}
+              >
+                {themeLabel(t)}
+              </button>
+            ))}
+          </div>
+          <span className="spacer" />
+          <div className="seg" role="group" aria-label="Party filter">
+            {(["all", "Democrat", "Republican"] as const).map((p) => (
+              <button key={p} aria-pressed={party === p} onClick={() => setParty(p)}>
+                {p === "all" ? "All" : p === "Democrat" ? "Dem" : "Rep"}
+              </button>
+            ))}
+          </div>
         </div>
-        <span className="spacer" />
-        <div className="seg" role="group" aria-label="Party filter">
-          {(["all", "Democrat", "Republican"] as const).map((p) => (
-            <button key={p} aria-pressed={party === p} onClick={() => setParty(p)}>
-              {p === "all" ? "All" : p === "Democrat" ? "Dem" : "Rep"}
-            </button>
-          ))}
+        <div className="legend" style={{ marginTop: "0.75rem", marginBottom: 0 }}>
+          <span>
+            <i style={{ background: "var(--dem)" }} /> Democrat
+          </span>
+          <span>
+            <i style={{ background: "var(--rep)" }} /> Republican
+          </span>
+          <span>
+            <i style={{ background: "var(--flag)" }} /> crossed caucus
+          </span>
+          <span style={{ color: "var(--ink3)" }}>
+            {themeLabel(theme)} · {rows.length} sufficient · map {meta.map_version}
+          </span>
         </div>
-      </div>
+      </Module>
 
-      <div className="legend">
-        <span>
-          <i style={{ background: "var(--dem)" }} /> Democrat
-        </span>
-        <span>
-          <i style={{ background: "var(--rep)" }} /> Republican
-        </span>
-        <span>
-          <i style={{ background: "var(--flag)" }} /> crossed their caucus
-        </span>
-        <span style={{ color: "var(--ink3)" }}>hover = linked · click = select</span>
-      </div>
-      <p className="cap">
-        {themeLabel(theme)} · {rows.length} members with ≥ {meta.sufficient_min} contested votes ·
-        map {meta.map_version}
-        {selectedId ? " · member selected" : ""}
-      </p>
-
-      {rows.length > 0 ? (
-        <ForestPlot
+      <Module
+        title="Compare"
+        kicker="Pin two members · overlay Wilson intervals"
+        span={12}
+        action={
+          selectedId ? (
+            <button type="button" className="tab" onClick={pinFromSelection}>
+              Pin selection
+            </button>
+          ) : null
+        }
+      >
+        <CompareOverlay
           rows={rows}
-          flagged={flagged}
-          partyBaselines={partyBaselines}
-          {...linked}
+          memberA={compareA}
+          memberB={compareB}
+          onChangeA={setCompareA}
+          onChangeB={setCompareB}
         />
-      ) : (
-        <p className="cap">No members clear the threshold for this filter.</p>
-      )}
+      </Module>
 
-      <div className="viz-block">
-        <h3 className="viz-title">Party spread</h3>
-        <p className="viz-lede">
-          Same theme, D and R on separate lanes — caucus width, not just the median.
-        </p>
+      <Module
+        title="Forest plot"
+        kicker="Signed score with 95% Wilson band · hover links modules"
+        span={12}
+      >
+        {rows.length > 0 ? (
+          <ForestPlot rows={rows} flagged={flagged} partyBaselines={partyBaselines} {...linked} />
+        ) : (
+          <p className="cap">No members clear the threshold for this filter.</p>
+        )}
+      </Module>
+
+      <Module title="Party spread" kicker="Caucus width on this theme" span={6}>
         <PartySpread rows={rows} theme={theme} flagged={flagged} {...linked} />
-      </div>
+      </Module>
 
-      <div className="viz-block">
-        <h3 className="viz-title">Delegation strip</h3>
-        <p className="viz-lede">
-          District order for the active theme. Target seats marked in gold. Click any seat to
-          select.
-        </p>
+      <Module title="Delegation strip" kicker="District order · gold = targets" span={6}>
         <DelegationStrip
           scores={scores}
           theme={theme}
@@ -173,14 +208,13 @@ export default function Dashboard({
           flagged={flagged}
           {...linked}
         />
-      </div>
+      </Module>
 
-      <div className="viz-block">
-        <h3 className="viz-title">Target seats vs caucus</h3>
-        <p className="viz-lede">
-          VA-1 / VA-2 across every sufficient theme. Dot = member · tick = party median. Click a
-          theme row to jump the forest plot.
-        </p>
+      <Module
+        title="Target seats vs caucus"
+        kicker="VA-1 / VA-2 across themes · tick = party median"
+        span={8}
+      >
         <TargetProfiles
           scores={scores}
           themes={themes}
@@ -191,13 +225,9 @@ export default function Dashboard({
           }}
           {...linked}
         />
-      </div>
+      </Module>
 
-      <div className="viz-block">
-        <h3 className="viz-title">Evidence density</h3>
-        <p className="viz-lede">
-          Contested member-votes per theme. Thin bars mean wider Wilson bands above.
-        </p>
+      <Module title="Evidence density" kicker="Click a bar to change theme" span={4}>
         <EvidenceBars
           scores={scores}
           themes={themes}
@@ -207,79 +237,76 @@ export default function Dashboard({
             setExpanded(null);
           }}
         />
-      </div>
+      </Module>
 
-      <h2 className="sec-title" style={{ marginTop: "2.4rem" }}>
-        Within-party defections
-      </h2>
-      <p className="sec-lede">
-        Deviation from the caucus baseline when at least one roll call shows a crossover. Selecting
-        a flagged member from any chart opens their votes here.
-      </p>
-
-      {themeDevs.length === 0 ? (
-        <p className="cap">No qualifying defections for this filter.</p>
-      ) : (
-        <div className="defections">
-          {themeDevs.map((d) => {
-            const open = expanded === d.bioguide_id;
-            const lit =
-              focusId === d.bioguide_id || selectedId === d.bioguide_id || open;
-            return (
-              <div key={d.bioguide_id} id={`def-${d.bioguide_id}`}>
-                <button
-                  type="button"
-                  className={`def-row${lit ? " def-row-lit" : ""}`}
-                  aria-expanded={open}
-                  onMouseEnter={() => setFocusId(d.bioguide_id)}
-                  onMouseLeave={() => setFocusId(null)}
-                  onClick={() => {
-                    setSelectedId(d.bioguide_id);
-                    setExpanded(open ? null : d.bioguide_id);
-                  }}
-                >
-                  <div>
-                    <p className={`def-who ${d.party === "Democrat" ? "dem" : "rep"}`}>
-                      {shortName(d.full_name)}
+      <Module
+        title="Within-party defections"
+        kicker="Selecting a flagged member from any chart opens their votes"
+        span={12}
+      >
+        {themeDevs.length === 0 ? (
+          <p className="cap">No qualifying defections for this filter.</p>
+        ) : (
+          <div className="defections">
+            {themeDevs.map((d) => {
+              const open = expanded === d.bioguide_id;
+              const lit = focusId === d.bioguide_id || selectedId === d.bioguide_id || open;
+              return (
+                <div key={d.bioguide_id} id={`def-${d.bioguide_id}`}>
+                  <button
+                    type="button"
+                    className={`def-row${lit ? " def-row-lit" : ""}`}
+                    aria-expanded={open}
+                    onMouseEnter={() => setFocusId(d.bioguide_id)}
+                    onMouseLeave={() => setFocusId(null)}
+                    onClick={() => {
+                      setSelectedId(d.bioguide_id);
+                      setExpanded(open ? null : d.bioguide_id);
+                    }}
+                  >
+                    <div>
+                      <p className={`def-who ${d.party === "Democrat" ? "dem" : "rep"}`}>
+                        {shortName(d.full_name)}
+                      </p>
+                      <p className="def-meta">
+                        {d.party} · VA-{d.district_number} · {d.defection_votes.length} crossover
+                        vote{d.defection_votes.length === 1 ? "" : "s"}
+                      </p>
+                    </div>
+                    <p className="def-score">
+                      {fmt(d.deviation)}
+                      <small>vs caucus {fmt(d.party_baseline)}</small>
                     </p>
-                    <p className="def-meta">
-                      {d.party} · VA-{d.district_number} · {d.defection_votes.length} crossover
-                      vote{d.defection_votes.length === 1 ? "" : "s"}
-                    </p>
-                  </div>
-                  <p className="def-score">
-                    {fmt(d.deviation)}
-                    <small>vs caucus {fmt(d.party_baseline)}</small>
-                  </p>
-                  <span className="def-hint">{open ? "Hide votes" : "Show votes"}</span>
-                </button>
-                {open && (
-                  <ul className="votes">
-                    {d.defection_votes.map((v) => (
-                      <li key={v.vote_id}>
-                        <span className="pos">{v.position}</span> · {v.vote_date} ·{" "}
-                        {v.source_link ? (
-                          <a
-                            href={v.source_link}
-                            target="_blank"
-                            rel="noreferrer"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            {v.bill_id ?? v.vote_id}
-                          </a>
-                        ) : (
-                          (v.bill_id ?? v.vote_id)
-                        )}
-                        {v.summary ? ` — ${v.summary}` : " — (no adjudicated summary yet)"}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      )}
-    </section>
+                    <span className="def-hint">{open ? "Hide votes" : "Show votes"}</span>
+                  </button>
+                  {open && (
+                    <ul className="votes">
+                      {d.defection_votes.map((v) => (
+                        <li key={v.vote_id}>
+                          <span className="pos">{v.position}</span> · {v.vote_date} ·{" "}
+                          {v.source_link ? (
+                            <a
+                              href={v.source_link}
+                              target="_blank"
+                              rel="noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              {v.bill_id ?? v.vote_id}
+                            </a>
+                          ) : (
+                            (v.bill_id ?? v.vote_id)
+                          )}
+                          {v.summary ? ` — ${v.summary}` : " — (no adjudicated summary yet)"}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </Module>
+    </div>
   );
 }
