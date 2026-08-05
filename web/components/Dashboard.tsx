@@ -158,7 +158,7 @@ export default function Dashboard({
             <i style={{ background: "var(--flag)" }} /> crossed caucus
           </span>
           <span style={{ color: "var(--ink3)" }}>
-            {themeLabel(theme)} · {rows.length} sufficient · map {meta.map_version}
+            {themeLabel(theme)} · {rows.length} sufficient
           </span>
         </div>
       </Module>

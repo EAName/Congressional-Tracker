@@ -14,9 +14,7 @@ export default function TargetStrip({ members }: { members: Member[] }) {
         <div key={m.bioguide_id} className="target">
           <p className="target-kicker">Target seat · VA-{m.district_number}</p>
           <p className="target-name">{shortName(m.full_name)}</p>
-          <p className="target-meta">
-            {m.party} · 2021 court-drawn map
-          </p>
+          <p className="target-meta">{m.party}</p>
           {m.partisan_lean ? <span className="target-lean">{m.partisan_lean}</span> : null}
         </div>
       ))}

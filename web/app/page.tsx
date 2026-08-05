@@ -20,17 +20,6 @@ export default function Page() {
             <p className="product">Congressional Vote Tracker</p>
             <h1 className="brand">Democrats for Virginia</h1>
           </div>
-          <div className="top-meta">
-            <span>
-              Map <strong>{meta.map_version}</strong>
-            </span>
-            <span>
-              Axis <strong>{meta.axis.name.replaceAll("_", " ")}</strong>
-            </span>
-            <span>
-              Generated <strong>{meta.generated_at_utc}</strong>
-            </span>
-          </div>
         </div>
       </header>
 
