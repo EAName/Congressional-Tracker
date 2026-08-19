@@ -2,10 +2,9 @@
 
 Audit date: 2026-08-19. No behavior change in this commit.
 
-This document is the Prompt 0 deliverable. Later prompts (versioned `votes.csv`,
-empirical Bayes, IRT, methodology, forecasts) should land against the **target**
-shape below, not against the misconception that Google Sheets is the system of
-record.
+This document is the Prompt 0 deliverable. Prompt 1 (`data/votes.csv`) is
+implemented: warehouse export, validation, CSV-backed scoring, DuckDB SQL path
+behind `--from-warehouse`.
 
 ---
 
@@ -319,16 +318,18 @@ Prompt 0 (this file) — **done**. No behavior change.
 
 **Prompt 1 — versioned vote layer**
 
-- [ ] Define `data/votes.csv` schema + Pydantic model
-- [ ] `vact votes export` from warehouse (map_version=2021, scoreable filter)
-- [ ] Diff report vs previous committed CSV
-- [ ] Validation: unique `(member, rollcall, theme)`, axis_direction + source_url
+- [x] Define `data/votes.csv` schema + Pydantic model
+- [x] `vact votes export` from warehouse (map_version=2021, scoreable filter)
+- [x] Diff report vs previous committed CSV
+- [x] Validation: unique `(member, rollcall, theme)`, axis_direction + source_url
       required, party consistent per member, vote_cast enum
-- [ ] Point `build_scores_frame` (or a new reader) at the CSV; keep DuckDB path
-      behind a flag until byte-identical
-- [ ] Prove byte-identical `signed_score` / Wilson vs current `web/data/scores.json`
-- [ ] Optional: Sheets reconciliation (read-only diff), not Sheets-as-source
-- [ ] Wire validation into CI; document `git log data/votes.csv` as audit trail
+- [x] Point `build_scores_frame` (or a new reader) at the CSV; keep DuckDB path
+      behind `--from-warehouse` until / after byte-identical
+- [x] Prove byte-identical `signed_score` / Wilson vs warehouse SQL (and vs
+      `web/data/scores.json` once both are committed)
+- [x] Optional: Sheets reconciliation (read-only diff), not Sheets-as-source
+      (`vact votes sync --sheets`)
+- [x] Wire validation into CI; document `git log data/votes.csv` as audit trail
 
 **Prompt 2 — empirical Bayes**
 
@@ -388,7 +389,7 @@ Prompt 0 (this file) — **done**. No behavior change.
 
 **Cutover hygiene (any time after 1)**
 
-- [ ] Publish workflow: `vact export-web` (or derived build) before assuming
+- [x] Publish workflow: `vact export-web` (or derived build) before assuming
       Vercel has fresh scores
 - [ ] Delete duplicated `median()` in `Dashboard.tsx` / `TargetProfiles.tsx`
       once baselines are in JSON

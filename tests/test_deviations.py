@@ -37,9 +37,7 @@ def _position(bio: str, vote_id: str) -> str:
     return "NAY"
 
 
-@pytest.fixture()
-def caucus(tmp_path: Path) -> Path:
-    path = tmp_path / "w.duckdb"
+def seed_caucus_warehouse(path: Path) -> Path:
     conn = connect(path)
     ensure_schema(conn)
     for bio, name, district in MEMBERS:
@@ -73,6 +71,11 @@ def caucus(tmp_path: Path) -> Path:
             )
     conn.close()
     return path
+
+
+@pytest.fixture()
+def caucus(tmp_path: Path) -> Path:
+    return seed_caucus_warehouse(tmp_path / "w.duckdb")
 
 
 def test_weighted_median_basic() -> None:

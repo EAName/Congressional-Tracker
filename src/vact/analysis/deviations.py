@@ -23,6 +23,7 @@ from vact.analysis.scoring import (
     ScoringConfig,
     _rule_resolution_exclusion,
     build_scores_frame,
+    frame_from_vote_rows,
     load_scoring_config,
 )
 from vact.transforms.districts import require_map_version
@@ -168,28 +169,44 @@ def _party_majority_by_vote(
     return out
 
 
-def compute_party_deviations(
-    conn: duckdb.DuckDBPyConnection,
-    config: ScoringConfig | None = None,
-    *,
-    map_version: str = "2021",
+def detail_from_vote_rows(rows: list[Any]) -> list[dict[str, Any]]:
+    """Vote-level YEA/NAY rows for defection detection, from votes.csv."""
+    out: list[dict[str, Any]] = []
+    for row in rows:
+        cast = row.vote_cast.value if hasattr(row.vote_cast, "value") else str(row.vote_cast)
+        if cast not in {"yea", "nay"}:
+            continue
+        position = "YEA" if cast == "yea" else "NAY"
+        valence = int(row.valence)
+        out.append(
+            {
+                "bioguide_id": row.member_bioguide_id,
+                "full_name": row.member_name,
+                "party": row.party or None,
+                "chamber": row.chamber,
+                "district_number": row.district_number,
+                "impact_tag": row.theme,
+                "vote_id": row.rollcall_id,
+                "valence": valence,
+                "position": position,
+                "vote_date": row.rollcall_date,
+                "bill_id": row.bill_id or None,
+                "source_url": row.source_url or None,
+                "plain_language_summary": row.plain_language_summary or None,
+                "aligned": _aligned(position, valence),
+            }
+        )
+    return out
+
+
+def _deviations_from_frame_and_detail(
+    frame: list[dict[str, Any]],
+    detail: list[dict[str, Any]],
+    cfg: ScoringConfig,
 ) -> list[MemberThemeDeviation]:
-    """Per theme: caucus baseline, member deviation, and the defection roll calls.
-
-    Reported member-themes clear both gates: n_contested >= min_eligible_for_display
-    AND at least min_defection_votes defection votes exist. Sorted by |deviation|
-    descending within theme (themes ordered by their peak deviation).
-    """
-    require_map_version(map_version)
-    cfg = config or load_scoring_config()
-
-    frame = build_scores_frame(conn, cfg, map_version=map_version)
     frame_by_key = {(r["bioguide_id"], r["impact_tag"]): r for r in frame}
-
-    detail = _vote_level_rows(conn, cfg, map_version=map_version)
     majority = _party_majority_by_vote(detail)
 
-    # Party baseline per (theme, party): weighted median over sufficient members.
     baseline: dict[tuple[str, str], float] = {}
     by_theme_party: dict[tuple[str, str], list[tuple[float, float]]] = {}
     for r in frame:
@@ -201,14 +218,13 @@ def compute_party_deviations(
     for key, pairs in by_theme_party.items():
         baseline[key] = weighted_median(pairs)
 
-    # Gather each member's defection votes from the vote-level detail.
     defections: dict[tuple[str, str], list[DefectionVote]] = {}
     for r in detail:
         if r["party"] is None:
             continue
         maj = majority.get((r["impact_tag"], r["vote_id"], r["party"]), 0)
         if maj == 0 or r["aligned"] == maj:
-            continue  # aligned with (or no) party majority → not a defection
+            continue
         defections.setdefault((r["bioguide_id"], r["impact_tag"]), []).append(
             DefectionVote(
                 vote_id=r["vote_id"],
@@ -252,12 +268,50 @@ def compute_party_deviations(
             )
         )
 
-    # Order themes by their peak |deviation|, then members by |deviation| desc.
     theme_peak: dict[str, float] = {}
     for r in results:
         theme_peak[r.impact_tag] = max(theme_peak.get(r.impact_tag, 0.0), abs(r.deviation))
     results.sort(key=lambda r: (-theme_peak[r.impact_tag], r.impact_tag, -abs(r.deviation)))
     return results
+
+
+def compute_party_deviations(
+    conn: duckdb.DuckDBPyConnection,
+    config: ScoringConfig | None = None,
+    *,
+    map_version: str = "2021",
+    votes_path: Path | None = None,
+) -> list[MemberThemeDeviation]:
+    """Per theme: caucus baseline, member deviation, and the defection roll calls.
+
+    Reported member-themes clear both gates: n_contested >= min_eligible_for_display
+    AND at least min_defection_votes defection votes exist. Sorted by |deviation|
+    descending within theme (themes ordered by their peak deviation).
+    """
+    require_map_version(map_version)
+    cfg = config or load_scoring_config()
+    if votes_path is not None:
+        from vact.analysis.votes import validate_votes_csv
+
+        vote_rows = validate_votes_csv(votes_path)
+        return compute_party_deviations_from_votes(vote_rows, cfg, map_version=map_version)
+
+    frame = build_scores_frame(conn, cfg, map_version=map_version)
+    detail = _vote_level_rows(conn, cfg, map_version=map_version)
+    return _deviations_from_frame_and_detail(frame, detail, cfg)
+
+
+def compute_party_deviations_from_votes(
+    vote_rows: list[Any],
+    config: ScoringConfig | None = None,
+    *,
+    map_version: str = "2021",
+) -> list[MemberThemeDeviation]:
+    require_map_version(map_version)
+    cfg = config or load_scoring_config()
+    frame = frame_from_vote_rows(vote_rows, cfg, map_version=map_version)
+    detail = detail_from_vote_rows(vote_rows)
+    return _deviations_from_frame_and_detail(frame, detail, cfg)
 
 
 def _fmt(x: float) -> str:
@@ -317,12 +371,15 @@ def write_deviations_report(
     warehouse_path: Path | None = None,
     config_path: Path | None = None,
     out_path: Path | None = None,
+    votes_path: Path | None = None,
 ) -> Path:
     conn = connect(warehouse_path)
     try:
         ensure_schema(conn)
         cfg = load_scoring_config(config_path)
-        deviations = compute_party_deviations(conn, cfg, map_version=map_version)
+        deviations = compute_party_deviations(
+            conn, cfg, map_version=map_version, votes_path=votes_path
+        )
     finally:
         conn.close()
     dest = out_path or (REPORTS_DIR / "party_deviations.md")

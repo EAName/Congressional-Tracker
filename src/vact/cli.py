@@ -36,6 +36,8 @@ sheets_app = typer.Typer(help="Google Sheets audit export.")
 app.add_typer(sheets_app, name="sheets")
 valence_app = typer.Typer(help="Vote valence adjudication (scoring-frame input).")
 app.add_typer(valence_app, name="valence")
+votes_app = typer.Typer(help="Versioned votes.csv adjudication layer.")
+app.add_typer(votes_app, name="votes")
 
 
 @app.callback()
@@ -467,11 +469,23 @@ def export_web_cmd(
     map_version: str = typer.Option("2021", "--map-version", help="Operative map (default 2021)."),
     out: Path | None = typer.Option(None, "--out", help="Output dir (default web/data/)."),
     warehouse: Path | None = typer.Option(None, "--warehouse"),
+    from_warehouse: bool = typer.Option(
+        False,
+        "--from-warehouse",
+        help="Score from DuckDB instead of data/votes.csv (bootstrap / identity check).",
+    ),
+    votes: Path | None = typer.Option(None, "--votes", help="Path to votes.csv."),
 ) -> None:
     """Export analysis JSON (scores, deviations, delegation) for the Next.js dashboard."""
     from vact.exports.web import export_web
 
-    paths = export_web(map_version=map_version, out_dir=out, warehouse_path=warehouse)
+    paths = export_web(
+        map_version=map_version,
+        out_dir=out,
+        warehouse_path=warehouse,
+        votes_path=votes,
+        from_warehouse=from_warehouse,
+    )
     for p in paths:
         typer.echo(f"  wrote {p}")
     typer.echo(f"Exported {len(paths)} JSON files for the web app.")
@@ -542,6 +556,10 @@ def valence_set_cmd(
 def deviations_cmd(
     map_version: str = typer.Option("2021", "--map-version", help="Operative map (default 2021)."),
     warehouse: Path | None = typer.Option(None, "--warehouse"),
+    from_warehouse: bool = typer.Option(
+        False, "--from-warehouse", help="Read DuckDB instead of data/votes.csv."
+    ),
+    votes: Path | None = typer.Option(None, "--votes", help="Path to votes.csv."),
 ) -> None:
     """Within-party deviation report (defection detection) → reports/party_deviations.md."""
     from vact.analysis.deviations import (
@@ -549,14 +567,20 @@ def deviations_cmd(
         write_deviations_report,
     )
     from vact.analysis.scoring import load_scoring_config
+    from vact.analysis.votes import resolve_votes_path
 
+    csv_path = None if from_warehouse else resolve_votes_path(votes)
     conn = connect(warehouse)
     try:
         ensure_schema(conn)
-        rows = compute_party_deviations(conn, load_scoring_config(), map_version=map_version)
+        rows = compute_party_deviations(
+            conn, load_scoring_config(), map_version=map_version, votes_path=csv_path
+        )
     finally:
         conn.close()
-    dest = write_deviations_report(map_version=map_version, warehouse_path=warehouse)
+    dest = write_deviations_report(
+        map_version=map_version, warehouse_path=warehouse, votes_path=csv_path
+    )
     typer.echo(f"Deviations report → {dest} ({len(rows)} member-theme deviations)")
     for r in rows[:8]:
         typer.echo(
@@ -572,18 +596,24 @@ def score_cmd(
         False, "--write", help="Also write data/reports/scores_frame.csv."
     ),
     warehouse: Path | None = typer.Option(None, "--warehouse"),
+    from_warehouse: bool = typer.Option(
+        False, "--from-warehouse", help="Read DuckDB instead of data/votes.csv."
+    ),
+    votes: Path | None = typer.Option(None, "--votes", help="Path to votes.csv."),
 ) -> None:
     """Build the live signed scoring frame (per member × theme) and summarize it."""
     import csv as _csv
 
     from vact.analysis.scoring import build_scores_frame, load_scoring_config
+    from vact.analysis.votes import resolve_votes_path
     from vact.transforms.classify import REPORTS_DIR
 
+    csv_path = None if from_warehouse else resolve_votes_path(votes)
     conn = connect(warehouse)
     try:
         ensure_schema(conn)
         cfg = load_scoring_config()
-        frame = build_scores_frame(conn, cfg, map_version=map_version)
+        frame = build_scores_frame(conn, cfg, map_version=map_version, votes_path=csv_path)
         rule_valence = conn.execute(
             "SELECT count(*) FROM fact_vote_valence WHERE valence_source = 'RULE'"
         ).fetchone()
@@ -629,6 +659,96 @@ def score_cmd(
             writer.writeheader()
             writer.writerows(frame)
         typer.echo(f"Wrote {out}")
+
+
+@votes_app.command("export")
+def votes_export_cmd(
+    map_version: str = typer.Option("2021", "--map-version", help="Operative map (default 2021)."),
+    warehouse: Path | None = typer.Option(None, "--warehouse"),
+    out: Path | None = typer.Option(None, "--out", help="Output CSV (default data/votes.csv)."),
+) -> None:
+    """Export scoreable warehouse rows to versioned data/votes.csv + diff report."""
+    from vact.analysis.votes import DIFF_REPORT_PATH, export_votes_csv
+
+    path, diff = export_votes_csv(
+        map_version=map_version, warehouse_path=warehouse, out_path=out
+    )
+    typer.echo(f"Wrote {path} ({diff['n_current']} rows)")
+    typer.echo(
+        f"Diff vs previous: +{len(diff['added'])} −{len(diff['removed'])} "
+        f"~{len(diff['changed'])} → {DIFF_REPORT_PATH}"
+    )
+
+
+@votes_app.command("validate")
+def votes_validate_cmd(
+    votes: Path | None = typer.Option(None, "--votes", help="Path to votes.csv."),
+) -> None:
+    """Fail loud if data/votes.csv is malformed."""
+    from vact.analysis.votes import VOTES_CSV_PATH, validate_votes_csv
+
+    rows = validate_votes_csv(votes or VOTES_CSV_PATH)
+    typer.echo(f"votes.csv ok: {len(rows)} rows")
+
+
+@votes_app.command("diff")
+def votes_diff_cmd(
+    votes: Path | None = typer.Option(None, "--votes", help="Path to votes.csv."),
+) -> None:
+    """Diff working tree votes.csv against HEAD."""
+    from vact.analysis.votes import (
+        DIFF_REPORT_PATH,
+        VOTES_CSV_PATH,
+        diff_vote_rows,
+        load_committed_votes_csv,
+        load_votes_csv,
+        render_votes_diff_md,
+        validate_votes_csv,
+    )
+
+    current = validate_votes_csv(votes or VOTES_CSV_PATH)
+    previous = load_committed_votes_csv() or []
+    diff = diff_vote_rows(previous, current)
+    DIFF_REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
+    DIFF_REPORT_PATH.write_text(render_votes_diff_md(diff), encoding="utf-8")
+    typer.echo(
+        f"HEAD vs {votes or VOTES_CSV_PATH}: +{len(diff['added'])} "
+        f"−{len(diff['removed'])} ~{len(diff['changed'])} → {DIFF_REPORT_PATH}"
+    )
+
+
+@votes_app.command("sync")
+def votes_sync_cmd(
+    map_version: str = typer.Option("2021", "--map-version", help="Operative map (default 2021)."),
+    warehouse: Path | None = typer.Option(None, "--warehouse"),
+    out: Path | None = typer.Option(None, "--out", help="Output CSV (default data/votes.csv)."),
+    sheets: bool = typer.Option(
+        False, "--sheets", help="Also write a read-only Vote Detail coverage diff."
+    ),
+) -> None:
+    """Export from warehouse, validate, optional Sheets reconciliation (not a source)."""
+    from vact.analysis.votes import SHEETS_DIFF_PATH, sync_votes
+
+    result = sync_votes(
+        map_version=map_version,
+        warehouse_path=warehouse,
+        out_path=out,
+        sheets=sheets,
+    )
+    diff = result["diff"]
+    typer.echo(f"Synced {result['path']} ({result['n']} rows)")
+    typer.echo(
+        f"Diff: +{len(diff['added'])} −{len(diff['removed'])} ~{len(diff['changed'])}"
+    )
+    if sheets:
+        recon = result["sheets"] or {}
+        if recon.get("skipped"):
+            typer.echo(f"Sheets recon skipped: {recon.get('reason')}")
+        else:
+            typer.echo(
+                f"Sheets coverage: csv_only={len(recon['only_csv'])} "
+                f"sheet_only={len(recon['only_sheet'])} → {SHEETS_DIFF_PATH}"
+            )
 
 
 if __name__ == "__main__":

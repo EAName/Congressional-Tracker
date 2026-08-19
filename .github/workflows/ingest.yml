@@ -74,6 +74,16 @@ jobs:
             exit 1
           fi
 
+      - name: Validate votes.csv
+        run: |
+          set -euo pipefail
+          export PYTHONPATH=src
+          if [[ -f data/votes.csv ]]; then
+            ./bin/vact votes validate
+          else
+            echo "data/votes.csv not yet committed — skip (Prompt 1 bootstrap)"
+          fi
+
       - name: Silent no-op note
         if: steps.ingest.outputs.changed == 'false'
         run: echo "No warehouse content change — no outreach notification (by design)."

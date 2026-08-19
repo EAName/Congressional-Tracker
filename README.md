@@ -105,9 +105,11 @@ uv sync && uv pip install -e .
 ./bin/vact incremental         # raw → warehouse
 ./bin/vact classify --new-only --no-llm
 ./bin/vact valence propose     # RULE proposals; review + valence set
-./bin/vact score --write
+./bin/vact votes export        # warehouse → versioned data/votes.csv
+./bin/vact votes validate
+./bin/vact score --write       # reads votes.csv when present
 ./bin/vact deviations
-./bin/vact export-web          # refresh web/data for Vercel
+./bin/vact export-web          # refresh web/data for Vercel (from votes.csv)
 make test
 ```
 
@@ -127,8 +129,9 @@ Web:
 cd web && npm ci && npm run dev   # http://localhost:3000
 ```
 
-Vercel: import the GitHub repo, set **Root Directory** to `web`. Commit refreshed
-`web/data/*.json` (or wire `export-web` into the Publish workflow) to update prod.
+Vercel: import the GitHub repo, set **Root Directory** to `web`. The Publish
+workflow validates `data/votes.csv` and runs `vact export-web` (Python stays off
+Vercel). Commit `data/votes.csv` is the scoring audit trail (`git log -- data/votes.csv`).
 
 ## CI shape
 
@@ -136,7 +139,7 @@ Tiered Actions under `.github/workflows/`:
 
 1. **Ingest** (Tue–Sat) — incremental pull
 2. **Dimensions** (Mon) — roster / district refresh
-3. **Publish** (Mon after Dimensions) — site + gaps; refuses red Dimensions / recent
+3. **Publish** (Mon after Dimensions) — site + gaps + `export-web`; refuses red Dimensions / recent
    failed Ingest
 
 Notifications fire only on pipeline contract failure or new tagged VA party-line

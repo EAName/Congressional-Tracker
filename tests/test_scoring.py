@@ -67,9 +67,7 @@ def _positions() -> list[tuple[str, str, str]]:
     return rows
 
 
-@pytest.fixture()
-def warehouse(tmp_path: Path) -> Path:
-    path = tmp_path / "warehouse.duckdb"
+def seed_scoring_warehouse(path: Path) -> Path:
     conn = connect(path)
     ensure_schema(conn)
 
@@ -120,6 +118,11 @@ def warehouse(tmp_path: Path) -> Path:
 
     conn.close()
     return path
+
+
+@pytest.fixture()
+def warehouse(tmp_path: Path) -> Path:
+    return seed_scoring_warehouse(tmp_path / "warehouse.duckdb")
 
 
 # --------------------------------------------------------------------------- #

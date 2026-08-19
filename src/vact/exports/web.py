@@ -15,6 +15,7 @@ from typing import Any
 
 from vact.analysis.deviations import compute_party_deviations
 from vact.analysis.scoring import build_scores_frame, load_scoring_config
+from vact.analysis.votes import resolve_votes_path
 from vact.exports.data import list_delegation
 from vact.paths import REPO_ROOT
 from vact.warehouse.connection import connect, ensure_schema
@@ -27,9 +28,17 @@ def _generated_at() -> str:
     return datetime.now(UTC).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
 
-def build_web_payload(conn, config, *, map_version: str = "2021") -> dict[str, Any]:
-    frame = build_scores_frame(conn, config, map_version=map_version)
-    deviations = compute_party_deviations(conn, config, map_version=map_version)
+def build_web_payload(
+    conn,
+    config,
+    *,
+    map_version: str = "2021",
+    votes_path: Path | None = None,
+) -> dict[str, Any]:
+    frame = build_scores_frame(conn, config, map_version=map_version, votes_path=votes_path)
+    deviations = compute_party_deviations(
+        conn, config, map_version=map_version, votes_path=votes_path
+    )
     delegation = list_delegation(conn, map_version=map_version)
 
     scores = [
@@ -111,13 +120,21 @@ def export_web(
     out_dir: Path | None = None,
     warehouse_path: Path | None = None,
     config_path: Path | None = None,
+    votes_path: Path | None = None,
+    from_warehouse: bool = False,
 ) -> list[Path]:
-    """Write scores/deviations/delegation/meta JSON for the web app. Returns paths."""
+    """Write scores/deviations/delegation/meta JSON for the web app. Returns paths.
+
+    Scores and deviations read `data/votes.csv` when present (Prompt 1). Delegation
+    still comes from the warehouse (not vote grain). Pass `from_warehouse=True` to
+    force the DuckDB SQL path (bootstrap / identity check).
+    """
+    csv_path = None if from_warehouse else resolve_votes_path(votes_path)
     conn = connect(warehouse_path)
     try:
         ensure_schema(conn)
         cfg = load_scoring_config(config_path)
-        payload = build_web_payload(conn, cfg, map_version=map_version)
+        payload = build_web_payload(conn, cfg, map_version=map_version, votes_path=csv_path)
     finally:
         conn.close()
 

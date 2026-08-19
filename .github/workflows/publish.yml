@@ -89,6 +89,18 @@ jobs:
           make site
           ./bin/vact gaps
 
+      - name: Validate votes.csv and refresh Vercel JSON
+        run: |
+          set -euo pipefail
+          export PYTHONPATH=src
+          if [[ -f data/votes.csv ]]; then
+            ./bin/vact votes validate
+            ./bin/vact export-web
+          else
+            echo "data/votes.csv missing — scoring from warehouse SQL path"
+            ./bin/vact export-web --from-warehouse
+          fi
+
       - name: Sheets push (optional)
         continue-on-error: true
         run: |
@@ -105,7 +117,7 @@ jobs:
           set -euo pipefail
           git config user.name "vact-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/ data/reports/*.md || true
+          git add docs/ data/reports/*.md web/data/*.json || true
           if git diff --cached --quiet; then
             echo "No publication artifacts changed"
             exit 0

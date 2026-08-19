@@ -27,6 +27,8 @@ data/raw/**
 data/warehouse/**
 !data/warehouse/.gitkeep
 
+# data/votes.csv is committed — Prompt 1 adjudication audit trail.
+
 # Reports: keep directory; commit coverage/diffs when CI is green (Prompt 10)
 data/reports/**
 !data/reports/.gitkeep

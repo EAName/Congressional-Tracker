@@ -10,8 +10,9 @@ deviations, IRT, target model, briefs) consumes. Three pieces:
 3. Signed score — per (member, theme): a live [-1, +1] estimate with a Wilson
                   band, raw counts, n_contested, and a `sufficient` flag.
 
-No signed score is ever stored; the frame is rebuilt from the warehouse on every
-call. Only valence is persisted, and only as adjudicated input.
+No signed score is ever stored; the frame is rebuilt live on every call from
+either the warehouse SQL path or `data/votes.csv` (Prompt 1). Only valence is
+persisted, and only as adjudicated input.
 """
 
 from __future__ import annotations
@@ -21,7 +22,7 @@ import re
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, Sequence
 
 import duckdb
 import structlog
@@ -386,11 +387,89 @@ ORDER BY s.impact_tag, m.full_name
 """
 
 
-def build_scores_frame(
-    conn: duckdb.DuckDBPyConnection,
+def _finalize_frame_records(
+    records: list[dict[str, Any]],
+    config: ScoringConfig,
+    *,
+    map_version: str,
+) -> list[dict[str, Any]]:
+    """Attach signed score, Wilson band, sufficient, absence_rate. Never persist."""
+    frame: list[dict[str, Any]] = []
+    count_keys = ("n_contested", "n_yea", "n_nay", "n_not_voting", "n_present", "n_pro")
+    for rec in records:
+        for key in count_keys:
+            rec[key] = int(rec[key] or 0)
+        rec.update(signed_score_from_counts(rec["n_pro"], rec["n_contested"], config.wilson_z))
+        rec["sufficient"] = rec["n_contested"] >= config.min_contested
+        n_eligible = rec["n_contested"] + rec["n_not_voting"] + rec["n_present"]
+        rec["absence_rate"] = (
+            round(rec["n_not_voting"] / n_eligible, 4) if n_eligible else None
+        )
+        rec["map_version"] = map_version
+        frame.append(rec)
+    return frame
+
+
+def frame_from_vote_rows(
+    rows: Sequence[Any],
     config: ScoringConfig | None = None,
     *,
     map_version: str = "2021",
+) -> list[dict[str, Any]]:
+    """Build the signed scoring frame from VoteRow-like records (votes.csv path).
+
+    Same math as the warehouse SQL path. Group grain is (bioguide_id, theme).
+    """
+    require_map_version(map_version)
+    cfg = config or load_scoring_config()
+    grouped: dict[tuple[str, str], dict[str, Any]] = {}
+    for row in rows:
+        bio = row.member_bioguide_id
+        theme = row.theme
+        key = (bio, theme)
+        rec = grouped.get(key)
+        if rec is None:
+            rec = {
+                "bioguide_id": bio,
+                "full_name": row.member_name,
+                "chamber": row.chamber,
+                "party": row.party or None,
+                "district_number": row.district_number,
+                "impact_tag": theme,
+                "n_contested": 0,
+                "n_yea": 0,
+                "n_nay": 0,
+                "n_not_voting": 0,
+                "n_present": 0,
+                "n_pro": 0,
+            }
+            grouped[key] = rec
+        cast = row.vote_cast.value if hasattr(row.vote_cast, "value") else str(row.vote_cast)
+        if cast == "yea":
+            rec["n_yea"] += 1
+            rec["n_contested"] += 1
+            if row.valence == 1:
+                rec["n_pro"] += 1
+        elif cast == "nay":
+            rec["n_nay"] += 1
+            rec["n_contested"] += 1
+            if row.valence == -1:
+                rec["n_pro"] += 1
+        elif cast == "not_voting":
+            rec["n_not_voting"] += 1
+        elif cast == "present":
+            rec["n_present"] += 1
+    records = [r for r in grouped.values() if (r["n_contested"] + r["n_not_voting"] + r["n_present"]) > 0]
+    records.sort(key=lambda r: (r["impact_tag"], r["full_name"]))
+    return _finalize_frame_records(records, cfg, map_version=map_version)
+
+
+def build_scores_frame(
+    conn: duckdb.DuckDBPyConnection | None = None,
+    config: ScoringConfig | None = None,
+    *,
+    map_version: str = "2021",
+    votes_path: Path | None = None,
 ) -> list[dict[str, Any]]:
     """Compute the live signed scoring frame: one row per (member, theme).
 
@@ -398,9 +477,20 @@ def build_scores_frame(
     with its Wilson band, an absence_rate, and the `sufficient` flag. Rows rest
     only on scoreable, valence-adjudicated votes; NOT_VOTING/PRESENT are counted
     as absences, never as an anti-axis position.
+
+    `votes_path` selects the CSV reader (Prompt 1). Omit it for the warehouse
+    SQL path used by tests and bootstrap.
     """
     require_map_version(map_version)
     cfg = config or load_scoring_config()
+    if votes_path is not None:
+        from vact.analysis.votes import validate_votes_csv
+
+        rows = validate_votes_csv(votes_path)
+        return frame_from_vote_rows(rows, cfg, map_version=map_version)
+    if conn is None:
+        raise TypeError("conn is required when votes_path is omitted")
+
     district_col = "district_2025" if map_version == "2021" else "district_2026"
     category_ph = ", ".join("?" for _ in sorted(cfg.include_categories))
     rule_clause, rule_params = _rule_resolution_exclusion(cfg)
@@ -423,21 +513,8 @@ def build_scores_frame(
         "n_present",
         "n_pro",
     ]
-
-    frame: list[dict[str, Any]] = []
-    for raw in rows:
-        rec = dict(zip(cols, raw))
-        for key in ("n_contested", "n_yea", "n_nay", "n_not_voting", "n_present", "n_pro"):
-            rec[key] = int(rec[key] or 0)
-        rec.update(signed_score_from_counts(rec["n_pro"], rec["n_contested"], cfg.wilson_z))
-        rec["sufficient"] = rec["n_contested"] >= cfg.min_contested
-        n_eligible = rec["n_contested"] + rec["n_not_voting"] + rec["n_present"]
-        rec["absence_rate"] = (
-            round(rec["n_not_voting"] / n_eligible, 4) if n_eligible else None
-        )
-        rec["map_version"] = map_version
-        frame.append(rec)
-    return frame
+    records = [dict(zip(cols, raw)) for raw in rows]
+    return _finalize_frame_records(records, cfg, map_version=map_version)
 
 
 def build_scores_frame_standalone(
