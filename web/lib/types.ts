@@ -443,3 +443,18 @@ export interface MethodologyDoc {
   changelog: ChangelogEntry[];
   symmetry_audit?: SymmetryAuditDoc;
 }
+
+export interface DisclosureDoc {
+  publisher: string;
+  footer: {
+    paragraphs: string[];
+    methodology_label: string;
+    methodology_href: string;
+    corrections_label: string;
+    corrections_href: string;
+  };
+  race_page: {
+    default_disclaimer: string;
+    by_race_id: Record<string, string>;
+  };
+}

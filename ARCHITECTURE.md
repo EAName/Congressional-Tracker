@@ -409,6 +409,14 @@ Prompt 0 (this file) — **done**. No behavior change.
 - [x] Advocacy-verb lint + mirrored takeaway template tests
 - [x] CI runs symmetry audit on ingest/publish
 
+**Prompt 16 — positioning and disclosure** (midterm kit)
+
+- [x] `config/site_disclosure.yaml` → `web/data/disclosure.json` on export
+- [x] Site-wide `SiteFooter`; optional `RaceDisclaimer` slot on race pages
+- [x] `COMPLIANCE_QUESTIONS.md` for counsel (questions only)
+- [x] `/corrections` stub linked from methodology and footer
+- [x] Advocacy lint enforced via `tests/test_advocacy_lint.py` and `vact audit symmetry`
+
 **Prompt 7 — forecasts**
 
 - [ ] Append-only `data/predictions.csv` enforced in validation

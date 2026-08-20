@@ -1,4 +1,6 @@
 import { notFound } from "next/navigation";
+import RaceDisclaimer from "@/components/RaceDisclaimer";
+import SiteFooter from "@/components/SiteFooter";
 import SiteHeader from "@/components/SiteHeader";
 import RaceWorkspace from "@/components/RaceWorkspace";
 import type { FecDoc, Meta, RacesDoc, SeatsDoc, TimeSeriesDoc } from "@/lib/types";
@@ -44,6 +46,7 @@ export default async function RacePage({ params }: { params: Promise<{ raceId: s
         electionDate={meta.election_date}
       />
       <div className="workspace">
+        <RaceDisclaimer raceId={entry.race_id} />
         <RaceWorkspace
           entry={entry}
           seat={seat}
@@ -53,6 +56,7 @@ export default async function RacePage({ params }: { params: Promise<{ raceId: s
           meta={meta}
         />
       </div>
+      <SiteFooter />
     </div>
   );
 }

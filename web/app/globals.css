@@ -582,6 +582,27 @@ a:hover {
   max-width: 80ch;
 }
 
+.site-foot-global {
+  margin: 0 auto;
+  padding: 1.25rem clamp(1rem, 4vw, 2rem) 2rem;
+  max-width: var(--shell-max, 1200px);
+}
+
+.site-foot-global p + p {
+  margin-top: 0.65rem;
+}
+
+.race-disclaimer {
+  margin: 0 0 1rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 0.78rem;
+  color: var(--ink2);
+  line-height: 1.55;
+  background: color-mix(in srgb, var(--panel) 88%, transparent);
+}
+
 .site-nav {
   display: flex;
   gap: 1.1rem;

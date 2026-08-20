@@ -1,0 +1,23 @@
+# Site-wide disclosure copy (Prompt 16). Counsel-approved language drops in here
+# without a code change. Re-run `vact export-web` to refresh the static site.
+
+publisher: Democrats for Virginia
+
+footer:
+  paragraphs:
+    - >-
+      Published by Democrats for Virginia. This site presents independent analysis
+      of congressional voting records and midterm race fundamentals. It is not
+      an official party committee communication unless separately labeled as such.
+    - >-
+      Scoring methodology applies identically to both parties: valence (axis
+      direction) is a documented human judgment, and the estimator treats caucus
+      membership only for shrinkage priors, not as a score input.
+  methodology_label: Full methodology
+  methodology_href: /methodology
+  corrections_label: Corrections policy
+  corrections_href: /corrections
+
+race_page:
+  default_disclaimer: ""
+  by_race_id: {}

@@ -1,4 +1,5 @@
 import Battleground from "@/components/Battleground";
+import SiteFooter from "@/components/SiteFooter";
 import SiteHeader from "@/components/SiteHeader";
 import type { Meta, RacesDoc, SeatsDoc } from "@/lib/types";
 import metaJson from "@/data/meta.json";
@@ -32,6 +33,7 @@ export default function Page() {
           </div>
         </section>
       </div>
+      <SiteFooter />
     </div>
   );
 }

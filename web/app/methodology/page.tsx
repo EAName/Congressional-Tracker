@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import SiteFooter from "@/components/SiteFooter";
 import SiteHeader from "@/components/SiteHeader";
 import type { Meta, MethodologyDoc, PartyBaseline, WorkedExample } from "@/lib/types";
 import { shortName, themeLabel } from "@/lib/types";
@@ -104,7 +105,8 @@ export default function MethodologyPage() {
             <code>member_bioguide_id, rollcall_id, theme</code>). Valence was exported from{" "}
             <code>fact_vote_valence</code>; the CSV is what scoring reads at runtime. Who
             adjudicated is the <code>adjudicator</code> column (HUMAN / RULE / LLM). Join key
-            across the system is <code>bioguide_id</code> only.
+            across the system is <code>bioguide_id</code> only.{" "}
+            <a href="/corrections">Corrections policy</a>.
           </p>
         </section>
 
@@ -482,6 +484,7 @@ cred band  = 2 · Beta-quantile_{0.025, 0.975} − 1`}</code>
           </ol>
         </section>
       </article>
+      <SiteFooter />
     </div>
   );
 }

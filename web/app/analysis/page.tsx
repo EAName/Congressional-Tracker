@@ -1,4 +1,5 @@
 import Dashboard from "@/components/Dashboard";
+import SiteFooter from "@/components/SiteFooter";
 import SiteHeader from "@/components/SiteHeader";
 import TargetStrip from "@/components/TargetStrip";
 import type { CosponsorshipDoc, Deviation, IrtDoc, Member, Meta, Score, TimeSeriesDoc } from "@/lib/types";
@@ -46,6 +47,7 @@ export default function AnalysisPage() {
           Sources: House Clerk EVS · Senate LIS.{" "}
           <a href="/methodology">Full methodology</a>.
         </footer>
+        <SiteFooter />
       </div>
     </div>
   );
