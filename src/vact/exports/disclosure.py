@@ -38,10 +38,11 @@ def build_disclosure_payload(config: dict[str, Any] | None = None) -> dict[str, 
     brand = load_brand_config()
     footer = cfg["footer"]
     race_cfg = cfg.get("race_page") or {}
+    yaml_paragraphs = [str(p).strip() for p in footer["paragraphs"] if str(p).strip()]
     return {
         "publisher": brand["site_name"],
         "footer": {
-            "paragraphs": [str(p).strip() for p in footer["paragraphs"] if str(p).strip()],
+            "paragraphs": yaml_paragraphs,
             "methodology_label": footer.get("methodology_label", "Full methodology"),
             "methodology_href": footer.get("methodology_href", "/methodology"),
             "about_label": footer.get("about_label", "About"),

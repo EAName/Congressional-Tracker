@@ -25,7 +25,6 @@ export default function SiteHeader({
         <div className="brand-block">
           <p className="product">{brand.product_name}</p>
           <h1 className="brand">{brand.site_name}</h1>
-          <p className="tagline">{brand.tagline}</p>
           {countdown ? <p className="election-countdown">{countdown}</p> : null}
         </div>
         <nav className="site-nav" aria-label="Primary">

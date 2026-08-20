@@ -50,8 +50,7 @@ export default function MethodologyPage() {
           <h1>How the scores are built</h1>
           <p className="method-lede">
             Written so a technically literate skeptic can rerun the pipeline and match every
-            published number. Authorship and affiliations are disclosed on the{" "}
-            <a href="/about">About</a> page. The estimator does not know who built the site.
+            published number. The estimator does not know who built the site.
           </p>
         </header>
 

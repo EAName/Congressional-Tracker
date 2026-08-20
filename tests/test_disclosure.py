@@ -10,7 +10,7 @@ def test_disclosure_payload_from_config() -> None:
     payload = build_disclosure_payload(cfg)
     assert payload["publisher"]
     assert "About" in payload["footer"]["about_label"] or payload["footer"].get("about_href")
-    assert len(payload["footer"]["paragraphs"]) >= 2
+    assert len(payload["footer"]["paragraphs"]) >= 1
     assert payload["footer"]["methodology_href"] == "/methodology"
     assert payload["footer"]["corrections_href"] == "/corrections"
 

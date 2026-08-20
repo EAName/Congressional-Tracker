@@ -2,7 +2,6 @@
   "publisher": "Old Dominion Vote Index",
   "footer": {
     "paragraphs": [
-      "Independent analysis of Virginia congressional voting records and midterm race fundamentals. Authorship and affiliations are disclosed on the About page.",
       "Scoring methodology applies identically to both parties: valence (axis direction) is a documented human judgment, and the estimator treats caucus membership only for shrinkage priors, not as a score input."
     ],
     "methodology_label": "Full methodology",

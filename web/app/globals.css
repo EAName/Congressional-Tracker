@@ -683,7 +683,7 @@ a:hover {
   margin: 0.15rem 0 0;
   font-size: 0.72rem;
   color: var(--ink3);
-  max-width: 28ch;
+  max-width: 52ch;
   line-height: 1.45;
 }
 
