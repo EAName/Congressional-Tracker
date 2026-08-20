@@ -51,6 +51,8 @@ historical_app = typer.Typer(help="Challenger historical House voting (Prompt 11
 app.add_typer(historical_app, name="historical")
 audit_app = typer.Typer(help="Symmetry and selection-bias audits (Prompt 17).")
 app.add_typer(audit_app, name="audit")
+brand_app = typer.Typer(help="Site brand identity and blocklist checks.")
+app.add_typer(brand_app, name="brand")
 
 
 @app.callback()
@@ -993,6 +995,20 @@ def historical_validate_cmd() -> None:
         f"historical ok: review={len(review)} at {HISTORICAL_REVIEW_PATH.name} "
         f"candidates={HISTORICAL_CANDIDATES_PATH.name}"
     )
+
+
+@brand_app.command("check")
+def brand_check_cmd() -> None:
+    """Fail if old partisan-era brand strings appear in scanned surfaces."""
+    from vact.exports.brand import scan_blocklist_violations
+
+    violations = scan_blocklist_violations()
+    if violations:
+        typer.echo("Brand blocklist violations:", err=True)
+        for v in violations:
+            typer.echo(f"  {v}", err=True)
+        raise typer.Exit(code=1)
+    typer.echo("brand blocklist ok")
 
 
 @audit_app.command("symmetry")

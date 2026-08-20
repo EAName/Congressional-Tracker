@@ -450,6 +450,8 @@ export interface DisclosureDoc {
     paragraphs: string[];
     methodology_label: string;
     methodology_href: string;
+    about_label?: string;
+    about_href?: string;
     corrections_label: string;
     corrections_href: string;
   };
@@ -488,4 +490,38 @@ export interface HeadToHeadRace {
 
 export interface HeadToHeadDoc {
   races: Record<string, HeadToHeadRace>;
+}
+
+export interface BrandDoc {
+  site_name: string;
+  site_name_note?: string;
+  tagline: string;
+  product_name: string;
+  domain: string;
+  domain_note?: string;
+  canonical_base: string;
+  publisher_line: string;
+  github: {
+    repo_url: string;
+    repo_name: string;
+    org: string;
+  };
+  social: Record<string, string>;
+  legacy?: Record<string, string>;
+  redirect_paths?: string[];
+  status?: string;
+}
+
+export interface AboutSection {
+  heading: string;
+  paragraphs: string[];
+}
+
+export interface AboutDoc {
+  title: string;
+  intro: string;
+  sections: AboutSection[];
+  repo_url: string;
+  methodology_href: string;
+  symmetry_href: string;
 }

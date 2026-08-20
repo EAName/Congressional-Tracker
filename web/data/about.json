@@ -1,0 +1,40 @@
+{
+  "title": "About this project",
+  "intro": "",
+  "sections": [
+    {
+      "heading": "Who builds and maintains the site",
+      "paragraphs": [
+        "The <strong>Old Dominion Vote Index</strong> (working title — final name TBD) is built and maintained by operators affiliated with the Virginia House Democratic caucus small-business policy work, through <strong>Parallel LLC</strong>. That affiliation is disclosed here; it is not hidden in the site banner.",
+        "Parallel LLC hosts the engineering and data pipeline. Caucus staff and volunteers adjudicate vote valence (axis direction) using a public, version-controlled workflow. No adjudication row publishes until a human promotes it."
+      ]
+    },
+    {
+      "heading": "Independence of the analysis",
+      "paragraphs": [
+        "This site presents <strong>independent analysis</strong>, not campaign messaging. Scoring methodology applies identically to both parties. The estimator does not receive party identity as a score input — only as a shrinkage prior cell <code>(theme, party)</code>.",
+        "All adjudication decisions, source code, and derived data exports are public:",
+        "- <a href=\"/methodology\">Methodology</a> — formulas, hyperparameters, reproduction commands",
+        "- <a href=\"/methodology#falsification\">Symmetry audit</a> — pre-registered falsification metrics",
+        "- <a href=\"https://github.com/EAName/Congressional-Tracker\">GitHub repository</a> — full pipeline source",
+        "- <a href=\"https://github.com/EAName/Congressional-Tracker/blob/main/data/votes.csv\">data/votes.csv</a> — adjudication audit trail"
+      ]
+    },
+    {
+      "heading": "What we do not claim",
+      "paragraphs": [
+        "We do not claim neutrality about which bills belong on the measured axis. Valence is a documented human judgment. We do claim that once valence is set, the arithmetic is party-blind and reproducible.",
+        "Counsel-reviewed disclaimer language for race pages may appear in <code>config/site_disclosure.yaml</code> when finalized."
+      ]
+    },
+    {
+      "heading": "Contact",
+      "paragraphs": [
+        "For corrections, see the <a href=\"/corrections\">corrections policy</a>. For legal or compliance questions, see <code>COMPLIANCE_QUESTIONS.md</code> in the repository (questions for counsel, not answers)."
+      ]
+    }
+  ],
+  "repo_url": "https://github.com/EAName/Congressional-Tracker",
+  "methodology_href": "/methodology",
+  "symmetry_href": "/methodology#falsification"
+}

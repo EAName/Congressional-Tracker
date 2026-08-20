@@ -9,6 +9,7 @@ import structlog
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from markupsafe import Markup
 
+from vact.exports.brand import load_brand_config
 from vact.exports.data import (
     SITE_SCORECARD_TAGS,
     corpus_vote_count,
@@ -117,14 +118,15 @@ def build_site(
             )
 
         env = _env()
+        brand_cfg = load_brand_config()
         common = {
             "generated_at_utc": ts,
             "corpus_vote_count": votes,
             "tagged_vote_count": tagged,
             "publication_ready_count": ready,
             "map_version": map_version,
-            "brand": "Democrats for Virginia",
-            "product": "Congressional Vote Tracker",
+            "brand": brand_cfg["site_name"],
+            "product": brand_cfg.get("product_name", brand_cfg["site_name"]),
             "scorecard_tags": SITE_SCORECARD_TAGS,
             "category_mix": categories,
             "impact_mix": tags,

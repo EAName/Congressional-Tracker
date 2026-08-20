@@ -679,6 +679,14 @@ a:hover {
   font-style: italic;
 }
 
+.brand-block .tagline {
+  margin: 0.15rem 0 0;
+  font-size: 0.72rem;
+  color: var(--ink3);
+  max-width: 28ch;
+  line-height: 1.45;
+}
+
 .site-nav {
   display: flex;
   gap: 1.1rem;

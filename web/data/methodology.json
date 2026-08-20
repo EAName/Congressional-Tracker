@@ -243,6 +243,11 @@
   },
   "changelog": [
     {
+      "sha": "828fd34",
+      "date": "2026-08-19",
+      "subject": "Add challenger historical scoring and head-to-head race module."
+    },
+    {
       "sha": "1b3ba9c",
       "date": "2026-08-19",
       "subject": "Add methodology, time series, IRT, and cosponsorship surfaces."

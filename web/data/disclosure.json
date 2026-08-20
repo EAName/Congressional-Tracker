@@ -1,12 +1,14 @@
 {
-  "publisher": "Democrats for Virginia",
+  "publisher": "Old Dominion Vote Index",
   "footer": {
     "paragraphs": [
-      "Published by Democrats for Virginia. This site presents independent analysis of congressional voting records and midterm race fundamentals. It is not an official party committee communication unless separately labeled as such.",
+      "Independent analysis of Virginia congressional voting records and midterm race fundamentals. Authorship and affiliations are disclosed on the About page.",
       "Scoring methodology applies identically to both parties: valence (axis direction) is a documented human judgment, and the estimator treats caucus membership only for shrinkage priors, not as a score input."
     ],
     "methodology_label": "Full methodology",
     "methodology_href": "/methodology",
+    "about_label": "About",
+    "about_href": "/about",
     "corrections_label": "Corrections policy",
     "corrections_href": "/corrections"
   },

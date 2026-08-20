@@ -7,8 +7,8 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
 from vact.exports.data import district_votes_for_member, generated_at_utc, target_four
+from vact.exports.brand import load_brand_config
 from vact.paths import REPO_ROOT
-from vact.warehouse.connection import connect, ensure_schema
 
 DEFAULT_OUT = REPO_ROOT / "docs" / "social"
 WIDTH, HEIGHT = 1200, 675
@@ -78,7 +78,7 @@ def render_card(
     small = _font(22)
     pos_font = _font(36, bold=True)
 
-    draw.text((48, 40), "Democrats for Virginia", fill=(255, 255, 255), font=brand)
+    draw.text((48, 40), load_brand_config()["site_name"], fill=(255, 255, 255), font=brand)
     draw.text(
         (48, 84),
         f"VA-{district_number} · {member_name}",

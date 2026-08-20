@@ -3,6 +3,7 @@ import RaceDisclaimer from "@/components/RaceDisclaimer";
 import SiteFooter from "@/components/SiteFooter";
 import SiteHeader from "@/components/SiteHeader";
 import RaceWorkspace from "@/components/RaceWorkspace";
+import { pageTitle } from "@/lib/brand";
 import type { FecDoc, HeadToHeadDoc, Meta, RacesDoc, SeatsDoc, TimeSeriesDoc } from "@/lib/types";
 import fecJson from "@/data/fec.json";
 import headToHeadJson from "@/data/head_to_head.json";
@@ -28,7 +29,7 @@ export async function generateMetadata({ params }: { params: Promise<{ raceId: s
   const seat = seats.races.find((r) => r.race_id === raceId);
   if (!entry || !seat) return { title: "Race" };
   return {
-    title: `VA-${entry.district} · ${Math.round(seat.prob_dem * 100)}% Dem · Democrats for Virginia`,
+    title: pageTitle(`VA-${entry.district} · ${Math.round(seat.prob_dem * 100)}% Dem`),
     description: seat.takeaway ?? seat.plain_language,
   };
 }

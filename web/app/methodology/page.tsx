@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
 import SiteFooter from "@/components/SiteFooter";
 import SiteHeader from "@/components/SiteHeader";
+import { pageTitle } from "@/lib/brand";
 import type { Meta, MethodologyDoc, PartyBaseline, WorkedExample } from "@/lib/types";
 import { shortName, themeLabel } from "@/lib/types";
 import { fmtScore } from "@/lib/viz";
 import metaJson from "@/data/meta.json";
 import methodologyJson from "@/data/methodology.json";
 
-export const metadata: Metadata = {
-  title: "Methodology · Congressional Vote Tracker",
+export const metadata = {
+  title: pageTitle("Methodology"),
   description:
     "Vote selection, signed-score formula, empirical Bayes hyperparameters, uncertainty, and reproduction commands.",
 };
@@ -48,9 +49,9 @@ export default function MethodologyPage() {
           <p className="method-kicker">Methods</p>
           <h1>How the scores are built</h1>
           <p className="method-lede">
-            Written so a technically literate skeptic, including one who disagrees with the
-            political project, can rerun the pipeline and match every published number. This site
-            is sponsored by Democrats for Virginia. The estimator does not know that.
+            Written so a technically literate skeptic can rerun the pipeline and match every
+            published number. Authorship and affiliations are disclosed on the{" "}
+            <a href="/about">About</a> page. The estimator does not know who built the site.
           </p>
         </header>
 
@@ -441,9 +442,10 @@ cred band  = 2 · Beta-quantile_{0.025, 0.975} − 1`}</code>
               legislators only.
             </li>
             <li>
-              <strong>Sponsorship.</strong> Democrats for Virginia pays for and publishes this
-              site. Valence is a political judgment. The math above is the estimator, not a claim
-              of neutrality about which bills belong on the axis.
+              <strong>Authorship.</strong> Operators affiliated with the caucus and Parallel LLC
+              build and maintain the pipeline; see the <a href="/about">About</a> page. Valence is
+              a political judgment. The math above is the estimator, not a claim of neutrality
+              about which bills belong on the axis.
             </li>
             <li>
               <strong>Map version.</strong> District attributes are keyed to map version 2021

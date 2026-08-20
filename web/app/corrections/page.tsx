@@ -1,12 +1,13 @@
-import type { Metadata } from "next";
-import Link from "next/link";
+import { pageTitle } from "@/lib/brand";
 import SiteFooter from "@/components/SiteFooter";
 import SiteHeader from "@/components/SiteHeader";
 import type { Meta } from "@/lib/types";
 import metaJson from "@/data/meta.json";
+import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Corrections policy · Congressional Vote Tracker",
+  title: pageTitle("Corrections policy"),
   description: "How to report factual errors in scores, adjudication, or race data.",
 };
 

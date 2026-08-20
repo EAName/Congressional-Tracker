@@ -12,6 +12,7 @@ from typing import Any, Sequence
 
 import structlog
 
+from vact.exports.brand import load_brand_config
 from vact.exports.data import (
     SITE_SCORECARD_TAGS,
     corpus_vote_count,
@@ -56,7 +57,16 @@ LEGACY_TAB_TITLES = (
 )
 LEGACY_PREFIX = "_Archive · "
 
-WORKBOOK_TITLE = "VA Congressional Vote Tracker"
+def _workbook_title() -> str:
+    return load_brand_config()["site_name"]
+
+
+def _readme_subtitle() -> str:
+    brand = load_brand_config()
+    return brand["tagline"]
+
+
+WORKBOOK_TITLE = _workbook_title()
 
 # Match the press site: tags with live density (no empty TAX_BURDEN column).
 SHEETS_SCORECARD_TAGS = SITE_SCORECARD_TAGS
@@ -510,8 +520,8 @@ def build_dashboard_layout(
         return list(row) + [""] * (width - len(row))
 
     rows: list[list[Any]] = [
-        pad(["VA Congressional Vote Tracker"]),
-        pad(["Democrats for Virginia · Small Business Caucus"]),
+        pad([load_brand_config()["site_name"]]),
+        pad([_readme_subtitle()]),
         pad(["Updated (UTC)", ts, "Map", DASHBOARD_MAP_VERSION]),
         pad(
             [

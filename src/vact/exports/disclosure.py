@@ -9,6 +9,8 @@ import yaml
 
 from vact.paths import REPO_ROOT
 
+from vact.exports.brand import load_brand_config
+
 DISCLOSURE_CONFIG = REPO_ROOT / "config" / "site_disclosure.yaml"
 
 
@@ -17,8 +19,6 @@ def load_disclosure_config(path: Path | None = None) -> dict[str, Any]:
     if not dest.is_file():
         raise FileNotFoundError(f"site disclosure config not found: {dest}")
     payload = yaml.safe_load(dest.read_text(encoding="utf-8")) or {}
-    if not payload.get("publisher"):
-        raise ValueError("site_disclosure.yaml requires publisher")
     footer = payload.get("footer") or {}
     if not footer.get("paragraphs"):
         raise ValueError("site_disclosure.yaml footer.paragraphs is required")
@@ -35,14 +35,17 @@ def race_disclaimer(config: dict[str, Any], race_id: str) -> str:
 
 def build_disclosure_payload(config: dict[str, Any] | None = None) -> dict[str, Any]:
     cfg = config or load_disclosure_config()
+    brand = load_brand_config()
     footer = cfg["footer"]
     race_cfg = cfg.get("race_page") or {}
     return {
-        "publisher": cfg["publisher"],
+        "publisher": brand["site_name"],
         "footer": {
             "paragraphs": [str(p).strip() for p in footer["paragraphs"] if str(p).strip()],
             "methodology_label": footer.get("methodology_label", "Full methodology"),
             "methodology_href": footer.get("methodology_href", "/methodology"),
+            "about_label": footer.get("about_label", "About"),
+            "about_href": footer.get("about_href", "/about"),
             "corrections_label": footer.get("corrections_label", "Corrections policy"),
             "corrections_href": footer.get("corrections_href", "/corrections"),
         },

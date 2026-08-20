@@ -1,0 +1,21 @@
+{
+  "site_name": "Old Dominion Vote Index",
+  "site_name_note": "TODO: replace with final public name before launch",
+  "tagline": "Independent Virginia congressional voting analysis",
+  "product_name": "Vote Index",
+  "domain": "olddominionvoteindex.org",
+  "domain_note": "TODO: replace with production domain before launch",
+  "canonical_base": "https://olddominionvoteindex.org",
+  "publisher_line": "Independent analysis",
+  "github": {
+    "repo_url": "https://github.com/EAName/Congressional-Tracker",
+    "repo_name": "Congressional-Tracker",
+    "org": "EAName"
+  },
+  "social": {
+    "twitter": "",
+    "bluesky": "",
+    "mastodon": ""
+  },
+  "status": "placeholder"
+}

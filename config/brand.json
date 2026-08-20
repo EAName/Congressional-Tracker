@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "status": "placeholder",
+  "site_name": "Old Dominion Vote Index",
+  "site_name_note": "TODO: replace with final public name before launch",
+  "tagline": "Independent Virginia congressional voting analysis",
+  "product_name": "Vote Index",
+  "domain": "olddominionvoteindex.org",
+  "domain_note": "TODO: replace with production domain before launch",
+  "canonical_base": "https://olddominionvoteindex.org",
+  "publisher_line": "Independent analysis",
+  "github": {
+    "repo_url": "https://github.com/EAName/Congressional-Tracker",
+    "repo_name": "Congressional-Tracker",
+    "org": "EAName"
+  },
+  "social": {
+    "twitter": "",
+    "bluesky": "",
+    "mastodon": ""
+  },
+  "legacy": {
+    "old_domain": "democratsforvirginia.org",
+    "old_domain_www": "www.democratsforvirginia.org",
+    "old_site_name": "Democrats for Virginia",
+    "old_product_name": "Congressional Vote Tracker",
+    "old_sheets_title": "VA Congressional Vote Tracker",
+    "old_sheets_subtitle": "Democrats for Virginia · Small Business Caucus"
+  },
+  "redirect_paths": [
+    "/",
+    "/analysis",
+    "/methodology",
+    "/about",
+    "/corrections",
+    "/race/va-01",
+    "/race/va-02",
+    "/race/va-05",
+    "/races",
+    "/races/va-01",
+    "/races/va-02",
+    "/races/va-05",
+    "/delegation",
+    "/district/1",
+    "/district/2",
+    "/district/3",
+    "/district/4",
+    "/district/5",
+    "/district/6",
+    "/district/7"
+  ]
+}

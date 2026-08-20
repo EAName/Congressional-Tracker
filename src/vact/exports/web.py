@@ -20,6 +20,7 @@ from vact.analysis.methodology import build_methodology_payload
 from vact.analysis.scoring import build_scores_frame, load_scoring_config
 from vact.analysis.symmetry_audit import build_symmetry_audit
 from vact.analysis.challenger_historical import build_head_to_head_payload
+from vact.exports.brand import build_about_payload, build_brand_payload
 from vact.exports.disclosure import build_disclosure_payload
 from vact.analysis.timeseries import expanding_series
 from vact.analysis.cosponsorship import score_cosponsorship, serialize_cosponsor_rows
@@ -160,6 +161,8 @@ def build_web_payload(
         "fec": fec_payload,
         "seats": predict_races(),
         "disclosure": build_disclosure_payload(),
+        "brand": build_brand_payload(),
+        "about": build_about_payload(),
         "head_to_head": build_head_to_head_payload(scores),
         "delegation": [
             {
@@ -215,6 +218,8 @@ def export_web(
         "fec",
         "seats",
         "disclosure",
+        "brand",
+        "about",
         "head_to_head",
     ):
         path = dest / f"{name}.json"

@@ -1,11 +1,12 @@
 import Link from "next/link";
+import { brand } from "@/lib/brand";
 
 export default function SiteHeader({
   active,
   daysUntilElection,
   electionDate,
 }: {
-  active: "overview" | "analysis" | "methodology";
+  active: "overview" | "analysis" | "methodology" | "about";
   daysUntilElection?: number;
   electionDate?: string;
 }) {
@@ -22,8 +23,9 @@ export default function SiteHeader({
     <header className="topbar">
       <div className="topbar-inner">
         <div className="brand-block">
-          <p className="product">Congressional Vote Tracker</p>
-          <h1 className="brand">Democrats for Virginia</h1>
+          <p className="product">{brand.product_name}</p>
+          <h1 className="brand">{brand.site_name}</h1>
+          <p className="tagline">{brand.tagline}</p>
           {countdown ? <p className="election-countdown">{countdown}</p> : null}
         </div>
         <nav className="site-nav" aria-label="Primary">
@@ -33,11 +35,11 @@ export default function SiteHeader({
           <Link href="/analysis" aria-current={active === "analysis" ? "page" : undefined}>
             Analysis
           </Link>
-          <Link
-            href="/methodology"
-            aria-current={active === "methodology" ? "page" : undefined}
-          >
+          <Link href="/methodology" aria-current={active === "methodology" ? "page" : undefined}>
             Methodology
+          </Link>
+          <Link href="/about" aria-current={active === "about" ? "page" : undefined}>
+            About
           </Link>
         </nav>
       </div>

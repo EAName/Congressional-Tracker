@@ -12,6 +12,8 @@ export default function SiteFooter() {
         <p key={paragraph.slice(0, 48)}>{paragraph}</p>
       ))}
       <p>
+        <Link href={footer.about_href ?? "/about"}>{footer.about_label ?? "About"}</Link>
+        {" · "}
         <Link href={footer.methodology_href}>{footer.methodology_label}</Link>
         {" · "}
         <Link href={footer.corrections_href}>{footer.corrections_label}</Link>

@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { brand } from "@/lib/brand";
 import type { Meta, RacesDoc, SeatsDoc } from "@/lib/types";
 import metaJson from "@/data/meta.json";
 import racesJson from "@/data/races.json";
@@ -39,7 +40,7 @@ export default async function OgImage({ params }: { params: Promise<{ raceId: st
       >
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           <div style={{ fontSize: 22, letterSpacing: 4, textTransform: "uppercase", color: "#a89f8e" }}>
-            Democrats for Virginia
+            {brand.site_name}
           </div>
           <div style={{ fontSize: 64, fontWeight: 700 }}>VA-{district}</div>
           <div style={{ fontSize: 28, color: "#d9d0c0" }}>{matchup}</div>

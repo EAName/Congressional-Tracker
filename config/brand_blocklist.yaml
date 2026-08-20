@@ -1,0 +1,29 @@
+# Old partisan-era brand strings. CI fails if these appear outside allow_paths.
+# Used by tests/test_brand_blocklist.py and `vact brand check`.
+
+terms:
+  - "Democrats for Virginia"
+  - "VA Dem"
+  - "Congressional Vote Tracker"
+  - "Democrats for Virginia ·"
+  - "Small Business Caucus"
+
+allow_paths:
+  - config/brand.json
+  - config/brand_blocklist.yaml
+  - REBRAND_CHECKLIST.md
+  - COMPLIANCE_QUESTIONS.md
+  - content/about.md
+  - tests/test_brand_blocklist.py
+  - docs/
+
+scan_globs:
+  - web/**/*.tsx
+  - web/**/*.ts
+  - web/data/*.json
+  - config/site_disclosure.yaml
+  - src/vact/exports/social.py
+  - src/vact/exports/site.py
+  - src/vact/exports/sheets.py
+  - src/vact/analysis/takeaway_templates.py
+  - templates/site/**

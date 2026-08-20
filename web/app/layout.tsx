@@ -1,10 +1,24 @@
 import type { Metadata } from "next";
+import { brand, canonicalUrl, pageTitle } from "@/lib/brand";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Congressional Vote Tracker · Democrats for Virginia",
-  description:
-    "Dark modular scorecard: signed small-business climate scores, Wilson compare mode, and within-party defections for the Virginia delegation.",
+  title: {
+    default: pageTitle(brand.product_name),
+    template: `%s · ${brand.site_name}`,
+  },
+  description: brand.tagline,
+  metadataBase: new URL(brand.canonical_base),
+  alternates: {
+    canonical: canonicalUrl("/"),
+  },
+  openGraph: {
+    siteName: brand.site_name,
+    title: brand.site_name,
+    description: brand.tagline,
+    type: "website",
+    url: brand.canonical_base,
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

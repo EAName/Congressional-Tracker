@@ -7,6 +7,7 @@ from pathlib import Path
 from PIL import Image
 
 from vact.exports import data as data_mod
+from vact.exports.brand import load_brand_config
 from vact.exports.sheets import build_readme_values, build_tab_payloads
 from vact.exports.site import build_site
 from vact.exports.social import HEIGHT, WIDTH, build_social_cards, render_card
@@ -104,7 +105,7 @@ def test_build_tab_payloads(tmp_path: Path) -> None:
         assert len(payloads["Signed Scores"]) == 1
         assert len(payloads["Party Deviations"]) == 1
         dash = payloads["Dashboard"]
-        assert dash[0][0] == "VA Congressional Vote Tracker"
+        assert dash[0][0] == load_brand_config()["site_name"]
         assert any("TARGET SEATS" in str(r[0]) for r in dash if r)
         # Chart source headers live past the scorecard (gutter after Workforce).
         score_ncols = len(payloads["Target Four"][0])
@@ -136,7 +137,7 @@ def test_site_suppresses_procedural_and_requires_summary(tmp_path: Path) -> None
     _seed_publication_warehouse(wh)
     dest = build_site(out_dir=out, warehouse_path=wh, map_version="2026")
     index = (dest / "index.html").read_text(encoding="utf-8")
-    assert "Democrats for Virginia" in index
+    assert load_brand_config()["site_name"] in index
     assert "VA-1" in index
     assert 'id="categoryChart"' in index
     assert 'id="impactChart"' in index

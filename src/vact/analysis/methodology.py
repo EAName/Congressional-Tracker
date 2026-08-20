@@ -19,9 +19,9 @@ from scipy.stats import beta as beta_dist
 
 from vact.analysis.estimators import BetaPrior
 from vact.analysis.scoring import ScoringConfig
+from vact.exports.brand import load_brand_config
 from vact.paths import REPO_ROOT
 
-PUBLIC_REPO = "https://github.com/EAName/Congressional-Tracker"
 CHANGELOG_PATHS = (
     "data/votes.csv",
     "src/vact/analysis/scoring.py",
@@ -216,12 +216,16 @@ def build_methodology_payload(
     else:
         sep_live = None
 
+    brand = load_brand_config()
+    public_repo = brand["github"]["repo_url"]
+    repo_name = brand["github"].get("repo_name", "Congressional-Tracker")
+
     payload: dict[str, Any] = {
-        "repo_url": PUBLIC_REPO,
-        "votes_url": f"{PUBLIC_REPO}/blob/main/data/votes.csv",
+        "repo_url": public_repo,
+        "votes_url": f"{public_repo}/blob/main/data/votes.csv",
         "reproduce": [
-            f"git clone {PUBLIC_REPO}.git",
-            "cd Congressional-Tracker && uv sync",
+            f"git clone {public_repo}.git",
+            f"cd {repo_name} && uv sync",
             "./bin/vact votes validate && ./bin/vact audit symmetry && ./bin/vact export-web",
         ],
         "scoreable": {
@@ -245,9 +249,9 @@ def build_methodology_payload(
     if symmetry_audit is not None:
         payload["symmetry_audit"] = symmetry_audit
         payload["votes_excluded_url"] = (
-            f"{PUBLIC_REPO}/blob/main/{symmetry_audit.get('excluded_path', 'data/votes_excluded.csv')}"
+            f"{public_repo}/blob/main/{symmetry_audit.get('excluded_path', 'data/votes_excluded.csv')}"
         )
         payload["inclusion_spec_url"] = (
-            f"{PUBLIC_REPO}/blob/main/{symmetry_audit.get('spec_path', 'src/vact/analysis/VOTE_INCLUSION_SPEC.md')}"
+            f"{public_repo}/blob/main/{symmetry_audit.get('spec_path', 'src/vact/analysis/VOTE_INCLUSION_SPEC.md')}"
         )
     return payload

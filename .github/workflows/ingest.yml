@@ -86,6 +86,7 @@ jobs:
           if [[ -f data/warehouse/warehouse.duckdb ]]; then
             ./bin/vact audit symmetry
           fi
+          ./bin/vact brand check
 
       - name: Validate races.json
         run: |
