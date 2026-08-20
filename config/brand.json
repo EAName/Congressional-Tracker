@@ -1,10 +1,10 @@
 {
   "version": 1,
   "status": "placeholder",
-  "site_name": "Old Dominion Vote Index",
-  "site_name_note": "TODO: replace with final public name before launch",
+  "site_name": "Commonwealth Index",
+  "site_name_note": "",
   "tagline": "Independent Virginia congressional voting analysis",
-  "product_name": "Vote Index",
+  "product_name": "Commonwealth Index",
   "domain": "olddominionvoteindex.org",
   "domain_note": "TODO: replace with production domain before launch",
   "canonical_base": "https://olddominionvoteindex.org",

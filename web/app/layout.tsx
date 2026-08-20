@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { brand, canonicalUrl, pageTitle } from "@/lib/brand";
+import { brand, canonicalUrl } from "@/lib/brand";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: pageTitle(brand.product_name),
+    default: brand.site_name,
     template: `%s · ${brand.site_name}`,
   },
   description: brand.tagline,

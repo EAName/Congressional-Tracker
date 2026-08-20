@@ -2,7 +2,7 @@
 
 ## Who builds and maintains the site
 
-The **Old Dominion Vote Index** (working title — final name TBD) is built and maintained by a small team of operators. Authorship and affiliations are disclosed here; they are not hidden in the site banner.
+The **Commonwealth Index** is built and maintained by a small team of operators. Authorship and affiliations are disclosed here; they are not hidden in the site banner.
 
 The engineering and data pipeline are version-controlled and public. Human reviewers adjudicate vote valence (axis direction) using a documented workflow. No adjudication row publishes until a human promotes it.
 

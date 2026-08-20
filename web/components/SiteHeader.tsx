@@ -23,7 +23,9 @@ export default function SiteHeader({
     <header className="topbar">
       <div className="topbar-inner">
         <div className="brand-block">
-          <p className="product">{brand.product_name}</p>
+          {brand.product_name !== brand.site_name ? (
+            <p className="product">{brand.product_name}</p>
+          ) : null}
           <h1 className="brand">{brand.site_name}</h1>
           {countdown ? <p className="election-countdown">{countdown}</p> : null}
         </div>

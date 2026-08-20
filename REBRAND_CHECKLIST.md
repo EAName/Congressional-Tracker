@@ -1,4 +1,4 @@
-# Rebrand checklist — Old Dominion Vote Index (placeholder)
+# Rebrand checklist — Commonwealth Index
 
 Manual steps outside the repository. Complete before the first **public** launch of race pages under the new identity.
 
