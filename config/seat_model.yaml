@@ -1,0 +1,45 @@
+# Pre-registered House seat model (Prompt 13). Frozen at model_version.
+# Changes require a version bump and a changelog entry in
+# src/vact/analysis/SEAT_MODEL_SPEC.md.
+
+model_version: seat-v1.0
+interval_level: 0.80
+poll_half_life_days: 14
+president_party: Republican  # sitting president on 2026-11-03
+cycle: 2026
+
+# OLS / logit estimated on these general-election cycles. 2012 and 2022
+# are excluded from training because district numbers are not a panel across
+# redistricting; 2024 is absent from the committed MEDSL extract (through 2022).
+train_years: [2010, 2014, 2016, 2018, 2020]
+
+holdout:
+  year: 2022
+  source: FiveThirtyEight Deluxe toss-up (neither party >= 60%) as of 2022-11-08
+  source_url: https://www.270towin.com/2022-house-election/table/fivethirtyeight-2022-house-forecast
+  # AK-AL omitted: ranked-choice / at-large breaks the two-party frame.
+  districts:
+    - IA-03
+    - MI-03
+    - NV-01
+    - NY-19
+    - OR-05
+    - PA-07
+    - PA-08
+    - PA-17
+    - RI-02
+    - TX-15
+    - TX-34
+    - VA-02
+
+# Cycle sitting president (election-day, not the winner of that day's presidential race).
+president_party_by_cycle:
+  2010: Democrat
+  2012: Democrat
+  2014: Democrat
+  2016: Democrat
+  2018: Republican
+  2020: Republican
+  2022: Democrat
+  2024: Democrat
+  2026: Republican

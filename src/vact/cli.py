@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import os
 from datetime import date
 from pathlib import Path
@@ -44,6 +45,8 @@ races_app = typer.Typer(help="Midterm race registry and FEC snapshots.")
 app.add_typer(races_app, name="races")
 fec_app = typer.Typer(help="OpenFEC campaign-finance snapshots.")
 app.add_typer(fec_app, name="fec")
+seats_app = typer.Typer(help="Pre-registered House seat model.")
+app.add_typer(seats_app, name="seats")
 
 
 @app.callback()
@@ -579,6 +582,75 @@ def fec_snapshot_cmd(
     result = snapshot_fec(api_key=api_key, cycle=cycle, force=force)
     tag = "no-op" if result["noop"] else "wrote"
     typer.echo(f"FEC snapshot {tag}: {result['path']} ({result['n_candidates']} candidates)")
+
+
+@seats_app.command("build-train")
+def seats_build_train_cmd(
+    medsl: Path = typer.Option(
+        Path("data/raw/medsl/house_1976_2022.csv"),
+        "--medsl",
+        help="MEDSL / TidyTuesday house candidate CSV.",
+    ),
+) -> None:
+    """Collapse MEDSL candidate rows into the committed training extract."""
+    from vact.analysis.seat_train import build_training_csv_from_medsl
+
+    path = build_training_csv_from_medsl(medsl)
+    typer.echo(f"wrote {path}")
+
+
+@seats_app.command("fit")
+def seats_fit_cmd() -> None:
+    """Fit OLS/logit on the committed training extract and write the fit summary."""
+    from vact.analysis.seat_model import fit_seat_model, write_fit
+
+    summary = fit_seat_model()
+    path = write_fit(summary)
+    typer.echo(
+        f"fit {summary['model_version']}: n_train={summary['n_train']} "
+        f"holdout_brier={summary['holdout_brier']:.4f} "
+        f"always_inc_brier={summary['holdout_always_incumbent_brier']:.4f} → {path}"
+    )
+
+
+@seats_app.command("predict")
+def seats_predict_cmd() -> None:
+    """Score tracked races, append predictions_seats.csv, refresh web JSON payload."""
+    from vact.analysis.seat_model import append_predictions, predict_races
+    from vact.paths import DATA_DIR
+
+    payload = predict_races()
+    log_path = append_predictions(payload)
+    dest = DATA_DIR.parent / "web" / "data" / "seats.json"
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    dest.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    typer.echo(
+        f"seats {payload['model_version']} as_of={payload['as_of']} "
+        f"n={len(payload['races'])} log={log_path}"
+    )
+
+
+@seats_app.command("validate")
+def seats_validate_cmd() -> None:
+    """Validate the append-only predictions log and spec/version freeze."""
+    from vact.analysis.seat_model import (
+        CONFIG_PATH,
+        SPEC_PATH,
+        load_fit,
+        load_seat_config,
+        validate_predictions_file,
+    )
+
+    cfg = load_seat_config()
+    if not SPEC_PATH.is_file():
+        raise typer.Exit(f"missing spec {SPEC_PATH}")
+    fit = load_fit()
+    if fit["model_version"] != cfg["model_version"]:
+        raise typer.Exit("fit model_version does not match config")
+    rows = validate_predictions_file()
+    typer.echo(
+        f"seats ok version={cfg['model_version']} predictions={len(rows)} spec={SPEC_PATH.name}"
+    )
 
 
 @app.command("social")

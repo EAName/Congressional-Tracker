@@ -5,7 +5,7 @@ VACT := ./bin/vact
 UV := uv
 PYTEST := PYTHONPATH=src VACT_REPO_ROOT=$(CURDIR) .venv/bin/pytest
 
-.PHONY: install ingest classify score deviations export-web test site social publish all dimensions contracts gaps votes-export votes-validate races-validate fec-snapshot derived irt
+.PHONY: install ingest classify score deviations export-web test site social publish all dimensions contracts gaps votes-export votes-validate races-validate fec-snapshot seats-fit derived irt
 
 install:
 	$(UV) sync
@@ -38,6 +38,10 @@ races-validate:
 
 fec-snapshot:
 	$(VACT) fec snapshot
+
+seats-fit:
+	$(VACT) seats fit
+	$(VACT) seats predict
 
 # Prompt 1 derived artifacts: validate the versioned CSV, then refresh web JSON.
 derived: votes-validate races-validate export-web

@@ -387,6 +387,13 @@ Prompt 0 (this file) — **done**. No behavior change.
 - [x] Build-time `days_until_election` on export / header countdown
 - [x] `FEC_API_KEY` documented in `.env.example`
 
+**Prompt 13 — seat model** (midterm kit)
+
+- [x] Pre-registered `seat-v1.0` spec + OLS fundamentals + poll blend
+- [x] Append-only `data/predictions_seats.csv` + CI validate
+- [x] 2022 toss-up Brier vs always-incumbent in the fit summary
+- [x] `/races` + `/races/[raceId]` probability, interval, decomposition, sparkline
+
 **Prompt 7 — forecasts**
 
 - [ ] Append-only `data/predictions.csv` enforced in validation

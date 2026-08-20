@@ -1,0 +1,47 @@
+{
+  "model_version": "seat-v1.0",
+  "fitted_at_utc": "2026-08-20T02:21:39Z",
+  "n_train": 1934,
+  "n_holdout": 12,
+  "train_years": [
+    2010,
+    2014,
+    2016,
+    2018,
+    2020
+  ],
+  "features": [
+    "intercept",
+    "lean_rel_dem",
+    "inc_dem",
+    "midterm_dem",
+    "log_ratio_dem",
+    "qual_dem"
+  ],
+  "ols_beta": {
+    "intercept": 0.5033217233986443,
+    "lean_rel_dem": 0.6485760981761464,
+    "inc_dem": 0.0535254781636893,
+    "midterm_dem": 0.029770460261823842,
+    "log_ratio_dem": 0.0,
+    "qual_dem": 0.12469918746153806
+  },
+  "sigma": 0.08053557349729912,
+  "logit_beta": {
+    "intercept": -0.08449126736604869,
+    "lean_rel_dem": 16.169197010049427,
+    "inc_dem": 1.8689604225995864,
+    "midterm_dem": 1.3522961739785813,
+    "log_ratio_dem": 0.0,
+    "qual_dem": 2.9168833669313883
+  },
+  "nat_env_coefficient": 1.0,
+  "train_rmse": 0.0804105505393852,
+  "train_brier": 0.06737317994976706,
+  "holdout_brier": 0.2196270004114069,
+  "holdout_always_incumbent_brier": 0.5,
+  "holdout_n_with_incumbent": 4,
+  "holdout_source": "FiveThirtyEight Deluxe toss-up (neither party >= 60%) as of 2022-11-08",
+  "holdout_source_url": "https://www.270towin.com/2022-house-election/table/fivethirtyeight-2022-house-forecast",
+  "notes": "log_ratio_dem is 0 in the training extract (MEDSL has no receipts). The coefficient is unidentified in-sample. Fundraising at prediction time is reported in components_raw but does not move mu until a receipts-joined refit bumps model_version."
+}

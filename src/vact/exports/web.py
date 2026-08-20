@@ -20,6 +20,7 @@ from vact.analysis.scoring import build_scores_frame, load_scoring_config
 from vact.analysis.timeseries import expanding_series
 from vact.analysis.cosponsorship import score_cosponsorship, serialize_cosponsor_rows
 from vact.analysis.races import races_for_web
+from vact.analysis.seat_model import predict_races
 from vact.pipeline.cosponsorship import load_cosp_config
 from vact.pipeline.fec import latest_snapshot
 from vact.analysis.votes import resolve_votes_path, validate_votes_csv, vote_rows_from_warehouse
@@ -149,6 +150,7 @@ def build_web_payload(
         },
         "races": races,
         "fec": fec_payload,
+        "seats": predict_races(),
         "delegation": [
             {
                 "bioguide_id": m["bioguide_id"],
@@ -201,6 +203,7 @@ def export_web(
         "cosponsorship",
         "races",
         "fec",
+        "seats",
     ):
         path = dest / f"{name}.json"
         path.write_text(json.dumps(payload[name], indent=2, ensure_ascii=False), encoding="utf-8")

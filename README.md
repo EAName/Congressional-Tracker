@@ -114,6 +114,8 @@ uv sync && uv pip install -e .
 ./bin/vact cosp fetch          # Congress.gov (co)sponsorship → bills_candidates.csv
 ./bin/vact cosp validate
 ./bin/vact fec snapshot        # OpenFEC → data/derived/fec_YYYYMMDD.json (needs FEC_API_KEY)
+./bin/vact seats fit && ./bin/vact seats predict
+./bin/vact seats validate
 uv sync --extra irt && ./bin/vact irt   # offline 2PL → data/derived/irt.json
 make test
 ```

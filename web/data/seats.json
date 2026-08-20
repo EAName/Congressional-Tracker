@@ -1,0 +1,157 @@
+{
+  "model_version": "seat-v1.0",
+  "as_of": "2026-08-19",
+  "sigma_fundamentals": 0.08053557349729912,
+  "generic_ballot": null,
+  "races": [
+    {
+      "race_id": "va-01",
+      "district": 1,
+      "as_of": "2026-08-19",
+      "model_version": "seat-v1.0",
+      "prob_dem": 0.3999,
+      "prob_rep": 0.6001,
+      "mu_dem_two_party": 0.4796,
+      "mu_fundamentals": 0.4796,
+      "share_lo": 0.3764,
+      "share_hi": 0.5828,
+      "sigma": 0.0805,
+      "blend": "fundamentals_only",
+      "plain_language": "Republicans are modest favorites, roughly 3 in 5",
+      "decomposition": {
+        "intercept": 0.5033,
+        "lean_rel_dem": 0.0,
+        "inc_dem": -0.0535,
+        "midterm_dem": 0.0298,
+        "log_ratio_dem": -0.0,
+        "qual_dem": 0.0,
+        "nat_env": 0.0,
+        "polls": 0.0
+      },
+      "components_raw": {
+        "lean_rel_dem": 0.0,
+        "inc_dem": -1.0,
+        "midterm_dem": 1.0,
+        "log_ratio_dem": -0.6382,
+        "qual_dem": 0.0,
+        "nat_env": 0.0
+      },
+      "meta": {
+        "lean_status": "missing_zeroed",
+        "environment_source": "neutral_default",
+        "generic_date": null,
+        "dem_receipts": 2140980.12,
+        "rep_receipts": 4053141.52
+      },
+      "n_polls": 0
+    },
+    {
+      "race_id": "va-02",
+      "district": 2,
+      "as_of": "2026-08-19",
+      "model_version": "seat-v1.0",
+      "prob_dem": 0.9023,
+      "prob_rep": 0.0977,
+      "mu_dem_two_party": 0.6043,
+      "mu_fundamentals": 0.6043,
+      "share_lo": 0.5011,
+      "share_hi": 0.7075,
+      "sigma": 0.0805,
+      "blend": "fundamentals_only",
+      "plain_language": "Democrats are likely to win, about 4 in 5",
+      "decomposition": {
+        "intercept": 0.5033,
+        "lean_rel_dem": 0.0,
+        "inc_dem": -0.0535,
+        "midterm_dem": 0.0298,
+        "log_ratio_dem": -0.0,
+        "qual_dem": 0.1247,
+        "nat_env": 0.0,
+        "polls": 0.0
+      },
+      "components_raw": {
+        "lean_rel_dem": 0.0,
+        "inc_dem": -1.0,
+        "midterm_dem": 1.0,
+        "log_ratio_dem": -0.2451,
+        "qual_dem": 1.0,
+        "nat_env": 0.0
+      },
+      "meta": {
+        "lean_status": "missing_zeroed",
+        "environment_source": "neutral_default",
+        "generic_date": null,
+        "dem_receipts": 4659795.3,
+        "rep_receipts": 5954338.07
+      },
+      "n_polls": 0
+    },
+    {
+      "race_id": "va-05",
+      "district": 5,
+      "as_of": "2026-08-19",
+      "model_version": "seat-v1.0",
+      "prob_dem": 0.9023,
+      "prob_rep": 0.0977,
+      "mu_dem_two_party": 0.6043,
+      "mu_fundamentals": 0.6043,
+      "share_lo": 0.5011,
+      "share_hi": 0.7075,
+      "sigma": 0.0805,
+      "blend": "fundamentals_only",
+      "plain_language": "Democrats are likely to win, about 4 in 5",
+      "decomposition": {
+        "intercept": 0.5033,
+        "lean_rel_dem": 0.0,
+        "inc_dem": -0.0535,
+        "midterm_dem": 0.0298,
+        "log_ratio_dem": 0.0,
+        "qual_dem": 0.1247,
+        "nat_env": 0.0,
+        "polls": 0.0
+      },
+      "components_raw": {
+        "lean_rel_dem": 0.0,
+        "inc_dem": -1.0,
+        "midterm_dem": 1.0,
+        "log_ratio_dem": 0.1833,
+        "qual_dem": 1.0,
+        "nat_env": 0.0
+      },
+      "meta": {
+        "lean_status": "missing_zeroed",
+        "environment_source": "neutral_default",
+        "generic_date": null,
+        "dem_receipts": 2140401.63,
+        "rep_receipts": 1781840.34
+      },
+      "n_polls": 0
+    }
+  ],
+  "log": [
+    {
+      "race_id": "va-01",
+      "date": "2026-08-19",
+      "prob_dem": "0.3999",
+      "model_version": "seat-v1.0"
+    },
+    {
+      "race_id": "va-02",
+      "date": "2026-08-19",
+      "prob_dem": "0.9023",
+      "model_version": "seat-v1.0"
+    },
+    {
+      "race_id": "va-05",
+      "date": "2026-08-19",
+      "prob_dem": "0.9023",
+      "model_version": "seat-v1.0"
+    }
+  ],
+  "fit": {
+    "n_train": 1934,
+    "holdout_brier": 0.2196270004114069,
+    "holdout_always_incumbent_brier": 0.5,
+    "holdout_source": "FiveThirtyEight Deluxe toss-up (neither party >= 60%) as of 2022-11-08"
+  }
+}

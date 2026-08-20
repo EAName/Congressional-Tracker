@@ -109,6 +109,46 @@ export interface RacesDoc {
   races: RaceEntry[];
 }
 
+export interface SeatDecomposition {
+  intercept: number;
+  lean_rel_dem: number;
+  inc_dem: number;
+  midterm_dem: number;
+  log_ratio_dem: number;
+  qual_dem: number;
+  nat_env: number;
+  polls: number;
+}
+
+export interface SeatRace {
+  race_id: string;
+  district: number;
+  as_of: string;
+  model_version: string;
+  prob_dem: number;
+  prob_rep: number;
+  mu_dem_two_party: number;
+  mu_fundamentals: number;
+  share_lo: number;
+  share_hi: number;
+  sigma: number;
+  blend: "fundamentals_only" | "fundamentals_plus_polls" | string;
+  plain_language: string;
+  decomposition: SeatDecomposition;
+  n_polls: number;
+  meta?: {
+    lean_status?: string;
+    environment_source?: string;
+  };
+}
+
+export interface SeatsDoc {
+  model_version: string;
+  as_of: string;
+  races: SeatRace[];
+  log: Array<{ race_id: string; date: string; prob_dem: string; model_version: string }>;
+}
+
 export interface Member {
   bioguide_id: string;
   full_name: string;
