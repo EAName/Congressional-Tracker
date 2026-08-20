@@ -441,10 +441,9 @@ cred band  = 2 · Beta-quantile_{0.025, 0.975} − 1`}</code>
               legislators only.
             </li>
             <li>
-              <strong>Authorship.</strong> Operators affiliated with the caucus and Parallel LLC
-              build and maintain the pipeline; see the <a href="/about">About</a> page. Valence is
-              a political judgment. The math above is the estimator, not a claim of neutrality
-              about which bills belong on the axis.
+              <strong>Authorship.</strong> Operators build and maintain the pipeline; see the{" "}
+              <a href="/about">About</a> page. Valence is a political judgment. The math above is
+              the estimator, not a claim of neutrality about which bills belong on the axis.
             </li>
             <li>
               <strong>Map version.</strong> District attributes are keyed to map version 2021

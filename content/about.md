@@ -2,9 +2,9 @@
 
 ## Who builds and maintains the site
 
-The **Old Dominion Vote Index** (working title — final name TBD) is built and maintained by operators affiliated with the Virginia House Democratic caucus small-business policy work, through **Parallel LLC**. That affiliation is disclosed here; it is not hidden in the site banner.
+The **Old Dominion Vote Index** (working title — final name TBD) is built and maintained by a small team of operators. Authorship and affiliations are disclosed here; they are not hidden in the site banner.
 
-Parallel LLC hosts the engineering and data pipeline. Caucus staff and volunteers adjudicate vote valence (axis direction) using a public, version-controlled workflow. No adjudication row publishes until a human promotes it.
+The engineering and data pipeline are version-controlled and public. Human reviewers adjudicate vote valence (axis direction) using a documented workflow. No adjudication row publishes until a human promotes it.
 
 ## Independence of the analysis
 
