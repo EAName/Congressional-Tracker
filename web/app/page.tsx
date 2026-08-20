@@ -21,7 +21,11 @@ export default function Page() {
 
   return (
     <div className="shell">
-      <SiteHeader active="scorecard" />
+      <SiteHeader
+        active="scorecard"
+        daysUntilElection={meta.days_until_election}
+        electionDate={meta.election_date}
+      />
 
       <div className="workspace">
         <TargetStrip members={delegation} />

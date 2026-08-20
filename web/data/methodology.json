@@ -243,6 +243,11 @@
   },
   "changelog": [
     {
+      "sha": "1b3ba9c",
+      "date": "2026-08-19",
+      "subject": "Add methodology, time series, IRT, and cosponsorship surfaces."
+    },
+    {
       "sha": "343d3dd",
       "date": "2026-08-19",
       "subject": "Add per-caucus empirical Bayes shrinkage for signed scores."

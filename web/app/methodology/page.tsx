@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import SiteHeader from "@/components/SiteHeader";
-import type { MethodologyDoc, PartyBaseline, WorkedExample } from "@/lib/types";
+import type { Meta, MethodologyDoc, PartyBaseline, WorkedExample } from "@/lib/types";
 import { shortName, themeLabel } from "@/lib/types";
 import { fmtScore } from "@/lib/viz";
+import metaJson from "@/data/meta.json";
 import methodologyJson from "@/data/methodology.json";
 
 export const metadata: Metadata = {
@@ -28,6 +29,7 @@ function baselineRows(rows: PartyBaseline[]) {
 }
 
 export default function MethodologyPage() {
+  const meta = metaJson as Meta;
   const s = doc.scoreable;
   const ex = doc.worked_example;
   const sepWeak = doc.separation.weakly_informative;
@@ -35,7 +37,11 @@ export default function MethodologyPage() {
 
   return (
     <div className="shell method-shell">
-      <SiteHeader active="methodology" />
+      <SiteHeader
+        active="methodology"
+        daysUntilElection={meta.days_until_election}
+        electionDate={meta.election_date}
+      />
       <article className="method">
         <header className="method-head">
           <p className="method-kicker">Methods</p>

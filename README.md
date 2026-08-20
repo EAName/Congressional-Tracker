@@ -107,11 +107,13 @@ uv sync && uv pip install -e .
 ./bin/vact valence propose     # RULE proposals; review + valence set
 ./bin/vact votes export        # warehouse → versioned data/votes.csv
 ./bin/vact votes validate
+./bin/vact races validate
 ./bin/vact score --write       # reads votes.csv when present
 ./bin/vact deviations
 ./bin/vact export-web          # refresh web/data for Vercel (from votes.csv)
 ./bin/vact cosp fetch          # Congress.gov (co)sponsorship → bills_candidates.csv
 ./bin/vact cosp validate
+./bin/vact fec snapshot        # OpenFEC → data/derived/fec_YYYYMMDD.json (needs FEC_API_KEY)
 uv sync --extra irt && ./bin/vact irt   # offline 2PL → data/derived/irt.json
 make test
 ```
@@ -133,8 +135,9 @@ cd web && npm ci && npm run dev   # http://localhost:3000
 ```
 
 Vercel: import the GitHub repo, set **Root Directory** to `web`. The Publish
-workflow validates `data/votes.csv` and runs `vact export-web` (Python stays off
-Vercel). Commit `data/votes.csv` is the scoring audit trail (`git log -- data/votes.csv`).
+workflow validates `data/votes.csv` and `data/races.json`, then runs
+`vact export-web` (Python stays off Vercel). Commit `data/votes.csv` is the
+scoring audit trail (`git log -- data/votes.csv`).
 
 ## CI shape
 

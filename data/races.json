@@ -1,0 +1,92 @@
+{
+  "version": 1,
+  "map_version": "2021",
+  "election_date": "2026-11-03",
+  "notes": "Canonical midterm race registry (Prompt 10). district_lean shares are TODO placeholders; fill from the listed sources before publishing lean-dependent modules.",
+  "races": [
+    {
+      "race_id": "va-01",
+      "district": 1,
+      "election_date": "2026-11-03",
+      "status": "tracked",
+      "incumbent": {
+        "name": "Robert J. Wittman",
+        "party": "Republican",
+        "bioguide_id": "W000804",
+        "fec_candidate_id": "H8VA01147"
+      },
+      "challenger": {
+        "name": "Shannon Taylor",
+        "party": "Democrat",
+        "fec_candidate_id": "H6VA01299",
+        "prior_federal_service": null
+      },
+      "district_lean": {
+        "pres_2020_two_party_dem_share": null,
+        "pres_2024_two_party_dem_share": null,
+        "source_url": "https://docs.google.com/spreadsheets/d/1Yje_Cib9ZgXmQfl-RYxLVSLv_cbiNZiQGjJg3F_xPnI/; https://www.vpap.org/"
+      },
+      "ratings": []
+    },
+    {
+      "race_id": "va-02",
+      "district": 2,
+      "election_date": "2026-11-03",
+      "status": "tracked",
+      "incumbent": {
+        "name": "Jennifer A. Kiggans",
+        "party": "Republican",
+        "bioguide_id": "K000399",
+        "fec_candidate_id": "H2VA02064"
+      },
+      "challenger": {
+        "name": "Elaine Luria",
+        "party": "Democrat",
+        "fec_candidate_id": "H6VA02198",
+        "prior_federal_service": [
+          {
+            "chamber": "House",
+            "congresses": [116, 117],
+            "bioguide_id": "L000791"
+          }
+        ]
+      },
+      "district_lean": {
+        "pres_2020_two_party_dem_share": null,
+        "pres_2024_two_party_dem_share": null,
+        "source_url": "https://docs.google.com/spreadsheets/d/1Yje_Cib9ZgXmQfl-RYxLVSLv_cbiNZiQGjJg3F_xPnI/; https://www.vpap.org/"
+      },
+      "ratings": []
+    },
+    {
+      "race_id": "va-05",
+      "district": 5,
+      "election_date": "2026-11-03",
+      "status": "tracked",
+      "incumbent": {
+        "name": "John J. McGuire III",
+        "party": "Republican",
+        "bioguide_id": "M001239",
+        "fec_candidate_id": "H0VA07133"
+      },
+      "challenger": {
+        "name": "Tom Perriello",
+        "party": "Democrat",
+        "fec_candidate_id": "H6VA05217",
+        "prior_federal_service": [
+          {
+            "chamber": "House",
+            "congresses": [111],
+            "bioguide_id": "P000601"
+          }
+        ]
+      },
+      "district_lean": {
+        "pres_2020_two_party_dem_share": null,
+        "pres_2024_two_party_dem_share": null,
+        "source_url": "https://docs.google.com/spreadsheets/d/1Yje_Cib9ZgXmQfl-RYxLVSLv_cbiNZiQGjJg3F_xPnI/; https://www.vpap.org/"
+      },
+      "ratings": []
+    }
+  ]
+}

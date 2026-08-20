@@ -89,10 +89,11 @@ jobs:
           make site
           ./bin/vact gaps
 
-      - name: Validate votes.csv and refresh Vercel JSON
+      - name: Validate votes.csv / races.json and refresh Vercel JSON
         run: |
           set -euo pipefail
           export PYTHONPATH=src
+          ./bin/vact races validate
           if [[ -f data/votes.csv ]]; then
             ./bin/vact votes validate
             ./bin/vact export-web

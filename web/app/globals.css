@@ -98,6 +98,14 @@ a:hover {
   color: var(--ink);
 }
 
+.brand-block .election-countdown {
+  margin: 0.35rem 0 0;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--ink3);
+}
+
 .top-meta {
   display: flex;
   flex-wrap: wrap;

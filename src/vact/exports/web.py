@@ -19,7 +19,9 @@ from vact.analysis.methodology import build_methodology_payload
 from vact.analysis.scoring import build_scores_frame, load_scoring_config
 from vact.analysis.timeseries import expanding_series
 from vact.analysis.cosponsorship import score_cosponsorship, serialize_cosponsor_rows
+from vact.analysis.races import races_for_web
 from vact.pipeline.cosponsorship import load_cosp_config
+from vact.pipeline.fec import latest_snapshot
 from vact.analysis.votes import resolve_votes_path, validate_votes_csv, vote_rows_from_warehouse
 from vact.exports.data import list_delegation
 from vact.paths import REPO_ROOT
@@ -116,6 +118,14 @@ def build_web_payload(
     timeseries = expanding_series(vote_rows, config)
     cosp_cfg = load_cosp_config()
     cosp_frame = score_cosponsorship(extra_members=cosp_cfg.get("extra_members") or [], config=config)
+    races = races_for_web()
+    fec_latest = latest_snapshot()
+    fec_payload: dict[str, Any] = {"latest_path": None, "snapshot": None}
+    if fec_latest is not None and fec_latest.is_file():
+        fec_payload = {
+            "latest_path": str(fec_latest.relative_to(REPO_ROOT)),
+            "snapshot": json.loads(fec_latest.read_text(encoding="utf-8")),
+        }
     return {
         "meta": {
             "generated_at_utc": _generated_at(),
@@ -125,6 +135,9 @@ def build_web_payload(
             "sufficient_min": config.min_contested,
             "estimate_default": "eb",
             "baselines": baselines,
+            "election_date": races["election_date"],
+            "days_until_election": races["days_until_election"],
+            "races_as_of": races["as_of"],
         },
         "scores": scores,
         "deviations": devs,
@@ -134,6 +147,8 @@ def build_web_payload(
             "never_blended": True,
             "rows": serialize_cosponsor_rows(cosp_frame),
         },
+        "races": races,
+        "fec": fec_payload,
         "delegation": [
             {
                 "bioguide_id": m["bioguide_id"],
@@ -176,7 +191,17 @@ def export_web(
     dest = out_dir or WEB_DATA_DIR
     dest.mkdir(parents=True, exist_ok=True)
     written: list[Path] = []
-    for name in ("meta", "scores", "deviations", "delegation", "methodology", "timeseries", "cosponsorship"):
+    for name in (
+        "meta",
+        "scores",
+        "deviations",
+        "delegation",
+        "methodology",
+        "timeseries",
+        "cosponsorship",
+        "races",
+        "fec",
+    ):
         path = dest / f"{name}.json"
         path.write_text(json.dumps(payload[name], indent=2, ensure_ascii=False), encoding="utf-8")
         written.append(path)

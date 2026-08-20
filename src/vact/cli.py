@@ -40,6 +40,10 @@ cosp_app = typer.Typer(help="Cosponsorship candidate ingest (separate from vote 
 app.add_typer(cosp_app, name="cosp")
 votes_app = typer.Typer(help="Versioned votes.csv adjudication layer.")
 app.add_typer(votes_app, name="votes")
+races_app = typer.Typer(help="Midterm race registry and FEC snapshots.")
+app.add_typer(races_app, name="races")
+fec_app = typer.Typer(help="OpenFEC campaign-finance snapshots.")
+app.add_typer(fec_app, name="fec")
 
 
 @app.callback()
@@ -547,6 +551,34 @@ def cosp_validate_cmd() -> None:
 
     rows = validate_candidates_file()
     typer.echo(f"bills_candidates.csv ok ({len(rows)} rows)")
+
+
+@races_app.command("validate")
+def races_validate_cmd() -> None:
+    """Validate data/races.json schema and tracked-race requirements."""
+    from vact.analysis.races import validate_races
+
+    reg = validate_races()
+    typer.echo(
+        f"races.json ok ({len(reg.races)} races, election {reg.election_date.isoformat()}, "
+        f"map_version={reg.map_version})"
+    )
+
+
+@fec_app.command("snapshot")
+def fec_snapshot_cmd(
+    api_key: str = typer.Option(None, "--api-key", envvar="FEC_API_KEY"),
+    cycle: int = typer.Option(2026, "--cycle"),
+    force: bool = typer.Option(False, "--force", help="Re-fetch and overwrite today's snapshot."),
+) -> None:
+    """Write data/derived/fec_YYYYMMDD.json for all tracked candidates. Same-day re-run is a no-op."""
+    from vact.pipeline.fec import snapshot_fec
+
+    if not api_key:
+        raise typer.BadParameter("set FEC_API_KEY (e.g. in .env) or pass --api-key")
+    result = snapshot_fec(api_key=api_key, cycle=cycle, force=force)
+    tag = "no-op" if result["noop"] else "wrote"
+    typer.echo(f"FEC snapshot {tag}: {result['path']} ({result['n_candidates']} candidates)")
 
 
 @app.command("social")

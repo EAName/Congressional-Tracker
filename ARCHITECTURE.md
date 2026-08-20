@@ -379,6 +379,14 @@ Prompt 0 (this file) — **done**. No behavior change.
 - [x] Reuse estimator module; never average with vote score
 - [x] Hollow marker on forest; methodology sentence
 
+**Prompt 10 — midterm race registry + FEC** (midterm kit)
+
+- [x] `data/races.json` for VA-1 / VA-2 / VA-5 (2026-11-03, map_version=2021)
+- [x] `vact races validate` + CI on ingest/publish
+- [x] Dated OpenFEC snapshots `data/derived/fec_YYYYMMDD.json` (same-day no-op)
+- [x] Build-time `days_until_election` on export / header countdown
+- [x] `FEC_API_KEY` documented in `.env.example`
+
 **Prompt 7 — forecasts**
 
 - [ ] Append-only `data/predictions.csv` enforced in validation

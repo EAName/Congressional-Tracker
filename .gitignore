@@ -29,6 +29,7 @@ data/warehouse/**
 
 # data/votes.csv is committed — Prompt 1 adjudication audit trail.
 # data/derived/irt.json is committed — Prompt 4 offline 2PL artifact.
+# data/derived/fec_YYYYMMDD.json is committed — Prompt 10 FEC snapshots (append-only).
 
 # Reports: keep directory; commit coverage/diffs when CI is green (Prompt 10)
 data/reports/**

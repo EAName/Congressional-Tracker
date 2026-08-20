@@ -73,6 +73,40 @@ export interface Meta {
   sufficient_min: number;
   estimate_default?: ScoreMode;
   baselines?: PartyBaseline[];
+  election_date?: string;
+  days_until_election?: number;
+  races_as_of?: string;
+}
+
+export interface RaceCandidate {
+  name: string;
+  party: "Democrat" | "Republican";
+  fec_candidate_id: string;
+  bioguide_id?: string | null;
+  prior_federal_service?: Array<{
+    chamber: string;
+    congresses: number[];
+    bioguide_id: string;
+  }> | null;
+}
+
+export interface RaceEntry {
+  race_id: string;
+  district: number;
+  election_date: string;
+  status: "tracked" | "watch";
+  incumbent: RaceCandidate;
+  challenger: RaceCandidate;
+  days_until_election: number;
+}
+
+export interface RacesDoc {
+  version: number;
+  map_version: string;
+  election_date: string;
+  as_of: string;
+  days_until_election: number;
+  races: RaceEntry[];
 }
 
 export interface Member {
