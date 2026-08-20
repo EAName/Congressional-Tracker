@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import EnvSlider from "@/components/EnvSlider";
 import FecBars from "@/components/FecBars";
+import HeadToHead from "@/components/HeadToHead";
 import SeatForecast from "@/components/SeatForecast";
 import ScoreOverTime from "@/components/ScoreOverTime";
 import Module from "@/components/Module";
@@ -10,6 +11,7 @@ import { interpolateGrid } from "@/lib/env";
 import { themeLabel } from "@/lib/types";
 import type {
   FecCandidate,
+  HeadToHeadDoc,
   Meta,
   RaceEntry,
   SeatRace,
@@ -24,6 +26,7 @@ export default function RaceWorkspace({
   fec,
   timeseries,
   meta,
+  headToHead,
 }: {
   entry: RaceEntry;
   seat: SeatRace;
@@ -31,6 +34,7 @@ export default function RaceWorkspace({
   fec: FecCandidate[];
   timeseries: TimeSeriesDoc;
   meta: Meta;
+  headToHead?: HeadToHeadDoc;
 }) {
   const grid = seats.env_grid;
   const [margin, setMargin] = useState(grid?.default_margin_pp ?? 0);
@@ -66,11 +70,8 @@ export default function RaceWorkspace({
       <Module title={`VA-${entry.district} probability`} kicker={live.takeaway} span={12}>
         <SeatForecast race={live} entry={entry} log={seats.log} />
       </Module>
-      <Module title="Head to head" kicker="Prompt 11" span={6}>
-        <p className="cap">
-          Challenger House scores use the same themes, adjudication schema, and EB shrinkage as
-          incumbents. That module ships when historical rollcalls are adjudicated.
-        </p>
+      <Module title="Head to head" kicker="Same-method scores" span={6}>
+        <HeadToHead entry={entry} race={headToHead?.races[entry.race_id]} />
       </Module>
       <Module title="Record vs district" kicker="Prompt 12" span={6}>
         <p className="cap">

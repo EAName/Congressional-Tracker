@@ -1,0 +1,16 @@
+# House congress session date bounds for historical challenger backfill (Prompt 11).
+# House ingest uses calendar years overlapping these ranges.
+
+terms:
+  111:
+    start: "2009-01-06"
+    end: "2011-01-03"
+    label: "111th Congress"
+  116:
+    start: "2019-01-03"
+    end: "2021-01-03"
+    label: "116th Congress"
+  117:
+    start: "2021-01-03"
+    end: "2023-01-03"
+    label: "117th Congress"

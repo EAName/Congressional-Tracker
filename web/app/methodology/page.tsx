@@ -393,8 +393,33 @@ cred band  = 2 · Beta-quantile_{0.025, 0.975} − 1`}</code>
           )}
         </section>
 
+        <section id="era-comparability">
+          <h2>5. Historical challenger records</h2>
+          <p>
+            Challengers with prior House service (Elaine Luria, 116th–117th; Tom Perriello, 111th)
+            are scored with the same pipeline as incumbents: identical themes, adjudication schema,
+            and empirical Bayes shrinkage. Shannon Taylor has no federal voting record; VA-1 shows
+            incumbent-only comparison.
+          </p>
+          <p>
+            Historical rows carry a <code>congress_era</code> tag. Caucus priors for shrinkage are
+            fit from the Democratic caucus in that Congress, not from the current Virginia
+            delegation. Head-to-head modules always show this caption (it cannot be disabled):
+          </p>
+          <blockquote className="method-quote">
+            Scored on votes from the [era] Congress; themes matched by adjudication, not identical
+            bills. Cross-era comparison is indicative, not exact.
+          </blockquote>
+          <p>
+            Review queues: <code>data/historical_rollcall_review.csv</code> (roll-call theme
+            proposals) and <code>data/votes_historical_candidates.csv</code> (full caucus member
+            rows). Run <code>vact historical propose</code> after backfilling 111th / 116th / 117th
+            House roll calls.
+          </p>
+        </section>
+
         <section id="limits">
-          <h2>5. Known limitations</h2>
+          <h2>6. Known limitations</h2>
           <ul>
             <li>
               <strong>Small n.</strong> Sufficiency is n ≥ {s.min_contested}. Several themes still
@@ -429,7 +454,7 @@ cred band  = 2 · Beta-quantile_{0.025, 0.975} − 1`}</code>
         </section>
 
         <section id="changelog">
-          <h2>6. Changelog</h2>
+          <h2>7. Changelog</h2>
           <p>
             Auto-generated from <code>git log</code> of <code>data/votes.csv</code>,{" "}
             <code>src/vact/analysis/scoring.py</code>, <code>src/vact/analysis/estimators.py</code>

@@ -47,6 +47,8 @@ fec_app = typer.Typer(help="OpenFEC campaign-finance snapshots.")
 app.add_typer(fec_app, name="fec")
 seats_app = typer.Typer(help="Pre-registered House seat model.")
 app.add_typer(seats_app, name="seats")
+historical_app = typer.Typer(help="Challenger historical House voting (Prompt 11).")
+app.add_typer(historical_app, name="historical")
 audit_app = typer.Typer(help="Symmetry and selection-bias audits (Prompt 17).")
 app.add_typer(audit_app, name="audit")
 
@@ -953,6 +955,44 @@ def votes_excluded_export_cmd(
     finally:
         conn.close()
     typer.echo(f"Wrote {path} ({len(rows)} excluded rows)")
+
+
+@historical_app.command("propose")
+def historical_propose_cmd(
+    warehouse: Path | None = typer.Option(None, "--warehouse"),
+) -> None:
+    """Generate historical roll-call review queue and caucus candidate rows."""
+    from vact.analysis.challenger_historical import propose_historical_artifacts
+
+    conn = connect(warehouse)
+    try:
+        ensure_schema(conn)
+        review_path, candidates_path, stats = propose_historical_artifacts(conn)
+    finally:
+        conn.close()
+    typer.echo(
+        f"historical propose: rollcalls={stats['seed_rollcalls']} "
+        f"review={stats['review_rows']} candidates={stats['candidate_rows']} "
+        f"→ {review_path.name}, {candidates_path.name}"
+    )
+
+
+@historical_app.command("validate")
+def historical_validate_cmd() -> None:
+    """Validate historical review and candidate CSV schemas."""
+    from vact.analysis.challenger_historical import (
+        HISTORICAL_CANDIDATES_PATH,
+        HISTORICAL_REVIEW_PATH,
+        load_historical_candidates,
+        load_review_queue,
+    )
+
+    review = load_review_queue()
+    _ = load_historical_candidates()
+    typer.echo(
+        f"historical ok: review={len(review)} at {HISTORICAL_REVIEW_PATH.name} "
+        f"candidates={HISTORICAL_CANDIDATES_PATH.name}"
+    )
 
 
 @audit_app.command("symmetry")

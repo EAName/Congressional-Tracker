@@ -603,6 +603,82 @@ a:hover {
   background: color-mix(in srgb, var(--panel) 88%, transparent);
 }
 
+.h2h-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.h2h-era-caption {
+  font-size: 0.72rem;
+  color: var(--ink3);
+  line-height: 1.55;
+  padding: 0.65rem 0.75rem;
+  border-left: 3px solid var(--accent);
+  background: color-mix(in srgb, var(--panel) 90%, transparent);
+}
+
+.h2h-theme + .h2h-theme {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--line);
+}
+
+.h2h-theme h4 {
+  font-size: 0.78rem;
+  margin: 0 0 0.45rem;
+  color: var(--ink2);
+}
+
+.h2h-row {
+  display: grid;
+  grid-template-columns: 5rem 1fr auto;
+  gap: 0.5rem 0.75rem;
+  align-items: center;
+  font-size: 0.75rem;
+  margin-bottom: 0.35rem;
+}
+
+.h2h-historical .h2h-bar {
+  opacity: 0.72;
+  border-style: dashed;
+}
+
+.h2h-bar-wrap {
+  position: relative;
+  height: 1.1rem;
+  background: color-mix(in srgb, var(--line) 35%, transparent);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.h2h-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 55%, white));
+  border-radius: 4px;
+}
+
+.h2h-score {
+  position: absolute;
+  right: 0.35rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+.h2h-meta {
+  color: var(--ink3);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.h2h-missing {
+  color: var(--ink3);
+  font-style: italic;
+}
+
 .site-nav {
   display: flex;
   gap: 1.1rem;
@@ -699,6 +775,16 @@ a:hover {
 
 .method li {
   margin: 0.35rem 0;
+}
+
+.method-quote {
+  margin: 0.75rem 0;
+  padding: 0.75rem 1rem;
+  border-left: 3px solid var(--accent);
+  color: var(--ink2);
+  font-size: 0.85rem;
+  line-height: 1.55;
+  background: color-mix(in srgb, var(--panel) 92%, transparent);
 }
 
 .method code {

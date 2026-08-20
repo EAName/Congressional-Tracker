@@ -1,0 +1,255 @@
+{
+  "races": {
+    "va-01": {
+      "status": "no_federal_record",
+      "era_caption": null,
+      "themes": [],
+      "incumbent_only": true
+    },
+    "va-02": {
+      "status": "pending_adjudication",
+      "era_caption": "Scored on votes from the 116th–117th Congress; themes matched by adjudication, not identical bills. Cross-era comparison is indicative, not exact.",
+      "congress_eras": [
+        "116",
+        "117"
+      ],
+      "themes": [
+        {
+          "theme": "ACCESS_TO_CAPITAL",
+          "incumbent": {
+            "bioguide_id": "K000399",
+            "full_name": "Jennifer A. Kiggans",
+            "party": "Republican",
+            "eb_score": -0.8571,
+            "cred_lo": -0.9998,
+            "cred_hi": -0.3392,
+            "n_contested": 1,
+            "sufficient": false,
+            "historical": false,
+            "congress_era": null
+          },
+          "challenger": null
+        },
+        {
+          "theme": "FEDERAL_CONTRACTING",
+          "incumbent": {
+            "bioguide_id": "K000399",
+            "full_name": "Jennifer A. Kiggans",
+            "party": "Republican",
+            "eb_score": 0.8571,
+            "cred_lo": 0.3392,
+            "cred_hi": 0.9998,
+            "n_contested": 1,
+            "sufficient": false,
+            "historical": false,
+            "congress_era": null
+          },
+          "challenger": null
+        },
+        {
+          "theme": "HEALTH_COSTS",
+          "incumbent": {
+            "bioguide_id": "K000399",
+            "full_name": "Jennifer A. Kiggans",
+            "party": "Republican",
+            "eb_score": -0.8571,
+            "cred_lo": -0.9998,
+            "cred_hi": -0.3392,
+            "n_contested": 1,
+            "sufficient": false,
+            "historical": false,
+            "congress_era": null
+          },
+          "challenger": null
+        },
+        {
+          "theme": "INPUT_COSTS",
+          "incumbent": {
+            "bioguide_id": "K000399",
+            "full_name": "Jennifer A. Kiggans",
+            "party": "Republican",
+            "eb_score": 0.96,
+            "cred_lo": 0.8032,
+            "cred_hi": 1.0,
+            "n_contested": 4,
+            "sufficient": true,
+            "historical": false,
+            "congress_era": null
+          },
+          "challenger": null
+        },
+        {
+          "theme": "REGULATORY_BURDEN",
+          "incumbent": {
+            "bioguide_id": "K000399",
+            "full_name": "Jennifer A. Kiggans",
+            "party": "Republican",
+            "eb_score": 0.9403,
+            "cred_lo": 0.7937,
+            "cred_hi": 0.9979,
+            "n_contested": 13,
+            "sufficient": true,
+            "historical": false,
+            "congress_era": null
+          },
+          "challenger": null
+        },
+        {
+          "theme": "TAX_BURDEN",
+          "incumbent": {
+            "bioguide_id": "K000399",
+            "full_name": "Jennifer A. Kiggans",
+            "party": "Republican",
+            "eb_score": 0.9231,
+            "cred_lo": 0.6294,
+            "cred_hi": 0.9999,
+            "n_contested": 2,
+            "sufficient": false,
+            "historical": false,
+            "congress_era": null
+          },
+          "challenger": null
+        },
+        {
+          "theme": "WORKFORCE",
+          "incumbent": {
+            "bioguide_id": "K000399",
+            "full_name": "Jennifer A. Kiggans",
+            "party": "Republican",
+            "eb_score": 0.9231,
+            "cred_lo": 0.6294,
+            "cred_hi": 0.9999,
+            "n_contested": 2,
+            "sufficient": false,
+            "historical": false,
+            "congress_era": null
+          },
+          "challenger": null
+        }
+      ],
+      "incumbent_only": false
+    },
+    "va-05": {
+      "status": "pending_adjudication",
+      "era_caption": "Scored on votes from the 111th Congress; themes matched by adjudication, not identical bills. Cross-era comparison is indicative, not exact.",
+      "congress_eras": [
+        "111"
+      ],
+      "themes": [
+        {
+          "theme": "ACCESS_TO_CAPITAL",
+          "incumbent": {
+            "bioguide_id": "M001239",
+            "full_name": "John J. McGuire III",
+            "party": "Republican",
+            "eb_score": -0.8571,
+            "cred_lo": -0.9998,
+            "cred_hi": -0.3392,
+            "n_contested": 1,
+            "sufficient": false,
+            "historical": false,
+            "congress_era": null
+          },
+          "challenger": null
+        },
+        {
+          "theme": "FEDERAL_CONTRACTING",
+          "incumbent": {
+            "bioguide_id": "M001239",
+            "full_name": "John J. McGuire III",
+            "party": "Republican",
+            "eb_score": 0.8571,
+            "cred_lo": 0.3392,
+            "cred_hi": 0.9998,
+            "n_contested": 1,
+            "sufficient": false,
+            "historical": false,
+            "congress_era": null
+          },
+          "challenger": null
+        },
+        {
+          "theme": "HEALTH_COSTS",
+          "incumbent": {
+            "bioguide_id": "M001239",
+            "full_name": "John J. McGuire III",
+            "party": "Republican",
+            "eb_score": -0.8571,
+            "cred_lo": -0.9998,
+            "cred_hi": -0.3392,
+            "n_contested": 1,
+            "sufficient": false,
+            "historical": false,
+            "congress_era": null
+          },
+          "challenger": null
+        },
+        {
+          "theme": "INPUT_COSTS",
+          "incumbent": {
+            "bioguide_id": "M001239",
+            "full_name": "John J. McGuire III",
+            "party": "Republican",
+            "eb_score": 0.96,
+            "cred_lo": 0.8032,
+            "cred_hi": 1.0,
+            "n_contested": 4,
+            "sufficient": true,
+            "historical": false,
+            "congress_era": null
+          },
+          "challenger": null
+        },
+        {
+          "theme": "REGULATORY_BURDEN",
+          "incumbent": {
+            "bioguide_id": "M001239",
+            "full_name": "John J. McGuire III",
+            "party": "Republican",
+            "eb_score": 0.886,
+            "cred_lo": 0.6993,
+            "cred_hi": 0.9845,
+            "n_contested": 13,
+            "sufficient": true,
+            "historical": false,
+            "congress_era": null
+          },
+          "challenger": null
+        },
+        {
+          "theme": "TAX_BURDEN",
+          "incumbent": {
+            "bioguide_id": "M001239",
+            "full_name": "John J. McGuire III",
+            "party": "Republican",
+            "eb_score": 0.9231,
+            "cred_lo": 0.6294,
+            "cred_hi": 0.9999,
+            "n_contested": 2,
+            "sufficient": false,
+            "historical": false,
+            "congress_era": null
+          },
+          "challenger": null
+        },
+        {
+          "theme": "WORKFORCE",
+          "incumbent": {
+            "bioguide_id": "M001239",
+            "full_name": "John J. McGuire III",
+            "party": "Republican",
+            "eb_score": 0.9231,
+            "cred_lo": 0.6294,
+            "cred_hi": 0.9999,
+            "n_contested": 2,
+            "sufficient": false,
+            "historical": false,
+            "congress_era": null
+          },
+          "challenger": null
+        }
+      ],
+      "incumbent_only": false
+    }
+  }
+}

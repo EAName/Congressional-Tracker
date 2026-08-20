@@ -436,15 +436,16 @@ def frame_from_vote_rows(
 ) -> list[dict[str, Any]]:
     """Build the signed scoring frame from VoteRow-like records (votes.csv path).
 
-    Same math as the warehouse SQL path. Group grain is (bioguide_id, theme).
+    Group grain is (bioguide_id, theme, congress_era). Empty era = current Congress.
     """
     require_map_version(map_version)
     cfg = config or load_scoring_config()
-    grouped: dict[tuple[str, str], dict[str, Any]] = {}
+    grouped: dict[tuple[str, str, str], dict[str, Any]] = {}
     for row in rows:
         bio = row.member_bioguide_id
         theme = row.theme
-        key = (bio, theme)
+        era = getattr(row, "congress_era", "") or ""
+        key = (bio, theme, era)
         rec = grouped.get(key)
         if rec is None:
             rec = {
@@ -454,6 +455,7 @@ def frame_from_vote_rows(
                 "party": row.party or None,
                 "district_number": row.district_number,
                 "impact_tag": theme,
+                "congress_era": era,
                 "n_contested": 0,
                 "n_yea": 0,
                 "n_nay": 0,

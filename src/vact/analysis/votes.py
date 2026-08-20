@@ -63,6 +63,7 @@ CSV_COLUMNS: tuple[str, ...] = (
     "source_url",
     "plain_language_summary",
     "coded_blind",
+    "congress_era",
 )
 
 VOTE_CAST_VALUES = frozenset({"yea", "nay", "present", "not_voting"})
@@ -111,6 +112,7 @@ class VoteRow(BaseModel):
     source_url: str
     plain_language_summary: str = ""
     coded_blind: bool = False
+    congress_era: str = ""
 
     @field_validator(
         "member_bioguide_id",
@@ -267,7 +269,8 @@ SELECT
     substr(coalesce(s.adjudicated_at_utc, ''), 1, 10),
     s.source_url,
     s.plain_language_summary,
-    'false'
+    'false',
+    ''
 FROM members m
 JOIN scoreable s ON TRUE
 JOIN fact_member_vote mv
@@ -315,7 +318,7 @@ def load_votes_csv(path: Path | None = None) -> list[VoteRow]:
         missing = [
             c
             for c in CSV_COLUMNS
-            if c not in {"plain_language_summary", "coded_blind"} and c not in fields
+            if c not in {"plain_language_summary", "coded_blind", "congress_era"} and c not in fields
         ]
         if missing:
             raise VotesValidationError(f"votes.csv missing columns: {missing}")
@@ -324,6 +327,8 @@ def load_votes_csv(path: Path | None = None) -> list[VoteRow]:
             payload = dict(rec)
             if "coded_blind" not in payload:
                 payload["coded_blind"] = "false"
+            if "congress_era" not in payload:
+                payload["congress_era"] = ""
             out.append(VoteRow.model_validate(payload))
         return out
 
@@ -344,6 +349,7 @@ def write_votes_csv(rows: Sequence[VoteRow], path: Path | None = None) -> Path:
             payload["vote_cast"] = row.vote_cast.value
             payload["contested"] = "true" if row.contested else "false"
             payload["coded_blind"] = "true" if row.coded_blind else "false"
+            payload["congress_era"] = row.congress_era
             writer.writerow({col: payload.get(col, "") for col in CSV_COLUMNS})
     return dest
 

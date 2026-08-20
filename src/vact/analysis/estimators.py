@@ -295,3 +295,98 @@ def attach_empirical_bayes(
             }
         )
     return out, baselines
+
+
+def attach_empirical_bayes_by_era(
+    frame: list[dict[str, Any]],
+    config: ScoringConfig,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """Like attach_empirical_bayes but priors are per (theme, party, congress_era)."""
+    method = config.eb_method
+    min_caucus = config.eb_min_caucus
+    groups: dict[tuple[str, str, str], list[dict[str, Any]]] = {}
+    for row in frame:
+        party = row.get("party")
+        if not party:
+            continue
+        era = str(row.get("congress_era") or "")
+        groups.setdefault((row["impact_tag"], str(party), era), []).append(row)
+
+    priors: dict[tuple[str, str, str], BetaPrior] = {}
+    for key, members in groups.items():
+        ks = [int(m["n_pro"] or 0) for m in members]
+        ns = [int(m["n_contested"] or 0) for m in members]
+        priors[key] = fit_caucus_prior(
+            ks,
+            ns,
+            method=method,
+            min_caucus=min_caucus,
+            fallback_alpha=config.eb_fallback_alpha,
+            fallback_beta=config.eb_fallback_beta,
+        )
+
+    fallback = BetaPrior(
+        alpha=config.eb_fallback_alpha,
+        beta=config.eb_fallback_beta,
+        source="weakly_informative",
+        n_members=0,
+    )
+
+    out: list[dict[str, Any]] = []
+    for row in frame:
+        party = row.get("party")
+        era = str(row.get("congress_era") or "")
+        prior = (
+            priors.get((row["impact_tag"], str(party), era), fallback) if party else fallback
+        )
+        est = estimate_member_theme(
+            int(row["n_pro"] or 0),
+            int(row["n_contested"] or 0),
+            prior,
+            wilson_z=config.wilson_z,
+        )
+        rec = dict(row)
+        rec.update(
+            {
+                "raw_score": est.raw_score,
+                "wilson_lo": est.wilson_lo,
+                "wilson_hi": est.wilson_hi,
+                "eb_score": est.eb_score,
+                "cred_lo": est.cred_lo,
+                "cred_hi": est.cred_hi,
+                "n": est.n,
+                "k": est.k,
+                "prior_alpha": est.prior_alpha,
+                "prior_beta": est.prior_beta,
+                "prior_source": est.prior_source,
+                "prior_only": est.prior_only,
+            }
+        )
+        out.append(rec)
+
+    baselines: list[dict[str, Any]] = []
+    for (theme, party, era), prior in sorted(priors.items()):
+        members = [
+            r
+            for r in out
+            if r["impact_tag"] == theme
+            and r.get("party") == party
+            and str(r.get("congress_era") or "") == era
+            and r["sufficient"]
+            and r.get("signed_score") is not None
+        ]
+        pairs = [(float(r["signed_score"]), float(r["n_contested"])) for r in members]
+        baselines.append(
+            {
+                "theme": theme,
+                "party": party,
+                "congress_era": era,
+                "eb_center": round(prior.signed_center, 4),
+                "weighted_median": round(weighted_median(pairs), 4) if pairs else None,
+                "prior_alpha": round(prior.alpha, 6),
+                "prior_beta": round(prior.beta, 6),
+                "prior_source": prior.source,
+                "n_members": prior.n_members,
+            }
+        )
+    return out, baselines

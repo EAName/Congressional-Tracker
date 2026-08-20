@@ -417,6 +417,14 @@ Prompt 0 (this file) — **done**. No behavior change.
 - [x] `/corrections` stub linked from methodology and footer
 - [x] Advocacy lint enforced via `tests/test_advocacy_lint.py` and `vact audit symmetry`
 
+**Prompt 11 — challenger historical scoring** (midterm kit)
+
+- [x] `config/congress_terms.yaml` + `vact historical propose|validate`
+- [x] `historical_rollcall_review.csv` with RULE-suggested themes
+- [x] `votes_historical_candidates.csv` (caucus rows, no auto-adjudication)
+- [x] Era-specific EB priors + `head_to_head.json` export
+- [x] Head-to-head module with mandatory era caption; VA-1 no-record state
+
 **Prompt 7 — forecasts**
 
 - [ ] Append-only `data/predictions.csv` enforced in validation

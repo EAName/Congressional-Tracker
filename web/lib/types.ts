@@ -458,3 +458,34 @@ export interface DisclosureDoc {
     by_race_id: Record<string, string>;
   };
 }
+
+export interface HeadToHeadScore {
+  bioguide_id?: string;
+  full_name?: string;
+  party?: string;
+  eb_score?: number | null;
+  cred_lo?: number | null;
+  cred_hi?: number | null;
+  n_contested?: number | null;
+  sufficient?: boolean;
+  historical?: boolean;
+  congress_era?: string | null;
+}
+
+export interface HeadToHeadTheme {
+  theme: string;
+  incumbent: HeadToHeadScore | null;
+  challenger: HeadToHeadScore | null;
+}
+
+export interface HeadToHeadRace {
+  status: "ready" | "pending_adjudication" | "no_federal_record";
+  era_caption: string | null;
+  congress_eras?: string[];
+  themes: HeadToHeadTheme[];
+  incumbent_only?: boolean;
+}
+
+export interface HeadToHeadDoc {
+  races: Record<string, HeadToHeadRace>;
+}

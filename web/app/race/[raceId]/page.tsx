@@ -3,8 +3,9 @@ import RaceDisclaimer from "@/components/RaceDisclaimer";
 import SiteFooter from "@/components/SiteFooter";
 import SiteHeader from "@/components/SiteHeader";
 import RaceWorkspace from "@/components/RaceWorkspace";
-import type { FecDoc, Meta, RacesDoc, SeatsDoc, TimeSeriesDoc } from "@/lib/types";
+import type { FecDoc, HeadToHeadDoc, Meta, RacesDoc, SeatsDoc, TimeSeriesDoc } from "@/lib/types";
 import fecJson from "@/data/fec.json";
+import headToHeadJson from "@/data/head_to_head.json";
 import metaJson from "@/data/meta.json";
 import racesJson from "@/data/races.json";
 import seatsJson from "@/data/seats.json";
@@ -15,6 +16,7 @@ const races = racesJson as RacesDoc;
 const seats = seatsJson as SeatsDoc;
 const fec = fecJson as FecDoc;
 const timeseries = timeseriesJson as TimeSeriesDoc;
+const headToHead = headToHeadJson as HeadToHeadDoc;
 
 export function generateStaticParams() {
   return races.races.map((r) => ({ raceId: r.race_id }));
@@ -54,6 +56,7 @@ export default async function RacePage({ params }: { params: Promise<{ raceId: s
           fec={fecRows}
           timeseries={timeseries}
           meta={meta}
+          headToHead={headToHead}
         />
       </div>
       <SiteFooter />
