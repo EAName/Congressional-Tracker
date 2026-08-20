@@ -333,13 +333,13 @@ Prompt 0 (this file) — **done**. No behavior change.
 
 **Prompt 2 — empirical Bayes**
 
-- [ ] `estimators.py`: beta-binomial per `(theme, party)`; MoM + MLE option
-- [ ] Edge cases: n=0 prior-only; party n_members<3 → Beta(2,2) flagged
-- [ ] Derived JSON includes raw + EB fields listed in Prompt 2
-- [ ] Export party baselines (weighted / posterior mean) so frontend stops
+- [x] `estimators.py`: beta-binomial per `(theme, party)`; MoM + MLE option
+- [x] Edge cases: n=0 prior-only; party n_members<3 → Beta(2,2) flagged
+- [x] Derived JSON includes raw + EB fields listed in Prompt 2
+- [x] Export party baselines (weighted / posterior mean) so frontend stops
       recomputing `median()`
-- [ ] Forest + compare default to EB; raw/shrunk toggle
-- [ ] Tests: shrinkage direction, high-n stability, CI width, synthetic RMSE
+- [x] Forest + compare default to EB; raw/shrunk toggle
+- [x] Tests: shrinkage direction, high-n stability, CI width, synthetic RMSE
 
 **Prompt 3 — methodology route**
 
@@ -391,7 +391,7 @@ Prompt 0 (this file) — **done**. No behavior change.
 
 - [x] Publish workflow: `vact export-web` (or derived build) before assuming
       Vercel has fresh scores
-- [ ] Delete duplicated `median()` in `Dashboard.tsx` / `TargetProfiles.tsx`
+- [x] Delete duplicated `median()` in `Dashboard.tsx` / `TargetProfiles.tsx`
       once baselines are in JSON
 - [ ] Keep Sheets Yea/Nay scorecards labeled as a **different** metric so they
       are not mistaken for the signed axis

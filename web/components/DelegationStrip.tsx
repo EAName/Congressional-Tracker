@@ -1,9 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import type { Member, Score } from "@/lib/types";
+import type { Member, Score, ScoreMode } from "@/lib/types";
 import { shortName, themeLabel } from "@/lib/types";
-import { fmtScore } from "@/lib/viz";
+import { estimate, fmtScore } from "@/lib/viz";
 
 const W = 720;
 const H = 168;
@@ -21,6 +21,7 @@ export default function DelegationStrip({
   selectedId,
   onHover,
   onSelect,
+  mode = "eb",
 }: {
   scores: Score[];
   theme: string;
@@ -30,6 +31,7 @@ export default function DelegationStrip({
   selectedId: string | null;
   onHover: (id: string | null) => void;
   onSelect: (id: string) => void;
+  mode?: ScoreMode;
 }) {
   const [tip, setTip] = useState<{ score: Score | null; member: Member; x: number; y: number } | null>(
     null,
@@ -96,7 +98,8 @@ export default function DelegationStrip({
               : m.party === "Democrat"
                 ? "var(--dem)"
                 : "var(--rep)";
-          const cy = score ? yScore(score.signed_score) : yScore(0);
+          const est = score ? estimate(score, mode) : null;
+          const cy = est ? yScore(est.value) : yScore(0);
           return (
             <g
               key={m.bioguide_id}
@@ -157,7 +160,12 @@ export default function DelegationStrip({
               : " · Senate"}
           </strong>
           {tip.score
-            ? `${fmtScore(tip.score.signed_score)} · Wilson [${fmtScore(tip.score.wilson_low)}, ${fmtScore(tip.score.wilson_high)}] · n=${tip.score.n_contested}`
+            ? (() => {
+                const est = estimate(tip.score, mode);
+                if (!est) return "No estimate";
+                const band = est.kind === "credible" ? "Cred" : "Wilson";
+                return `${fmtScore(est.value)} · ${band} [${fmtScore(est.lo)}, ${fmtScore(est.hi)}] · n=${est.n}`;
+              })()
             : "No sufficient cell in this theme"}
           {tip.member.is_target ? " · target seat" : ""}
         </div>

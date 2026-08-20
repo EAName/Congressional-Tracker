@@ -60,6 +60,10 @@ class ScoringConfig:
     rule_resolution_title_pattern: str | None = r"(?i)^\s*providing for consideration"
     # tag -> list of (compiled pattern, valence) proposal rules
     valence_rules: dict[str, list[tuple[re.Pattern[str], int]]] = field(default_factory=dict)
+    eb_method: str = "moments"
+    eb_min_caucus: int = 3
+    eb_fallback_alpha: float = 2.0
+    eb_fallback_beta: float = 2.0
 
 
 def load_scoring_config(path: Path | None = None) -> ScoringConfig:
@@ -95,6 +99,10 @@ def load_scoring_config(path: Path | None = None) -> ScoringConfig:
     rule_pattern = scoreable.get("rule_resolution_title_pattern")
 
     deviations = analysis.get("deviations") or {}
+    eb = payload.get("empirical_bayes") or {}
+    eb_method = str(eb.get("method") or "moments").strip().lower()
+    if eb_method not in {"moments", "mle"}:
+        raise ValueError("scoring.yaml: empirical_bayes.method must be moments or mle")
 
     return ScoringConfig(
         version=int(payload.get("version") or 1),
@@ -111,6 +119,10 @@ def load_scoring_config(path: Path | None = None) -> ScoringConfig:
         rule_resolution_bill_types=rule_types,
         rule_resolution_title_pattern=str(rule_pattern) if rule_pattern else None,
         valence_rules=valence_rules,
+        eb_method=eb_method,
+        eb_min_caucus=int(eb.get("min_caucus") or 3),
+        eb_fallback_alpha=float(eb.get("fallback_alpha") or 2.0),
+        eb_fallback_beta=float(eb.get("fallback_beta") or 2.0),
     )
 
 

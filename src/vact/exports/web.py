@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Any
 
 from vact.analysis.deviations import compute_party_deviations
+from vact.analysis.estimators import attach_empirical_bayes
 from vact.analysis.scoring import build_scores_frame, load_scoring_config
 from vact.analysis.votes import resolve_votes_path
 from vact.exports.data import list_delegation
@@ -36,6 +37,7 @@ def build_web_payload(
     votes_path: Path | None = None,
 ) -> dict[str, Any]:
     frame = build_scores_frame(conn, config, map_version=map_version, votes_path=votes_path)
+    frame, baselines = attach_empirical_bayes(frame, config)
     deviations = compute_party_deviations(
         conn, config, map_version=map_version, votes_path=votes_path
     )
@@ -52,14 +54,27 @@ def build_web_payload(
             "signed_score": r["signed_score"],
             "wilson_low": r["wilson_low"],
             "wilson_high": r["wilson_high"],
+            "raw_score": r["raw_score"],
+            "wilson_lo": r["wilson_lo"],
+            "wilson_hi": r["wilson_hi"],
+            "eb_score": r["eb_score"],
+            "cred_lo": r["cred_lo"],
+            "cred_hi": r["cred_hi"],
+            "n": r["n"],
+            "k": r["k"],
             "n_contested": r["n_contested"],
             "n_yea": r["n_yea"],
             "n_nay": r["n_nay"],
+            "n_pro": r["n_pro"],
             "absence_rate": r["absence_rate"],
             "sufficient": r["sufficient"],
+            "prior_alpha": r["prior_alpha"],
+            "prior_beta": r["prior_beta"],
+            "prior_source": r["prior_source"],
+            "prior_only": r["prior_only"],
         }
         for r in frame
-        if r["signed_score"] is not None
+        if r["eb_score"] is not None
     ]
 
     devs = [
@@ -96,6 +111,8 @@ def build_web_payload(
             "axis": {"name": config.axis_name, "description": config.axis_description},
             "themes": themes,
             "sufficient_min": config.min_contested,
+            "estimate_default": "eb",
+            "baselines": baselines,
         },
         "scores": scores,
         "deviations": devs,

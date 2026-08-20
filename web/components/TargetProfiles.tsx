@@ -1,21 +1,27 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import type { Member, Score } from "@/lib/types";
+import type { Member, PartyBaseline, Score, ScoreMode } from "@/lib/types";
 import { shortName, themeLabel } from "@/lib/types";
-import { fmtScore } from "@/lib/viz";
-
-function median(vals: number[]): number | undefined {
-  if (!vals.length) return undefined;
-  const s = [...vals].sort((a, b) => a - b);
-  const mid = Math.floor(s.length / 2);
-  return s.length % 2 ? s[mid] : (s[mid - 1] + s[mid]) / 2;
-}
+import { estimate, fmtScore } from "@/lib/viz";
 
 const ROW_H = 28;
 const LABEL_W = 150;
 const AXIS_W = 220;
 const PAD = 12;
+
+function caucusTick(
+  baselines: PartyBaseline[] | undefined,
+  theme: string,
+  party: string | null,
+  mode: ScoreMode,
+): number | undefined {
+  if (!party || !baselines) return undefined;
+  const b = baselines.find((x) => x.theme === theme && x.party === party);
+  if (!b) return undefined;
+  if (mode === "eb") return b.eb_center;
+  return b.weighted_median ?? undefined;
+}
 
 export default function TargetProfiles({
   scores,
@@ -26,6 +32,8 @@ export default function TargetProfiles({
   onHover,
   onSelect,
   onThemeSelect,
+  mode = "eb",
+  baselines,
 }: {
   scores: Score[];
   themes: string[];
@@ -35,6 +43,8 @@ export default function TargetProfiles({
   onHover: (id: string | null) => void;
   onSelect: (id: string) => void;
   onThemeSelect: (theme: string) => void;
+  mode?: ScoreMode;
+  baselines?: PartyBaseline[];
 }) {
   const [tip, setTip] = useState<{
     text: string;
@@ -50,20 +60,6 @@ export default function TargetProfiles({
     [delegation],
   );
 
-  const caucusMedian = useMemo(() => {
-    const out = new Map<string, { Democrat?: number; Republican?: number }>();
-    for (const theme of themes) {
-      const cells = scores.filter((s) => s.theme === theme && s.sufficient);
-      out.set(theme, {
-        Democrat: median(cells.filter((s) => s.party === "Democrat").map((s) => s.signed_score)),
-        Republican: median(
-          cells.filter((s) => s.party === "Republican").map((s) => s.signed_score),
-        ),
-      });
-    }
-    return out;
-  }, [scores, themes]);
-
   if (!targets.length) return null;
 
   const H = PAD * 2 + themes.length * ROW_H + 28;
@@ -78,7 +74,7 @@ export default function TargetProfiles({
         viewBox={`0 0 ${W} ${H}`}
         width="100%"
         role="img"
-        aria-label="Target seat scores versus party median across themes"
+        aria-label="Target seat scores versus caucus center across themes"
       >
         {targets.map((m, ti) => {
           const ox = ti * panelW;
@@ -106,7 +102,7 @@ export default function TargetProfiles({
                 VA-{m.district_number} · {shortName(m.full_name)}
               </text>
               <text x={ox + 16} y={36} fontSize={10} fill="var(--ink3)">
-                vs {m.party} caucus median (tick)
+                vs {m.party} caucus {mode === "eb" ? "EB center" : "weighted median"} (tick)
               </text>
 
               {themes.map((theme, i) => {
@@ -114,11 +110,9 @@ export default function TargetProfiles({
                   (s) =>
                     s.bioguide_id === m.bioguide_id && s.theme === theme && s.sufficient,
                 );
+                const est = cell ? estimate(cell, mode) : null;
                 const y = 48 + i * ROW_H;
-                const med =
-                  m.party === "Democrat"
-                    ? caucusMedian.get(theme)?.Democrat
-                    : caucusMedian.get(theme)?.Republican;
+                const med = caucusTick(baselines, theme, m.party, mode);
                 return (
                   <g
                     key={theme}
@@ -129,8 +123,8 @@ export default function TargetProfiles({
                     }}
                     onMouseEnter={(e) => {
                       onHover(m.bioguide_id);
-                      const scoreTxt = cell
-                        ? `${fmtScore(cell.signed_score)} (n=${cell.n_contested})`
+                      const scoreTxt = est
+                        ? `${fmtScore(est.value)} (n=${est.n})`
                         : "insufficient";
                       const medTxt = med != null ? fmtScore(med) : "—";
                       setTip({
@@ -178,9 +172,9 @@ export default function TargetProfiles({
                         strokeWidth={2}
                       />
                     )}
-                    {cell && (
+                    {est && (
                       <circle
-                        cx={ox + xScore(cell.signed_score)}
+                        cx={ox + xScore(est.value)}
                         cy={y + 10}
                         r={isActive ? 6.5 : 5}
                         fill="var(--rep)"
@@ -196,8 +190,9 @@ export default function TargetProfiles({
         })}
       </svg>
       <p className="scale-cap">
-        Dot = target member signed score · vertical tick = party median. Click a theme row to
-        retarget the forest plot; click the panel to select the member.
+        Dot = target member {mode === "eb" ? "EB" : "raw"} score · vertical tick = caucus
+        {mode === "eb" ? " prior mean" : " weighted median"}. Click a theme row to retarget the
+        forest plot; click the panel to select the member.
       </p>
       {tip && (
         <div className="tooltip" style={{ left: tip.x, top: tip.y }}>

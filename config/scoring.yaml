@@ -54,6 +54,15 @@ sufficiency:
 wilson:
   z: 1.96
 
+# Empirical Bayes (Prompt 2). Prior is fit per (theme, party) from contested
+# (k, n) cells. method: moments (default) or mle (beta-binomial). Caucuses
+# smaller than min_caucus fall back to Beta(fallback_alpha, fallback_beta).
+empirical_bayes:
+  method: moments
+  min_caucus: 3
+  fallback_alpha: 2.0
+  fallback_beta: 2.0
+
 # Shared thresholds for the analysis layer. Prompts 9/11/12 read from here so
 # nothing is hardcoded. Their own blocks (deviations, target_threshold,
 # min_brief_votes) slot in under this same namespace.

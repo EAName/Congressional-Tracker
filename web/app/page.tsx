@@ -32,10 +32,12 @@ export default function Page() {
           delegation={delegation}
         />
         <footer className="site-foot">
-          Signed score = 2·(share of contested votes advancing the axis) − 1. Wilson bands are 95%
-          intervals. Compare reports whether intervals overlap under current vote depth —
-          separation is suggestive, not a formal hypothesis test. Procedural and un-adjudicated
-          votes excluded. Sources: House Clerk EVS · Senate LIS.
+          Signed score = 2·(share of contested votes advancing the axis) − 1. Default display is
+          an empirical Bayes shrinkage of that share toward the member's (theme, party) caucus,
+          with 95% credible intervals; toggle Raw for Wilson bands on the unshrunk estimate.
+          Compare reports whether intervals overlap under current vote depth — separation is
+          suggestive, not a formal hypothesis test. Procedural and un-adjudicated votes excluded.
+          Sources: House Clerk EVS · Senate LIS.
         </footer>
       </div>
     </div>

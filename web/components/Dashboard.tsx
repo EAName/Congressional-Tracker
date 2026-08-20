@@ -8,17 +8,10 @@ import ForestPlot from "@/components/ForestPlot";
 import Module from "@/components/Module";
 import PartySpread from "@/components/PartySpread";
 import TargetProfiles from "@/components/TargetProfiles";
-import type { Deviation, Member, Meta, Party, Score } from "@/lib/types";
+import type { Deviation, Member, Meta, Party, Score, ScoreMode } from "@/lib/types";
 import { shortName, themeLabel } from "@/lib/types";
 
 const fmt = (v: number) => (v >= 0 ? "+" : "") + v.toFixed(2);
-
-function median(vals: number[]): number | undefined {
-  if (!vals.length) return undefined;
-  const s = [...vals].sort((a, b) => a - b);
-  const mid = Math.floor(s.length / 2);
-  return s.length % 2 ? s[mid] : (s[mid - 1] + s[mid]) / 2;
-}
 
 export default function Dashboard({
   scores,
@@ -46,6 +39,7 @@ export default function Dashboard({
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [compareA, setCompareA] = useState<string | null>(null);
   const [compareB, setCompareB] = useState<string | null>(null);
+  const [mode, setMode] = useState<ScoreMode>(meta.estimate_default ?? "eb");
 
   const rows = useMemo(
     () =>
@@ -66,14 +60,13 @@ export default function Dashboard({
   const flagged = useMemo(() => new Set(themeDevs.map((d) => d.bioguide_id)), [themeDevs]);
 
   const partyBaselines = useMemo(() => {
-    const byTheme = scores.filter((s) => s.theme === theme && s.sufficient);
-    return {
-      Democrat: median(byTheme.filter((s) => s.party === "Democrat").map((s) => s.signed_score)),
-      Republican: median(
-        byTheme.filter((s) => s.party === "Republican").map((s) => s.signed_score),
-      ),
+    const of = (p: string) => {
+      const b = (meta.baselines ?? []).find((x) => x.theme === theme && x.party === p);
+      if (!b) return undefined;
+      return mode === "eb" ? b.eb_center : (b.weighted_median ?? undefined);
     };
-  }, [scores, theme]);
+    return { Democrat: of("Democrat"), Republican: of("Republican") };
+  }, [meta.baselines, theme, mode]);
 
   // Keep compare pins valid for the active theme/party filter.
   useEffect(() => {
@@ -146,6 +139,13 @@ export default function Dashboard({
               </button>
             ))}
           </div>
+          <div className="seg" role="group" aria-label="Estimate">
+            {(["eb", "raw"] as const).map((m) => (
+              <button key={m} aria-pressed={mode === m} onClick={() => setMode(m)}>
+                {m === "eb" ? "Shrunk" : "Raw"}
+              </button>
+            ))}
+          </div>
         </div>
         <div className="legend" style={{ marginTop: "0.75rem", marginBottom: 0 }}>
           <span>
@@ -165,7 +165,7 @@ export default function Dashboard({
 
       <Module
         title="Compare"
-        kicker="Pin two members · overlay Wilson intervals"
+        kicker="Pin two members · overlay intervals"
         span={12}
         action={
           selectedId ? (
@@ -181,23 +181,34 @@ export default function Dashboard({
           memberB={compareB}
           onChangeA={setCompareA}
           onChangeB={setCompareB}
+          mode={mode}
         />
       </Module>
 
       <Module
         title="Forest plot"
-        kicker="Signed score with 95% Wilson band · hover links modules"
+        kicker={
+          mode === "eb"
+            ? "Empirical Bayes score with 95% credible interval · hover links modules"
+            : "Raw signed score with 95% Wilson band · hover links modules"
+        }
         span={12}
       >
         {rows.length > 0 ? (
-          <ForestPlot rows={rows} flagged={flagged} partyBaselines={partyBaselines} {...linked} />
+          <ForestPlot
+            rows={rows}
+            flagged={flagged}
+            partyBaselines={partyBaselines}
+            mode={mode}
+            {...linked}
+          />
         ) : (
           <p className="cap">No members clear the threshold for this filter.</p>
         )}
       </Module>
 
       <Module title="Party spread" kicker="Caucus width on this theme" span={6}>
-        <PartySpread rows={rows} theme={theme} flagged={flagged} {...linked} />
+        <PartySpread rows={rows} theme={theme} flagged={flagged} mode={mode} {...linked} />
       </Module>
 
       <Module title="Delegation strip" kicker="District order · gold = targets" span={6}>
@@ -206,19 +217,22 @@ export default function Dashboard({
           theme={theme}
           delegation={delegation}
           flagged={flagged}
+          mode={mode}
           {...linked}
         />
       </Module>
 
       <Module
         title="Target seats vs caucus"
-        kicker="VA-1 / VA-2 across themes · tick = party median"
+        kicker="VA-1 / VA-2 across themes · tick = caucus center"
         span={8}
       >
         <TargetProfiles
           scores={scores}
           themes={themes}
           delegation={delegation}
+          mode={mode}
+          baselines={meta.baselines}
           onThemeSelect={(t) => {
             setTheme(t);
             setExpanded(null);

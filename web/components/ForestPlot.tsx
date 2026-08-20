@@ -1,9 +1,9 @@
 "use client";
 
 import { useId, useMemo, useState } from "react";
-import type { Score } from "@/lib/types";
+import type { Score, ScoreMode } from "@/lib/types";
 import { shortName } from "@/lib/types";
-import { fmtScore } from "@/lib/viz";
+import { estimate, fmtScore } from "@/lib/viz";
 
 const W = 760;
 const PAD_L = 178;
@@ -33,6 +33,7 @@ export default function ForestPlot({
   onHover,
   onSelect,
   partyBaselines,
+  mode = "eb",
 }: {
   rows: Score[];
   flagged: Set<string>;
@@ -41,17 +42,20 @@ export default function ForestPlot({
   onHover: (id: string | null) => void;
   onSelect: (id: string) => void;
   partyBaselines?: { Democrat?: number; Republican?: number };
+  mode?: ScoreMode;
 }) {
   const gid = useId().replace(/:/g, "");
   const [tip, setTip] = useState<Tip | null>(null);
 
-  const sorted = useMemo(
-    () =>
-      [...rows].sort(
-        (a, b) => b.signed_score - a.signed_score || a.full_name.localeCompare(b.full_name),
-      ),
-    [rows],
-  );
+  const sorted = useMemo(() => {
+    const withEst = rows
+      .map((r) => ({ row: r, est: estimate(r, mode) }))
+      .filter((x): x is { row: Score; est: NonNullable<ReturnType<typeof estimate>> } => x.est != null);
+    withEst.sort(
+      (a, b) => b.est.value - a.est.value || a.row.full_name.localeCompare(b.row.full_name),
+    );
+    return withEst;
+  }, [rows, mode]);
 
   const H = PAD_T + sorted.length * ROW_H + PAD_B;
   const x = (v: number) => PAD_L + ((Math.max(-1, Math.min(1, v)) + 1) / 2) * (W - PAD_L - PAD_R);
@@ -65,7 +69,7 @@ export default function ForestPlot({
           viewBox={`0 0 ${W} ${H}`}
           width="100%"
           role="img"
-          aria-label={`Forest plot of ${sorted.length} members' signed scores with Wilson bands`}
+          aria-label={`Forest plot of ${sorted.length} members' ${mode === "eb" ? "empirical Bayes" : "raw"} scores`}
         >
           <defs>
             <linearGradient id={`axis-${gid}`} x1="0" x2="1" y1="0" y2="0">
@@ -141,7 +145,7 @@ export default function ForestPlot({
             />
           )}
 
-          {sorted.map((r, i) => {
+          {sorted.map(({ row: r, est }, i) => {
             const cy = PAD_T + i * ROW_H + ROW_H / 2;
             const isFlagged = flagged.has(r.bioguide_id);
             const isActive = active === r.bioguide_id;
@@ -180,12 +184,12 @@ export default function ForestPlot({
                   {shortName(r.full_name)}
                 </text>
                 <text x={14} y={cy + 12} fontSize={10.5} fill="var(--ink3)">
-                  {r.district_number ? `VA-${r.district_number}` : r.chamber} · n={r.n_contested}
+                  {r.district_number ? `VA-${r.district_number}` : r.chamber} · n={est.n}
                 </text>
                 <line
-                  x1={x(r.wilson_low)}
+                  x1={x(est.lo)}
                   y1={cy}
-                  x2={x(r.wilson_high)}
+                  x2={x(est.hi)}
                   y2={cy}
                   stroke={color}
                   strokeWidth={isActive ? 4 : 3}
@@ -193,25 +197,25 @@ export default function ForestPlot({
                   opacity={0.35}
                 />
                 <line
-                  x1={x(r.wilson_low)}
+                  x1={x(est.lo)}
                   y1={cy - 4}
-                  x2={x(r.wilson_low)}
+                  x2={x(est.lo)}
                   y2={cy + 4}
                   stroke={color}
                   strokeWidth={1.6}
                   opacity={0.7}
                 />
                 <line
-                  x1={x(r.wilson_high)}
+                  x1={x(est.hi)}
                   y1={cy - 4}
-                  x2={x(r.wilson_high)}
+                  x2={x(est.hi)}
                   y2={cy + 4}
                   stroke={color}
                   strokeWidth={1.6}
                   opacity={0.7}
                 />
                 <circle
-                  cx={x(r.signed_score)}
+                  cx={x(est.value)}
                   cy={cy}
                   r={isActive ? 8 : 5.8}
                   fill={color}
@@ -235,17 +239,22 @@ export default function ForestPlot({
           })}
         </svg>
 
-        {tip && (
-          <div className="tooltip" style={{ left: tip.x, top: tip.y }}>
-            <strong>
-              {shortName(tip.row.full_name)} · {fmtScore(tip.row.signed_score)}
-            </strong>
-            Wilson [{fmtScore(tip.row.wilson_low)}, {fmtScore(tip.row.wilson_high)}]
-            <br />
-            {tip.row.n_yea}Y / {tip.row.n_nay}N · click to focus
-            {flagged.has(tip.row.bioguide_id) ? " · opens defections" : ""}
-          </div>
-        )}
+        {tip && (() => {
+          const est = estimate(tip.row, mode);
+          if (!est) return null;
+          const band = est.kind === "credible" ? "Cred" : "Wilson";
+          return (
+            <div className="tooltip" style={{ left: tip.x, top: tip.y }}>
+              <strong>
+                {shortName(tip.row.full_name)} · {fmtScore(est.value)}
+              </strong>
+              {band} [{fmtScore(est.lo)}, {fmtScore(est.hi)}]
+              <br />
+              k={est.k} / n={est.n} · click to focus
+              {flagged.has(tip.row.bioguide_id) ? " · opens defections" : ""}
+            </div>
+          );
+        })()}
       </div>
     </div>
   );

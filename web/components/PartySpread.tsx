@@ -1,9 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import type { Score } from "@/lib/types";
+import type { Score, ScoreMode } from "@/lib/types";
 import { shortName, themeLabel } from "@/lib/types";
-import { fmtScore } from "@/lib/viz";
+import { estimate, fmtScore } from "@/lib/viz";
 
 const W = 720;
 const PAD_L = 36;
@@ -47,6 +47,7 @@ export default function PartySpread({
   selectedId,
   onHover,
   onSelect,
+  mode = "eb",
 }: {
   rows: Score[];
   theme: string;
@@ -55,6 +56,7 @@ export default function PartySpread({
   selectedId: string | null;
   onHover: (id: string | null) => void;
   onSelect: (id: string) => void;
+  mode?: ScoreMode;
 }) {
   const [tip, setTip] = useState<{ score: Score; x: number; y: number } | null>(null);
   const active = focusId ?? selectedId;
@@ -67,17 +69,27 @@ export default function PartySpread({
       PAD_L + ((Math.max(-1, Math.min(1, v)) + 1) / 2) * (W - PAD_L - PAD_R);
 
     const demPts = beeswarm(
-      dem.map((s) => ({ id: s.bioguide_id, v: s.signed_score, score: s })),
+      dem
+        .map((s) => {
+          const est = estimate(s, mode);
+          return est ? { id: s.bioguide_id, v: est.value, score: s } : null;
+        })
+        .filter((x): x is { id: string; v: number; score: Score } => x != null),
       x,
       PAD_T + LANE_H * 0.55,
     );
     const repPts = beeswarm(
-      rep.map((s) => ({ id: s.bioguide_id, v: s.signed_score, score: s })),
+      rep
+        .map((s) => {
+          const est = estimate(s, mode);
+          return est ? { id: s.bioguide_id, v: est.value, score: s } : null;
+        })
+        .filter((x): x is { id: string; v: number; score: Score } => x != null),
       x,
       PAD_T + LANE_H + LANE_H * 0.55,
     );
     return { H, x, demPts, repPts };
-  }, [rows]);
+  }, [rows, mode]);
 
   if (!rows.length) {
     return <p className="cap">No sufficient members for a party spread in this filter.</p>;
@@ -188,16 +200,21 @@ export default function PartySpread({
         {themeLabel(theme)} · hover to link with the forest plot · click to select. Gold = crossed
         caucus.
       </p>
-      {tip && (
-        <div className="tooltip" style={{ left: tip.x, top: tip.y }}>
-          <strong>
-            {shortName(tip.score.full_name)} · {fmtScore(tip.score.signed_score)}
-          </strong>
-          Wilson [{fmtScore(tip.score.wilson_low)}, {fmtScore(tip.score.wilson_high)}]
-          <br />
-          {tip.score.n_yea}Y / {tip.score.n_nay}N · n={tip.score.n_contested}
-        </div>
-      )}
+      {tip && (() => {
+        const est = estimate(tip.score, mode);
+        if (!est) return null;
+        const band = est.kind === "credible" ? "Cred" : "Wilson";
+        return (
+          <div className="tooltip" style={{ left: tip.x, top: tip.y }}>
+            <strong>
+              {shortName(tip.score.full_name)} · {fmtScore(est.value)}
+            </strong>
+            {band} [{fmtScore(est.lo)}, {fmtScore(est.hi)}]
+            <br />
+            k={est.k} / n={est.n}
+          </div>
+        );
+      })()}
     </div>
   );
 }

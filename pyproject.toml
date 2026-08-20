@@ -20,6 +20,7 @@ dependencies = [
     "google-auth-oauthlib",
     "jinja2",
     "pillow",
+    "scipy>=1.17.1",
 ]
 
 [project.scripts]

@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-08-19T23:48:31Z",
+  "generated_at_utc": "2026-08-20T00:05:17Z",
   "map_version": "2021",
   "axis": {
     "name": "small_business_climate",
@@ -14,5 +14,148 @@
     "TAX_BURDEN",
     "WORKFORCE"
   ],
-  "sufficient_min": 3
+  "sufficient_min": 3,
+  "estimate_default": "eb",
+  "baselines": [
+    {
+      "theme": "ACCESS_TO_CAPITAL",
+      "party": "Democrat",
+      "eb_center": 0.8333,
+      "weighted_median": null,
+      "prior_alpha": 5.5,
+      "prior_beta": 0.5,
+      "prior_source": "degenerate",
+      "n_members": 5
+    },
+    {
+      "theme": "ACCESS_TO_CAPITAL",
+      "party": "Republican",
+      "eb_center": -0.8333,
+      "weighted_median": null,
+      "prior_alpha": 0.5,
+      "prior_beta": 5.5,
+      "prior_source": "degenerate",
+      "n_members": 5
+    },
+    {
+      "theme": "FEDERAL_CONTRACTING",
+      "party": "Democrat",
+      "eb_center": 0.0,
+      "weighted_median": null,
+      "prior_alpha": 2.0,
+      "prior_beta": 2.0,
+      "prior_source": "weakly_informative",
+      "n_members": 6
+    },
+    {
+      "theme": "FEDERAL_CONTRACTING",
+      "party": "Republican",
+      "eb_center": 0.8333,
+      "weighted_median": null,
+      "prior_alpha": 5.5,
+      "prior_beta": 0.5,
+      "prior_source": "degenerate",
+      "n_members": 5
+    },
+    {
+      "theme": "HEALTH_COSTS",
+      "party": "Democrat",
+      "eb_center": 0.8571,
+      "weighted_median": null,
+      "prior_alpha": 6.5,
+      "prior_beta": 0.5,
+      "prior_source": "degenerate",
+      "n_members": 6
+    },
+    {
+      "theme": "HEALTH_COSTS",
+      "party": "Republican",
+      "eb_center": -0.8333,
+      "weighted_median": null,
+      "prior_alpha": 0.5,
+      "prior_beta": 5.5,
+      "prior_source": "degenerate",
+      "n_members": 5
+    },
+    {
+      "theme": "INPUT_COSTS",
+      "party": "Democrat",
+      "eb_center": -0.9167,
+      "weighted_median": -1.0,
+      "prior_alpha": 0.118056,
+      "prior_beta": 2.715278,
+      "prior_source": "moments",
+      "n_members": 6
+    },
+    {
+      "theme": "INPUT_COSTS",
+      "party": "Republican",
+      "eb_center": 0.9524,
+      "weighted_median": 1.0,
+      "prior_alpha": 20.5,
+      "prior_beta": 0.5,
+      "prior_source": "degenerate",
+      "n_members": 5
+    },
+    {
+      "theme": "REGULATORY_BURDEN",
+      "party": "Democrat",
+      "eb_center": -0.8718,
+      "weighted_median": -0.8462,
+      "prior_alpha": 0.411455,
+      "prior_beta": 6.007244,
+      "prior_source": "moments",
+      "n_members": 6
+    },
+    {
+      "theme": "REGULATORY_BURDEN",
+      "party": "Republican",
+      "eb_center": 0.9077,
+      "weighted_median": 0.8462,
+      "prior_alpha": 22.701538,
+      "prior_beta": 1.098462,
+      "prior_source": "moments",
+      "n_members": 5
+    },
+    {
+      "theme": "TAX_BURDEN",
+      "party": "Democrat",
+      "eb_center": 0.4,
+      "weighted_median": null,
+      "prior_alpha": 1.26,
+      "prior_beta": 0.54,
+      "prior_source": "moments",
+      "n_members": 5
+    },
+    {
+      "theme": "TAX_BURDEN",
+      "party": "Republican",
+      "eb_center": 0.9091,
+      "weighted_median": null,
+      "prior_alpha": 10.5,
+      "prior_beta": 0.5,
+      "prior_source": "degenerate",
+      "n_members": 5
+    },
+    {
+      "theme": "WORKFORCE",
+      "party": "Democrat",
+      "eb_center": -0.9231,
+      "weighted_median": null,
+      "prior_alpha": 0.5,
+      "prior_beta": 12.5,
+      "prior_source": "degenerate",
+      "n_members": 6
+    },
+    {
+      "theme": "WORKFORCE",
+      "party": "Republican",
+      "eb_center": 0.9091,
+      "weighted_median": null,
+      "prior_alpha": 10.5,
+      "prior_beta": 0.5,
+      "prior_source": "degenerate",
+      "n_members": 5
+    }
+  ]
 }

@@ -1,9 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import type { Score } from "@/lib/types";
+import type { Score, ScoreMode } from "@/lib/types";
 import { shortName } from "@/lib/types";
-import { fmtScore } from "@/lib/viz";
+import { estimate, fmtScore } from "@/lib/viz";
 
 const W = 680;
 const H = 168;
@@ -19,12 +19,14 @@ export default function CompareOverlay({
   memberB,
   onChangeA,
   onChangeB,
+  mode = "eb",
 }: {
   rows: Score[];
   memberA: string | null;
   memberB: string | null;
   onChangeA: (id: string | null) => void;
   onChangeB: (id: string | null) => void;
+  mode?: ScoreMode;
 }) {
   const [tip, setTip] = useState<{ text: string; x: number; y: number } | null>(null);
 
@@ -40,28 +42,31 @@ export default function CompareOverlay({
 
   const a = rows.find((r) => r.bioguide_id === memberA) ?? null;
   const b = rows.find((r) => r.bioguide_id === memberB) ?? null;
+  const aEst = a ? estimate(a, mode) : null;
+  const bEst = b ? estimate(b, mode) : null;
 
   const x = (v: number) =>
     PAD_L + ((Math.max(-1, Math.min(1, v)) + 1) / 2) * (W - PAD_L - PAD_R);
 
-  const delta = a && b ? a.signed_score - b.signed_score : null;
+  const delta = aEst && bEst ? aEst.value - bEst.value : null;
   const overlap =
-    a && b
-      ? !(a.wilson_high < b.wilson_low || b.wilson_high < a.wilson_low)
-      : null;
+    aEst && bEst ? !(aEst.hi < bEst.lo || bEst.hi < aEst.lo) : null;
 
   const colorFor = (s: Score) =>
     s.party === "Democrat" ? "var(--dem)" : s.party === "Republican" ? "var(--rep)" : "var(--ink3)";
 
   const renderRow = (s: Score, idx: number) => {
+    const est = estimate(s, mode);
+    if (!est) return null;
     const cy = PAD_T + idx * ROW + ROW / 2;
     const color = colorFor(s);
+    const band = est.kind === "credible" ? "Cred" : "Wilson";
     return (
       <g
         key={s.bioguide_id}
         onMouseEnter={(e) =>
           setTip({
-            text: `${shortName(s.full_name)} · ${fmtScore(s.signed_score)} · Wilson [${fmtScore(s.wilson_low)}, ${fmtScore(s.wilson_high)}] · n=${s.n_contested}`,
+            text: `${shortName(s.full_name)} · ${fmtScore(est.value)} · ${band} [${fmtScore(est.lo)}, ${fmtScore(est.hi)}] · n=${est.n}`,
             x: e.clientX,
             y: e.clientY,
           })
@@ -73,12 +78,12 @@ export default function CompareOverlay({
           {shortName(s.full_name)}
         </text>
         <text x={12} y={cy + 12} fontSize={10} fill="var(--ink3)">
-          {s.district_number != null ? `VA-${s.district_number}` : s.chamber} · n={s.n_contested}
+          {s.district_number != null ? `VA-${s.district_number}` : s.chamber} · n={est.n}
         </text>
         <line
-          x1={x(s.wilson_low)}
+          x1={x(est.lo)}
           y1={cy}
-          x2={x(s.wilson_high)}
+          x2={x(est.hi)}
           y2={cy}
           stroke={color}
           strokeWidth={10}
@@ -86,23 +91,23 @@ export default function CompareOverlay({
           opacity={0.28}
         />
         <line
-          x1={x(s.wilson_low)}
+          x1={x(est.lo)}
           y1={cy - 7}
-          x2={x(s.wilson_low)}
+          x2={x(est.lo)}
           y2={cy + 7}
           stroke={color}
           strokeWidth={2}
         />
         <line
-          x1={x(s.wilson_high)}
+          x1={x(est.hi)}
           y1={cy - 7}
-          x2={x(s.wilson_high)}
+          x2={x(est.hi)}
           y2={cy + 7}
           stroke={color}
           strokeWidth={2}
         />
         <circle
-          cx={x(s.signed_score)}
+          cx={x(est.value)}
           cy={cy}
           r={7}
           fill={color}
@@ -151,11 +156,11 @@ export default function CompareOverlay({
       </div>
 
       {!a && !b ? (
-        <p className="cap">Pin two members with sufficient scores in this theme to overlay Wilson intervals.</p>
+        <p className="cap">Pin two members with sufficient scores in this theme to overlay intervals.</p>
       ) : (
         <>
           <div className="viz-frame" style={{ position: "relative" }}>
-            <svg viewBox={`0 0 ${W} ${H}`} width="100%" role="img" aria-label="Compare Wilson intervals">
+            <svg viewBox={`0 0 ${W} ${H}`} width="100%" role="img" aria-label="Compare score intervals">
               <line
                 x1={x(0)}
                 y1={PAD_T - 8}
@@ -196,7 +201,7 @@ export default function CompareOverlay({
               </p>
             </div>
             <div className="compare-stat">
-              <p className="k">Wilson intervals</p>
+              <p className="k">{mode === "eb" ? "Credible intervals" : "Wilson intervals"}</p>
               <p className={`v ${overlap == null ? "" : overlap ? "warn" : "ok"}`}>
                 {overlap == null ? "—" : overlap ? "Overlap" : "Separated"}
               </p>
