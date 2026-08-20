@@ -15,8 +15,10 @@ from typing import Any
 
 from vact.analysis.deviations import compute_party_deviations
 from vact.analysis.estimators import attach_empirical_bayes
+from vact.analysis.excluded_votes import export_excluded_votes
 from vact.analysis.methodology import build_methodology_payload
 from vact.analysis.scoring import build_scores_frame, load_scoring_config
+from vact.analysis.symmetry_audit import build_symmetry_audit
 from vact.analysis.timeseries import expanding_series
 from vact.analysis.cosponsorship import score_cosponsorship, serialize_cosponsor_rows
 from vact.analysis.races import races_for_web
@@ -111,11 +113,15 @@ def build_web_payload(
     ]
 
     themes = sorted({s["theme"] for s in scores})
-    methodology = build_methodology_payload(config, scores, baselines)
     if votes_path is not None:
         vote_rows = validate_votes_csv(votes_path)
     else:
         vote_rows = vote_rows_from_warehouse(conn, config, map_version=map_version)
+    export_excluded_votes(conn, config=config)
+    symmetry = build_symmetry_audit(vote_rows, scores)
+    methodology = build_methodology_payload(
+        config, scores, baselines, symmetry_audit=symmetry
+    )
     timeseries = expanding_series(vote_rows, config)
     cosp_cfg = load_cosp_config()
     cosp_frame = score_cosponsorship(extra_members=cosp_cfg.get("extra_members") or [], config=config)

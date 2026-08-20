@@ -363,9 +363,63 @@ export interface ChangelogEntry {
   subject: string;
 }
 
+export interface SymmetryAuditThemeRow {
+  theme: string;
+  n_rollcalls_dem: number;
+  n_rollcalls_rep: number;
+  dem_caucus_advancing_share: number | null;
+  rep_caucus_advancing_share: number | null;
+  gap_pp: number | null;
+  note: string;
+}
+
+export interface SymmetryAuditDoc {
+  inclusion_spec_version?: string;
+  spec_path?: string;
+  excluded_path?: string;
+  excluded_counts_by_reason?: Record<string, number>;
+  caucus_advancing_by_theme?: SymmetryAuditThemeRow[];
+  max_caucus_advancing_gap_pp?: number;
+  n_depth_by_party?: {
+    by_party: Record<
+      string,
+      { n_cells: number; median: number; min: number; max: number }
+    >;
+    median_gap: number | null;
+  };
+  ci_width_at_matched_n?: Array<{
+    n_contested: number;
+    dem_median_width: number;
+    rep_median_width: number;
+    gap: number;
+  }>;
+  max_ci_width_gap?: number;
+  exclusion_by_sponsor_party?: {
+    totals_by_sponsor_party: Record<string, number>;
+    by_reason: Record<string, Record<string, number>>;
+    democrat_share_pp: number | null;
+    rate_gap_pp: number | null;
+  };
+  coded_blind?: {
+    n_units: number;
+    false_count?: number;
+    false_share?: number | null;
+    false_share_pp?: number | null;
+  };
+  thresholds?: Record<string, number>;
+  falsification?: Record<
+    string,
+    { trip: string; action: string }
+  >;
+  flags?: Record<string, boolean>;
+  any_tripped?: boolean;
+}
+
 export interface MethodologyDoc {
   repo_url: string;
   votes_url: string;
+  votes_excluded_url?: string;
+  inclusion_spec_url?: string;
   reproduce: string[];
   scoreable: {
     axis_name: string;
@@ -387,4 +441,5 @@ export interface MethodologyDoc {
     worked_example_prior: SeparationResult | null;
   };
   changelog: ChangelogEntry[];
+  symmetry_audit?: SymmetryAuditDoc;
 }

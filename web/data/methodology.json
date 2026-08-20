@@ -4,7 +4,7 @@
   "reproduce": [
     "git clone https://github.com/EAName/Congressional-Tracker.git",
     "cd Congressional-Tracker && uv sync",
-    "./bin/vact votes validate && ./bin/vact export-web"
+    "./bin/vact votes validate && ./bin/vact audit symmetry && ./bin/vact export-web"
   ],
   "scoreable": {
     "axis_name": "small_business_climate",
@@ -262,5 +262,199 @@
       "date": "2026-08-04",
       "subject": "Add signed scoring frame and within-party deviation report."
     }
-  ]
+  ],
+  "symmetry_audit": {
+    "inclusion_spec_version": "vote-inclusion-v1.0",
+    "spec_path": "src/vact/analysis/VOTE_INCLUSION_SPEC.md",
+    "excluded_path": "data/votes_excluded.csv",
+    "excluded_counts_by_reason": {
+      "PROCEDURAL_CATEGORY": 1067,
+      "NO_IMPACT_TAG": 338,
+      "NEAR_UNANIMOUS": 1,
+      "RULE_RESOLUTION": 63,
+      "UNADJUDICATED_DIRECTION": 33
+    },
+    "caucus_advancing_by_theme": [
+      {
+        "theme": "ACCESS_TO_CAPITAL",
+        "n_rollcalls_dem": 1,
+        "n_rollcalls_rep": 1,
+        "dem_caucus_advancing_share": 1.0,
+        "rep_caucus_advancing_share": 0.0,
+        "gap_pp": 100.0,
+        "note": "A lopsided share means that caucus's floor majority more often voted with the coded axis direction on that theme. It does not by itself prove biased adjudication."
+      },
+      {
+        "theme": "FEDERAL_CONTRACTING",
+        "n_rollcalls_dem": 1,
+        "n_rollcalls_rep": 1,
+        "dem_caucus_advancing_share": 0.0,
+        "rep_caucus_advancing_share": 1.0,
+        "gap_pp": -100.0,
+        "note": "A lopsided share means that caucus's floor majority more often voted with the coded axis direction on that theme. It does not by itself prove biased adjudication."
+      },
+      {
+        "theme": "HEALTH_COSTS",
+        "n_rollcalls_dem": 1,
+        "n_rollcalls_rep": 1,
+        "dem_caucus_advancing_share": 1.0,
+        "rep_caucus_advancing_share": 0.0,
+        "gap_pp": 100.0,
+        "note": "A lopsided share means that caucus's floor majority more often voted with the coded axis direction on that theme. It does not by itself prove biased adjudication."
+      },
+      {
+        "theme": "INPUT_COSTS",
+        "n_rollcalls_dem": 4,
+        "n_rollcalls_rep": 4,
+        "dem_caucus_advancing_share": 0.0,
+        "rep_caucus_advancing_share": 1.0,
+        "gap_pp": -100.0,
+        "note": "A lopsided share means that caucus's floor majority more often voted with the coded axis direction on that theme. It does not by itself prove biased adjudication."
+      },
+      {
+        "theme": "REGULATORY_BURDEN",
+        "n_rollcalls_dem": 12,
+        "n_rollcalls_rep": 13,
+        "dem_caucus_advancing_share": 0.0,
+        "rep_caucus_advancing_share": 0.923,
+        "gap_pp": -92.3,
+        "note": "A lopsided share means that caucus's floor majority more often voted with the coded axis direction on that theme. It does not by itself prove biased adjudication."
+      },
+      {
+        "theme": "TAX_BURDEN",
+        "n_rollcalls_dem": 2,
+        "n_rollcalls_rep": 2,
+        "dem_caucus_advancing_share": 0.5,
+        "rep_caucus_advancing_share": 1.0,
+        "gap_pp": -50.0,
+        "note": "A lopsided share means that caucus's floor majority more often voted with the coded axis direction on that theme. It does not by itself prove biased adjudication."
+      },
+      {
+        "theme": "WORKFORCE",
+        "n_rollcalls_dem": 2,
+        "n_rollcalls_rep": 2,
+        "dem_caucus_advancing_share": 0.0,
+        "rep_caucus_advancing_share": 1.0,
+        "gap_pp": -100.0,
+        "note": "A lopsided share means that caucus's floor majority more often voted with the coded axis direction on that theme. It does not by itself prove biased adjudication."
+      }
+    ],
+    "max_caucus_advancing_gap_pp": 100.0,
+    "n_depth_by_party": {
+      "by_party": {
+        "Democrat": {
+          "n_cells": 40,
+          "median": 2.0,
+          "min": 1,
+          "max": 13
+        },
+        "Republican": {
+          "n_cells": 35,
+          "median": 2,
+          "min": 1,
+          "max": 13
+        }
+      },
+      "median_gap": 0.0
+    },
+    "ci_width_at_matched_n": [
+      {
+        "n_contested": 1,
+        "dem_median_width": 0.6606,
+        "rep_median_width": 0.6606,
+        "gap": 0.0
+      },
+      {
+        "n_contested": 2,
+        "dem_median_width": 0.323,
+        "rep_median_width": 0.3705,
+        "gap": 0.0475
+      },
+      {
+        "n_contested": 4,
+        "dem_median_width": 0.3192,
+        "rep_median_width": 0.1968,
+        "gap": 0.1224
+      },
+      {
+        "n_contested": 13,
+        "dem_median_width": 0.4288,
+        "rep_median_width": 0.2852,
+        "gap": 0.1436
+      }
+    ],
+    "max_ci_width_gap": 0.1436,
+    "exclusion_by_sponsor_party": {
+      "totals_by_sponsor_party": {
+        "Unknown": 1461,
+        "Republican": 25,
+        "Democrat": 16
+      },
+      "by_reason": {
+        "Unknown": {
+          "PROCEDURAL_CATEGORY": 1038,
+          "NO_IMPACT_TAG": 334,
+          "NEAR_UNANIMOUS": 1,
+          "RULE_RESOLUTION": 56,
+          "UNADJUDICATED_DIRECTION": 32
+        },
+        "Republican": {
+          "PROCEDURAL_CATEGORY": 13,
+          "RULE_RESOLUTION": 7,
+          "NO_IMPACT_TAG": 4,
+          "UNADJUDICATED_DIRECTION": 1
+        },
+        "Democrat": {
+          "PROCEDURAL_CATEGORY": 16
+        }
+      },
+      "democrat_share_pp": 39.0,
+      "rate_gap_pp": 22.0
+    },
+    "coded_blind": {
+      "n_units": 24,
+      "false_count": 24,
+      "false_share": 1.0,
+      "false_share_pp": 100.0
+    },
+    "thresholds": {
+      "caucus_advancing_gap_pp": 25.0,
+      "n_depth_median_gap": 2.0,
+      "ci_width_gap_at_matched_n": 0.08,
+      "exclusion_rate_gap_pp": 10.0,
+      "coded_blind_false_share_pp": 5.0
+    },
+    "falsification": {
+      "caucus_advancing_gap": {
+        "trip": ">|threshold| percentage-point gap between parties' caucus-majority advancing share on the same theme",
+        "action": "Re-open adjudication for themes that trip; log reason in this spec's changelog."
+      },
+      "n_depth_median_gap": {
+        "trip": ">|threshold| vote-depth median between parties",
+        "action": "Audit scoreable filter and theme assignment for thin caucus evidence."
+      },
+      "ci_width_gap_at_matched_n": {
+        "trip": ">|threshold| credible-interval width gap at the same n",
+        "action": "Investigate estimator parity (should be party-blind arithmetic)."
+      },
+      "exclusion_rate_gap_pp": {
+        "trip": ">|threshold| pp gap in exclusion rate by sponsor party leadership",
+        "action": "Review votes_excluded.csv and inclusion keywords."
+      },
+      "coded_blind_false_share_pp": {
+        "trip": ">|threshold| of adjudications not blind-coded",
+        "action": "Route new rows through valence_review_queue before commit."
+      }
+    },
+    "flags": {
+      "caucus_advancing_gap": true,
+      "n_depth_median_gap": false,
+      "ci_width_gap_at_matched_n": true,
+      "exclusion_rate_gap_pp": true,
+      "coded_blind_false_share_pp": true
+    },
+    "any_tripped": true
+  },
+  "votes_excluded_url": "https://github.com/EAName/Congressional-Tracker/blob/main/data/votes_excluded.csv",
+  "inclusion_spec_url": "https://github.com/EAName/Congressional-Tracker/blob/main/src/vact/analysis/VOTE_INCLUSION_SPEC.md"
 }

@@ -194,6 +194,7 @@ def build_methodology_payload(
     baselines: list[dict[str, Any]],
     *,
     n_sims: int = 2000,
+    symmetry_audit: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     example_row = pick_worked_example(scores)
     example = _example_math(example_row) if example_row else None
@@ -215,13 +216,13 @@ def build_methodology_payload(
     else:
         sep_live = None
 
-    return {
+    payload: dict[str, Any] = {
         "repo_url": PUBLIC_REPO,
         "votes_url": f"{PUBLIC_REPO}/blob/main/data/votes.csv",
         "reproduce": [
             f"git clone {PUBLIC_REPO}.git",
             "cd Congressional-Tracker && uv sync",
-            "./bin/vact votes validate && ./bin/vact export-web",
+            "./bin/vact votes validate && ./bin/vact audit symmetry && ./bin/vact export-web",
         ],
         "scoreable": {
             "axis_name": config.axis_name,
@@ -241,3 +242,12 @@ def build_methodology_payload(
         "separation": {"weakly_informative": sep_weak, "worked_example_prior": sep_live},
         "changelog": scoring_changelog(),
     }
+    if symmetry_audit is not None:
+        payload["symmetry_audit"] = symmetry_audit
+        payload["votes_excluded_url"] = (
+            f"{PUBLIC_REPO}/blob/main/{symmetry_audit.get('excluded_path', 'data/votes_excluded.csv')}"
+        )
+        payload["inclusion_spec_url"] = (
+            f"{PUBLIC_REPO}/blob/main/{symmetry_audit.get('spec_path', 'src/vact/analysis/VOTE_INCLUSION_SPEC.md')}"
+        )
+    return payload

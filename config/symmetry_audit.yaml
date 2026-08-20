@@ -1,0 +1,30 @@
+# Symmetry audit thresholds (Prompt 17). Falsification trips when a metric
+# crosses its threshold; see methodology page for live values.
+
+inclusion_spec_version: vote-inclusion-v1.0
+
+near_unanimous_share: 0.95
+
+thresholds:
+  caucus_advancing_gap_pp: 25.0
+  n_depth_median_gap: 2.0
+  ci_width_gap_at_matched_n: 0.08
+  exclusion_rate_gap_pp: 10.0
+  coded_blind_false_share_pp: 5.0
+
+falsification:
+  caucus_advancing_gap:
+    trip: ">|threshold| percentage-point gap between parties' caucus-majority advancing share on the same theme"
+    action: "Re-open adjudication for themes that trip; log reason in this spec's changelog."
+  n_depth_median_gap:
+    trip: ">|threshold| vote-depth median between parties"
+    action: "Audit scoreable filter and theme assignment for thin caucus evidence."
+  ci_width_gap_at_matched_n:
+    trip: ">|threshold| credible-interval width gap at the same n"
+    action: "Investigate estimator parity (should be party-blind arithmetic)."
+  exclusion_rate_gap_pp:
+    trip: ">|threshold| pp gap in exclusion rate by sponsor party leadership"
+    action: "Review votes_excluded.csv and inclusion keywords."
+  coded_blind_false_share_pp:
+    trip: ">|threshold| of adjudications not blind-coded"
+    action: "Route new rows through valence_review_queue before commit."

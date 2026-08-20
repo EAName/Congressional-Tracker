@@ -47,6 +47,8 @@ fec_app = typer.Typer(help="OpenFEC campaign-finance snapshots.")
 app.add_typer(fec_app, name="fec")
 seats_app = typer.Typer(help="Pre-registered House seat model.")
 app.add_typer(seats_app, name="seats")
+audit_app = typer.Typer(help="Symmetry and selection-bias audits (Prompt 17).")
+app.add_typer(audit_app, name="audit")
 
 
 @app.callback()
@@ -714,6 +716,28 @@ def valence_set_cmd(
     typer.echo(f"Set valence[{vote_id}, {impact_tag}] = {valence:+d} (HUMAN).")
 
 
+@valence_app.command("review-queue")
+def valence_review_queue_cmd(
+    warehouse: Path | None = typer.Option(None, "--warehouse"),
+    out: Path | None = typer.Option(None, "--out", help="Output CSV path."),
+) -> None:
+    """Write blind valence review queue (no party breakdown columns)."""
+    from vact.analysis.valence_review_queue import (
+        export_review_queue,
+        load_review_queue_csv,
+        summarize_review_queue,
+    )
+
+    conn = connect(warehouse)
+    try:
+        ensure_schema(conn)
+        path = export_review_queue(conn, path=out)
+        summary = summarize_review_queue(load_review_queue_csv(path))
+    finally:
+        conn.close()
+    typer.echo(f"Wrote {path} pending={summary['n_pending']} total={summary['n_total']}")
+
+
 @app.command("deviations")
 def deviations_cmd(
     map_version: str = typer.Option("2021", "--map-version", help="Operative map (default 2021)."),
@@ -911,6 +935,84 @@ def votes_sync_cmd(
                 f"Sheets coverage: csv_only={len(recon['only_csv'])} "
                 f"sheet_only={len(recon['only_sheet'])} → {SHEETS_DIFF_PATH}"
             )
+
+
+@votes_app.command("excluded-export")
+def votes_excluded_export_cmd(
+    warehouse: Path | None = typer.Option(None, "--warehouse"),
+    out: Path | None = typer.Option(None, "--out", help="Output CSV path."),
+) -> None:
+    """Export pre-registered excluded roll calls to data/votes_excluded.csv."""
+    from vact.analysis.excluded_votes import export_excluded_votes, load_excluded_csv
+
+    conn = connect(warehouse)
+    try:
+        ensure_schema(conn)
+        path = export_excluded_votes(conn, path=out)
+        rows = load_excluded_csv(path)
+    finally:
+        conn.close()
+    typer.echo(f"Wrote {path} ({len(rows)} excluded rows)")
+
+
+@audit_app.command("symmetry")
+def audit_symmetry_cmd(
+    map_version: str = typer.Option("2021", "--map-version", help="Operative map (default 2021)."),
+    warehouse: Path | None = typer.Option(None, "--warehouse"),
+    votes: Path | None = typer.Option(None, "--votes", help="Path to votes.csv."),
+    strict: bool = typer.Option(
+        False,
+        "--strict",
+        help="Exit non-zero if any falsification threshold is tripped.",
+    ),
+    json_out: bool = typer.Option(False, "--json", help="Print full audit payload."),
+) -> None:
+    """Run the five-metric symmetry audit (Prompt 17)."""
+    from vact.analysis.estimators import attach_empirical_bayes
+    from vact.analysis.excluded_votes import export_excluded_votes, load_excluded_csv
+    from vact.analysis.scoring import build_scores_frame, load_scoring_config
+    from vact.analysis.symmetry_audit import build_symmetry_audit
+    from vact.analysis.takeaway_templates import lint_registered_templates
+    from vact.analysis.votes import resolve_votes_path, validate_votes_csv, vote_rows_from_warehouse
+
+    lint_hits = lint_registered_templates()
+    if lint_hits:
+        typer.echo("Advocacy lint failed on registered templates:", err=True)
+        for name, hits in lint_hits:
+            typer.echo(f"  {name}: {', '.join(hits)}", err=True)
+        raise typer.Exit(code=1)
+
+    csv_path = resolve_votes_path(votes)
+    conn = connect(warehouse)
+    try:
+        ensure_schema(conn)
+        cfg = load_scoring_config()
+        frame = build_scores_frame(conn, cfg, map_version=map_version, votes_path=csv_path)
+        frame, _baselines = attach_empirical_bayes(frame, cfg)
+        scores = [dict(r) for r in frame if r.get("eb_score") is not None]
+        if csv_path is not None:
+            vote_rows = validate_votes_csv(csv_path)
+        else:
+            vote_rows = vote_rows_from_warehouse(conn, cfg, map_version=map_version)
+        excluded_path = export_excluded_votes(conn, config=cfg)
+        excluded = load_excluded_csv(excluded_path)
+        audit = build_symmetry_audit(vote_rows, scores, excluded=excluded)
+    finally:
+        conn.close()
+
+    if json_out:
+        typer.echo(json.dumps(audit, indent=2))
+    else:
+        flags = audit.get("flags") or {}
+        tripped = [k for k, v in flags.items() if v]
+        typer.echo(
+            f"symmetry audit spec={audit.get('inclusion_spec_version')} "
+            f"excluded={sum(audit.get('excluded_counts_by_reason', {}).values())} "
+            f"blind_false={audit.get('coded_blind', {}).get('false_share_pp')}% "
+            f"tripped={tripped or 'none'}"
+        )
+    if strict and audit.get("any_tripped"):
+        raise typer.Exit(code=1)
 
 
 if __name__ == "__main__":

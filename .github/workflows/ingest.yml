@@ -83,6 +83,9 @@ jobs:
           else
             echo "data/votes.csv not yet committed — skip (Prompt 1 bootstrap)"
           fi
+          if [[ -f data/warehouse/warehouse.duckdb ]]; then
+            ./bin/vact audit symmetry
+          fi
 
       - name: Validate races.json
         run: |

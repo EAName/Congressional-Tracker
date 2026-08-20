@@ -271,8 +271,128 @@ cred band  = 2 · Beta-quantile_{0.025, 0.975} − 1`}</code>
           </p>
         </section>
 
+        <section id="falsification">
+          <h2>4. Symmetry audit and falsification</h2>
+          <p>
+            Downstream scoring is party-blind arithmetic. Bias can enter when roll calls are
+            chosen or when axis direction is coded. This build pre-registers inclusion in{" "}
+            {doc.inclusion_spec_url ? (
+              <a href={doc.inclusion_spec_url}>VOTE_INCLUSION_SPEC.md</a>
+            ) : (
+              <code>VOTE_INCLUSION_SPEC.md</code>
+            )}{" "}
+            and publishes every excluded pair in{" "}
+            {doc.votes_excluded_url ? (
+              <a href={doc.votes_excluded_url}>data/votes_excluded.csv</a>
+            ) : (
+              <code>data/votes_excluded.csv</code>
+            )}
+            .
+          </p>
+          {doc.symmetry_audit ? (
+            <>
+              <p>
+                Spec version <code>{doc.symmetry_audit.inclusion_spec_version ?? "—"}</code>.
+                Blind-coded share:{" "}
+                {doc.symmetry_audit.coded_blind?.false_share_pp != null
+                  ? `${doc.symmetry_audit.coded_blind.false_share_pp}% of roll-call × theme units not blind-coded`
+                  : "—"}
+                . Any tripped threshold is a signal to re-open adjudication, not proof of bias.
+              </p>
+              {doc.symmetry_audit.excluded_counts_by_reason &&
+              Object.keys(doc.symmetry_audit.excluded_counts_by_reason).length > 0 ? (
+                <>
+                  <h3>Excluded roll calls by reason</h3>
+                  <div className="method-table-wrap">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Reason</th>
+                          <th>Count</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {Object.entries(doc.symmetry_audit.excluded_counts_by_reason)
+                          .sort(([a], [b]) => a.localeCompare(b))
+                          .map(([reason, count]) => (
+                            <tr key={reason}>
+                              <td>
+                                <code>{reason}</code>
+                              </td>
+                              <td>{count}</td>
+                            </tr>
+                          ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </>
+              ) : null}
+              {doc.symmetry_audit.caucus_advancing_by_theme &&
+              doc.symmetry_audit.caucus_advancing_by_theme.length > 0 ? (
+                <>
+                  <h3>Caucus majority advancing the coded axis</h3>
+                  <div className="method-table-wrap">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Theme</th>
+                          <th>Dem share</th>
+                          <th>Rep share</th>
+                          <th>Gap (pp)</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {doc.symmetry_audit.caucus_advancing_by_theme.map((row) => (
+                          <tr key={row.theme}>
+                            <td>{themeLabel(row.theme)}</td>
+                            <td>
+                              {row.dem_caucus_advancing_share != null
+                                ? `${(100 * row.dem_caucus_advancing_share).toFixed(0)}%`
+                                : "—"}
+                            </td>
+                            <td>
+                              {row.rep_caucus_advancing_share != null
+                                ? `${(100 * row.rep_caucus_advancing_share).toFixed(0)}%`
+                                : "—"}
+                            </td>
+                            <td>{row.gap_pp ?? "—"}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </>
+              ) : null}
+              {doc.symmetry_audit.flags ? (
+                <>
+                  <h3>Falsification thresholds</h3>
+                  <ul>
+                    {Object.entries(doc.symmetry_audit.falsification ?? {}).map(
+                      ([key, meta]) => {
+                        const threshold = doc.symmetry_audit?.thresholds?.[key];
+                        const tripped = doc.symmetry_audit?.flags?.[key];
+                        return (
+                          <li key={key}>
+                            <code>{key}</code>
+                            {threshold != null ? ` (threshold ${threshold})` : ""}:{" "}
+                            {meta.trip}
+                            {tripped ? " — tripped in this build." : " — ok."}{" "}
+                            {meta.action}
+                          </li>
+                        );
+                      },
+                    )}
+                  </ul>
+                </>
+              ) : null}
+            </>
+          ) : (
+            <p>Run <code>vact export-web</code> to populate live audit tables.</p>
+          )}
+        </section>
+
         <section id="limits">
-          <h2>4. Known limitations</h2>
+          <h2>5. Known limitations</h2>
           <ul>
             <li>
               <strong>Small n.</strong> Sufficiency is n ≥ {s.min_contested}. Several themes still
@@ -307,7 +427,7 @@ cred band  = 2 · Beta-quantile_{0.025, 0.975} − 1`}</code>
         </section>
 
         <section id="changelog">
-          <h2>5. Changelog</h2>
+          <h2>6. Changelog</h2>
           <p>
             Auto-generated from <code>git log</code> of <code>data/votes.csv</code>,{" "}
             <code>src/vact/analysis/scoring.py</code>, <code>src/vact/analysis/estimators.py</code>

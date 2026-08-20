@@ -62,6 +62,7 @@ CSV_COLUMNS: tuple[str, ...] = (
     "adjudication_date",
     "source_url",
     "plain_language_summary",
+    "coded_blind",
 )
 
 VOTE_CAST_VALUES = frozenset({"yea", "nay", "present", "not_voting"})
@@ -109,6 +110,7 @@ class VoteRow(BaseModel):
     adjudication_date: str = ""
     source_url: str
     plain_language_summary: str = ""
+    coded_blind: bool = False
 
     @field_validator(
         "member_bioguide_id",
@@ -165,6 +167,20 @@ class VoteRow(BaseModel):
         if text in {"false", "0", "no", ""}:
             return False
         raise ValueError(f"contested must be boolean, got {value!r}")
+
+    @field_validator("coded_blind", mode="before")
+    @classmethod
+    def _coded_blind(cls, value: Any) -> bool:
+        if isinstance(value, bool):
+            return value
+        if value is None or str(value).strip() == "":
+            return False
+        text = str(value).strip().lower()
+        if text in {"true", "1", "yes"}:
+            return True
+        if text in {"false", "0", "no"}:
+            return False
+        raise ValueError(f"coded_blind must be boolean, got {value!r}")
 
     @property
     def key(self) -> tuple[str, str, str]:
@@ -250,7 +266,8 @@ SELECT
     s.valence_source,
     substr(coalesce(s.adjudicated_at_utc, ''), 1, 10),
     s.source_url,
-    s.plain_language_summary
+    s.plain_language_summary,
+    'false'
 FROM members m
 JOIN scoreable s ON TRUE
 JOIN fact_member_vote mv
@@ -294,10 +311,21 @@ def load_votes_csv(path: Path | None = None) -> list[VoteRow]:
         raise FileNotFoundError(f"votes.csv not found: {dest}")
     with dest.open(newline="", encoding="utf-8") as fh:
         reader = csv.DictReader(fh)
-        missing = [c for c in CSV_COLUMNS if c != "plain_language_summary" and c not in (reader.fieldnames or [])]
+        fields = reader.fieldnames or []
+        missing = [
+            c
+            for c in CSV_COLUMNS
+            if c not in {"plain_language_summary", "coded_blind"} and c not in fields
+        ]
         if missing:
             raise VotesValidationError(f"votes.csv missing columns: {missing}")
-        return [VoteRow.model_validate(rec) for rec in reader]
+        out: list[VoteRow] = []
+        for rec in reader:
+            payload = dict(rec)
+            if "coded_blind" not in payload:
+                payload["coded_blind"] = "false"
+            out.append(VoteRow.model_validate(payload))
+        return out
 
 
 def write_votes_csv(rows: Sequence[VoteRow], path: Path | None = None) -> Path:
@@ -315,6 +343,7 @@ def write_votes_csv(rows: Sequence[VoteRow], path: Path | None = None) -> Path:
             payload["axis_direction"] = row.axis_direction.value
             payload["vote_cast"] = row.vote_cast.value
             payload["contested"] = "true" if row.contested else "false"
+            payload["coded_blind"] = "true" if row.coded_blind else "false"
             writer.writerow({col: payload.get(col, "") for col in CSV_COLUMNS})
     return dest
 
@@ -324,6 +353,7 @@ def validate_vote_rows(rows: Sequence[VoteRow]) -> list[str]:
     errors: list[str] = []
     seen: dict[tuple[str, str, str], int] = {}
     party_by_member: dict[str, str] = {}
+    blind_by_unit: dict[tuple[str, str], bool] = {}
 
     for i, row in enumerate(rows, start=2):  # header = line 1
         loc = f"line {i} {row.key}"
@@ -357,7 +387,29 @@ def validate_vote_rows(rows: Sequence[VoteRow]) -> list[str]:
                     f"{loc}: party {row.party!r} disagrees with {prior!r} "
                     f"for {row.member_bioguide_id}"
                 )
+        unit = (row.rollcall_id, row.theme)
+        prior_blind = blind_by_unit.get(unit)
+        if prior_blind is None:
+            blind_by_unit[unit] = row.coded_blind
+        elif prior_blind != row.coded_blind:
+            errors.append(
+                f"{loc}: coded_blind={row.coded_blind} disagrees with {prior_blind} "
+                f"for roll call {row.rollcall_id!r} theme {row.theme!r}"
+            )
     return errors
+
+
+def merge_coded_blind(
+    rows: Sequence[VoteRow],
+    prior: Sequence[VoteRow],
+) -> list[VoteRow]:
+    """Preserve blind-coding flags from a prior CSV export by roll call × theme."""
+    blind_by_unit = {(r.rollcall_id, r.theme): r.coded_blind for r in prior}
+    merged: list[VoteRow] = []
+    for row in rows:
+        blind = blind_by_unit.get((row.rollcall_id, row.theme), False)
+        merged.append(row.model_copy(update={"coded_blind": blind}))
+    return merged
 
 
 def validate_votes_csv(path: Path | None = None) -> list[VoteRow]:
@@ -498,6 +550,7 @@ def export_votes_csv(
     else:
         prior = load_committed_votes_csv() or []
 
+    rows = merge_coded_blind(rows, prior)
     write_votes_csv(rows, dest)
     diff = diff_vote_rows(prior, rows)
     report = render_votes_diff_md(diff)

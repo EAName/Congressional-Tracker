@@ -102,6 +102,9 @@ jobs:
             echo "data/votes.csv missing — scoring from warehouse SQL path"
             ./bin/vact export-web --from-warehouse
           fi
+          if [[ -f data/warehouse/warehouse.duckdb ]]; then
+            ./bin/vact audit symmetry
+          fi
 
       - name: Sheets push (optional)
         continue-on-error: true

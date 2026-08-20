@@ -401,6 +401,14 @@ Prompt 0 (this file) — **done**. No behavior change.
 - [x] Flip-threshold takeaway sentences from the grid
 - [x] Per-race OG images
 
+**Prompt 17 — symmetry audit + blind coding** (midterm kit)
+
+- [x] `VOTE_INCLUSION_SPEC.md` + `data/votes_excluded.csv` reason codes
+- [x] `coded_blind` on `data/votes.csv`; `data/valence_review_queue.csv`
+- [x] Five-metric audit in `vact audit symmetry` + methodology falsification section
+- [x] Advocacy-verb lint + mirrored takeaway template tests
+- [x] CI runs symmetry audit on ingest/publish
+
 **Prompt 7 — forecasts**
 
 - [ ] Append-only `data/predictions.csv` enforced in validation

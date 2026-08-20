@@ -1,0 +1,18 @@
+# Takeaway templates must describe, not exhort. CI fails if any registered
+# template string contains these tokens (case-insensitive word boundary).
+
+verbs:
+  - vote
+  - elect
+  - defeat
+  - support
+  - oppose
+  - donate
+  - contribute
+  - volunteer
+  - canvass
+  - phonebank
+  - rally
+  - mobilize
+  - turn out
+  - turnout
