@@ -524,6 +524,90 @@ def _plain_language(p_dem: float) -> str:
     return "Republicans are overwhelmingly likely to win"
 
 
+ENV_MARGIN_MIN = -4.0
+ENV_MARGIN_MAX = 12.0
+ENV_MARGIN_STEP = 0.5
+
+
+def env_margin_grid() -> list[float]:
+    n = int(round((ENV_MARGIN_MAX - ENV_MARGIN_MIN) / ENV_MARGIN_STEP))
+    return [round(ENV_MARGIN_MIN + i * ENV_MARGIN_STEP, 1) for i in range(n + 1)]
+
+
+def margin_pp_to_nat_env(margin_pp: float) -> float:
+    """Two-party Dem share = 0.5 + margin_pp/200. nat_env is share minus 0.5."""
+    return float(margin_pp) / 200.0
+
+
+def generic_to_margin_pp(generic: dict[str, Any] | None) -> float:
+    if not generic:
+        return 0.0
+    return (2.0 * float(generic["dem_two_party"]) - 1.0) * 100.0
+
+
+def interpolate_grid(margins: Sequence[float], values: Sequence[float], x: float) -> float:
+    if len(margins) != len(values) or len(margins) < 2:
+        raise SeatModelError("grid interpolation needs aligned series")
+    if x <= margins[0]:
+        return float(values[0])
+    if x >= margins[-1]:
+        return float(values[-1])
+    for i in range(len(margins) - 1):
+        lo, hi = margins[i], margins[i + 1]
+        if lo <= x <= hi:
+            if hi == lo:
+                return float(values[i])
+            t = (x - lo) / (hi - lo)
+            return float(values[i] + t * (values[i + 1] - values[i]))
+    return float(values[-1])
+
+
+def flip_threshold_pp(margins: Sequence[float], probs: Sequence[float]) -> float | None:
+    """Smallest environment margin (Dem pp) where P(Dem) >= 0.5."""
+    for margin, prob in zip(margins, probs, strict=True):
+        if prob >= 0.5:
+            return float(margin)
+    return None
+
+
+def takeaway_sentence(
+    *,
+    district: int,
+    margins: Sequence[float],
+    probs: Sequence[float],
+) -> str:
+    label = f"VA-{district}"
+    thr = flip_threshold_pp(margins, probs)
+    lo, hi = float(margins[0]), float(margins[-1])
+    if thr is None:
+        return (
+            f"{label} stays below 50% Democratic win probability even if the "
+            f"national environment reaches D{hi:+g}."
+        )
+    if thr <= lo:
+        return (
+            f"{label} stays above 50% Democratic win probability even if the "
+            f"national environment reaches D{lo:+g}."
+        )
+    return (
+        f"{label} crosses 50% Democratic win probability if the national "
+        f"environment reaches D{thr:+g}."
+    )
+
+
+def _p_at_env(
+    *,
+    mu_ols: float,
+    sigma_f: float,
+    poll: dict[str, Any] | None,
+    margin_pp: float,
+) -> tuple[float, float, float]:
+    mu_f = mu_ols + margin_pp_to_nat_env(margin_pp)
+    mu, sigma, _ = blend_mu(mu_f, sigma_f, poll)
+    p_dem = float(norm.cdf((mu - 0.5) / sigma))
+    return p_dem, mu, sigma
+
+
 def predict_races(
     *,
     as_of: date | None = None,
@@ -543,7 +627,11 @@ def predict_races(
     generic = latest_generic_ballot(as_of=day)
     receipts = _fec_receipts_by_id()
     reg = registry or load_races()
+    default_margin = round(generic_to_margin_pp(generic) / ENV_MARGIN_STEP) * ENV_MARGIN_STEP
+    default_margin = float(max(ENV_MARGIN_MIN, min(ENV_MARGIN_MAX, default_margin)))
+    margins = env_margin_grid()
     races_out = []
+    grid_probs: dict[str, list[float]] = {}
     for race in reg.races:
         if race.status.value != "tracked":
             continue
@@ -557,19 +645,30 @@ def predict_races(
             national_pres_dem=nat,
         )
         x_ols = x[:6]
-        mu_f = float(x_ols @ beta) + comps["nat_env"]
-        parts = {"intercept": float(beta[0])}
-        for name, value, b in zip(OLS_FEATURES[1:], x_ols[1:], beta[1:], strict=True):
-            parts[name] = float(b * value)
-        parts["nat_env"] = comps["nat_env"]
+        mu_ols = float(x_ols @ beta)
         poll = poll_average(
             race.race_id,
             as_of=day,
             half_life_days=float(cfg["poll_half_life_days"]),
         )
-        mu, sigma, blend_label = blend_mu(mu_f, sigma_f, poll)
+        probs = []
+        mus = []
+        for margin in margins:
+            p, mu_e, _sig = _p_at_env(
+                mu_ols=mu_ols, sigma_f=sigma_f, poll=poll, margin_pp=margin
+            )
+            probs.append(round(p, 4))
+            mus.append(round(mu_e, 4))
+        grid_probs[race.race_id] = probs
+        p_dem, mu, sigma = _p_at_env(
+            mu_ols=mu_ols, sigma_f=sigma_f, poll=poll, margin_pp=default_margin
+        )
+        mu_f = mu_ols + margin_pp_to_nat_env(default_margin)
+        parts = {"intercept": float(beta[0])}
+        for name, value, b in zip(OLS_FEATURES[1:], x_ols[1:], beta[1:], strict=True):
+            parts[name] = float(b * value)
+        parts["nat_env"] = margin_pp_to_nat_env(default_margin)
         parts["polls"] = mu - mu_f
-        p_dem = float(norm.cdf((mu - 0.5) / sigma))
         lo = mu - Z_80 * sigma
         hi = mu + Z_80 * sigma
         races_out.append(
@@ -582,15 +681,22 @@ def predict_races(
                 "prob_rep": round(1.0 - p_dem, 4),
                 "mu_dem_two_party": round(mu, 4),
                 "mu_fundamentals": round(mu_f, 4),
+                "mu_ols": round(mu_ols, 4),
                 "share_lo": round(max(0.0, lo), 4),
                 "share_hi": round(min(1.0, hi), 4),
                 "sigma": round(sigma, 4),
-                "blend": blend_label,
+                "blend": "fundamentals_only" if poll is None else "fundamentals_plus_polls",
                 "plain_language": _plain_language(p_dem),
+                "takeaway": takeaway_sentence(
+                    district=race.district, margins=margins, probs=probs
+                ),
+                "flip_threshold_pp": flip_threshold_pp(margins, probs),
                 "decomposition": {k: round(v, 4) for k, v in parts.items()},
                 "components_raw": {k: round(v, 4) for k, v in comps.items()},
                 "meta": meta,
                 "n_polls": 0 if poll is None else poll["n_polls"],
+                "env_probs": probs,
+                "env_mu": mus,
             }
         )
     return {
@@ -598,6 +704,15 @@ def predict_races(
         "as_of": day.isoformat(),
         "sigma_fundamentals": sigma_f,
         "generic_ballot": generic,
+        "env_grid": {
+            "margin_pp": margins,
+            "unit": "democratic_generic_ballot_margin_points",
+            "step": ENV_MARGIN_STEP,
+            "min": ENV_MARGIN_MIN,
+            "max": ENV_MARGIN_MAX,
+            "default_margin_pp": default_margin,
+            "probs": grid_probs,
+        },
         "races": races_out,
         "log": load_predictions(),
         "fit": {

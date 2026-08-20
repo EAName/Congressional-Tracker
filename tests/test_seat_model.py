@@ -126,9 +126,40 @@ def test_predict_three_tracked_races() -> None:
     payload = predict_races(as_of=date(2026, 8, 19), fit=load_fit())
     ids = {r["race_id"] for r in payload["races"]}
     assert ids == {"va-01", "va-02", "va-05"}
+    grid = payload["env_grid"]
+    assert grid["margin_pp"][0] == -4.0
+    assert grid["margin_pp"][-1] == 12.0
+    assert len(grid["margin_pp"]) == 33
     for race in payload["races"]:
         assert 0.0 <= race["prob_dem"] <= 1.0
         assert race["share_lo"] <= race["mu_dem_two_party"] <= race["share_hi"]
         assert "intercept" in race["decomposition"]
         assert race["blend"] == "fundamentals_only"
         assert race["model_version"] == "seat-v1.0"
+        assert race["takeaway"].startswith("VA-")
+        assert "vote" not in race["takeaway"].lower()
+        assert len(race["env_probs"]) == 33
+        assert grid["probs"][race["race_id"]] == race["env_probs"]
+
+
+def test_env_grid_monotonic_and_flip_threshold() -> None:
+    from vact.analysis.seat_model import (
+        env_margin_grid,
+        flip_threshold_pp,
+        interpolate_grid,
+        takeaway_sentence,
+    )
+
+    margins = env_margin_grid()
+    # Synthetic: crosses 0.5 at D+2.0
+    probs = [0.2 + 0.1 * (m + 4) / 2 for m in margins]
+    # that's not crossing at 2... just test helpers
+    probs = [0.40 if m < 2.0 else 0.55 for m in margins]
+    assert flip_threshold_pp(margins, probs) == 2.0
+    sentence = takeaway_sentence(district=1, margins=margins, probs=probs)
+    assert "D+2" in sentence
+    assert interpolate_grid(margins, probs, 1.75) < 0.55
+    always = [0.8] * len(margins)
+    assert "stays above 50%" in takeaway_sentence(district=2, margins=margins, probs=always)
+    never = [0.2] * len(margins)
+    assert "stays below 50%" in takeaway_sentence(district=5, margins=margins, probs=never)

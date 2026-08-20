@@ -394,6 +394,13 @@ Prompt 0 (this file) — **done**. No behavior change.
 - [x] 2022 toss-up Brier vs always-incumbent in the fit summary
 - [x] `/races` + `/races/[raceId]` probability, interval, decomposition, sparkline
 
+**Prompt 14 — race pages + environment slider**
+
+- [x] `/` battleground overview; `/race/va-0x` full race page; `/analysis` forest
+- [x] Generic-ballot slider on a 0.5-point grid, client interpolation, scenario label
+- [x] Flip-threshold takeaway sentences from the grid
+- [x] Per-race OG images
+
 **Prompt 7 — forecasts**
 
 - [ ] Append-only `data/predictions.csv` enforced in validation

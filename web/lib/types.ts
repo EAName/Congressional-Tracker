@@ -134,19 +134,56 @@ export interface SeatRace {
   sigma: number;
   blend: "fundamentals_only" | "fundamentals_plus_polls" | string;
   plain_language: string;
+  takeaway?: string;
+  flip_threshold_pp?: number | null;
+  env_probs?: number[];
+  env_mu?: number[];
   decomposition: SeatDecomposition;
   n_polls: number;
   meta?: {
     lean_status?: string;
     environment_source?: string;
+    dem_receipts?: number;
+    rep_receipts?: number;
   };
+}
+
+export interface EnvGrid {
+  margin_pp: number[];
+  default_margin_pp: number;
+  step: number;
+  min: number;
+  max: number;
+  probs: Record<string, number[]>;
 }
 
 export interface SeatsDoc {
   model_version: string;
   as_of: string;
   races: SeatRace[];
+  env_grid?: EnvGrid;
   log: Array<{ race_id: string; date: string; prob_dem: string; model_version: string }>;
+}
+
+export interface FecCandidate {
+  fec_candidate_id: string;
+  race_id: string;
+  role: string;
+  name: string;
+  party: string;
+  receipts: number | null;
+  cash_on_hand: number | null;
+  small_dollar_share: number | null;
+  independent_expenditures_support: number;
+  independent_expenditures_oppose: number;
+}
+
+export interface FecDoc {
+  latest_path: string | null;
+  snapshot: {
+    snapshot_date: string;
+    candidates: FecCandidate[];
+  } | null;
 }
 
 export interface Member {

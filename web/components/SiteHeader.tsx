@@ -5,7 +5,7 @@ export default function SiteHeader({
   daysUntilElection,
   electionDate,
 }: {
-  active: "scorecard" | "methodology" | "races";
+  active: "overview" | "analysis" | "methodology";
   daysUntilElection?: number;
   electionDate?: string;
 }) {
@@ -27,11 +27,11 @@ export default function SiteHeader({
           {countdown ? <p className="election-countdown">{countdown}</p> : null}
         </div>
         <nav className="site-nav" aria-label="Primary">
-          <Link href="/" aria-current={active === "scorecard" ? "page" : undefined}>
-            Scorecard
+          <Link href="/" aria-current={active === "overview" ? "page" : undefined}>
+            Battlegrounds
           </Link>
-          <Link href="/races" aria-current={active === "races" ? "page" : undefined}>
-            Races
+          <Link href="/analysis" aria-current={active === "analysis" ? "page" : undefined}>
+            Analysis
           </Link>
           <Link
             href="/methodology"

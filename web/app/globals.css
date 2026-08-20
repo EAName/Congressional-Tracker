@@ -998,9 +998,110 @@ a:hover {
   stroke-width: 2;
 }
 
+.env-slider {
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.75rem 0 1rem;
+}
+
+.env-slider input[type="range"] {
+  width: 100%;
+  min-height: 44px;
+}
+
+.env-slider-head,
+.env-slider-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.75rem;
+  font-size: 0.78rem;
+  color: var(--ink3);
+}
+
+.env-slider-value {
+  margin: 0;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.env-slider-meta .is-current {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.env-scenario {
+  margin: 0;
+  font-size: 0.82rem;
+}
+
+.env-reset {
+  min-height: 44px;
+  padding: 0 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.battle-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.battle-card {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.95rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  text-decoration: none;
+  color: inherit;
+  min-height: 44px;
+}
+
+.fec-bars {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.fec-row {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.fec-name {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.fec-bar {
+  height: 10px;
+  border-radius: 99px;
+  min-width: 4px;
+}
+
+.fec-bar.dem {
+  background: #7eb6ff;
+}
+
+.fec-bar.rep {
+  background: #ff8b8b;
+}
+
+.fec-meta {
+  font-size: 0.75rem;
+  color: var(--ink3);
+}
+
 @media (max-width: 640px) {
   .seat-probs,
-  .seat-stack-row {
+  .seat-stack-row,
+  .battle-grid {
     grid-template-columns: 1fr;
   }
 }
