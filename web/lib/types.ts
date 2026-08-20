@@ -198,7 +198,7 @@ export interface Member {
 
 export const THEME_LABELS: Record<string, string> = {
   INPUT_COSTS: "Input costs",
-  REGULATORY_BURDEN: "Regulatory burden",
+  REGULATORY_BURDEN: "Compliance and reporting",
   HEALTH_COSTS: "Health costs",
   ACCESS_TO_CAPITAL: "Access to capital",
   TAX_BURDEN: "Tax burden",

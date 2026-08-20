@@ -323,19 +323,19 @@ def render_deviations_md(
 ) -> str:
     generated = datetime.now(UTC).replace(microsecond=0).isoformat().replace("+00:00", "Z")
     lines = [
-        "# Within-party deviations (defection detection)",
+        "# Caucus crossover votes",
         "",
         f"Axis: **{config.axis_name}** — {config.axis_description}",
         "",
         "A member appears when their caucus deviation is backed by at least "
-        f"{config.min_defection_votes} defection vote(s) (a roll call where their "
+        f"{config.min_defection_votes} crossover vote(s) (a roll call where their "
         "axis-direction opposed their party's majority) and they have "
         f"≥ {config.min_eligible_for_display} contested votes in the theme. Baseline = "
-        f"{config.deviation_baseline} of the caucus. Absences are never defections.",
+        f"{config.deviation_baseline} of the caucus. Absences are never counted as crossovers.",
         "",
     ]
     if not deviations:
-        lines += ["_No qualifying within-party deviations._", ""]
+        lines += ["_No qualifying caucus crossover votes._", ""]
         return "\n".join(lines)
 
     current_theme: str | None = None
@@ -351,7 +351,7 @@ def render_deviations_md(
             f"{_fmt(r.party_baseline)}  (n={r.n_contested}"
             + (f", absence rate {r.absence_rate:.0%}" if r.absence_rate else "")
             + ")",
-            f"- {len(r.defection_votes)} defection vote(s) — crossed the caucus majority on:",
+            f"- {len(r.defection_votes)} crossover vote(s) — voted against the caucus majority on:",
         ]
         for d in r.defection_votes:
             summary = (d.plain_language_summary or "").strip() or "_(no adjudicated summary)_"

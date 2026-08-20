@@ -323,12 +323,12 @@ export default function Dashboard({
       </Module>
 
       <Module
-        title="Within-party defections"
-        kicker="Selecting a flagged member from any chart opens their votes"
+        title="Caucus crossover votes"
+        kicker="Members who voted against their caucus majority on this theme"
         span={12}
       >
         {themeDevs.length === 0 ? (
-          <p className="cap">No qualifying defections for this filter.</p>
+          <p className="cap">No qualifying crossover votes for this filter.</p>
         ) : (
           <div className="defections">
             {themeDevs.map((d) => {

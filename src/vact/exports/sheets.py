@@ -440,7 +440,7 @@ def build_readme_values(
         [
             "analysis_tabs",
             f"{TAB_SCORES}: live signed scores + Wilson bands; "
-            f"{TAB_DEVIATIONS}: within-party defections with source links "
+            f"{TAB_DEVIATIONS}: caucus crossover votes with source links "
             f"(map={ANALYSIS_MAP_VERSION}).",
         ],
         [

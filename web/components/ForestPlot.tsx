@@ -267,7 +267,7 @@ export default function ForestPlot({
               {cospById?.has(tip.row.bioguide_id)
                 ? ` · cosp n=${cospById.get(tip.row.bioguide_id)!.n}`
                 : ""}
-              {flagged.has(tip.row.bioguide_id) ? " · opens defections" : ""}
+              {flagged.has(tip.row.bioguide_id) ? " · opens crossover votes" : ""}
             </div>
           );
         })()}
