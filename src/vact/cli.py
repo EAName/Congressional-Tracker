@@ -450,7 +450,7 @@ def sheets_preflight_cmd() -> None:
 def sheets_push_cmd(
     warehouse: Path | None = typer.Option(None, "--warehouse"),
 ) -> None:
-    """Push README, Target Four, Full Delegation, and Vote Detail tabs."""
+    """Push README, scorecards, vote detail, races, and environment grid tabs."""
     from vact.exports import sheets as sheets_mod
 
     try:

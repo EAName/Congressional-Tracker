@@ -46,6 +46,16 @@ CATEGORY_DISPLAY = {
     "MOTION_TO_RECOMMIT": "Motion to recommit",
 }
 
+TAG_DISPLAY = {
+    "ACCESS_TO_CAPITAL": "Access to capital",
+    "TAX_BURDEN": "Tax burden",
+    "FEDERAL_CONTRACTING": "Federal contracting",
+    "HEALTH_COSTS": "Health costs",
+    "INPUT_COSTS": "Input costs",
+    "REGULATORY_BURDEN": "Compliance and reporting",
+    "WORKFORCE": "Workforce",
+}
+
 DISTRICT_PAGE_MAX_VOTES = 5
 
 ALL_IMPACT_TAGS = (
@@ -64,7 +74,7 @@ def display_category(raw: str) -> str:
 
 
 def display_tag(raw: str) -> str:
-    return raw.replace("_", " ").title()
+    return TAG_DISPLAY.get(raw, raw.replace("_", " ").title())
 
 
 def generated_at_utc() -> str:

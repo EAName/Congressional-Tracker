@@ -94,6 +94,8 @@ def test_build_tab_payloads(tmp_path: Path) -> None:
             "Full Delegation",
             "Signed Scores",
             "Party Deviations",
+            "Races",
+            "Environment Grid",
             "Vote Detail",
         }
         assert payloads["README"][1][1] == "2026-08-03T00:00:00Z"
@@ -112,9 +114,15 @@ def test_build_tab_payloads(tmp_path: Path) -> None:
         assert score_ncols == 12
         assert dash[0][score_ncols] == ""  # one-col gutter
         assert dash[0][score_ncols + 1] == "Vote category"
-        assert "Access To Capital" in payloads["Target Four"][0] or "Access to Capital" in str(
-            payloads["Target Four"][0]
-        )
+        assert "Access to capital" in str(payloads["Target Four"][0])
+        assert payloads["Party Deviations"][0][11] == "N Crossover Votes"
+        races_tab = payloads["Races"]
+        assert races_tab[0][0] == "Race"
+        assert {"va-01", "va-02", "va-05"} <= {row[0] for row in races_tab[1:]}
+        env_tab = payloads["Environment Grid"]
+        assert env_tab[0] == ["Race", "District", "Is default", "Margin label", "Margin pp", "P(Dem)", "P(Rep)"]
+        assert any(row[2] == "Yes" for row in env_tab[1:])
+        assert all(0.0 <= float(row[5]) <= 1.0 for row in env_tab[1:])
         # Target header + VA-1 / VA-2 under 2021 map.
         assert payloads["Target Four"][0][0] == "Member"
         assert len(payloads["Target Four"]) == 3  # header + 2 targets
@@ -143,7 +151,7 @@ def test_site_suppresses_procedural_and_requires_summary(tmp_path: Path) -> None
     assert 'id="impactChart"' in index
     assert "heatmap" in index
     assert "Target Four" in index
-    assert "Access To Capital" in index or "Access to Capital" in index or "ACCESS_TO_CAPITAL" not in index
+    assert "Access to capital" in index or "ACCESS_TO_CAPITAL" not in index
     assert (dest / "tracker.js").is_file()
     assert (dest / "styles.css").is_file()
     sources = (dest / "methodology.html").read_text(encoding="utf-8")

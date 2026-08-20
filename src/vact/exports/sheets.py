@@ -17,6 +17,7 @@ from vact.exports.data import (
     SITE_SCORECARD_TAGS,
     corpus_vote_count,
     display_category,
+    display_tag,
     generated_at_utc,
     impact_tag_mix,
     list_delegation,
@@ -45,6 +46,8 @@ TAB_FULL = "Full Delegation"
 TAB_DETAIL = "Vote Detail"
 TAB_SCORES = "Signed Scores"
 TAB_DEVIATIONS = "Party Deviations"
+TAB_RACES = "Races"
+TAB_ENV_GRID = "Environment Grid"
 
 # Hand-built v1 stubs. Deleted on every push so the share link is not the
 # Vacant-VA-11 roster.
@@ -64,9 +67,6 @@ def _workbook_title() -> str:
 def _readme_subtitle() -> str:
     brand = load_brand_config()
     return brand["tagline"]
-
-
-WORKBOOK_TITLE = _workbook_title()
 
 # Match the press site: tags with live density (no empty TAX_BURDEN column).
 SHEETS_SCORECARD_TAGS = SITE_SCORECARD_TAGS
@@ -89,7 +89,7 @@ SCORECARD_HEADER = [
     "Map",
     "Lean",
     "Target",
-    *[t.replace("_", " ").title() for t in SHEETS_SCORECARD_TAGS],
+    *[display_tag(t) for t in SHEETS_SCORECARD_TAGS],
 ]
 
 
@@ -333,7 +333,7 @@ def build_signed_scores_matrix(
                 r["chamber"],
                 r["district_number"] if r["district_number"] is not None else "Statewide",
                 r["map_version"],
-                r["impact_tag"],
+                display_tag(str(r["impact_tag"])),
                 r["signed_score"],
                 r["wilson_low"],
                 r["wilson_high"],
@@ -372,7 +372,7 @@ def build_party_deviations_matrix(
         "Deviation",
         "N Contested",
         "Absence Rate",
-        "N Defection Votes",
+        "N Crossover Votes",
         "Vote Date",
         "Bill",
         "Position",
@@ -395,7 +395,7 @@ def build_party_deviations_matrix(
             r.chamber,
             district,
             map_version,
-            r.impact_tag,
+            display_tag(r.impact_tag),
             r.signed_score,
             r.party_baseline,
             r.deviation,
@@ -421,6 +421,135 @@ def build_party_deviations_matrix(
     return out
 
 
+def _format_margin_pp(pp: float) -> str:
+    sign = "+" if pp > 0 else ""
+    return f"D{sign}{pp:g}"
+
+
+def _party_letter(party: str | None) -> str:
+    if party == "Democrat":
+        return "D"
+    if party == "Republican":
+        return "R"
+    return "?"
+
+
+def build_races_matrix(payload: dict[str, Any] | None = None) -> list[list[Any]]:
+    """Current seat-model snapshot, one row per tracked race."""
+    from vact.analysis.races import load_races
+    from vact.analysis.seat_model import predict_races
+
+    seats = payload or predict_races()
+    registry = {r.race_id: r for r in load_races().races}
+    generic = seats.get("generic_ballot")
+    grid = seats.get("env_grid") or {}
+    header = [
+        "Race",
+        "District",
+        "Incumbent",
+        "Incumbent Party",
+        "Challenger",
+        "Challenger Party",
+        "P(Dem)",
+        "P(Rep)",
+        "Dem two-party share",
+        "Share lo (80%)",
+        "Share hi (80%)",
+        "Blend",
+        "N Polls",
+        "Lean status",
+        "Environment source",
+        "Generic ballot date",
+        "Default margin",
+        "Flip threshold",
+        "Takeaway",
+        "Plain language",
+        "Model",
+        "As of",
+        "Lean (pp of mu)",
+        "Incumbency (pp of mu)",
+        "Midterm (pp of mu)",
+        "Fundraising (pp of mu)",
+        "Challenger quality (pp of mu)",
+        "National environment (pp of mu)",
+        "Polls (pp of mu)",
+        "Dem receipts",
+        "Rep receipts",
+    ]
+    out: list[list[Any]] = [header]
+    for race in seats.get("races") or []:
+        entry = registry.get(race["race_id"])
+        decomp = race.get("decomposition") or {}
+        meta = race.get("meta") or {}
+        flip = race.get("flip_threshold_pp")
+        out.append(
+            [
+                race["race_id"],
+                f"VA-{race['district']}",
+                entry.incumbent.name if entry else "",
+                _party_letter(entry.incumbent.party if entry else None),
+                entry.challenger.name if entry else "",
+                _party_letter(entry.challenger.party if entry else None),
+                race["prob_dem"],
+                race["prob_rep"],
+                race["mu_dem_two_party"],
+                race["share_lo"],
+                race["share_hi"],
+                race["blend"],
+                race["n_polls"],
+                meta.get("lean_status", ""),
+                meta.get("environment_source", ""),
+                None if not generic else generic.get("date"),
+                _format_margin_pp(float(grid.get("default_margin_pp") or 0)),
+                "" if flip is None else _format_margin_pp(float(flip)),
+                race.get("takeaway") or "",
+                race.get("plain_language") or "",
+                race["model_version"],
+                race["as_of"],
+                decomp.get("lean_rel_dem"),
+                decomp.get("inc_dem"),
+                decomp.get("midterm_dem"),
+                decomp.get("log_ratio_dem"),
+                decomp.get("qual_dem"),
+                decomp.get("nat_env"),
+                decomp.get("polls"),
+                meta.get("dem_receipts"),
+                meta.get("rep_receipts"),
+            ]
+        )
+    return out
+
+
+def build_env_grid_matrix(payload: dict[str, Any] | None = None) -> list[list[Any]]:
+    """Slider substrate: P(Dem) at each generic-ballot margin. Sheets has no slider."""
+    from vact.analysis.seat_model import predict_races
+
+    seats = payload or predict_races()
+    grid = seats.get("env_grid") or {}
+    margins = [float(m) for m in (grid.get("margin_pp") or [])]
+    default = float(grid.get("default_margin_pp") or 0)
+    header = ["Race", "District", "Is default", "Margin label", "Margin pp", "P(Dem)", "P(Rep)"]
+    out: list[list[Any]] = [header]
+    races = {r["race_id"]: r for r in (seats.get("races") or [])}
+    for race_id, probs in (grid.get("probs") or {}).items():
+        race = races.get(race_id) or {}
+        district = race.get("district", "")
+        for margin, p in zip(margins, probs, strict=False):
+            p_dem = float(p)
+            out.append(
+                [
+                    race_id,
+                    f"VA-{district}" if district != "" else "",
+                    "Yes" if abs(margin - default) < 1e-9 else "No",
+                    _format_margin_pp(margin),
+                    margin,
+                    round(p_dem, 4),
+                    round(1.0 - p_dem, 4),
+                ]
+            )
+    return out
+
+
 def build_readme_values(
     *,
     generated_at: str,
@@ -441,7 +570,9 @@ def build_readme_values(
             "analysis_tabs",
             f"{TAB_SCORES}: live signed scores + Wilson bands; "
             f"{TAB_DEVIATIONS}: caucus crossover votes with source links "
-            f"(map={ANALYSIS_MAP_VERSION}).",
+            f"(map={ANALYSIS_MAP_VERSION}); "
+            f"{TAB_RACES}: seat-model snapshot; "
+            f"{TAB_ENV_GRID}: P(Dem) at each generic-ballot margin (web slider substrate).",
         ],
         [
             "sources",
@@ -453,7 +584,9 @@ def build_readme_values(
             "Impact tags from config/impact_rules.yaml (RULE) or human promote (HUMAN). "
             "Unadjudicated LLM tags never appear. Signed scores require fact_vote_valence. "
             f"Target seats come from config/districts.yaml is_target under map "
-            f"{DASHBOARD_MAP_VERSION} (VA-1 / VA-2 until Prompt 11 baselines).",
+            f"{DASHBOARD_MAP_VERSION} (VA-1 / VA-2 until Prompt 11 baselines). "
+            "Race probabilities are live from predict_races() (seat-v1.0); lean may be "
+            "zeroed when races.json presidential shares are still null.",
         ],
         [
             "procedural_caveat",
@@ -586,9 +719,7 @@ def build_dashboard_layout(
         tag = tags[i] if i < len(tags) else {"label": "", "count": ""}
         rows[r_idx][chart_col_cat - 1] = display_category(str(cat["label"])) if cat["label"] else ""
         rows[r_idx][chart_col_cat] = cat["count"]
-        rows[r_idx][chart_col_tag - 1] = (
-            str(tag["label"]).replace("_", " ").title() if tag["label"] else ""
-        )
+        rows[r_idx][chart_col_tag - 1] = display_tag(str(tag["label"])) if tag["label"] else ""
         rows[r_idx][chart_col_tag] = tag["count"]
 
     meta = {
@@ -643,6 +774,25 @@ def build_tab_payloads(
     votes = corpus_vote_count(conn)
     tagged = tagged_vote_count(conn)
     ready = publication_ready_count(conn)
+    seats = None
+    seats_error: str | None = None
+    try:
+        from vact.analysis.seat_model import predict_races
+
+        seats = predict_races()
+    except Exception as err:  # noqa: BLE001 — scorecard tabs still publish
+        seats_error = str(err)
+        logger.warning("sheets_seat_model_skipped", error=seats_error)
+    races_tab = (
+        build_races_matrix(seats)
+        if seats is not None
+        else [["note"], [seats_error or "seat model unavailable"]]
+    )
+    env_tab = (
+        build_env_grid_matrix(seats)
+        if seats is not None
+        else [["note"], [seats_error or "seat model unavailable"]]
+    )
     detail_header = [
         "Member",
         "Party",
@@ -661,6 +811,8 @@ def build_tab_payloads(
         TAB_FULL: _scorecard_matrix(full),
         TAB_SCORES: build_signed_scores_matrix(conn),
         TAB_DEVIATIONS: build_party_deviations_matrix(conn),
+        TAB_RACES: races_tab,
+        TAB_ENV_GRID: env_tab,
         TAB_DETAIL: detail,
         TAB_README: build_readme_values(
             generated_at=ts, corpus_votes=votes, tagged=tagged, ready=ready
@@ -745,13 +897,13 @@ def _purge_legacy_tabs(sh) -> list[str]:
     return purged
 
 
-def _set_workbook_title(sh, title: str = WORKBOOK_TITLE) -> None:
+def _set_workbook_title(sh, title: str | None = None) -> None:
     sh.batch_update(
         {
             "requests": [
                 {
                     "updateSpreadsheetProperties": {
-                        "properties": {"title": title},
+                        "properties": {"title": title or _workbook_title()},
                         "fields": "title",
                     }
                 }
@@ -1285,12 +1437,21 @@ def _format_workbook(sh, dash_meta: dict[str, Any]) -> None:
             }
         )
 
-    for ws, widths in (
+    width_targets: list[tuple[Any, list[int]]] = [
         (dash, [220, 120, 90, 70, 55, 80, 65, 110, 110, 110, 110, 120]),
         (target, [200, 110, 80, 70, 50, 80, 60, 110, 110, 110, 110, 120]),
         (full, [200, 110, 80, 70, 50, 80, 60, 110, 110, 110, 110, 120]),
         (detail, [180, 90, 70, 100, 110, 280, 80, 160, 280]),
+    ]
+    for title, widths in (
+        (TAB_RACES, [90, 70, 180, 70, 180, 70, 80, 80, 110, 90, 90, 150, 70, 120, 140, 120, 90, 90, 280, 220, 90, 100]),
+        (TAB_ENV_GRID, [90, 70, 90, 90, 90, 80, 80]),
     ):
+        try:
+            width_targets.append((sh.worksheet(title), widths))
+        except Exception:  # gspread.WorksheetNotFound
+            continue
+    for ws, widths in width_targets:
         for i, px in enumerate(widths):
             requests.append(
                 {
@@ -1335,7 +1496,7 @@ def push(*, warehouse_path: Path | None = None) -> dict[str, int]:
     # Remove stubs before writing so product tabs are the only visible sheets.
     purged = _purge_legacy_tabs(sh)
     try:
-        _set_workbook_title(sh)
+        _set_workbook_title(sh, title=_workbook_title())
     except Exception as err:  # noqa: BLE001
         logger.warning("sheets_title_skip", error=str(err))
 
@@ -1347,6 +1508,8 @@ def push(*, warehouse_path: Path | None = None) -> dict[str, int]:
         TAB_FULL,
         TAB_SCORES,
         TAB_DEVIATIONS,
+        TAB_RACES,
+        TAB_ENV_GRID,
         TAB_DETAIL,
         TAB_README,
     ]
@@ -1374,7 +1537,7 @@ def push(*, warehouse_path: Path | None = None) -> dict[str, int]:
     except Exception as err:  # noqa: BLE001
         logger.warning("sheets_format_skipped", error=str(err))
 
-    for title in (TAB_DETAIL, TAB_SCORES, TAB_DEVIATIONS):
+    for title in (TAB_DETAIL, TAB_SCORES, TAB_DEVIATIONS, TAB_RACES, TAB_ENV_GRID):
         try:
             ws = sh.worksheet(title)
             ws.freeze(rows=1)
