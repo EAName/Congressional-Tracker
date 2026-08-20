@@ -1,0 +1,12 @@
+# Cosponsorship ingest (Prompt 6). Separate from floor-vote scoring.
+#
+# extra_members covers senators who may not appear in votes.csv yet.
+# Join key is bioguide_id only.
+
+version: 1
+congress: 119
+page_size: 250
+
+extra_members:
+  - { bioguide_id: W000805, full_name: Mark R. Warner, party: Democrat, chamber: Senate, district: "" }
+  - { bioguide_id: K000384, full_name: Tim Kaine, party: Democrat, chamber: Senate, district: "" }

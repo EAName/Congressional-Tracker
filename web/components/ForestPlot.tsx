@@ -34,6 +34,7 @@ export default function ForestPlot({
   onSelect,
   partyBaselines,
   mode = "eb",
+  cospById,
 }: {
   rows: Score[];
   flagged: Set<string>;
@@ -43,6 +44,7 @@ export default function ForestPlot({
   onSelect: (id: string) => void;
   partyBaselines?: { Democrat?: number; Republican?: number };
   mode?: ScoreMode;
+  cospById?: Map<string, { eb: number; n: number }>;
 }) {
   const gid = useId().replace(/:/g, "");
   const [tip, setTip] = useState<Tip | null>(null);
@@ -222,6 +224,17 @@ export default function ForestPlot({
                   stroke={isSelected ? "var(--navy)" : "var(--surface)"}
                   strokeWidth={isSelected ? 2.4 : 1.8}
                 />
+                {cospById?.get(r.bioguide_id) != null && (
+                  <circle
+                    cx={x(cospById.get(r.bioguide_id)!.eb)}
+                    cy={cy - 7}
+                    r={4.2}
+                    fill="none"
+                    stroke={color}
+                    strokeWidth={1.6}
+                    opacity={0.9}
+                  />
+                )}
                 {isFlagged && (
                   <text
                     x={W - 12}
@@ -251,6 +264,9 @@ export default function ForestPlot({
               {band} [{fmtScore(est.lo)}, {fmtScore(est.hi)}]
               <br />
               k={est.k} / n={est.n} · click to focus
+              {cospById?.has(tip.row.bioguide_id)
+                ? ` · cosp n=${cospById.get(tip.row.bioguide_id)!.n}`
+                : ""}
               {flagged.has(tip.row.bioguide_id) ? " · opens defections" : ""}
             </div>
           );

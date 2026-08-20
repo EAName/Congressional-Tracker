@@ -1,21 +1,33 @@
 {
-  "generated_at_utc": "2026-08-20T01:37:41Z",
-  "map_version": "2021",
-  "axis": {
-    "name": "small_business_climate",
-    "description": "Positive = a YEA advances the small-business / affordability axis (lower input costs, easier access to capital, lighter compliance burden)."
-  },
-  "themes": [
-    "ACCESS_TO_CAPITAL",
-    "FEDERAL_CONTRACTING",
-    "HEALTH_COSTS",
-    "INPUT_COSTS",
-    "REGULATORY_BURDEN",
-    "TAX_BURDEN",
-    "WORKFORCE"
+  "repo_url": "https://github.com/EAName/Congressional-Tracker",
+  "votes_url": "https://github.com/EAName/Congressional-Tracker/blob/main/data/votes.csv",
+  "reproduce": [
+    "git clone https://github.com/EAName/Congressional-Tracker.git",
+    "cd Congressional-Tracker && uv sync",
+    "./bin/vact votes validate && ./bin/vact export-web"
   ],
-  "sufficient_min": 3,
-  "estimate_default": "eb",
+  "scoreable": {
+    "axis_name": "small_business_climate",
+    "axis_description": "Positive = a YEA advances the small-business / affordability axis (lower input costs, easier access to capital, lighter compliance burden).",
+    "include_categories": [
+      "AMENDMENT",
+      "PASSAGE"
+    ],
+    "exclude_categories": [
+      "CLOTURE",
+      "MOTION_TO_RECOMMIT",
+      "NOMINATION",
+      "PROCEDURAL",
+      "SUSPENSION"
+    ],
+    "exclude_rule_resolutions": true,
+    "min_contested": 3,
+    "wilson_z": 1.96,
+    "eb_method": "moments",
+    "eb_min_caucus": 3,
+    "eb_fallback_alpha": 2.0,
+    "eb_fallback_beta": 2.0
+  },
   "baselines": [
     {
       "theme": "ACCESS_TO_CAPITAL",
@@ -156,6 +168,94 @@
       "prior_beta": 0.5,
       "prior_source": "degenerate",
       "n_members": 5
+    }
+  ],
+  "worked_example": {
+    "bioguide_id": "V000138",
+    "full_name": "Eugene Simon Vindman",
+    "party": "Democrat",
+    "chamber": "House",
+    "district_number": 7,
+    "theme": "INPUT_COSTS",
+    "k": 1,
+    "n": 4,
+    "p_raw": 0.25,
+    "raw_score": -0.5,
+    "wilson_lo": -0.9088,
+    "wilson_hi": 0.3987,
+    "prior_alpha": 0.118056,
+    "prior_beta": 2.715278,
+    "prior_source": "moments",
+    "prior_mean": 0.0417,
+    "post_alpha": 1.118056,
+    "post_beta": 5.715278,
+    "post_mean": 0.1636,
+    "eb_score": -0.6728,
+    "cred_lo": -0.9864,
+    "cred_hi": -0.0115,
+    "shrinkage": -0.1728
+  },
+  "separation": {
+    "weakly_informative": {
+      "delta_signed": 0.25,
+      "power_target": 0.8,
+      "n_sims": 2000,
+      "cred_level": 0.95,
+      "p_true": [
+        0.5,
+        0.625
+      ],
+      "signed_true": [
+        0.0,
+        0.25
+      ],
+      "prior_alpha": 2.0,
+      "prior_beta": 2.0,
+      "prior_source": "weakly_informative",
+      "n_needed": null,
+      "power_at_n": null,
+      "power_at_max_n": 0.779,
+      "max_n": 400,
+      "reached": false
+    },
+    "worked_example_prior": {
+      "delta_signed": 0.25,
+      "power_target": 0.8,
+      "n_sims": 2000,
+      "cred_level": 0.95,
+      "p_true": [
+        0.5,
+        0.625
+      ],
+      "signed_true": [
+        0.0,
+        0.25
+      ],
+      "prior_alpha": 0.118056,
+      "prior_beta": 2.715278,
+      "prior_source": "moments",
+      "n_needed": null,
+      "power_at_n": null,
+      "power_at_max_n": 0.779,
+      "max_n": 400,
+      "reached": false
+    }
+  },
+  "changelog": [
+    {
+      "sha": "343d3dd",
+      "date": "2026-08-19",
+      "subject": "Add per-caucus empirical Bayes shrinkage for signed scores."
+    },
+    {
+      "sha": "348b066",
+      "date": "2026-08-19",
+      "subject": "Add versioned votes.csv as the scoring adjudication layer."
+    },
+    {
+      "sha": "a8f82e8",
+      "date": "2026-08-04",
+      "subject": "Add signed scoring frame and within-party deviation report."
     }
   ]
 }

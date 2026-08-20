@@ -28,6 +28,7 @@ data/warehouse/**
 !data/warehouse/.gitkeep
 
 # data/votes.csv is committed — Prompt 1 adjudication audit trail.
+# data/derived/irt.json is committed — Prompt 4 offline 2PL artifact.
 
 # Reports: keep directory; commit coverage/diffs when CI is green (Prompt 10)
 data/reports/**

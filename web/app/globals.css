@@ -333,6 +333,12 @@ a:hover {
   border-radius: 50%;
 }
 
+.legend i.legend-hollow {
+  background: transparent;
+  border: 1.5px solid var(--ink2);
+  box-sizing: border-box;
+}
+
 .cap {
   font-size: 0.75rem;
   color: var(--ink3);
@@ -566,6 +572,289 @@ a:hover {
   color: var(--ink3);
   line-height: 1.65;
   max-width: 80ch;
+}
+
+.site-nav {
+  display: flex;
+  gap: 1.1rem;
+  align-items: center;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.site-nav a {
+  color: var(--ink3);
+  text-decoration: none;
+}
+
+.site-nav a:hover,
+.site-nav a[aria-current="page"] {
+  color: var(--ink);
+}
+
+.site-nav a[aria-current="page"] {
+  box-shadow: inset 0 -2px 0 var(--dem);
+}
+
+.method-shell .workspace {
+  max-width: 52rem;
+}
+
+.method {
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: 1.5rem clamp(1rem, 3vw, 1.75rem) 4rem;
+  color: var(--ink2);
+}
+
+.method-head {
+  margin-bottom: 2rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.method-kicker {
+  margin: 0 0 0.4rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink3);
+}
+
+.method h1 {
+  margin: 0 0 0.75rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3.4vw, 2.35rem);
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  line-height: 1.15;
+}
+
+.method-lede {
+  margin: 0;
+  max-width: 62ch;
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+
+.method h2 {
+  margin: 2.1rem 0 0.7rem;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 650;
+  color: var(--ink);
+}
+
+.method h3 {
+  margin: 1.4rem 0 0.5rem;
+  font-size: 0.92rem;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  color: var(--navy);
+}
+
+.method p,
+.method li {
+  font-size: 0.92rem;
+  line-height: 1.7;
+}
+
+.method ol,
+.method ul {
+  padding-left: 1.2rem;
+}
+
+.method li {
+  margin: 0.35rem 0;
+}
+
+.method code {
+  font-size: 0.84em;
+  color: var(--ink);
+}
+
+.formula,
+.reproduce {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 0.85rem 1rem;
+  overflow-x: auto;
+  color: var(--ink);
+  font-size: 0.82rem;
+  line-height: 1.55;
+}
+
+.worked {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 0.85rem 1rem 0.85rem 1.7rem;
+}
+
+.method-table-wrap {
+  overflow-x: auto;
+  margin: 0.75rem 0 1.1rem;
+}
+
+.method table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.method th,
+.method td {
+  text-align: left;
+  padding: 0.4rem 0.55rem;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+
+.method th {
+  color: var(--ink3);
+  font-weight: 600;
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.method td:last-child {
+  white-space: normal;
+}
+
+.footnotes {
+  margin-top: 2.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+}
+
+.footnotes li {
+  font-size: 0.8rem;
+  color: var(--ink3);
+}
+
+.method sup a {
+  font-size: 0.7em;
+  font-weight: 700;
+}
+
+.time-chart {
+  min-width: 0;
+  overflow: hidden;
+  background: var(--bg-elev);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.5rem 0.35rem 0.25rem;
+}
+
+.time-chart svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.mover {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  text-align: left;
+  background: var(--bg-elev);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+}
+
+.mover:hover,
+.mover:focus-visible {
+  border-color: var(--line-strong);
+  outline: none;
+}
+
+.mover-kicker {
+  margin: 0 0 0.35rem;
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink3);
+}
+
+.mover-who {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 650;
+}
+
+.mover-who.dem {
+  color: var(--dem);
+}
+
+.mover-who.rep {
+  color: var(--rep);
+}
+
+.mover-meta,
+.mover-dates {
+  margin: 0.2rem 0 0;
+  font-size: 0.75rem;
+  color: var(--ink3);
+}
+
+.mover-delta {
+  margin: 0.55rem 0 0;
+  font-size: 1.45rem;
+  font-weight: 650;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+}
+
+.mover-delta small {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--ink3);
+}
+
+.mover-delta.up,
+.mover-delta.down {
+  color: var(--ink);
+}
+
+@media print {
+  .shell {
+    background: white;
+  }
+  .topbar {
+    position: static;
+    background: white;
+    border-color: #ccc;
+  }
+  .method,
+  .method-lede,
+  .method p,
+  .method li,
+  .method td,
+  .method th {
+    color: #111;
+  }
+  .formula,
+  .reproduce,
+  .worked {
+    background: #f4f4f4;
+    border-color: #ccc;
+    color: #111;
+  }
 }
 
 @media (max-width: 640px) {

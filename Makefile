@@ -5,7 +5,7 @@ VACT := ./bin/vact
 UV := uv
 PYTEST := PYTHONPATH=src VACT_REPO_ROOT=$(CURDIR) .venv/bin/pytest
 
-.PHONY: install ingest classify score deviations export-web test site social publish all dimensions contracts gaps votes-export votes-validate derived
+.PHONY: install ingest classify score deviations export-web test site social publish all dimensions contracts gaps votes-export votes-validate derived irt
 
 install:
 	$(UV) sync
@@ -35,6 +35,10 @@ votes-validate:
 
 # Prompt 1 derived artifacts: validate the versioned CSV, then refresh web JSON.
 derived: votes-validate export-web
+
+irt:
+	$(UV) sync --extra irt
+	$(VACT) irt
 
 test:
 	$(PYTEST) -q

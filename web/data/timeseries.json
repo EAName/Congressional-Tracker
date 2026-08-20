@@ -1,0 +1,2548 @@
+{
+  "as_of": "2026-06-09",
+  "window_days": 90,
+  "series": [
+    {
+      "bioguide_id": "B001292",
+      "full_name": "Donald S. Beyer, Jr.",
+      "party": "Democrat",
+      "chamber": "House",
+      "district_number": 8,
+      "theme": "ACCESS_TO_CAPITAL",
+      "points": [
+        {
+          "date": "2025-06-06",
+          "eb": 0.8571,
+          "lo": 0.3392,
+          "hi": 0.9998,
+          "n": 1,
+          "k": 1
+        }
+      ]
+    },
+    {
+      "bioguide_id": "C001118",
+      "full_name": "Ben Cline",
+      "party": "Republican",
+      "chamber": "House",
+      "district_number": 6,
+      "theme": "ACCESS_TO_CAPITAL",
+      "points": [
+        {
+          "date": "2025-06-06",
+          "eb": -0.8571,
+          "lo": -0.9998,
+          "hi": -0.3392,
+          "n": 1,
+          "k": 0
+        }
+      ]
+    },
+    {
+      "bioguide_id": "G000568",
+      "full_name": "H. Morgan Griffith",
+      "party": "Republican",
+      "chamber": "House",
+      "district_number": 9,
+      "theme": "ACCESS_TO_CAPITAL",
+      "points": [
+        {
+          "date": "2025-06-06",
+          "eb": -0.8571,
+          "lo": -0.9998,
+          "hi": -0.3392,
+          "n": 1,
+          "k": 0
+        }
+      ]
+    },
+    {
+      "bioguide_id": "K000399",
+      "full_name": "Jennifer A. Kiggans",
+      "party": "Republican",
+      "chamber": "House",
+      "district_number": 2,
+      "theme": "ACCESS_TO_CAPITAL",
+      "points": [
+        {
+          "date": "2025-06-06",
+          "eb": -0.8571,
+          "lo": -0.9998,
+          "hi": -0.3392,
+          "n": 1,
+          "k": 0
+        }
+      ]
+    },
+    {
+      "bioguide_id": "M001227",
+      "full_name": "Jennifer L. McClellan",
+      "party": "Democrat",
+      "chamber": "House",
+      "district_number": 4,
+      "theme": "ACCESS_TO_CAPITAL",
+      "points": [
+        {
+          "date": "2025-06-06",
+          "eb": 0.8571,
+          "lo": 0.3392,
+          "hi": 0.9998,
+          "n": 1,
+          "k": 1
+        }
+      ]
+    },
+    {
+      "bioguide_id": "M001239",
+      "full_name": "John J. McGuire III",
+      "party": "Republican",
+      "chamber": "House",
+      "district_number": 5,
+      "theme": "ACCESS_TO_CAPITAL",
+      "points": [
+        {
+          "date": "2025-06-06",
+          "eb": -0.8571,
+          "lo": -0.9998,
+          "hi": -0.3392,
+          "n": 1,
+          "k": 0
+        }
+      ]
+    },
+    {
+      "bioguide_id": "S000185",
+      "full_name": "Robert C. \"Bobby\" Scott",
+      "party": "Democrat",
+      "chamber": "House",
+      "district_number": 3,
+      "theme": "ACCESS_TO_CAPITAL",
+      "points": [
+        {
+          "date": "2025-06-06",
+          "eb": 0.8571,
+          "lo": 0.3392,
+          "hi": 0.9998,
+          "n": 1,
+          "k": 1
+        }
+      ]
+    },
+    {
+      "bioguide_id": "S001230",
+      "full_name": "Suhas Subramanyam",
+      "party": "Democrat",
+      "chamber": "House",
+      "district_number": 10,
+      "theme": "ACCESS_TO_CAPITAL",
+      "points": [
+        {
+          "date": "2025-06-06",
+          "eb": 0.8571,
+          "lo": 0.3392,
+          "hi": 0.9998,
+          "n": 1,
+          "k": 1
+        }
+      ]
+    },
+    {
+      "bioguide_id": "V000138",
+      "full_name": "Eugene Simon Vindman",
+      "party": "Democrat",
+      "chamber": "House",
+      "district_number": 7,
+      "theme": "ACCESS_TO_CAPITAL",
+      "points": [
+        {
+          "date": "2025-06-06",
+          "eb": 0.8571,
+          "lo": 0.3392,
+          "hi": 0.9998,
+          "n": 1,
+          "k": 1
+        }
+      ]
+    },
+    {
+      "bioguide_id": "W000804",
+      "full_name": "Robert J. Wittman",
+      "party": "Republican",
+      "chamber": "House",
+      "district_number": 1,
+      "theme": "ACCESS_TO_CAPITAL",
+      "points": [
+        {
+          "date": "2025-06-06",
+          "eb": -0.8571,
+          "lo": -0.9998,
+          "hi": -0.3392,
+          "n": 1,
+          "k": 0
+        }
+      ]
+    },
+    {
+      "bioguide_id": "B001292",
+      "full_name": "Donald S. Beyer, Jr.",
+      "party": "Democrat",
+      "chamber": "House",
+      "district_number": 8,
+      "theme": "FEDERAL_CONTRACTING",
+      "points": [
+        {
+          "date": "2025-09-10",
+          "eb": -0.2,
+          "lo": -0.8648,
+          "hi": 0.6118,
+          "n": 1,
+          "k": 0
+        }
+      ]
+    },
+    {
+      "bioguide_id": "C001118",
+      "full_name": "Ben Cline",
+      "party": "Republican",
+      "chamber": "House",
+      "district_number": 6,
+      "theme": "FEDERAL_CONTRACTING",
+      "points": [
+        {
+          "date": "2025-09-10",
+          "eb": 0.8571,
+          "lo": 0.3392,
+          "hi": 0.9998,
+          "n": 1,
+          "k": 1
+        }
+      ]
+    },
+    {
+      "bioguide_id": "G000568",
+      "full_name": "H. Morgan Griffith",
+      "party": "Republican",
+      "chamber": "House",
+      "district_number": 9,
+      "theme": "FEDERAL_CONTRACTING",
+      "points": [
+        {
+          "date": "2025-09-10",
+          "eb": 0.8571,
+          "lo": 0.3392,
+          "hi": 0.9998,
+          "n": 1,
+          "k": 1
+        }
+      ]
+    },
+    {
+      "bioguide_id": "K000399",
+      "full_name": "Jennifer A. Kiggans",
+      "party": "Republican",
+      "chamber": "House",
+      "district_number": 2,
+      "theme": "FEDERAL_CONTRACTING",
+      "points": [
+        {
+          "date": "2025-09-10",
+          "eb": 0.8571,
+          "lo": 0.3392,
+          "hi": 0.9998,
+          "n": 1,
+          "k": 1
+        }
+      ]
+    },
+    {
+      "bioguide_id": "M001227",
+      "full_name": "Jennifer L. McClellan",
+      "party": "Democrat",
+      "chamber": "House",
+      "district_number": 4,
+      "theme": "FEDERAL_CONTRACTING",
+      "points": [
+        {
+          "date": "2025-09-10",
+          "eb": -0.2,
+          "lo": -0.8648,
+          "hi": 0.6118,
+          "n": 1,
+          "k": 0
+        }
+      ]
+    },
+    {
+      "bioguide_id": "M001239",
+      "full_name": "John J. McGuire III",
+      "party": "Republican",
+      "chamber": "House",
+      "district_number": 5,
+      "theme": "FEDERAL_CONTRACTING",
+      "points": [
+        {
+          "date": "2025-09-10",
+          "eb": 0.8571,
+          "lo": 0.3392,
+          "hi": 0.9998,
+          "n": 1,
+          "k": 1
+        }
+      ]
+    },
+    {
+      "bioguide_id": "S000185",
+      "full_name": "Robert C. \"Bobby\" Scott",
+      "party": "Democrat",
+      "chamber": "House",
+      "district_number": 3,
+      "theme": "FEDERAL_CONTRACTING",
+      "points": [
+        {
+          "date": "2025-09-10",
+          "eb": -0.2,
+          "lo": -0.8648,
+          "hi": 0.6118,
+          "n": 1,
+          "k": 0
+        }
+      ]
+    },
+    {
+      "bioguide_id": "S001230",
+      "full_name": "Suhas Subramanyam",
+      "party": "Democrat",
+      "chamber": "House",
+      "district_number": 10,
+      "theme": "FEDERAL_CONTRACTING",
+      "points": [
+        {
+          "date": "2025-09-10",
+          "eb": -0.2,
+          "lo": -0.8648,
+          "hi": 0.6118,
+          "n": 1,
+          "k": 0
+        }
+      ]
+    },
+    {
+      "bioguide_id": "V000138",
+      "full_name": "Eugene Simon Vindman",
+      "party": "Democrat",
+      "chamber": "House",
+      "district_number": 7,
+      "theme": "FEDERAL_CONTRACTING",
+      "points": [
+        {
+          "date": "2025-09-10",
+          "eb": 0.2,
+          "lo": -0.6118,
+          "hi": 0.8648,
+          "n": 1,
+          "k": 1
+        }
+      ]
+    },
+    {
+      "bioguide_id": "W000804",
+      "full_name": "Robert J. Wittman",
+      "party": "Republican",
+      "chamber": "House",
+      "district_number": 1,
+      "theme": "FEDERAL_CONTRACTING",
+      "points": [
+        {
+          "date": "2025-09-10",
+          "eb": 0.8571,
+          "lo": 0.3392,
+          "hi": 0.9998,
+          "n": 1,
+          "k": 1
+        }
+      ]
+    },
+    {
+      "bioguide_id": "W000831",
+      "full_name": "James R. Walkinshaw",
+      "party": "Democrat",
+      "chamber": "House",
+      "district_number": 11,
+      "theme": "FEDERAL_CONTRACTING",
+      "points": [
+        {
+          "date": "2025-09-10",
+          "eb": -0.2,
+          "lo": -0.8648,
+          "hi": 0.6118,
+          "n": 1,
+          "k": 0
+        }
+      ]
+    },
+    {
+      "bioguide_id": "B001292",
+      "full_name": "Donald S. Beyer, Jr.",
+      "party": "Democrat",
+      "chamber": "House",
+      "district_number": 8,
+      "theme": "HEALTH_COSTS",
+      "points": [
+        {
+          "date": "2025-12-18",
+          "eb": 0.875,
+          "lo": 0.4151,
+          "hi": 0.9999,
+          "n": 1,
+          "k": 1
+        }
+      ]
+    },
+    {
+      "bioguide_id": "C001118",
+      "full_name": "Ben Cline",
+      "party": "Republican",
+      "chamber": "House",
+      "district_number": 6,
+      "theme": "HEALTH_COSTS",
+      "points": [
+        {
+          "date": "2025-12-18",
+          "eb": -0.8571,
+          "lo": -0.9998,
+          "hi": -0.3392,
+          "n": 1,
+          "k": 0
+        }
+      ]
+    },
+    {
+      "bioguide_id": "G000568",
+      "full_name": "H. Morgan Griffith",
+      "party": "Republican",
+      "chamber": "House",
+      "district_number": 9,
+      "theme": "HEALTH_COSTS",
+      "points": [
+        {
+          "date": "2025-12-18",
+          "eb": -0.8571,
+          "lo": -0.9998,
+          "hi": -0.3392,
+          "n": 1,
+          "k": 0
+        }
+      ]
+    },
+    {
+      "bioguide_id": "K000399",
+      "full_name": "Jennifer A. Kiggans",
+      "party": "Republican",
+      "chamber": "House",
+      "district_number": 2,
+      "theme": "HEALTH_COSTS",
+      "points": [
+        {
+          "date": "2025-12-18",
+          "eb": -0.8571,
+          "lo": -0.9998,
+          "hi": -0.3392,
+          "n": 1,
+          "k": 0
+        }
+      ]
+    },
+    {
+      "bioguide_id": "M001227",
+      "full_name": "Jennifer L. McClellan",
+      "party": "Democrat",
+      "chamber": "House",
+      "district_number": 4,
+      "theme": "HEALTH_COSTS",
+      "points": [
+        {
+          "date": "2025-12-18",
+          "eb": 0.875,
+          "lo": 0.4151,
+          "hi": 0.9999,
+          "n": 1,
+          "k": 1
+        }
+      ]
+    },
+    {
+      "bioguide_id": "M001239",
+      "full_name": "John J. McGuire III",
+      "party": "Republican",
+      "chamber": "House",
+      "district_number": 5,
+      "theme": "HEALTH_COSTS",
+      "points": [
+        {
+          "date": "2025-12-18",
+          "eb": -0.8571,
+          "lo": -0.9998,
+          "hi": -0.3392,
+          "n": 1,
+          "k": 0
+        }
+      ]
+    },
+    {
+      "bioguide_id": "S000185",
+      "full_name": "Robert C. \"Bobby\" Scott",
+      "party": "Democrat",
+      "chamber": "House",
+      "district_number": 3,
+      "theme": "HEALTH_COSTS",
+      "points": [
+        {
+          "date": "2025-12-18",
+          "eb": 0.875,
+          "lo": 0.4151,
+          "hi": 0.9999,
+          "n": 1,
+          "k": 1
+        }
+      ]
+    },
+    {
+      "bioguide_id": "S001230",
+      "full_name": "Suhas Subramanyam",
+      "party": "Democrat",
+      "chamber": "House",
+      "district_number": 10,
+      "theme": "HEALTH_COSTS",
+      "points": [
+        {
+          "date": "2025-12-18",
+          "eb": 0.875,
+          "lo": 0.4151,
+          "hi": 0.9999,
+          "n": 1,
+          "k": 1
+        }
+      ]
+    },
+    {
+      "bioguide_id": "V000138",
+      "full_name": "Eugene Simon Vindman",
+      "party": "Democrat",
+      "chamber": "House",
+      "district_number": 7,
+      "theme": "HEALTH_COSTS",
+      "points": [
+        {
+          "date": "2025-12-18",
+          "eb": 0.875,
+          "lo": 0.4151,
+          "hi": 0.9999,
+          "n": 1,
+          "k": 1
+        }
+      ]
+    },
+    {
+      "bioguide_id": "W000804",
+      "full_name": "Robert J. Wittman",
+      "party": "Republican",
+      "chamber": "House",
+      "district_number": 1,
+      "theme": "HEALTH_COSTS",
+      "points": [
+        {
+          "date": "2025-12-18",
+          "eb": -0.8571,
+          "lo": -0.9998,
+          "hi": -0.3392,
+          "n": 1,
+          "k": 0
+        }
+      ]
+    },
+    {
+      "bioguide_id": "W000831",
+      "full_name": "James R. Walkinshaw",
+      "party": "Democrat",
+      "chamber": "House",
+      "district_number": 11,
+      "theme": "HEALTH_COSTS",
+      "points": [
+        {
+          "date": "2025-12-18",
+          "eb": 0.875,
+          "lo": 0.4151,
+          "hi": 0.9999,
+          "n": 1,
+          "k": 1
+        }
+      ]
+    },
+    {
+      "bioguide_id": "B001292",
+      "full_name": "Donald S. Beyer, Jr.",
+      "party": "Democrat",
+      "chamber": "House",
+      "district_number": 8,
+      "theme": "INPUT_COSTS",
+      "points": [
+        {
+          "date": "2025-02-26",
+          "eb": -0.8571,
+          "lo": -0.9998,
+          "hi": -0.3392,
+          "n": 1,
+          "k": 0
+        },
+        {
+          "date": "2025-12-11",
+          "eb": -0.951,
+          "lo": -1.0,
+          "hi": -0.4504,
+          "n": 2,
+          "k": 0
+        },
+        {
+          "date": "2026-02-04",
+          "eb": -0.9579,
+          "lo": -1.0,
+          "hi": -0.5886,
+          "n": 3,
+          "k": 0
+        },
+        {
+          "date": "2026-02-11",
+          "eb": -0.9654,
+          "lo": -1.0,
+          "hi": -0.6808,
+          "n": 4,
+          "k": 0
+        }
+      ]
+    },
+    {
+      "bioguide_id": "C001118",
+      "full_name": "Ben Cline",
+      "party": "Republican",
+      "chamber": "House",
+      "district_number": 6,
+      "theme": "INPUT_COSTS",
+      "points": [
+        {
+          "date": "2025-02-26",
+          "eb": 0.8571,
+          "lo": 0.3392,
+          "hi": 0.9998,
+          "n": 1,
+          "k": 1
+        },
+        {
+          "date": "2025-12-11",
+          "eb": 0.9231,
+          "lo": 0.6294,
+          "hi": 0.9999,
+          "n": 2,
+          "k": 2
+        },
+        {
+          "date": "2026-02-04",
+          "eb": 0.9474,
+          "lo": 0.7429,
+          "hi": 0.9999,
+          "n": 3,
+          "k": 3
+        },
+        {
+          "date": "2026-02-11",
+          "eb": 0.96,
+          "lo": 0.8032,
+          "hi": 1.0,
+          "n": 4,
+          "k": 4
+        }
+      ]
+    },
+    {
+      "bioguide_id": "G000568",
+      "full_name": "H. Morgan Griffith",
+      "party": "Republican",
+      "chamber": "House",
+      "district_number": 9,
+      "theme": "INPUT_COSTS",
+      "points": [
+        {
+          "date": "2025-02-26",
+          "eb": 0.8571,
+          "lo": 0.3392,
+          "hi": 0.9998,
+          "n": 1,
+          "k": 1
+        },
+        {
+          "date": "2025-12-11",
+          "eb": 0.9231,
+          "lo": 0.6294,
+          "hi": 0.9999,
+          "n": 2,
+          "k": 2
+        },
+        {
+          "date": "2026-02-04",
+          "eb": 0.9474,
+          "lo": 0.7429,
+          "hi": 0.9999,
+          "n": 3,
+          "k": 3
+        },
+        {
+          "date": "2026-02-11",
+          "eb": 0.96,
+          "lo": 0.8032,
+          "hi": 1.0,
+          "n": 4,
+          "k": 4
+        }
+      ]
+    },
+    {
+      "bioguide_id": "K000399",
+      "full_name": "Jennifer A. Kiggans",
+      "party": "Republican",
+      "chamber": "House",
+      "district_number": 2,
+      "theme": "INPUT_COSTS",
+      "points": [
+        {
+          "date": "2025-02-26",
+          "eb": 0.8571,
+          "lo": 0.3392,
+          "hi": 0.9998,
+          "n": 1,
+          "k": 1
+        },
+        {
+          "date": "2025-12-11",
+          "eb": 0.9231,
+          "lo": 0.6294,
+          "hi": 0.9999,
+          "n": 2,
+          "k": 2
+        },
+        {
+          "date": "2026-02-04",
+          "eb": 0.9474,
+          "lo": 0.7429,
+          "hi": 0.9999,
+          "n": 3,
+          "k": 3
+        },
+        {
+          "date": "2026-02-11",
+          "eb": 0.96,
+          "lo": 0.8032,
+          "hi": 1.0,
+          "n": 4,
+          "k": 4
+        }
+      ]
+    },
+    {
+      "bioguide_id": "M001227",
+      "full_name": "Jennifer L. McClellan",
+      "party": "Democrat",
+      "chamber": "House",
+      "district_number": 4,
+      "theme": "INPUT_COSTS",
+      "points": [
+        {
+          "date": "2025-02-26",
+          "eb": -0.8571,
+          "lo": -0.9998,
+          "hi": -0.3392,
+          "n": 1,
+          "k": 0
+        },
+        {
+          "date": "2025-12-11",
+          "eb": -0.951,
+          "lo": -1.0,
+          "hi": -0.4504,
+          "n": 2,
+          "k": 0
+        },
+        {
+          "date": "2026-02-04",
+          "eb": -0.9579,
+          "lo": -1.0,
+          "hi": -0.5886,
+          "n": 3,
+          "k": 0
+        },
+        {
+          "date": "2026-02-11",
+          "eb": -0.9654,
+          "lo": -1.0,
+          "hi": -0.6808,
+          "n": 4,
+          "k": 0
+        }
+      ]
+    },
+    {
+      "bioguide_id": "M001239",
+      "full_name": "John J. McGuire III",
+      "party": "Republican",
+      "chamber": "House",
+      "district_number": 5,
+      "theme": "INPUT_COSTS",
+      "points": [
+        {
+          "date": "2025-02-26",
+          "eb": 0.8571,
+          "lo": 0.3392,
+          "hi": 0.9998,
+          "n": 1,
+          "k": 1
+        },
+        {
+          "date": "2025-12-11",
+          "eb": 0.9231,
+          "lo": 0.6294,
+          "hi": 0.9999,
+          "n": 2,
+          "k": 2
+        },
+        {
+          "date": "2026-02-04",
+          "eb": 0.9474,
+          "lo": 0.7429,
+          "hi": 0.9999,
+          "n": 3,
+          "k": 3
+        },
+        {
+          "date": "2026-02-11",
+          "eb": 0.96,
+          "lo": 0.8032,
+          "hi": 1.0,
+          "n": 4,
+          "k": 4
+        }
+      ]
+    },
+    {
+      "bioguide_id": "S000185",
+      "full_name": "Robert C. \"Bobby\" Scott",
+      "party": "Democrat",
+      "chamber": "House",
+      "district_number": 3,
+      "theme": "INPUT_COSTS",
+      "points": [
+        {
+          "date": "2025-02-26",
+          "eb": -0.8571,
+          "lo": -0.9998,
+          "hi": -0.3392,
+          "n": 1,
+          "k": 0
+        },
+        {
+          "date": "2025-12-11",
+          "eb": -0.951,
+          "lo": -1.0,
+          "hi": -0.4504,
+          "n": 2,
+          "k": 0
+        },
+        {
+          "date": "2026-02-04",
+          "eb": -0.9579,
+          "lo": -1.0,
+          "hi": -0.5886,
+          "n": 3,
+          "k": 0
+        },
+        {
+          "date": "2026-02-11",
+          "eb": -0.9654,
+          "lo": -1.0,
+          "hi": -0.6808,
+          "n": 4,
+          "k": 0
+        }
+      ]
+    },
+    {
+      "bioguide_id": "S001230",
+      "full_name": "Suhas Subramanyam",
+      "party": "Democrat",
+      "chamber": "House",
+      "district_number": 10,
+      "theme": "INPUT_COSTS",
+      "points": [
+        {
+          "date": "2025-02-26",
+          "eb": -0.8571,
+          "lo": -0.9998,
+          "hi": -0.3392,
+          "n": 1,
+          "k": 0
+        },
+        {
+          "date": "2025-12-11",
+          "eb": -0.951,
+          "lo": -1.0,
+          "hi": -0.4504,
+          "n": 2,
+          "k": 0
+        },
+        {
+          "date": "2026-02-04",
+          "eb": -0.9579,
+          "lo": -1.0,
+          "hi": -0.5886,
+          "n": 3,
+          "k": 0
+        },
+        {
+          "date": "2026-02-11",
+          "eb": -0.9654,
+          "lo": -1.0,
+          "hi": -0.6808,
+          "n": 4,
+          "k": 0
+        }
+      ]
+    },
+    {
+      "bioguide_id": "V000138",
+      "full_name": "Eugene Simon Vindman",
+      "party": "Democrat",
+      "chamber": "House",
+      "district_number": 7,
+      "theme": "INPUT_COSTS",
+      "points": [
+        {
+          "date": "2025-02-26",
+          "eb": -0.8571,
+          "lo": -0.9998,
+          "hi": -0.3392,
+          "n": 1,
+          "k": 0
+        },
+        {
+          "date": "2025-12-11",
+          "eb": -0.2451,
+          "lo": -0.9633,
+          "hi": 0.7651,
+          "n": 2,
+          "k": 1
+        },
+        {
+          "date": "2026-02-04",
+          "eb": -0.5441,
+          "lo": -0.9803,
+          "hi": 0.288,
+          "n": 3,
+          "k": 1
+        },
+        {
+          "date": "2026-02-11",
+          "eb": -0.6728,
+          "lo": -0.9864,
+          "hi": -0.0115,
+          "n": 4,
+          "k": 1
+        }
+      ]
+    },
+    {
+      "bioguide_id": "W000804",
+      "full_name": "Robert J. Wittman",
+      "party": "Republican",
+      "chamber": "House",
+      "district_number": 1,
+      "theme": "INPUT_COSTS",
+      "points": [
+        {
+          "date": "2025-02-26",
+          "eb": 0.8571,
+          "lo": 0.3392,
+          "hi": 0.9998,
+          "n": 1,
+          "k": 1
+        },
+        {
+          "date": "2025-12-11",
+          "eb": 0.9231,
+          "lo": 0.6294,
+          "hi": 0.9999,
+          "n": 2,
+          "k": 2
+        },
+        {
+          "date": "2026-02-04",
+          "eb": 0.9474,
+          "lo": 0.7429,
+          "hi": 0.9999,
+          "n": 3,
+          "k": 3
+        },
+        {
+          "date": "2026-02-11",
+          "eb": 0.96,
+          "lo": 0.8032,
+          "hi": 1.0,
+          "n": 4,
+          "k": 4
+        }
+      ]
+    },
+    {
+      "bioguide_id": "W000831",
+      "full_name": "James R. Walkinshaw",
+      "party": "Democrat",
+      "chamber": "House",
+      "district_number": 11,
+      "theme": "INPUT_COSTS",
+      "points": [
+        {
+          "date": "2025-12-11",
+          "eb": -0.9242,
+          "lo": -1.0,
+          "hi": -0.1483,
+          "n": 1,
+          "k": 0
+        },
+        {
+          "date": "2026-02-04",
+          "eb": -0.9469,
+          "lo": -1.0,
+          "hi": -0.4823,
+          "n": 2,
+          "k": 0
+        },
+        {
+          "date": "2026-02-11",
+          "eb": -0.9595,
+          "lo": -1.0,
+          "hi": -0.6266,
+          "n": 3,
+          "k": 0
+        }
+      ]
+    },
+    {
+      "bioguide_id": "B001292",
+      "full_name": "Donald S. Beyer, Jr.",
+      "party": "Democrat",
+      "chamber": "House",
+      "district_number": 8,
+      "theme": "REGULATORY_BURDEN",
+      "points": [
+        {
+          "date": "2025-02-26",
+          "eb": -0.8571,
+          "lo": -0.9998,
+          "hi": -0.3392,
+          "n": 1,
+          "k": 0
+        },
+        {
+          "date": "2025-03-05",
+          "eb": -0.9231,
+          "lo": -0.9999,
+          "hi": -0.6294,
+          "n": 2,
+          "k": 0
+        },
+        {
+          "date": "2025-04-30",
+          "eb": -0.96,
+          "lo": -1.0,
+          "hi": -0.8032,
+          "n": 4,
+          "k": 0
+        },
+        {
+          "date": "2025-05-01",
+          "eb": -0.9655,
+          "lo": -1.0,
+          "hi": -0.7115,
+          "n": 5,
+          "k": 0
+        },
+        {
+          "date": "2025-05-22",
+          "eb": -0.9704,
+          "lo": -1.0,
+          "hi": -0.7572,
+          "n": 6,
+          "k": 0
+        },
+        {
+          "date": "2025-12-11",
+          "eb": -0.9784,
+          "lo": -1.0,
+          "hi": -0.8117,
+          "n": 7,
+          "k": 0
+        },
+        {
+          "date": "2025-12-18",
+          "eb": -0.98,
+          "lo": -1.0,
+          "hi": -0.8177,
+          "n": 9,
+          "k": 0
+        },
+        {
+          "date": "2026-04-16",
+          "eb": -0.9829,
+          "lo": -1.0,
+          "hi": -0.8476,
+          "n": 11,
+          "k": 0
+        },
+        {
+          "date": "2026-04-22",
+          "eb": -0.984,
+          "lo": -1.0,
+          "hi": -0.8592,
+          "n": 12,
+          "k": 0
+        },
+        {
+          "date": "2026-05-13",
+          "eb": -0.9576,
+          "lo": -1.0,
+          "hi": -0.7726,
+          "n": 13,
+          "k": 0
+        }
+      ]
+    },
+    {
+      "bioguide_id": "C001118",
+      "full_name": "Ben Cline",
+      "party": "Republican",
+      "chamber": "House",
+      "district_number": 6,
+      "theme": "REGULATORY_BURDEN",
+      "points": [
+        {
+          "date": "2025-02-26",
+          "eb": 0.8571,
+          "lo": 0.3392,
+          "hi": 0.9998,
+          "n": 1,
+          "k": 1
+        },
+        {
+          "date": "2025-03-05",
+          "eb": 0.9167,
+          "lo": 0.6,
+          "hi": 0.9999,
+          "n": 2,
+          "k": 2
+        },
+        {
+          "date": "2025-04-30",
+          "eb": 0.9583,
+          "lo": 0.7952,
+          "hi": 1.0,
+          "n": 4,
+          "k": 4
+        },
+        {
+          "date": "2025-05-01",
+          "eb": 0.9667,
+          "lo": 0.8354,
+          "hi": 1.0,
+          "n": 5,
+          "k": 5
+        },
+        {
+          "date": "2025-05-22",
+          "eb": 0.9722,
+          "lo": 0.8624,
+          "hi": 1.0,
+          "n": 6,
+          "k": 6
+        },
+        {
+          "date": "2025-12-11",
+          "eb": 0.9762,
+          "lo": 0.8818,
+          "hi": 1.0,
+          "n": 7,
+          "k": 7
+        },
+        {
+          "date": "2025-12-18",
+          "eb": 0.9815,
+          "lo": 0.9078,
+          "hi": 1.0,
+          "n": 9,
+          "k": 9
+        },
+        {
+          "date": "2026-04-16",
+          "eb": 0.9848,
+          "lo": 0.9245,
+          "hi": 1.0,
+          "n": 11,
+          "k": 11
+        },
+        {
+          "date": "2026-04-22",
+          "eb": 0.9861,
+          "lo": 0.9307,
+          "hi": 1.0,
+          "n": 12,
+          "k": 12
+        },
+        {
+          "date": "2026-05-13",
+          "eb": 0.886,
+          "lo": 0.6993,
+          "hi": 0.9845,
+          "n": 13,
+          "k": 12
+        }
+      ]
+    },
+    {
+      "bioguide_id": "G000568",
+      "full_name": "H. Morgan Griffith",
+      "party": "Republican",
+      "chamber": "House",
+      "district_number": 9,
+      "theme": "REGULATORY_BURDEN",
+      "points": [
+        {
+          "date": "2025-02-26",
+          "eb": 0.8571,
+          "lo": 0.3392,
+          "hi": 0.9998,
+          "n": 1,
+          "k": 1
+        },
+        {
+          "date": "2025-03-05",
+          "eb": 0.9167,
+          "lo": 0.6,
+          "hi": 0.9999,
+          "n": 2,
+          "k": 2
+        },
+        {
+          "date": "2025-04-30",
+          "eb": 0.9583,
+          "lo": 0.7952,
+          "hi": 1.0,
+          "n": 4,
+          "k": 4
+        },
+        {
+          "date": "2025-05-01",
+          "eb": 0.9667,
+          "lo": 0.8354,
+          "hi": 1.0,
+          "n": 5,
+          "k": 5
+        },
+        {
+          "date": "2025-05-22",
+          "eb": 0.9722,
+          "lo": 0.8624,
+          "hi": 1.0,
+          "n": 6,
+          "k": 6
+        },
+        {
+          "date": "2025-12-11",
+          "eb": 0.9762,
+          "lo": 0.8818,
+          "hi": 1.0,
+          "n": 7,
+          "k": 7
+        },
+        {
+          "date": "2025-12-18",
+          "eb": 0.9815,
+          "lo": 0.9078,
+          "hi": 1.0,
+          "n": 9,
+          "k": 9
+        },
+        {
+          "date": "2026-04-16",
+          "eb": 0.9848,
+          "lo": 0.9245,
+          "hi": 1.0,
+          "n": 11,
+          "k": 11
+        },
+        {
+          "date": "2026-04-22",
+          "eb": 0.9861,
+          "lo": 0.9307,
+          "hi": 1.0,
+          "n": 12,
+          "k": 12
+        },
+        {
+          "date": "2026-05-13",
+          "eb": 0.886,
+          "lo": 0.6993,
+          "hi": 0.9845,
+          "n": 13,
+          "k": 12
+        }
+      ]
+    },
+    {
+      "bioguide_id": "K000399",
+      "full_name": "Jennifer A. Kiggans",
+      "party": "Republican",
+      "chamber": "House",
+      "district_number": 2,
+      "theme": "REGULATORY_BURDEN",
+      "points": [
+        {
+          "date": "2025-02-26",
+          "eb": 0.8571,
+          "lo": 0.3392,
+          "hi": 0.9998,
+          "n": 1,
+          "k": 1
+        },
+        {
+          "date": "2025-03-05",
+          "eb": 0.9167,
+          "lo": 0.6,
+          "hi": 0.9999,
+          "n": 2,
+          "k": 2
+        },
+        {
+          "date": "2025-04-30",
+          "eb": 0.9583,
+          "lo": 0.7952,
+          "hi": 1.0,
+          "n": 4,
+          "k": 4
+        },
+        {
+          "date": "2025-05-01",
+          "eb": 0.9667,
+          "lo": 0.8354,
+          "hi": 1.0,
+          "n": 5,
+          "k": 5
+        },
+        {
+          "date": "2025-05-22",
+          "eb": 0.9722,
+          "lo": 0.8624,
+          "hi": 1.0,
+          "n": 6,
+          "k": 6
+        },
+        {
+          "date": "2025-12-11",
+          "eb": 0.9762,
+          "lo": 0.8818,
+          "hi": 1.0,
+          "n": 7,
+          "k": 7
+        },
+        {
+          "date": "2025-12-18",
+          "eb": 0.9815,
+          "lo": 0.9078,
+          "hi": 1.0,
+          "n": 9,
+          "k": 9
+        },
+        {
+          "date": "2026-04-16",
+          "eb": 0.9848,
+          "lo": 0.9245,
+          "hi": 1.0,
+          "n": 11,
+          "k": 11
+        },
+        {
+          "date": "2026-04-22",
+          "eb": 0.9861,
+          "lo": 0.9307,
+          "hi": 1.0,
+          "n": 12,
+          "k": 12
+        },
+        {
+          "date": "2026-05-13",
+          "eb": 0.9403,
+          "lo": 0.7937,
+          "hi": 0.9979,
+          "n": 13,
+          "k": 13
+        }
+      ]
+    },
+    {
+      "bioguide_id": "M001227",
+      "full_name": "Jennifer L. McClellan",
+      "party": "Democrat",
+      "chamber": "House",
+      "district_number": 4,
+      "theme": "REGULATORY_BURDEN",
+      "points": [
+        {
+          "date": "2025-02-26",
+          "eb": -0.8571,
+          "lo": -0.9998,
+          "hi": -0.3392,
+          "n": 1,
+          "k": 0
+        },
+        {
+          "date": "2025-03-05",
+          "eb": -0.9231,
+          "lo": -0.9999,
+          "hi": -0.6294,
+          "n": 2,
+          "k": 0
+        },
+        {
+          "date": "2025-04-30",
+          "eb": -0.96,
+          "lo": -1.0,
+          "hi": -0.8032,
+          "n": 4,
+          "k": 0
+        },
+        {
+          "date": "2025-05-01",
+          "eb": -0.9655,
+          "lo": -1.0,
+          "hi": -0.7115,
+          "n": 5,
+          "k": 0
+        },
+        {
+          "date": "2025-05-22",
+          "eb": -0.9704,
+          "lo": -1.0,
+          "hi": -0.7572,
+          "n": 6,
+          "k": 0
+        },
+        {
+          "date": "2025-12-11",
+          "eb": -0.9784,
+          "lo": -1.0,
+          "hi": -0.8117,
+          "n": 7,
+          "k": 0
+        },
+        {
+          "date": "2025-12-18",
+          "eb": -0.98,
+          "lo": -1.0,
+          "hi": -0.8177,
+          "n": 9,
+          "k": 0
+        },
+        {
+          "date": "2026-04-16",
+          "eb": -0.9829,
+          "lo": -1.0,
+          "hi": -0.8476,
+          "n": 11,
+          "k": 0
+        },
+        {
+          "date": "2026-04-22",
+          "eb": -0.984,
+          "lo": -1.0,
+          "hi": -0.8592,
+          "n": 12,
+          "k": 0
+        },
+        {
+          "date": "2026-05-13",
+          "eb": -0.8546,
+          "lo": -0.9902,
+          "hi": -0.5614,
+          "n": 13,
+          "k": 1
+        }
+      ]
+    },
+    {
+      "bioguide_id": "M001239",
+      "full_name": "John J. McGuire III",
+      "party": "Republican",
+      "chamber": "House",
+      "district_number": 5,
+      "theme": "REGULATORY_BURDEN",
+      "points": [
+        {
+          "date": "2025-02-26",
+          "eb": 0.8571,
+          "lo": 0.3392,
+          "hi": 0.9998,
+          "n": 1,
+          "k": 1
+        },
+        {
+          "date": "2025-03-05",
+          "eb": 0.9167,
+          "lo": 0.6,
+          "hi": 0.9999,
+          "n": 2,
+          "k": 2
+        },
+        {
+          "date": "2025-04-30",
+          "eb": 0.9583,
+          "lo": 0.7952,
+          "hi": 1.0,
+          "n": 4,
+          "k": 4
+        },
+        {
+          "date": "2025-05-01",
+          "eb": 0.9667,
+          "lo": 0.8354,
+          "hi": 1.0,
+          "n": 5,
+          "k": 5
+        },
+        {
+          "date": "2025-05-22",
+          "eb": 0.9722,
+          "lo": 0.8624,
+          "hi": 1.0,
+          "n": 6,
+          "k": 6
+        },
+        {
+          "date": "2025-12-11",
+          "eb": 0.9762,
+          "lo": 0.8818,
+          "hi": 1.0,
+          "n": 7,
+          "k": 7
+        },
+        {
+          "date": "2025-12-18",
+          "eb": 0.9815,
+          "lo": 0.9078,
+          "hi": 1.0,
+          "n": 9,
+          "k": 9
+        },
+        {
+          "date": "2026-04-16",
+          "eb": 0.9848,
+          "lo": 0.9245,
+          "hi": 1.0,
+          "n": 11,
+          "k": 11
+        },
+        {
+          "date": "2026-04-22",
+          "eb": 0.9861,
+          "lo": 0.9307,
+          "hi": 1.0,
+          "n": 12,
+          "k": 12
+        },
+        {
+          "date": "2026-05-13",
+          "eb": 0.886,
+          "lo": 0.6993,
+          "hi": 0.9845,
+          "n": 13,
+          "k": 12
+        }
+      ]
+    },
+    {
+      "bioguide_id": "S000185",
+      "full_name": "Robert C. \"Bobby\" Scott",
+      "party": "Democrat",
+      "chamber": "House",
+      "district_number": 3,
+      "theme": "REGULATORY_BURDEN",
+      "points": [
+        {
+          "date": "2025-02-26",
+          "eb": -0.8571,
+          "lo": -0.9998,
+          "hi": -0.3392,
+          "n": 1,
+          "k": 0
+        },
+        {
+          "date": "2025-03-05",
+          "eb": -0.9231,
+          "lo": -0.9999,
+          "hi": -0.6294,
+          "n": 2,
+          "k": 0
+        },
+        {
+          "date": "2025-04-30",
+          "eb": -0.96,
+          "lo": -1.0,
+          "hi": -0.8032,
+          "n": 4,
+          "k": 0
+        },
+        {
+          "date": "2025-05-01",
+          "eb": -0.9655,
+          "lo": -1.0,
+          "hi": -0.7115,
+          "n": 5,
+          "k": 0
+        },
+        {
+          "date": "2025-05-22",
+          "eb": -0.9704,
+          "lo": -1.0,
+          "hi": -0.7572,
+          "n": 6,
+          "k": 0
+        },
+        {
+          "date": "2025-12-11",
+          "eb": -0.9784,
+          "lo": -1.0,
+          "hi": -0.8117,
+          "n": 7,
+          "k": 0
+        },
+        {
+          "date": "2025-12-18",
+          "eb": -0.98,
+          "lo": -1.0,
+          "hi": -0.8177,
+          "n": 9,
+          "k": 0
+        },
+        {
+          "date": "2026-04-16",
+          "eb": -0.9829,
+          "lo": -1.0,
+          "hi": -0.8476,
+          "n": 11,
+          "k": 0
+        },
+        {
+          "date": "2026-04-22",
+          "eb": -0.984,
+          "lo": -1.0,
+          "hi": -0.8592,
+          "n": 12,
+          "k": 0
+        },
+        {
+          "date": "2026-05-13",
+          "eb": -0.8546,
+          "lo": -0.9902,
+          "hi": -0.5614,
+          "n": 13,
+          "k": 1
+        }
+      ]
+    },
+    {
+      "bioguide_id": "S001230",
+      "full_name": "Suhas Subramanyam",
+      "party": "Democrat",
+      "chamber": "House",
+      "district_number": 10,
+      "theme": "REGULATORY_BURDEN",
+      "points": [
+        {
+          "date": "2025-02-26",
+          "eb": -0.8571,
+          "lo": -0.9998,
+          "hi": -0.3392,
+          "n": 1,
+          "k": 0
+        },
+        {
+          "date": "2025-03-05",
+          "eb": -0.9231,
+          "lo": -0.9999,
+          "hi": -0.6294,
+          "n": 2,
+          "k": 0
+        },
+        {
+          "date": "2025-04-30",
+          "eb": -0.96,
+          "lo": -1.0,
+          "hi": -0.8032,
+          "n": 4,
+          "k": 0
+        },
+        {
+          "date": "2025-05-01",
+          "eb": -0.9655,
+          "lo": -1.0,
+          "hi": -0.7115,
+          "n": 5,
+          "k": 0
+        },
+        {
+          "date": "2025-05-22",
+          "eb": -0.9704,
+          "lo": -1.0,
+          "hi": -0.7572,
+          "n": 6,
+          "k": 0
+        },
+        {
+          "date": "2025-12-11",
+          "eb": -0.9784,
+          "lo": -1.0,
+          "hi": -0.8117,
+          "n": 7,
+          "k": 0
+        },
+        {
+          "date": "2025-12-18",
+          "eb": -0.98,
+          "lo": -1.0,
+          "hi": -0.8177,
+          "n": 9,
+          "k": 0
+        },
+        {
+          "date": "2026-04-16",
+          "eb": -0.9829,
+          "lo": -1.0,
+          "hi": -0.8476,
+          "n": 11,
+          "k": 0
+        },
+        {
+          "date": "2026-04-22",
+          "eb": -0.984,
+          "lo": -1.0,
+          "hi": -0.8592,
+          "n": 12,
+          "k": 0
+        },
+        {
+          "date": "2026-05-13",
+          "eb": -0.9576,
+          "lo": -1.0,
+          "hi": -0.7726,
+          "n": 13,
+          "k": 0
+        }
+      ]
+    },
+    {
+      "bioguide_id": "V000138",
+      "full_name": "Eugene Simon Vindman",
+      "party": "Democrat",
+      "chamber": "House",
+      "district_number": 7,
+      "theme": "REGULATORY_BURDEN",
+      "points": [
+        {
+          "date": "2025-02-26",
+          "eb": -0.8571,
+          "lo": -0.9998,
+          "hi": -0.3392,
+          "n": 1,
+          "k": 0
+        },
+        {
+          "date": "2025-03-05",
+          "eb": -0.9231,
+          "lo": -0.9999,
+          "hi": -0.6294,
+          "n": 2,
+          "k": 0
+        },
+        {
+          "date": "2025-04-30",
+          "eb": -0.96,
+          "lo": -1.0,
+          "hi": -0.8032,
+          "n": 4,
+          "k": 0
+        },
+        {
+          "date": "2025-05-01",
+          "eb": -0.7382,
+          "lo": -0.9886,
+          "hi": -0.191,
+          "n": 5,
+          "k": 1
+        },
+        {
+          "date": "2025-05-22",
+          "eb": -0.7852,
+          "lo": -0.9907,
+          "hi": -0.3227,
+          "n": 6,
+          "k": 1
+        },
+        {
+          "date": "2025-12-11",
+          "eb": -0.8225,
+          "lo": -0.9928,
+          "hi": -0.4264,
+          "n": 7,
+          "k": 1
+        },
+        {
+          "date": "2025-12-18",
+          "eb": -0.6557,
+          "lo": -0.9483,
+          "hi": -0.1667,
+          "n": 9,
+          "k": 2
+        },
+        {
+          "date": "2026-04-16",
+          "eb": -0.722,
+          "lo": -0.9591,
+          "hi": -0.3114,
+          "n": 11,
+          "k": 2
+        },
+        {
+          "date": "2026-04-22",
+          "eb": -0.7464,
+          "lo": -0.9629,
+          "hi": -0.3666,
+          "n": 12,
+          "k": 2
+        },
+        {
+          "date": "2026-05-13",
+          "eb": -0.6486,
+          "lo": -0.9086,
+          "hi": -0.2637,
+          "n": 13,
+          "k": 3
+        }
+      ]
+    },
+    {
+      "bioguide_id": "W000804",
+      "full_name": "Robert J. Wittman",
+      "party": "Republican",
+      "chamber": "House",
+      "district_number": 1,
+      "theme": "REGULATORY_BURDEN",
+      "points": [
+        {
+          "date": "2025-02-26",
+          "eb": 0.8571,
+          "lo": 0.3392,
+          "hi": 0.9998,
+          "n": 1,
+          "k": 1
+        },
+        {
+          "date": "2025-03-05",
+          "eb": 0.9091,
+          "lo": 0.5656,
+          "hi": 0.9999,
+          "n": 1,
+          "k": 1
+        },
+        {
+          "date": "2025-04-30",
+          "eb": 0.9565,
+          "lo": 0.7865,
+          "hi": 1.0,
+          "n": 3,
+          "k": 3
+        },
+        {
+          "date": "2025-05-01",
+          "eb": 0.9655,
+          "lo": 0.8299,
+          "hi": 1.0,
+          "n": 4,
+          "k": 4
+        },
+        {
+          "date": "2025-05-22",
+          "eb": 0.9714,
+          "lo": 0.8586,
+          "hi": 1.0,
+          "n": 5,
+          "k": 5
+        },
+        {
+          "date": "2025-12-11",
+          "eb": 0.9756,
+          "lo": 0.879,
+          "hi": 1.0,
+          "n": 6,
+          "k": 6
+        },
+        {
+          "date": "2025-12-18",
+          "eb": 0.9811,
+          "lo": 0.9061,
+          "hi": 1.0,
+          "n": 8,
+          "k": 8
+        },
+        {
+          "date": "2026-04-16",
+          "eb": 0.9846,
+          "lo": 0.9233,
+          "hi": 1.0,
+          "n": 10,
+          "k": 10
+        },
+        {
+          "date": "2026-04-22",
+          "eb": 0.9859,
+          "lo": 0.9298,
+          "hi": 1.0,
+          "n": 11,
+          "k": 11
+        },
+        {
+          "date": "2026-05-13",
+          "eb": 0.9386,
+          "lo": 0.788,
+          "hi": 0.9979,
+          "n": 12,
+          "k": 12
+        }
+      ]
+    },
+    {
+      "bioguide_id": "W000831",
+      "full_name": "James R. Walkinshaw",
+      "party": "Democrat",
+      "chamber": "House",
+      "district_number": 11,
+      "theme": "REGULATORY_BURDEN",
+      "points": [
+        {
+          "date": "2025-12-11",
+          "eb": -0.9593,
+          "lo": -1.0,
+          "hi": -0.6485,
+          "n": 1,
+          "k": 0
+        },
+        {
+          "date": "2025-12-18",
+          "eb": -0.961,
+          "lo": -1.0,
+          "hi": -0.6465,
+          "n": 3,
+          "k": 0
+        },
+        {
+          "date": "2026-04-16",
+          "eb": -0.9719,
+          "lo": -1.0,
+          "hi": -0.7502,
+          "n": 5,
+          "k": 0
+        },
+        {
+          "date": "2026-04-22",
+          "eb": -0.9752,
+          "lo": -1.0,
+          "hi": -0.7817,
+          "n": 6,
+          "k": 0
+        },
+        {
+          "date": "2026-05-13",
+          "eb": -0.9387,
+          "lo": -1.0,
+          "hi": -0.6745,
+          "n": 7,
+          "k": 0
+        }
+      ]
+    },
+    {
+      "bioguide_id": "B001292",
+      "full_name": "Donald S. Beyer, Jr.",
+      "party": "Democrat",
+      "chamber": "House",
+      "district_number": 8,
+      "theme": "TAX_BURDEN",
+      "points": [
+        {
+          "date": "2025-01-15",
+          "eb": 0.8571,
+          "lo": 0.3392,
+          "hi": 0.9998,
+          "n": 1,
+          "k": 1
+        },
+        {
+          "date": "2025-03-11",
+          "eb": 0.1895,
+          "lo": -0.7082,
+          "hi": 0.9088,
+          "n": 2,
+          "k": 1
+        }
+      ]
+    },
+    {
+      "bioguide_id": "C001118",
+      "full_name": "Ben Cline",
+      "party": "Republican",
+      "chamber": "House",
+      "district_number": 6,
+      "theme": "TAX_BURDEN",
+      "points": [
+        {
+          "date": "2025-01-15",
+          "eb": 0.8571,
+          "lo": 0.3392,
+          "hi": 0.9998,
+          "n": 1,
+          "k": 1
+        },
+        {
+          "date": "2025-03-11",
+          "eb": 0.9231,
+          "lo": 0.6294,
+          "hi": 0.9999,
+          "n": 2,
+          "k": 2
+        }
+      ]
+    },
+    {
+      "bioguide_id": "G000568",
+      "full_name": "H. Morgan Griffith",
+      "party": "Republican",
+      "chamber": "House",
+      "district_number": 9,
+      "theme": "TAX_BURDEN",
+      "points": [
+        {
+          "date": "2025-01-15",
+          "eb": 0.8571,
+          "lo": 0.3392,
+          "hi": 0.9998,
+          "n": 1,
+          "k": 1
+        },
+        {
+          "date": "2025-03-11",
+          "eb": 0.9231,
+          "lo": 0.6294,
+          "hi": 0.9999,
+          "n": 2,
+          "k": 2
+        }
+      ]
+    },
+    {
+      "bioguide_id": "K000399",
+      "full_name": "Jennifer A. Kiggans",
+      "party": "Republican",
+      "chamber": "House",
+      "district_number": 2,
+      "theme": "TAX_BURDEN",
+      "points": [
+        {
+          "date": "2025-01-15",
+          "eb": 0.8571,
+          "lo": 0.3392,
+          "hi": 0.9998,
+          "n": 1,
+          "k": 1
+        },
+        {
+          "date": "2025-03-11",
+          "eb": 0.9231,
+          "lo": 0.6294,
+          "hi": 0.9999,
+          "n": 2,
+          "k": 2
+        }
+      ]
+    },
+    {
+      "bioguide_id": "M001227",
+      "full_name": "Jennifer L. McClellan",
+      "party": "Democrat",
+      "chamber": "House",
+      "district_number": 4,
+      "theme": "TAX_BURDEN",
+      "points": [
+        {
+          "date": "2025-01-15",
+          "eb": 0.8571,
+          "lo": 0.3392,
+          "hi": 0.9998,
+          "n": 1,
+          "k": 1
+        },
+        {
+          "date": "2025-03-11",
+          "eb": 0.1895,
+          "lo": -0.7082,
+          "hi": 0.9088,
+          "n": 2,
+          "k": 1
+        }
+      ]
+    },
+    {
+      "bioguide_id": "M001239",
+      "full_name": "John J. McGuire III",
+      "party": "Republican",
+      "chamber": "House",
+      "district_number": 5,
+      "theme": "TAX_BURDEN",
+      "points": [
+        {
+          "date": "2025-01-15",
+          "eb": 0.8571,
+          "lo": 0.3392,
+          "hi": 0.9998,
+          "n": 1,
+          "k": 1
+        },
+        {
+          "date": "2025-03-11",
+          "eb": 0.9231,
+          "lo": 0.6294,
+          "hi": 0.9999,
+          "n": 2,
+          "k": 2
+        }
+      ]
+    },
+    {
+      "bioguide_id": "S000185",
+      "full_name": "Robert C. \"Bobby\" Scott",
+      "party": "Democrat",
+      "chamber": "House",
+      "district_number": 3,
+      "theme": "TAX_BURDEN",
+      "points": [
+        {
+          "date": "2025-01-15",
+          "eb": 0.8571,
+          "lo": 0.3392,
+          "hi": 0.9998,
+          "n": 1,
+          "k": 1
+        },
+        {
+          "date": "2025-03-11",
+          "eb": 0.1895,
+          "lo": -0.7082,
+          "hi": 0.9088,
+          "n": 2,
+          "k": 1
+        }
+      ]
+    },
+    {
+      "bioguide_id": "S001230",
+      "full_name": "Suhas Subramanyam",
+      "party": "Democrat",
+      "chamber": "House",
+      "district_number": 10,
+      "theme": "TAX_BURDEN",
+      "points": [
+        {
+          "date": "2025-01-15",
+          "eb": 0.8571,
+          "lo": 0.3392,
+          "hi": 0.9998,
+          "n": 1,
+          "k": 1
+        },
+        {
+          "date": "2025-03-11",
+          "eb": 0.7158,
+          "lo": -0.1514,
+          "hi": 0.9994,
+          "n": 2,
+          "k": 2
+        }
+      ]
+    },
+    {
+      "bioguide_id": "V000138",
+      "full_name": "Eugene Simon Vindman",
+      "party": "Democrat",
+      "chamber": "House",
+      "district_number": 7,
+      "theme": "TAX_BURDEN",
+      "points": [
+        {
+          "date": "2025-01-15",
+          "eb": 0.8571,
+          "lo": 0.3392,
+          "hi": 0.9998,
+          "n": 1,
+          "k": 1
+        },
+        {
+          "date": "2025-03-11",
+          "eb": 0.7158,
+          "lo": -0.1514,
+          "hi": 0.9994,
+          "n": 2,
+          "k": 2
+        }
+      ]
+    },
+    {
+      "bioguide_id": "W000804",
+      "full_name": "Robert J. Wittman",
+      "party": "Republican",
+      "chamber": "House",
+      "district_number": 1,
+      "theme": "TAX_BURDEN",
+      "points": [
+        {
+          "date": "2025-01-15",
+          "eb": 0.8571,
+          "lo": 0.3392,
+          "hi": 0.9998,
+          "n": 1,
+          "k": 1
+        },
+        {
+          "date": "2025-03-11",
+          "eb": 0.9231,
+          "lo": 0.6294,
+          "hi": 0.9999,
+          "n": 2,
+          "k": 2
+        }
+      ]
+    },
+    {
+      "bioguide_id": "B001292",
+      "full_name": "Donald S. Beyer, Jr.",
+      "party": "Democrat",
+      "chamber": "House",
+      "district_number": 8,
+      "theme": "WORKFORCE",
+      "points": [
+        {
+          "date": "2026-01-13",
+          "eb": -0.875,
+          "lo": -0.9999,
+          "hi": -0.4151,
+          "n": 1,
+          "k": 0
+        },
+        {
+          "date": "2026-06-09",
+          "eb": -0.9333,
+          "lo": -0.9999,
+          "hi": -0.6769,
+          "n": 2,
+          "k": 0
+        }
+      ]
+    },
+    {
+      "bioguide_id": "C001118",
+      "full_name": "Ben Cline",
+      "party": "Republican",
+      "chamber": "House",
+      "district_number": 6,
+      "theme": "WORKFORCE",
+      "points": [
+        {
+          "date": "2026-01-13",
+          "eb": 0.8571,
+          "lo": 0.3392,
+          "hi": 0.9998,
+          "n": 1,
+          "k": 1
+        },
+        {
+          "date": "2026-06-09",
+          "eb": 0.9231,
+          "lo": 0.6294,
+          "hi": 0.9999,
+          "n": 2,
+          "k": 2
+        }
+      ]
+    },
+    {
+      "bioguide_id": "G000568",
+      "full_name": "H. Morgan Griffith",
+      "party": "Republican",
+      "chamber": "House",
+      "district_number": 9,
+      "theme": "WORKFORCE",
+      "points": [
+        {
+          "date": "2026-01-13",
+          "eb": 0.8571,
+          "lo": 0.3392,
+          "hi": 0.9998,
+          "n": 1,
+          "k": 1
+        },
+        {
+          "date": "2026-06-09",
+          "eb": 0.9231,
+          "lo": 0.6294,
+          "hi": 0.9999,
+          "n": 2,
+          "k": 2
+        }
+      ]
+    },
+    {
+      "bioguide_id": "K000399",
+      "full_name": "Jennifer A. Kiggans",
+      "party": "Republican",
+      "chamber": "House",
+      "district_number": 2,
+      "theme": "WORKFORCE",
+      "points": [
+        {
+          "date": "2026-01-13",
+          "eb": 0.8571,
+          "lo": 0.3392,
+          "hi": 0.9998,
+          "n": 1,
+          "k": 1
+        },
+        {
+          "date": "2026-06-09",
+          "eb": 0.9231,
+          "lo": 0.6294,
+          "hi": 0.9999,
+          "n": 2,
+          "k": 2
+        }
+      ]
+    },
+    {
+      "bioguide_id": "M001227",
+      "full_name": "Jennifer L. McClellan",
+      "party": "Democrat",
+      "chamber": "House",
+      "district_number": 4,
+      "theme": "WORKFORCE",
+      "points": [
+        {
+          "date": "2026-01-13",
+          "eb": -0.875,
+          "lo": -0.9999,
+          "hi": -0.4151,
+          "n": 1,
+          "k": 0
+        },
+        {
+          "date": "2026-06-09",
+          "eb": -0.9333,
+          "lo": -0.9999,
+          "hi": -0.6769,
+          "n": 2,
+          "k": 0
+        }
+      ]
+    },
+    {
+      "bioguide_id": "M001239",
+      "full_name": "John J. McGuire III",
+      "party": "Republican",
+      "chamber": "House",
+      "district_number": 5,
+      "theme": "WORKFORCE",
+      "points": [
+        {
+          "date": "2026-01-13",
+          "eb": 0.8571,
+          "lo": 0.3392,
+          "hi": 0.9998,
+          "n": 1,
+          "k": 1
+        },
+        {
+          "date": "2026-06-09",
+          "eb": 0.9231,
+          "lo": 0.6294,
+          "hi": 0.9999,
+          "n": 2,
+          "k": 2
+        }
+      ]
+    },
+    {
+      "bioguide_id": "S000185",
+      "full_name": "Robert C. \"Bobby\" Scott",
+      "party": "Democrat",
+      "chamber": "House",
+      "district_number": 3,
+      "theme": "WORKFORCE",
+      "points": [
+        {
+          "date": "2026-01-13",
+          "eb": -0.875,
+          "lo": -0.9999,
+          "hi": -0.4151,
+          "n": 1,
+          "k": 0
+        },
+        {
+          "date": "2026-06-09",
+          "eb": -0.9333,
+          "lo": -0.9999,
+          "hi": -0.6769,
+          "n": 2,
+          "k": 0
+        }
+      ]
+    },
+    {
+      "bioguide_id": "S001230",
+      "full_name": "Suhas Subramanyam",
+      "party": "Democrat",
+      "chamber": "House",
+      "district_number": 10,
+      "theme": "WORKFORCE",
+      "points": [
+        {
+          "date": "2026-01-13",
+          "eb": -0.875,
+          "lo": -0.9999,
+          "hi": -0.4151,
+          "n": 1,
+          "k": 0
+        },
+        {
+          "date": "2026-06-09",
+          "eb": -0.9333,
+          "lo": -0.9999,
+          "hi": -0.6769,
+          "n": 2,
+          "k": 0
+        }
+      ]
+    },
+    {
+      "bioguide_id": "V000138",
+      "full_name": "Eugene Simon Vindman",
+      "party": "Democrat",
+      "chamber": "House",
+      "district_number": 7,
+      "theme": "WORKFORCE",
+      "points": [
+        {
+          "date": "2026-01-13",
+          "eb": -0.875,
+          "lo": -0.9999,
+          "hi": -0.4151,
+          "n": 1,
+          "k": 0
+        },
+        {
+          "date": "2026-06-09",
+          "eb": -0.9333,
+          "lo": -0.9999,
+          "hi": -0.6769,
+          "n": 2,
+          "k": 0
+        }
+      ]
+    },
+    {
+      "bioguide_id": "W000804",
+      "full_name": "Robert J. Wittman",
+      "party": "Republican",
+      "chamber": "House",
+      "district_number": 1,
+      "theme": "WORKFORCE",
+      "points": [
+        {
+          "date": "2026-01-13",
+          "eb": 0.8571,
+          "lo": 0.3392,
+          "hi": 0.9998,
+          "n": 1,
+          "k": 1
+        },
+        {
+          "date": "2026-06-09",
+          "eb": 0.9231,
+          "lo": 0.6294,
+          "hi": 0.9999,
+          "n": 2,
+          "k": 2
+        }
+      ]
+    },
+    {
+      "bioguide_id": "W000831",
+      "full_name": "James R. Walkinshaw",
+      "party": "Democrat",
+      "chamber": "House",
+      "district_number": 11,
+      "theme": "WORKFORCE",
+      "points": [
+        {
+          "date": "2026-01-13",
+          "eb": -0.875,
+          "lo": -0.9999,
+          "hi": -0.4151,
+          "n": 1,
+          "k": 0
+        },
+        {
+          "date": "2026-06-09",
+          "eb": -0.9333,
+          "lo": -0.9999,
+          "hi": -0.6769,
+          "n": 2,
+          "k": 0
+        }
+      ]
+    }
+  ],
+  "biggest_mover": {
+    "bioguide_id": "S000185",
+    "full_name": "Robert C. \"Bobby\" Scott",
+    "party": "Democrat",
+    "chamber": "House",
+    "district_number": 3,
+    "theme": "REGULATORY_BURDEN",
+    "delta": 0.1254,
+    "start_score": -0.98,
+    "end_score": -0.8546,
+    "start_date": "2025-12-18",
+    "end_date": "2026-05-13",
+    "start_n": 9,
+    "end_n": 13,
+    "window_days": 90
+  }
+}

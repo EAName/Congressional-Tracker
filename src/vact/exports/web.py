@@ -15,8 +15,12 @@ from typing import Any
 
 from vact.analysis.deviations import compute_party_deviations
 from vact.analysis.estimators import attach_empirical_bayes
+from vact.analysis.methodology import build_methodology_payload
 from vact.analysis.scoring import build_scores_frame, load_scoring_config
-from vact.analysis.votes import resolve_votes_path
+from vact.analysis.timeseries import expanding_series
+from vact.analysis.cosponsorship import score_cosponsorship, serialize_cosponsor_rows
+from vact.pipeline.cosponsorship import load_cosp_config
+from vact.analysis.votes import resolve_votes_path, validate_votes_csv, vote_rows_from_warehouse
 from vact.exports.data import list_delegation
 from vact.paths import REPO_ROOT
 from vact.warehouse.connection import connect, ensure_schema
@@ -104,6 +108,14 @@ def build_web_payload(
     ]
 
     themes = sorted({s["theme"] for s in scores})
+    methodology = build_methodology_payload(config, scores, baselines)
+    if votes_path is not None:
+        vote_rows = validate_votes_csv(votes_path)
+    else:
+        vote_rows = vote_rows_from_warehouse(conn, config, map_version=map_version)
+    timeseries = expanding_series(vote_rows, config)
+    cosp_cfg = load_cosp_config()
+    cosp_frame = score_cosponsorship(extra_members=cosp_cfg.get("extra_members") or [], config=config)
     return {
         "meta": {
             "generated_at_utc": _generated_at(),
@@ -116,6 +128,12 @@ def build_web_payload(
         },
         "scores": scores,
         "deviations": devs,
+        "methodology": methodology,
+        "timeseries": timeseries,
+        "cosponsorship": {
+            "never_blended": True,
+            "rows": serialize_cosponsor_rows(cosp_frame),
+        },
         "delegation": [
             {
                 "bioguide_id": m["bioguide_id"],
@@ -158,7 +176,7 @@ def export_web(
     dest = out_dir or WEB_DATA_DIR
     dest.mkdir(parents=True, exist_ok=True)
     written: list[Path] = []
-    for name in ("meta", "scores", "deviations", "delegation"):
+    for name in ("meta", "scores", "deviations", "delegation", "methodology", "timeseries", "cosponsorship"):
         path = dest / f"{name}.json"
         path.write_text(json.dumps(payload[name], indent=2, ensure_ascii=False), encoding="utf-8")
         written.append(path)

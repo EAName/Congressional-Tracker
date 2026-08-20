@@ -110,6 +110,9 @@ uv sync && uv pip install -e .
 ./bin/vact score --write       # reads votes.csv when present
 ./bin/vact deviations
 ./bin/vact export-web          # refresh web/data for Vercel (from votes.csv)
+./bin/vact cosp fetch          # Congress.gov (co)sponsorship → bills_candidates.csv
+./bin/vact cosp validate
+uv sync --extra irt && ./bin/vact irt   # offline 2PL → data/derived/irt.json
 make test
 ```
 
@@ -180,4 +183,3 @@ data/warehouse/ gitignored DuckDB
   political priors in `districts.yaml`.
 - Publish workflow still commits `docs/`; Vercel cutover needs `export-web` wired
   and Pages retired when ready.
-- IRT ideal-point model (Prompt 10) not started; offline-only when it lands.

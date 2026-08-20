@@ -36,6 +36,8 @@ sheets_app = typer.Typer(help="Google Sheets audit export.")
 app.add_typer(sheets_app, name="sheets")
 valence_app = typer.Typer(help="Vote valence adjudication (scoring-frame input).")
 app.add_typer(valence_app, name="valence")
+cosp_app = typer.Typer(help="Cosponsorship candidate ingest (separate from vote scores).")
+app.add_typer(cosp_app, name="cosp")
 votes_app = typer.Typer(help="Versioned votes.csv adjudication layer.")
 app.add_typer(votes_app, name="votes")
 
@@ -489,6 +491,62 @@ def export_web_cmd(
     for p in paths:
         typer.echo(f"  wrote {p}")
     typer.echo(f"Exported {len(paths)} JSON files for the web app.")
+
+
+@app.command("irt")
+def irt_cmd(
+    votes: Path | None = typer.Option(None, "--votes", help="Path to votes.csv."),
+    out: Path | None = typer.Option(None, "--out", help="Output JSON (default data/derived/irt.json)."),
+    no_web: bool = typer.Option(False, "--no-web", help="Do not copy the artifact to web/data/irt.json."),
+    draws: int | None = typer.Option(None, "--draws", help="Override NUTS draws."),
+    tune: int | None = typer.Option(None, "--tune", help="Override NUTS tune."),
+) -> None:
+    """Fit the offline 2PL IRT model and write data/derived/irt.json."""
+    from vact.analysis.irt_pipeline import run_irt
+
+    payload = run_irt(
+        votes_path=votes,
+        out_path=out,
+        copy_web=not no_web,
+        draws=draws,
+        tune=tune,
+        progressbar=True,
+    )
+    typer.echo(
+        f"IRT 2PL: {payload['n_members']} members, {payload['n_items']} items, "
+        f"R-hat max {payload['rhat_max']}, ESS min {payload['ess_bulk_min']}"
+    )
+    typer.echo(f"anchors {payload['identification']['low_anchor']} → {payload['identification']['high_anchor']}")
+
+
+@cosp_app.command("fetch")
+def cosp_fetch_cmd(
+    api_key: str = typer.Option(None, "--api-key", envvar="CONGRESS_API_KEY"),
+    congress: int | None = typer.Option(None, "--congress"),
+    force: bool = typer.Option(False, "--force", help="Re-fetch cached member pages."),
+    from_raw: bool = typer.Option(False, "--from-raw", help="Parse cached raw pages only (no network)."),
+) -> None:
+    """Fetch VA (co)sponsorship lists and merge data/bills_candidates.csv."""
+    from vact.pipeline.cosponsorship import ingest_cosponsorship
+
+    stats = ingest_cosponsorship(
+        api_key=api_key, congress=congress, force=force, from_raw=from_raw
+    )
+    typer.echo(
+        "Cosponsorship ingest: "
+        f"members={stats['members']} bills={stats['bills_seen']} "
+        f"candidates={stats['candidates']} adjudicated={stats['adjudicated']} "
+        f"actions={stats['actions']}"
+    )
+
+
+@cosp_app.command("validate")
+def cosp_validate_cmd() -> None:
+    """Validate bills_candidates.csv."""
+    from vact.analysis.bills_candidates import validate_candidates_file
+
+    rows = validate_candidates_file()
+    typer.echo(f"bills_candidates.csv ok ({len(rows)} rows)")
 
 
 @app.command("social")

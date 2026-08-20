@@ -143,6 +143,27 @@ def classify_rules(
     ]
 
 
+def tags_for_corpus(
+    *,
+    title: str | None,
+    short_title: str | None = None,
+    policy_area: str | None = None,
+    rulebook: Rulebook | None = None,
+) -> list[str]:
+    """Impact tags for a bill title (cosponsorship candidate filter)."""
+    rb = rulebook or load_rulebook()
+    hits = classify_rules(
+        vote_id="_",
+        vote_category="PASSAGE",
+        vote_question=None,
+        title=title,
+        short_title=short_title,
+        policy_area=policy_area,
+        rulebook=rb,
+    )
+    return [c.impact_tag for c in hits]
+
+
 def is_llm_eligible(text: str, rulebook: Rulebook) -> bool:
     return any(p.search(text) for p in rulebook.llm_eligible_patterns)
 

@@ -64,6 +64,7 @@ class ScoringConfig:
     eb_min_caucus: int = 3
     eb_fallback_alpha: float = 2.0
     eb_fallback_beta: float = 2.0
+    ts_window_days: int = 90
 
 
 def load_scoring_config(path: Path | None = None) -> ScoringConfig:
@@ -103,6 +104,10 @@ def load_scoring_config(path: Path | None = None) -> ScoringConfig:
     eb_method = str(eb.get("method") or "moments").strip().lower()
     if eb_method not in {"moments", "mle"}:
         raise ValueError("scoring.yaml: empirical_bayes.method must be moments or mle")
+    ts = payload.get("timeseries") or {}
+    ts_window_days = int(ts.get("window_days") or 90)
+    if ts_window_days < 1:
+        raise ValueError("scoring.yaml: timeseries.window_days must be >= 1")
 
     return ScoringConfig(
         version=int(payload.get("version") or 1),
@@ -123,6 +128,7 @@ def load_scoring_config(path: Path | None = None) -> ScoringConfig:
         eb_min_caucus=int(eb.get("min_caucus") or 3),
         eb_fallback_alpha=float(eb.get("fallback_alpha") or 2.0),
         eb_fallback_beta=float(eb.get("fallback_beta") or 2.0),
+        ts_window_days=ts_window_days,
     )
 
 

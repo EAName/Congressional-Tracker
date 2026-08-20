@@ -23,6 +23,12 @@ dependencies = [
     "scipy>=1.17.1",
 ]
 
+[project.optional-dependencies]
+irt = [
+    "pymc>=5.16",
+    "arviz>=0.19",
+]
+
 [project.scripts]
 vact = "vact.cli:app"
 
@@ -42,6 +48,9 @@ where = ["src"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
+markers = [
+    "irt: Bayesian 2PL (requires `uv sync --extra irt`)",
+]
 
 [tool.ruff]
 line-length = 100

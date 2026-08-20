@@ -1,0 +1,3 @@
+# Offline 2PL IRT extras. Prefer `uv sync --extra irt`.
+pymc>=5.16
+arviz>=0.19

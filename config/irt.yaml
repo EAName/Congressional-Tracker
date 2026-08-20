@@ -1,0 +1,34 @@
+# 2PL IRT (Prompt 4). MCMC is offline; this file is the identification contract.
+#
+# Response is raw YEA/NAY. axis_direction is NOT in the likelihood. Theme tags
+# are kept on items for reporting only.
+#
+# Sign: after sampling, each draw is flipped so theta[anchors.high] >= theta[anchors.low].
+# Anchors are bioguide_id, never names. Defaults are the current EB extremes
+# (Beyer lowest mean EB, Kiggans highest). Override here when those seats change.
+#
+# Failure mode if we identified on party labels: a party switch would silently
+# rotate the scale. Bioguide pins survive that.
+
+version: 1
+
+anchors:
+  low: B001292   # Donald S. Beyer, Jr. — lowest mean EB among sufficient cells
+  high: K000399  # Jennifer A. Kiggans — highest mean EB among sufficient cells
+
+sample:
+  draws: 1000
+  tune: 1000
+  chains: 4
+  target_accept: 0.9
+  seed: 42
+
+gates:
+  rhat_max: 1.01
+  ess_bulk_min: 200
+  hdi_prob: 0.95
+
+filter:
+  min_member_votes: 3
+  min_item_voters: 3
+  drop_unanimous: true

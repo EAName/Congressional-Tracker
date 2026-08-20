@@ -106,14 +106,17 @@ them on every call.
 
 ### 1.5 How each frontend module consumes data
 
-Vercel build: Next.js statically imports four files. No fetch, no API routes.
+Vercel build: Next.js statically imports JSON. No fetch, no API routes.
 
 | Artifact | Producer | Consumer modules |
 |---|---|---|
 | `web/data/scores.json` | `vact export-web` ← `build_scores_frame` | Forest plot, party spread, delegation strip, compare, evidence bars, target profiles |
 | `web/data/deviations.json` | same ← `compute_party_deviations` | Defection panel; gold “crossed caucus” flags |
 | `web/data/delegation.json` | same ← `list_delegation` | Target strip, delegation strip, target profiles, default compare pins |
-| `web/data/meta.json` | same | theme list, `sufficient_min` (map/axis/generated chrome stripped from UI) |
+| `web/data/meta.json` | same | theme list, `sufficient_min`, party baselines |
+| `web/data/methodology.json` | same ← `build_methodology_payload` | `/methodology` |
+| `web/data/timeseries.json` | same ← `expanding_series` | Score over time, biggest-mover card |
+| `web/data/cosponsorship.json` | same ← `score_cosponsorship` | Forest hollow marker (never blended) |
 
 Module → fields:
 
@@ -305,7 +308,7 @@ Do not put DuckDB or PyMC on the Vercel build. Vercel remains a static host.
 
 ### 4.4 What we explicitly will not do
 
-- Blend cosponsorship into the headline score (Prompt 6: secondary marker).
+- Blend cosponsorship into the headline score (Prompt 6: secondary hollow marker).
 - Persist signed scores in DuckDB (AGENTS.md §8 still holds; derived JSON is a
   build artifact, like `docs/`, not a warehouse metric).
 - Auto-publish editorial notes (Prompt 8: draft + human commit).
@@ -343,11 +346,11 @@ Prompt 0 (this file) — **done**. No behavior change.
 
 **Prompt 3 — methodology route**
 
-- [ ] `web/app/methodology/page.tsx` (or MDX) pulling live hyperparameters
+- [x] `web/app/methodology/page.tsx` (or MDX) pulling live hyperparameters
       from derived JSON
-- [ ] Worked example from a real member cell
-- [ ] Changelog from `git log` of `data/votes.csv` + scoring module
-- [ ] “Reproduce this” command box
+- [x] Worked example from a real member cell
+- [x] Changelog from `git log` of `data/votes.csv` + scoring module
+- [x] “Reproduce this” command box
 
 **Prompt 9 — design restraint** (can run after 2)
 
@@ -358,23 +361,23 @@ Prompt 0 (this file) — **done**. No behavior change.
 
 **Prompt 5 — time**
 
-- [ ] Expanding-window EB series in derived JSON
-- [ ] Score-over-time module bound to existing `selectedId`
-- [ ] Biggest-mover 90d stat card
+- [x] Expanding-window EB series in derived JSON
+- [x] Score-over-time module bound to existing `selectedId`
+- [x] Biggest-mover 90d stat card
 
 **Prompt 4 — IRT**
 
-- [ ] `analysis/irt_pipeline.py` PyMC 2PL; NUTS 4 chains; R-hat gate
-- [ ] Anchors config-driven (bioguide IDs, not names)
-- [ ] `data/derived/irt.json` + `make irt` + GHA on `votes.csv` change
-- [ ] Ideal-points module; discrimination on defection vote tooltips
-- [ ] Synthetic recovery test
+- [x] `analysis/irt_pipeline.py` PyMC 2PL; NUTS 4 chains; R-hat gate
+- [x] Anchors config-driven (bioguide IDs, not names)
+- [x] `data/derived/irt.json` + `make irt` + GHA on `votes.csv` change
+- [x] Ideal-points module; discrimination on defection vote tooltips
+- [x] Synthetic recovery test
 
 **Prompt 6 — cosponsorship**
 
-- [ ] `data/bills_candidates.csv` HITL pattern
-- [ ] Reuse estimator module; never average with vote score
-- [ ] Hollow marker on forest; methodology sentence
+- [x] `data/bills_candidates.csv` HITL pattern
+- [x] Reuse estimator module; never average with vote score
+- [x] Hollow marker on forest; methodology sentence
 
 **Prompt 7 — forecasts**
 

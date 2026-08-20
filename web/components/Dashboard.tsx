@@ -1,14 +1,17 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import BiggestMoverCard from "@/components/BiggestMoverCard";
 import CompareOverlay from "@/components/CompareOverlay";
 import DelegationStrip from "@/components/DelegationStrip";
 import EvidenceBars from "@/components/EvidenceBars";
 import ForestPlot from "@/components/ForestPlot";
+import IdealPoints from "@/components/IdealPoints";
 import Module from "@/components/Module";
 import PartySpread from "@/components/PartySpread";
+import ScoreOverTime from "@/components/ScoreOverTime";
 import TargetProfiles from "@/components/TargetProfiles";
-import type { Deviation, Member, Meta, Party, Score, ScoreMode } from "@/lib/types";
+import type { CosponsorshipDoc, Deviation, IrtDoc, Member, Meta, Party, Score, ScoreMode, TimeSeriesDoc } from "@/lib/types";
 import { shortName, themeLabel } from "@/lib/types";
 
 const fmt = (v: number) => (v >= 0 ? "+" : "") + v.toFixed(2);
@@ -18,11 +21,17 @@ export default function Dashboard({
   deviations,
   meta,
   delegation,
+  timeseries,
+  irt,
+  cosponsorship,
 }: {
   scores: Score[];
   deviations: Deviation[];
   meta: Meta;
   delegation: Member[];
+  timeseries: TimeSeriesDoc;
+  irt: IrtDoc;
+  cosponsorship: CosponsorshipDoc;
 }) {
   const themes = useMemo(() => {
     const counts = new Map<string, number>();
@@ -58,6 +67,23 @@ export default function Dashboard({
   );
 
   const flagged = useMemo(() => new Set(themeDevs.map((d) => d.bioguide_id)), [themeDevs]);
+
+  const cospById = useMemo(() => {
+    const m = new Map<string, { eb: number; n: number }>();
+    for (const r of cosponsorship.rows) {
+      if (r.theme === theme) m.set(r.bioguide_id, { eb: r.eb_score, n: r.n });
+    }
+    return m;
+  }, [cosponsorship.rows, theme]);
+
+  const irtByVote = useMemo(() => {
+    const m = new Map<string, { gamma: number; defining: boolean }>();
+    const med = irt.gamma_median_abs || 0;
+    for (const v of irt.votes) {
+      m.set(v.vote_id, { gamma: v.gamma_mean, defining: Math.abs(v.gamma_mean) >= med && med > 0 });
+    }
+    return m;
+  }, [irt]);
 
   const partyBaselines = useMemo(() => {
     const of = (p: string) => {
@@ -155,6 +181,9 @@ export default function Dashboard({
             <i style={{ background: "var(--rep)" }} /> Republican
           </span>
           <span>
+            <i className="legend-hollow" /> cosponsorship
+          </span>
+          <span>
             <i style={{ background: "var(--flag)" }} /> crossed caucus
           </span>
           <span style={{ color: "var(--ink3)" }}>
@@ -200,11 +229,51 @@ export default function Dashboard({
             flagged={flagged}
             partyBaselines={partyBaselines}
             mode={mode}
+            cospById={cospById}
             {...linked}
           />
         ) : (
           <p className="cap">No members clear the threshold for this filter.</p>
         )}
+      </Module>
+
+      <Module
+        title="Ideal points"
+        kicker="2PL θ with 95% HDI · all themes · gold = target seats"
+        span={12}
+      >
+        <IdealPoints irt={irt} delegation={delegation} {...linked} />
+      </Module>
+
+      <Module
+        title="Score over time"
+        kicker="Expanding-window EB · shaded 95% credible band · linked to selection"
+        span={8}
+      >
+        <ScoreOverTime
+          selectedId={selectedId}
+          themeLabel={themeLabel(theme)}
+          cell={
+            selectedId
+              ? (timeseries.series.find((s) => s.bioguide_id === selectedId && s.theme === theme) ?? null)
+              : null
+          }
+        />
+      </Module>
+
+      <Module
+        title="Biggest mover"
+        kicker={`Trailing ${timeseries.window_days}d · as of ${timeseries.as_of ?? "—"}`}
+        span={4}
+      >
+        <BiggestMoverCard
+          mover={timeseries.biggest_mover}
+          onSelect={(id, t) => {
+            setTheme(t);
+            setSelectedId(id);
+            setExpanded(null);
+          }}
+        />
       </Module>
 
       <Module title="Party spread" kicker="Caucus width on this theme" span={6}>
@@ -311,6 +380,17 @@ export default function Dashboard({
                             (v.bill_id ?? v.vote_id)
                           )}
                           {v.summary ? ` — ${v.summary}` : " — (no adjudicated summary yet)"}
+                          {(() => {
+                            const disc = irtByVote.get(v.vote_id);
+                            if (!disc) return null;
+                            return (
+                              <>
+                                {" "}
+                                · disc. {disc.gamma.toFixed(2)}
+                                {disc.defining ? " · party-defining" : " · low-signal"}
+                              </>
+                            );
+                          })()}
                         </li>
                       ))}
                     </ul>

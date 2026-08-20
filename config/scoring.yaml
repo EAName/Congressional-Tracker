@@ -63,6 +63,11 @@ empirical_bayes:
   fallback_alpha: 2.0
   fallback_beta: 2.0
 
+# Expanding-window scores (Prompt 5). as_of is the latest rollcall_date in
+# votes.csv, never wall-clock. Biggest-mover delta is EB(as_of) − EB(as_of − window).
+timeseries:
+  window_days: 90
+
 # Shared thresholds for the analysis layer. Prompts 9/11/12 read from here so
 # nothing is hardcoded. Their own blocks (deviations, target_threshold,
 # min_brief_votes) slot in under this same namespace.

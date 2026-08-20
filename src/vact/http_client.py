@@ -41,6 +41,7 @@ def get_with_retry(
     max_attempts: int = 5,
     retry_on: Callable[[httpx.Response], bool] | None = None,
     allow_statuses: set[int] | None = None,
+    params: dict[str, Any] | None = None,
 ) -> httpx.Response:
     """
     GET with exponential backoff (max 5 attempts).
@@ -58,7 +59,7 @@ def get_with_retry(
         retry=retry_if_exception_type((httpx.TransportError, httpx.TimeoutException)),
     )
     def _get() -> httpx.Response:
-        response = client.get(url)
+        response = client.get(url, params=params)
         if response.status_code in allowed:
             return response
         if response.status_code in {429, 500, 502, 503, 504}:

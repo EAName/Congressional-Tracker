@@ -1,0 +1,66 @@
+name: IRT
+
+# Rerun the offline 2PL when the adjudication file or the model changes.
+# MCMC never runs on Vercel. This workflow writes data/derived/irt.json and
+# opens a PR when the artifact actually changes.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "data/votes.csv"
+      - "config/irt.yaml"
+      - "src/vact/analysis/irt_pipeline.py"
+  workflow_dispatch:
+
+concurrency:
+  group: vact-irt
+  cancel-in-progress: false
+
+jobs:
+  irt:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      VACT_REPO_ROOT: ${{ github.workspace }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install 3.11
+
+      - name: Sync with IRT extra
+        run: uv sync --extra irt
+
+      - name: Synthetic recovery tests
+        run: |
+          set -euo pipefail
+          export PYTHONPATH=src
+          uv run pytest -q tests/test_irt.py
+
+      - name: Fit 2PL
+        run: |
+          set -euo pipefail
+          export PYTHONPATH=src
+          ./bin/vact irt
+
+      - name: Open PR if artifact changed
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: "chore(irt): refresh 2PL artifact from votes.csv"
+          title: "Refresh IRT ideal-point artifact"
+          body: |
+            Offline NUTS 2PL refit because `data/votes.csv` or the IRT model changed.
+
+            Artifact: `data/derived/irt.json` (copied to `web/data/irt.json`).
+            R-hat must be < 1.01 or this job fails before the PR.
+          branch: chore/irt-refresh
+          add-paths: |
+            data/derived/irt.json
+            web/data/irt.json
