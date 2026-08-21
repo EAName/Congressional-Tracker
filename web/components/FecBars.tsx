@@ -9,9 +9,23 @@ function money(n: number | null) {
 
 export default function FecBars({ candidates }: { candidates: FecCandidate[] }) {
   if (candidates.length === 0) {
-    return <p className="cap">No FEC snapshot on disk yet.</p>;
+    return (
+      <p className="cap">
+        No FEC snapshot rows for this race. Run <code>vact fec snapshot</code> with{" "}
+        <code>FEC_API_KEY</code> set, then <code>vact export-web</code>.
+      </p>
+    );
   }
-  const max = Math.max(...candidates.map((c) => c.receipts ?? 0), 1);
+  const withMoney = candidates.filter((c) => c.receipts != null);
+  if (withMoney.length === 0) {
+    return (
+      <p className="cap">
+        FEC IDs are registered for this race, but OpenFEC returned no totals yet (rate limit
+        or new filing). Re-run <code>vact fec snapshot --force</code> with a personal API key.
+      </p>
+    );
+  }
+  const max = Math.max(...withMoney.map((c) => c.receipts ?? 0), 1);
   return (
     <div className="fec-bars">
       {candidates.map((c) => (
@@ -22,14 +36,22 @@ export default function FecBars({ candidates }: { candidates: FecCandidate[] }) 
               {c.role} · {c.party === "Democrat" ? "D" : "R"}
             </span>
           </div>
-          <div
-            className={`fec-bar ${c.party === "Democrat" ? "dem" : "rep"}`}
-            style={{ width: `${((c.receipts ?? 0) / max) * 100}%` }}
-          />
-          <div className="fec-meta">
-            {money(c.receipts)} receipts · {money(c.cash_on_hand)} cash
-            {c.small_dollar_share != null ? ` · ${Math.round(c.small_dollar_share * 100)}% small-dollar` : ""}
-          </div>
+          {c.receipts != null ? (
+            <>
+              <div
+                className={`fec-bar ${c.party === "Democrat" ? "dem" : "rep"}`}
+                style={{ width: `${((c.receipts ?? 0) / max) * 100}%` }}
+              />
+              <div className="fec-meta">
+                {money(c.receipts)} receipts · {money(c.cash_on_hand)} cash
+                {c.small_dollar_share != null
+                  ? ` · ${Math.round(c.small_dollar_share * 100)}% small-dollar`
+                  : ""}
+              </div>
+            </>
+          ) : (
+            <div className="fec-meta">Totals not in latest snapshot</div>
+          )}
         </div>
       ))}
     </div>

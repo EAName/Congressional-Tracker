@@ -21,6 +21,12 @@ import type {
   TimeSeriesDoc,
 } from "@/lib/types";
 
+function leanPct(entry: RaceEntry): string | null {
+  const share = entry.district_lean?.pres_2024_two_party_dem_share;
+  if (share == null) return null;
+  return `${(share * 100).toFixed(1)}%`;
+}
+
 export default function RaceWorkspace({
   entry,
   seat,
@@ -44,8 +50,12 @@ export default function RaceWorkspace({
   meta: Meta;
   headToHead?: HeadToHeadDoc;
 }) {
-  const grid = seats.env_grid;
-  const [margin, setMargin] = useState(grid?.default_margin_pp ?? 0);
+  const houseGrid = seats.env_grid;
+  const senateGrid = senateDoc?.env_grid;
+  const activeGrid = seat ? houseGrid : senate ? senateGrid : houseGrid;
+  const [margin, setMargin] = useState(
+    () => activeGrid?.default_margin_pp ?? houseGrid?.default_margin_pp ?? 0,
+  );
   const theme = meta.themes[0];
   const incumbentId = entry.incumbent.bioguide_id ?? null;
   const cell = useMemo(
@@ -55,60 +65,80 @@ export default function RaceWorkspace({
       null,
     [timeseries.series, incumbentId, theme],
   );
-  if (!grid) {
+
+  if (!houseGrid && !senateGrid) {
     return <p className="cap">Environment grid missing. Run vact export-web.</p>;
   }
+
   const label = raceLabel(entry);
   let live: SeatRace | null = null;
-  if (seat) {
-    const series = grid.probs[seat.race_id] ?? seat.env_probs ?? [];
-    const p = interpolateGrid(grid.margin_pp, series, margin);
+  if (seat && houseGrid) {
+    const series = houseGrid.probs[seat.race_id] ?? seat.env_probs ?? [];
+    const p = interpolateGrid(houseGrid.margin_pp, series, margin);
     live = {
       ...seat,
       prob_dem: p,
       prob_rep: 1 - p,
       plain_language:
-        Math.abs(margin - grid.default_margin_pp) > 0.05
+        Math.abs(margin - houseGrid.default_margin_pp) > 0.05
           ? `${seat.plain_language} under this scenario`
           : seat.plain_language,
     };
   }
 
+  let liveSenate: SenateRace | null = null;
+  if (senate) {
+    const grid = senateGrid;
+    if (grid) {
+      const series = grid.probs[senate.race_id] ?? senate.env_probs ?? [];
+      const p = interpolateGrid(grid.margin_pp, series, margin);
+      liveSenate = { ...senate, prob_dem: p, prob_rep: 1 - p };
+    } else {
+      liveSenate = senate;
+    }
+  }
+
+  const lean = leanPct(entry);
+  const isSenate = entry.chamber === "Senate";
+
   return (
     <div className="module-grid">
-      {live ? (
+      {(live || liveSenate) && activeGrid ? (
         <div className="span-12">
-          <EnvSlider grid={grid} value={margin} onChange={setMargin} />
+          <EnvSlider grid={activeGrid} value={margin} onChange={setMargin} />
         </div>
       ) : null}
       {live ? (
         <Module title={`${label} probability`} kicker={live.takeaway} span={12}>
           <SeatForecast race={live} entry={entry} log={seats.log} />
         </Module>
-      ) : senate ? (
+      ) : liveSenate ? (
         <Module
           title={`${label} probability`}
-          kicker={`${senate.model_version} · statewide model`}
+          kicker={`${liveSenate.model_version} · statewide model`}
           span={12}
         >
           <div className="sen-forecast">
             <p className="sen-headline">
-              <strong>{Math.round(senate.prob_dem * 100)}%</strong> Democratic ·{" "}
-              {Math.round(senate.prob_rep * 100)}% Republican
+              <strong>{Math.round(liveSenate.prob_dem * 100)}%</strong> Democratic ·{" "}
+              {Math.round(liveSenate.prob_rep * 100)}% Republican
             </p>
             <p className="cap">
-              Central estimate {(senate.mu_dem_two_party * 100).toFixed(1)}% of the
+              Central estimate {(liveSenate.mu_dem_two_party * 100).toFixed(1)}% of the
               two-party vote, 80% interval{" "}
-              {(senate.share_lo * 100).toFixed(1)}–{(senate.share_hi * 100).toFixed(1)}%.{" "}
-              {senate.blend === "fundamentals_only"
+              {(liveSenate.share_lo * 100).toFixed(1)}–{(liveSenate.share_hi * 100).toFixed(1)}%.{" "}
+              {liveSenate.blend === "fundamentals_only"
                 ? "Fundamentals only — no state polls in the log."
-                : `Blended with ${senate.n_polls} state poll(s).`}
+                : `Blended with ${liveSenate.n_polls} state poll(s).`}
             </p>
             <dl className="sen-decomp">
-              {Object.entries(senate.decomposition).map(([k, v]) => (
+              {Object.entries(liveSenate.decomposition).map(([k, v]) => (
                 <div key={k} className="sen-decomp-row">
                   <dt>{k.replace(/_/g, " ")}</dt>
-                  <dd>{v >= 0 ? "+" : ""}{(v * 100).toFixed(1)}</dd>
+                  <dd>
+                    {v >= 0 ? "+" : ""}
+                    {(v * 100).toFixed(1)}
+                  </dd>
                 </div>
               ))}
             </dl>
@@ -133,26 +163,51 @@ export default function RaceWorkspace({
         <HeadToHead entry={entry} race={headToHead?.races[entry.race_id]} />
       </Module>
       <Module
-        title={entry.chamber === "Senate" ? "Record vs state" : "Record vs district"}
-        kicker="Prompt 12"
+        title={isSenate ? "Statewide lean" : "District lean"}
+        kicker="2024 presidential two-party Dem share"
         span={6}
       >
-        <p className="cap">
-          Gap between the voting record and the{" "}
-          {entry.chamber === "Senate" ? "statewide" : "district"} presidential baseline lands
-          after lean shares in races.json are filled and Prompt 12 runs.
-        </p>
+        {lean ? (
+          <>
+            <p className="sen-headline">
+              <strong>{lean}</strong> Democratic
+            </p>
+            <p className="cap">
+              {isSenate ? "Statewide" : "District"} presidential baseline from races.json.
+              Record-vs-lean gap analysis is Prompt 12 and is not published yet.
+            </p>
+          </>
+        ) : (
+          <p className="cap">
+            Presidential lean not yet filled for this race. Record-vs-lean gap analysis is
+            Prompt 12 and is not published yet.
+          </p>
+        )}
       </Module>
       <Module
         title="Incumbent score over time"
-        kicker={incumbentId ? themeLabel(cell?.theme ?? theme) : "No bioguide"}
+        kicker={
+          incumbentId
+            ? themeLabel(cell?.theme ?? theme)
+            : "No bioguide"
+        }
         span={12}
       >
-        <ScoreOverTime
-          cell={cell}
-          selectedId={incumbentId}
-          themeLabel={themeLabel(cell?.theme ?? theme)}
-        />
+        {isSenate && !cell ? (
+          <p className="cap">
+            {entry.incumbent.name}&rsquo;s Senate roll calls are ingested, but no
+            PASSAGE/AMENDMENT votes carry HUMAN-adjudicated theme valence yet (current
+            Senate impact tags are procedural-only and excluded from scoring). This chart
+            publishes after substantive Senate votes are tagged, valence is set to HUMAN,
+            and votes are re-exported.
+          </p>
+        ) : (
+          <ScoreOverTime
+            cell={cell}
+            selectedId={incumbentId}
+            themeLabel={themeLabel(cell?.theme ?? theme)}
+          />
+        )}
       </Module>
       <Module title="Fundraising snapshot" kicker="OpenFEC totals" span={12}>
         <FecBars candidates={fec} />

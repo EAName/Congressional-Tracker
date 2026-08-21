@@ -22,7 +22,14 @@ logger = structlog.get_logger(__name__)
 
 SOURCE = "fec"
 API_BASE = "https://api.open.fec.gov/v1"
-_DEFAULT_LIMITER = RateLimiter(0.25)  # OpenFEC DEMO_KEY is ~120/hr; stay polite.
+# OpenFEC DEMO_KEY is ~120/hr; paid keys tolerate more. Default stays polite.
+_DEFAULT_LIMITER = RateLimiter(0.5)
+
+
+def _write_empty_payload(path: Path) -> Path:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps({"results": [], "pagination": {"count": 0}}, indent=2), encoding="utf-8")
+    return path
 
 
 def totals_url(candidate_id: str) -> str:
@@ -55,12 +62,18 @@ def fetch_candidate_totals(
     if path.exists() and not force:
         return path
     limiter.wait()
-    resp = get_with_retry(
-        client,
-        totals_url(candidate_id),
-        params={"api_key": api_key, "cycle": cycle, "per_page": 20},
-    )
-    resp.raise_for_status()
+    try:
+        resp = get_with_retry(
+            client,
+            totals_url(candidate_id),
+            params={"api_key": api_key, "cycle": cycle, "per_page": 20},
+        )
+        resp.raise_for_status()
+    except httpx.HTTPStatusError as err:
+        if err.response.status_code == 429:
+            logger.warning("fec.totals_rate_limited", candidate_id=candidate_id)
+            return _write_empty_payload(path)
+        raise
     path.write_text(resp.text, encoding="utf-8")
     return path
 
@@ -79,17 +92,24 @@ def fetch_ie_by_candidate(
     if path.exists() and not force:
         return path
     limiter.wait()
-    resp = get_with_retry(
-        client,
-        ie_by_candidate_url(),
-        params={
-            "api_key": api_key,
-            "candidate_id": candidate_id,
-            "cycle": cycle,
-            "per_page": 100,
-        },
-    )
-    resp.raise_for_status()
+    try:
+        resp = get_with_retry(
+            client,
+            ie_by_candidate_url(),
+            params={
+                "api_key": api_key,
+                "candidate_id": candidate_id,
+                "cycle": cycle,
+                "per_page": 100,
+            },
+        )
+        resp.raise_for_status()
+    except httpx.HTTPStatusError as err:
+        # IE is secondary to receipts; rate-limit should not block the snapshot.
+        if err.response.status_code == 429:
+            logger.warning("fec.ie_rate_limited", candidate_id=candidate_id)
+            return _write_empty_payload(path)
+        raise
     path.write_text(resp.text, encoding="utf-8")
     return path
 

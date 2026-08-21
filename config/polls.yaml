@@ -44,10 +44,20 @@ min_polls: 3
 # point of published averages. 1.0 sits between those.
 environment_gate:
   min_polls: 8
-  max_single_poll_influence_pp: 1.0
+
+  # The limit is DERIVED, not picked. Compositional leverage (which polls you
+  # happened to collect) is a directional error you control; sampling error is
+  # random and irreducible. Policing the first is only worth it while it stays
+  # small next to the second, so the threshold is a fraction of the aggregate's
+  # own sampling SE on the margin, with a floor.
+  #
+  # Measured on the live archive: single-poll MoE on the margin is +/-6.2 points,
+  # the 10-poll aggregate's is +/-3.7, its sampling SE is 1.87. At ratio 0.5 the
+  # limit lands at ~0.94, against measured influence of 0.83.
+  influence_vs_sampling_se: 0.5
+  influence_floor_pp: 0.5
+
   # Same test at firm level: drop every poll by one pollster. Strictly stronger,
   # because the frequency penalty makes each survey from a prolific firm look
   # uninfluential even when the firm collectively carries the estimate.
-  # Measured: 0.83 now; 0.97 if five more Emerson polls land at Emerson's own
-  # lean; 2.01 for a new firm entering five polls at D+14.
-  max_firm_influence_pp: 1.5
+  firm_limit_multiple: 1.5

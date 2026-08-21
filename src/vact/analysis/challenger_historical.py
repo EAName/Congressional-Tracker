@@ -480,15 +480,29 @@ def build_head_to_head_payload(
     for row in incumbent_scores:
         inc_by_bio.setdefault(row["bioguide_id"], []).append(row)
 
+    def _incumbent_themes(bio: str | None) -> list[dict[str, Any]]:
+        if not bio:
+            return []
+        inc_rows = {r["theme"]: r for r in inc_by_bio.get(bio, [])}
+        return [
+            {
+                "theme": theme,
+                "incumbent": _score_slice(inc_rows[theme], historical=False),
+                "challenger": None,
+            }
+            for theme in sorted(inc_rows)
+        ]
+
     races_out: dict[str, Any] = {}
     for race in reg.races:
         rid = race.race_id
         inc_bio = race.incumbent.bioguide_id
         if not race.challenger.prior_federal_service:
+            themes = _incumbent_themes(inc_bio)
             races_out[rid] = {
-                "status": "no_federal_record",
+                "status": "incumbent_only" if themes else "no_federal_record",
                 "era_caption": None,
-                "themes": [],
+                "themes": themes,
                 "incumbent_only": True,
             }
             continue
@@ -497,7 +511,13 @@ def build_head_to_head_payload(
             None,
         )
         if svc is None:
-            races_out[rid] = {"status": "no_federal_record", "era_caption": None, "themes": []}
+            themes = _incumbent_themes(inc_bio)
+            races_out[rid] = {
+                "status": "incumbent_only" if themes else "no_federal_record",
+                "era_caption": None,
+                "themes": themes,
+                "incumbent_only": True,
+            }
             continue
         ch_bio = svc.bioguide_id
         caption = era_caption(svc.congresses)

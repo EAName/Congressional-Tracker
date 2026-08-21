@@ -369,6 +369,51 @@ def single_poll_influence_pp(
     return worst * 200.0
 
 
+def aggregate_sampling_se_pp(
+    polls: list[Poll], cfg: dict[str, Any] | None = None, *, as_of: date | None = None
+) -> float | None:
+    """Sampling standard error of the current average, in margin points.
+
+    This is the irreducible part: the noise that remains even with a perfectly
+    balanced archive. It anchors the stability gate, because compositional
+    leverage is only worth policing while it is small next to the error nobody
+    can design away.
+    """
+    conf = cfg or load_config()
+    if not polls:
+        return None
+    day = as_of or polls[-1].mid_date
+    half_life = float(conf["half_life_days"])
+    base = _base_weights(polls)
+    w = [base[i] * _recency_weight(p.mid_date, day, half_life) for i, p in enumerate(polls)]
+    den = sum(w)
+    if den <= 0:
+        return None
+    var = sum((wi / den) ** 2 * _sampling_var(p) for wi, p in zip(w, polls))
+    return math.sqrt(var) * 200.0
+
+
+def influence_limit_pp(
+    polls: list[Poll], cfg: dict[str, Any] | None = None, *, as_of: date | None = None
+) -> float:
+    """Gate threshold, derived rather than picked.
+
+    A fixed constant is arbitrary and does not age: as the archive deepens the
+    sampling error falls, and a bar that stays put quietly gets looser in
+    relative terms. Tying it to a fraction of the aggregate's own sampling SE
+    keeps the standard fixed in the units that matter, with a floor so a very
+    deep archive cannot drive it to zero.
+    """
+    conf = cfg or load_config()
+    gate = conf.get("environment_gate") or {}
+    ratio = float(gate.get("influence_vs_sampling_se", 0.5))
+    floor = float(gate.get("influence_floor_pp", 0.5))
+    se = aggregate_sampling_se_pp(polls, conf, as_of=as_of)
+    if se is None:
+        return floor
+    return max(floor, ratio * se)
+
+
 def firm_influence_pp(
     polls: list[Poll], cfg: dict[str, Any] | None = None, *, as_of: date | None = None
 ) -> tuple[float | None, str | None]:
@@ -416,9 +461,10 @@ def environment_support(
     conf = cfg or load_config()
     gate = conf.get("environment_gate") or {}
     min_polls = int(gate.get("min_polls", 0))
-    max_influence = float(gate.get("max_single_poll_influence_pp", 999.0))
-    max_firm = float(gate.get("max_firm_influence_pp", max_influence * 1.5))
     rows = polls if polls is not None else load_polls()
+    max_influence = influence_limit_pp(rows, conf)
+    max_firm = max_influence * float(gate.get("firm_limit_multiple", 1.5))
+    sampling_se = aggregate_sampling_se_pp(rows, conf)
     influence = single_poll_influence_pp(rows, conf)
     firm_inf, firm_name = firm_influence_pp(rows, conf)
     reasons = []
@@ -443,10 +489,11 @@ def environment_support(
         "n_firms": len({p.pollster for p in rows}),
         "effective_n_polls": round(eff, 2),
         "single_poll_influence_pp": None if influence is None else round(influence, 2),
-        "max_single_poll_influence_pp": max_influence,
+        "max_single_poll_influence_pp": round(max_influence, 2),
+        "aggregate_sampling_se_pp": None if sampling_se is None else round(sampling_se, 2),
         "firm_influence_pp": None if firm_inf is None else round(firm_inf, 2),
         "most_influential_firm": firm_name,
-        "max_firm_influence_pp": max_firm,
+        "max_firm_influence_pp": round(max_firm, 2),
         "min_polls": min_polls,
         "reasons": reasons,
     }

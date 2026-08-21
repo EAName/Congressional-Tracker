@@ -58,6 +58,30 @@ def test_review_queue_merge_preserves_adjudication() -> None:
 def test_head_to_head_no_record_for_va01() -> None:
     payload = build_head_to_head_payload([])
     assert payload["races"]["va-01"]["status"] == "no_federal_record"
+    assert payload["races"]["va-01"]["themes"] == []
+
+
+def test_head_to_head_incumbent_only_themes() -> None:
+    incumbent_scores = [
+        {
+            "bioguide_id": "W000804",
+            "full_name": "Robert Wittman",
+            "party": "Republican",
+            "theme": "FEDERAL_CONTRACTING",
+            "eb_score": -0.2,
+            "cred_lo": -0.5,
+            "cred_hi": 0.1,
+            "n_contested": 6,
+            "sufficient": True,
+        }
+    ]
+    payload = build_head_to_head_payload(incumbent_scores)
+    va01 = payload["races"]["va-01"]
+    assert va01["status"] == "incumbent_only"
+    assert va01["incumbent_only"] is True
+    assert len(va01["themes"]) == 1
+    assert va01["themes"][0]["incumbent"]["eb_score"] == -0.2
+    assert va01["themes"][0]["challenger"] is None
 
 
 def test_head_to_head_with_adjudicated_historical(monkeypatch) -> None:

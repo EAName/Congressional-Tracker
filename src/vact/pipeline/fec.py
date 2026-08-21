@@ -51,6 +51,22 @@ def build_candidate_row(
     cycle: int,
 ) -> dict[str, Any]:
     totals = fec_source.parse_totals(totals_path, cycle=cycle)
+    # Rate-limited DEMO_KEY runs can write empty stubs; fall back to the newest
+    # prior raw totals for the same candidate so the snapshot still has dollars.
+    if totals.get("receipts") is None:
+        prior = sorted(
+            (DERIVED_DIR.parent / "raw" / "fec" / str(cycle)).glob(f"{candidate_id}-totals-*.json")
+            if (DERIVED_DIR.parent / "raw" / "fec" / str(cycle)).is_dir()
+            else [],
+            key=lambda p: p.name,
+        )
+        for path in reversed(prior):
+            if path == totals_path:
+                continue
+            fallback = fec_source.parse_totals(path, cycle=cycle)
+            if fallback.get("receipts") is not None:
+                totals = fallback
+                break
     ie = fec_source.parse_ie(ie_path)
     return {
         "fec_candidate_id": candidate_id,

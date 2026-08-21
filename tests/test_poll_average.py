@@ -13,7 +13,9 @@ from vact.analysis.poll_average import (
     build_generic_ballot,
     environment_support,
     estimate_house_effects,
+    aggregate_sampling_se_pp,
     firm_influence_pp,
+    influence_limit_pp,
     single_poll_influence_pp,
     latest_two_party,
     load_config,
@@ -281,3 +283,37 @@ def test_committed_archive_firm_influence_is_reported() -> None:
     gate = build_generic_ballot()["environment_gate"]
     assert gate["firm_influence_pp"] is not None
     assert gate["n_firms"] >= 3
+
+
+def test_threshold_is_derived_from_sampling_error_not_picked(tmp_path: Path) -> None:
+    """A fixed constant does not age: as the archive deepens, sampling error
+    falls and a static bar quietly loosens in relative terms."""
+    base = date(2026, 8, 16)
+    small = [_poll(f"S{i}", base - timedelta(days=i * 3), 52, 48, n=400) for i in range(8)]
+    big = [_poll(f"B{i}", base - timedelta(days=i * 3), 52, 48, n=4000) for i in range(8)]
+    se_small = aggregate_sampling_se_pp(load_polls(_write(tmp_path / "s.csv", small)), as_of=base)
+    se_big = aggregate_sampling_se_pp(load_polls(_write(tmp_path / "b.csv", big)), as_of=base)
+    assert se_small > se_big, "smaller samples must carry more sampling error"
+    lim_small = influence_limit_pp(load_polls(_write(tmp_path / "s.csv", small)), as_of=base)
+    lim_big = influence_limit_pp(load_polls(_write(tmp_path / "b.csv", big)), as_of=base)
+    assert lim_small > lim_big, "the bar must tighten as the aggregate gets more precise"
+
+
+def test_threshold_never_falls_below_its_floor(tmp_path: Path) -> None:
+    """A very precise aggregate must not drive the limit toward zero and start
+    rejecting archives for noise."""
+    base = date(2026, 8, 16)
+    huge = [_poll(f"H{i}", base - timedelta(days=i), 52, 48, n=50_000) for i in range(30)]
+    polls = load_polls(_write(tmp_path / "h.csv", huge))
+    assert aggregate_sampling_se_pp(polls, as_of=base) < 0.5
+    assert influence_limit_pp(polls, as_of=base) == pytest.approx(0.5)
+
+
+def test_influence_stays_well_inside_the_aggregate_margin_of_error() -> None:
+    """The gate polices a directional error, deliberately at a tighter bar than
+    the random error it sits inside. If that inverts, the gate is meaningless."""
+    gate = build_generic_ballot()["environment_gate"]
+    se = gate["aggregate_sampling_se_pp"]
+    assert gate["max_single_poll_influence_pp"] < 1.96 * se, (
+        "limit must sit inside the aggregate's own 95% margin of error"
+    )

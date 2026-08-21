@@ -99,6 +99,11 @@ export interface RaceEntry {
   status: "tracked" | "watch";
   incumbent: RaceCandidate;
   challenger: RaceCandidate;
+  district_lean?: {
+    pres_2020_two_party_dem_share: number | null;
+    pres_2024_two_party_dem_share: number | null;
+    source_url: string;
+  };
   days_until_election: number;
   label?: string;
 }
@@ -490,7 +495,7 @@ export interface HeadToHeadTheme {
 }
 
 export interface HeadToHeadRace {
-  status: "ready" | "pending_adjudication" | "no_federal_record";
+  status: "ready" | "pending_adjudication" | "no_federal_record" | "incumbent_only";
   era_caption: string | null;
   congress_eras?: string[];
   themes: HeadToHeadTheme[];

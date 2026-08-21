@@ -2243,9 +2243,14 @@
   "environment_gate": {
     "ok": true,
     "n_polls": 10,
+    "n_firms": 5,
     "effective_n_polls": 2.47,
     "single_poll_influence_pp": 0.83,
-    "max_single_poll_influence_pp": 1.0,
+    "max_single_poll_influence_pp": 0.93,
+    "aggregate_sampling_se_pp": 1.87,
+    "firm_influence_pp": 0.83,
+    "most_influential_firm": "YouGov",
+    "max_firm_influence_pp": 1.4,
     "min_polls": 8,
     "reasons": []
   },
