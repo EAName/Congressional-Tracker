@@ -1,24 +1,16 @@
 import Link from "next/link";
+import ElectionCountdown from "@/components/ElectionCountdown";
 import { brand } from "@/lib/brand";
 
 export default function SiteHeader({
   active,
-  daysUntilElection,
   electionDate,
 }: {
   active: "overview" | "analysis" | "methodology" | "about";
+  /** @deprecated Ignored — countdown is computed live from electionDate. */
   daysUntilElection?: number;
   electionDate?: string;
 }) {
-  const countdown =
-    daysUntilElection == null
-      ? null
-      : daysUntilElection > 0
-        ? `${daysUntilElection} days to ${electionDate ?? "election"}`
-        : daysUntilElection === 0
-          ? "Election day"
-          : `${Math.abs(daysUntilElection)} days since ${electionDate ?? "election"}`;
-
   return (
     <header className="topbar">
       <div className="topbar-inner">
@@ -27,7 +19,7 @@ export default function SiteHeader({
             <p className="product">{brand.product_name}</p>
           ) : null}
           <h1 className="brand">{brand.site_name}</h1>
-          {countdown ? <p className="election-countdown">{countdown}</p> : null}
+          {electionDate ? <ElectionCountdown electionDate={electionDate} /> : null}
         </div>
         <nav className="site-nav" aria-label="Primary">
           <Link href="/" aria-current={active === "overview" ? "page" : undefined}>

@@ -1,9 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import EnvSlider from "@/components/EnvSlider";
 import { interpolateGrid } from "@/lib/env";
+import { formatElectionCountdown } from "@/lib/election";
 import { raceLabel } from "@/lib/types";
 import type { Meta, RaceEntry, SeatsDoc, SenateDoc } from "@/lib/types";
 
@@ -25,6 +26,16 @@ export default function Battleground({
 }) {
   const grid = seats.env_grid;
   const [margin, setMargin] = useState(grid?.default_margin_pp ?? 0);
+  const [countdown, setCountdown] = useState(() =>
+    meta.election_date ? formatElectionCountdown(meta.election_date) : null,
+  );
+  useEffect(() => {
+    if (!meta.election_date) return;
+    const tick = () => setCountdown(formatElectionCountdown(meta.election_date!));
+    tick();
+    const id = window.setInterval(tick, 60_000);
+    return () => window.clearInterval(id);
+  }, [meta.election_date]);
   const live = useMemo(() => {
     if (!grid) return [];
     return seats.races.map((seat) => {
@@ -69,11 +80,7 @@ export default function Battleground({
                 {entry.incumbent.name} vs {entry.challenger.name}
               </p>
               <p className={`seat-big ${p >= 0.5 ? "dem" : "rep"}`}>{pct(p)} Dem</p>
-              <p className="seat-cap">
-                {meta.days_until_election != null
-                  ? `${meta.days_until_election} days to ${meta.election_date}`
-                  : entry.election_date}
-              </p>
+              <p className="seat-cap">{countdown ?? entry.election_date}</p>
               <p className="seat-plain">{seat.takeaway}</p>
             </Link>
           );
@@ -88,11 +95,7 @@ export default function Battleground({
                 {entry.incumbent.name} vs {entry.challenger.name}
               </p>
               <p className={`seat-big ${p >= 0.5 ? "dem" : "rep"}`}>{pct(p)} Dem</p>
-              <p className="seat-cap">
-                {meta.days_until_election != null
-                  ? `${meta.days_until_election} days to ${meta.election_date}`
-                  : entry.election_date}
-              </p>
+              <p className="seat-cap">{countdown ?? entry.election_date}</p>
               <p className="seat-plain">{race.takeaway}</p>
               <p className="seat-model">{race.model_version} · statewide model</p>
             </Link>
@@ -105,11 +108,7 @@ export default function Battleground({
               {entry.incumbent.name} vs {entry.challenger.name}
             </p>
             <p className="seat-big">Not modeled</p>
-            <p className="seat-cap">
-              {meta.days_until_election != null
-                ? `${meta.days_until_election} days to ${meta.election_date}`
-                : entry.election_date}
-            </p>
+            <p className="seat-cap">{countdown ?? entry.election_date}</p>
             <p className="seat-plain">
               Statewide Senate race excluded from the House-fit seat model.
             </p>
