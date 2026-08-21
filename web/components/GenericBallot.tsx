@@ -180,9 +180,6 @@ export default function GenericBallot({ doc }: { doc: GenericBallotDoc }) {
           ? ` No single poll moves the average by more than ${gate.single_poll_influence_pp.toFixed(1)} points.`
           : ""}{" "}
         Updated {doc.as_of}.
-        {doc.sample_type_offsets_are_priors
-          ? " Likely-voter offsets are priors, not yet estimated from the archive."
-          : ""}
       </p>
       {gate && !gate.ok ? (
         <p className="gb-note">
