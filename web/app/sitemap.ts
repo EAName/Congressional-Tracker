@@ -1,15 +1,18 @@
 import { brand, canonicalUrl } from "@/lib/brand";
 import type { MetadataRoute } from "next";
 
+import racesJson from "@/data/races.json";
+import type { RacesDoc } from "@/lib/types";
+
+const races = racesJson as RacesDoc;
+
 const staticPaths = [
   "/",
   "/analysis",
   "/methodology",
   "/about",
   "/corrections",
-  "/race/va-01",
-  "/race/va-02",
-  "/race/va-05",
+  ...races.races.map((r) => `/race/${r.race_id}`),
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

@@ -1,0 +1,53 @@
+# Generic-ballot poll average. Primary polls only — this file and
+# data/generic_ballot_polls.csv are the archive; no aggregator output is ingested
+# (SEAT_MODEL_SPEC.md "Do not scrape aggregators").
+version: 1
+
+# Recency half-life in days for the kernel weight at each grid date.
+half_life_days: 14
+
+# Daily trend grid extends this far back from the newest poll.
+window_days: 600
+
+# House effects: per-pollster mean residual, shrunk toward zero by
+# n / (n + shrink_k). A firm with one poll keeps 1/(1+k) of its raw residual.
+house_effect:
+  shrink_k: 4.0
+  iterations: 3
+  max_abs: 0.06  # clamp; a >6pt house effect is a data error, not a lean
+
+# Sample-type offsets applied toward a likely-voter basis, in two-party share
+# points. Priors until the archive is deep enough to estimate them; a pollster
+# publishing both LV and RV in the same release is the identifying case.
+sample_type:
+  reference: lv
+  offsets:
+    lv: 0.0
+    rv: -0.005
+    a: -0.010
+  offsets_are_priors: true
+
+# Predictive band: fraction of individual polls expected inside the shaded area.
+band_coverage: 0.90
+
+# Minimum polls before an average is published at all.
+min_polls: 3
+
+# Bar the average must clear before it drives `nat_env` in the seat models.
+# Gate on stability, not on a poll count: twenty polls from one firm in one week
+# are less trustworthy than eight from eight firms. `max_single_poll_influence_pp`
+# is the largest move (in margin points) that dropping any single poll produces in
+# the current average, measured by jackknife.
+#
+# Calibration: the archive at 6 polls scored 1.38 and moved a Trump+12 district's
+# win probability by 23 points. At 10 polls it scores 0.83 and lands within a
+# point of published averages. 1.0 sits between those.
+environment_gate:
+  min_polls: 8
+  max_single_poll_influence_pp: 1.0
+  # Same test at firm level: drop every poll by one pollster. Strictly stronger,
+  # because the frequency penalty makes each survey from a prolific firm look
+  # uninfluential even when the firm collectively carries the estimate.
+  # Measured: 0.83 now; 0.97 if five more Emerson polls land at Emerson's own
+  # lean; 2.01 for a new firm entering five polls at D+14.
+  max_firm_influence_pp: 1.5

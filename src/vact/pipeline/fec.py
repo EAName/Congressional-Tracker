@@ -97,7 +97,10 @@ def snapshot_fec(
     force: bool = False,
     races_path: Path | None = None,
 ) -> dict[str, Any]:
-    """Fetch six tracked candidates into a dated snapshot. Same-day re-run is a no-op."""
+    """Fetch both candidates in every tracked race into a dated snapshot.
+
+    Same-day re-run is a no-op.
+    """
     day = as_of if as_of is not None else date.today()
     dest = snapshot_path(day)
     if dest.is_file() and not force:
@@ -110,8 +113,14 @@ def snapshot_fec(
 
     registry = load_races(races_path)
     expected = all_fec_candidate_ids(registry)
-    if len(expected) != 6:
-        raise ValueError(f"expected 6 tracked FEC IDs, got {len(expected)}: {expected}")
+    n_tracked = sum(1 for r in registry.races if r.status.value == "tracked")
+    if len(expected) != 2 * n_tracked:
+        raise ValueError(
+            f"expected {2 * n_tracked} tracked FEC IDs ({n_tracked} races x 2), "
+            f"got {len(expected)}: {expected}"
+        )
+    if len(set(expected)) != len(expected):
+        raise ValueError(f"duplicate FEC candidate ids across tracked races: {expected}")
 
     meta = _candidate_meta(registry)
     snapshot_day = day.isoformat()

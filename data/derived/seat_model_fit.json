@@ -1,6 +1,6 @@
 {
-  "model_version": "seat-v1.0",
-  "fitted_at_utc": "2026-08-20T02:21:39Z",
+  "model_version": "seat-v1.1",
+  "fitted_at_utc": "2026-08-21T03:16:24Z",
   "n_train": 1934,
   "n_holdout": 12,
   "train_years": [
@@ -19,26 +19,26 @@
     "qual_dem"
   ],
   "ols_beta": {
-    "intercept": 0.5033217233986443,
-    "lean_rel_dem": 0.6485760981761464,
-    "inc_dem": 0.0535254781636893,
-    "midterm_dem": 0.029770460261823842,
+    "intercept": 0.5036954086241728,
+    "lean_rel_dem": 0.5977597340763917,
+    "inc_dem": 0.07162431175489234,
+    "midterm_dem": 0.029982050766479286,
     "log_ratio_dem": 0.0,
-    "qual_dem": 0.12469918746153806
+    "qual_dem": 0.05331585068116204
   },
-  "sigma": 0.08053557349729912,
+  "sigma": 0.08207134387873016,
   "logit_beta": {
-    "intercept": -0.08449126736604869,
-    "lean_rel_dem": 16.169197010049427,
-    "inc_dem": 1.8689604225995864,
-    "midterm_dem": 1.3522961739785813,
+    "intercept": -0.14091525196765534,
+    "lean_rel_dem": 15.392046204254717,
+    "inc_dem": 2.1955015480140396,
+    "midterm_dem": 1.413356993932825,
     "log_ratio_dem": 0.0,
-    "qual_dem": 2.9168833669313883
+    "qual_dem": 1.6329790603689305
   },
   "nat_env_coefficient": 1.0,
-  "train_rmse": 0.0804105505393852,
-  "train_brier": 0.06737317994976706,
-  "holdout_brier": 0.2196270004114069,
+  "train_rmse": 0.08194393679976979,
+  "train_brier": 0.06616074917760974,
+  "holdout_brier": 0.2565813026702251,
   "holdout_always_incumbent_brier": 0.5,
   "holdout_n_with_incumbent": 4,
   "holdout_source": "FiveThirtyEight Deluxe toss-up (neither party >= 60%) as of 2022-11-08",

@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { brand } from "@/lib/brand";
+import { raceLabel } from "@/lib/types";
 import type { Meta, RacesDoc, SeatsDoc } from "@/lib/types";
 import metaJson from "@/data/meta.json";
 import racesJson from "@/data/races.json";
@@ -16,7 +17,7 @@ export default async function OgImage({ params }: { params: Promise<{ raceId: st
   const { raceId } = await params;
   const entry = races.races.find((r) => r.race_id === raceId);
   const seat = seats.races.find((r) => r.race_id === raceId);
-  const district = entry?.district ?? "";
+  const label = entry ? raceLabel(entry) : "";
   const p = seat ? Math.round(seat.prob_dem * 100) : "—";
   const days = meta.days_until_election;
   const matchup = entry
@@ -42,7 +43,7 @@ export default async function OgImage({ params }: { params: Promise<{ raceId: st
           <div style={{ fontSize: 22, letterSpacing: 4, textTransform: "uppercase", color: "#a89f8e" }}>
             {brand.site_name}
           </div>
-          <div style={{ fontSize: 64, fontWeight: 700 }}>VA-{district}</div>
+          <div style={{ fontSize: 64, fontWeight: 700 }}>{label}</div>
           <div style={{ fontSize: 28, color: "#d9d0c0" }}>{matchup}</div>
         </div>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>

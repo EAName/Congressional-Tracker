@@ -129,6 +129,18 @@
       ],
       "incumbent_only": false
     },
+    "va-03": {
+      "status": "no_federal_record",
+      "era_caption": null,
+      "themes": [],
+      "incumbent_only": true
+    },
+    "va-04": {
+      "status": "no_federal_record",
+      "era_caption": null,
+      "themes": [],
+      "incumbent_only": true
+    },
     "va-05": {
       "status": "pending_adjudication",
       "era_caption": "Scored on votes from the 111th Congress; themes matched by adjudication, not identical bills. Cross-era comparison is indicative, not exact.",
@@ -250,6 +262,48 @@
         }
       ],
       "incumbent_only": false
+    },
+    "va-06": {
+      "status": "no_federal_record",
+      "era_caption": null,
+      "themes": [],
+      "incumbent_only": true
+    },
+    "va-07": {
+      "status": "no_federal_record",
+      "era_caption": null,
+      "themes": [],
+      "incumbent_only": true
+    },
+    "va-08": {
+      "status": "no_federal_record",
+      "era_caption": null,
+      "themes": [],
+      "incumbent_only": true
+    },
+    "va-09": {
+      "status": "no_federal_record",
+      "era_caption": null,
+      "themes": [],
+      "incumbent_only": true
+    },
+    "va-10": {
+      "status": "no_federal_record",
+      "era_caption": null,
+      "themes": [],
+      "incumbent_only": true
+    },
+    "va-11": {
+      "status": "no_federal_record",
+      "era_caption": null,
+      "themes": [],
+      "incumbent_only": true
+    },
+    "va-sen": {
+      "status": "no_federal_record",
+      "era_caption": null,
+      "themes": [],
+      "incumbent_only": true
     }
   }
 }

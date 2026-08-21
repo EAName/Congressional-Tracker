@@ -1,0 +1,2410 @@
+{
+  "version": 1,
+  "as_of": "2026-08-16",
+  "n_polls": 10,
+  "min_polls": 3,
+  "band_coverage": 0.9,
+  "half_life_days": 14.0,
+  "sample_type_offsets_are_priors": true,
+  "series": [
+    {
+      "date": "2025-11-11",
+      "dem_two_party": 0.55506,
+      "lo": 0.50683,
+      "hi": 0.6033,
+      "effective_n_polls": 1.23,
+      "sd": 0.02932
+    },
+    {
+      "date": "2025-11-12",
+      "dem_two_party": 0.55472,
+      "lo": 0.5065,
+      "hi": 0.60294,
+      "effective_n_polls": 1.26,
+      "sd": 0.02932
+    },
+    {
+      "date": "2025-11-13",
+      "dem_two_party": 0.55434,
+      "lo": 0.50614,
+      "hi": 0.60255,
+      "effective_n_polls": 1.28,
+      "sd": 0.02931
+    },
+    {
+      "date": "2025-11-14",
+      "dem_two_party": 0.55394,
+      "lo": 0.50575,
+      "hi": 0.60213,
+      "effective_n_polls": 1.31,
+      "sd": 0.0293
+    },
+    {
+      "date": "2025-11-15",
+      "dem_two_party": 0.55351,
+      "lo": 0.50534,
+      "hi": 0.60168,
+      "effective_n_polls": 1.35,
+      "sd": 0.02928
+    },
+    {
+      "date": "2025-11-16",
+      "dem_two_party": 0.55304,
+      "lo": 0.5049,
+      "hi": 0.60119,
+      "effective_n_polls": 1.38,
+      "sd": 0.02927
+    },
+    {
+      "date": "2025-11-17",
+      "dem_two_party": 0.55255,
+      "lo": 0.50443,
+      "hi": 0.60067,
+      "effective_n_polls": 1.42,
+      "sd": 0.02925
+    },
+    {
+      "date": "2025-11-18",
+      "dem_two_party": 0.55202,
+      "lo": 0.50393,
+      "hi": 0.60011,
+      "effective_n_polls": 1.46,
+      "sd": 0.02924
+    },
+    {
+      "date": "2025-11-19",
+      "dem_two_party": 0.55145,
+      "lo": 0.5034,
+      "hi": 0.59951,
+      "effective_n_polls": 1.51,
+      "sd": 0.02922
+    },
+    {
+      "date": "2025-11-20",
+      "dem_two_party": 0.55086,
+      "lo": 0.50284,
+      "hi": 0.59888,
+      "effective_n_polls": 1.56,
+      "sd": 0.02919
+    },
+    {
+      "date": "2025-11-21",
+      "dem_two_party": 0.55023,
+      "lo": 0.50225,
+      "hi": 0.5982,
+      "effective_n_polls": 1.61,
+      "sd": 0.02917
+    },
+    {
+      "date": "2025-11-22",
+      "dem_two_party": 0.54956,
+      "lo": 0.50163,
+      "hi": 0.59749,
+      "effective_n_polls": 1.67,
+      "sd": 0.02914
+    },
+    {
+      "date": "2025-11-23",
+      "dem_two_party": 0.54886,
+      "lo": 0.50098,
+      "hi": 0.59674,
+      "effective_n_polls": 1.73,
+      "sd": 0.02911
+    },
+    {
+      "date": "2025-11-24",
+      "dem_two_party": 0.54813,
+      "lo": 0.50031,
+      "hi": 0.59595,
+      "effective_n_polls": 1.8,
+      "sd": 0.02907
+    },
+    {
+      "date": "2025-11-25",
+      "dem_two_party": 0.54737,
+      "lo": 0.49962,
+      "hi": 0.59512,
+      "effective_n_polls": 1.87,
+      "sd": 0.02903
+    },
+    {
+      "date": "2025-11-26",
+      "dem_two_party": 0.54658,
+      "lo": 0.4989,
+      "hi": 0.59426,
+      "effective_n_polls": 1.94,
+      "sd": 0.02899
+    },
+    {
+      "date": "2025-11-27",
+      "dem_two_party": 0.54577,
+      "lo": 0.49817,
+      "hi": 0.59336,
+      "effective_n_polls": 2.01,
+      "sd": 0.02894
+    },
+    {
+      "date": "2025-11-28",
+      "dem_two_party": 0.54493,
+      "lo": 0.49743,
+      "hi": 0.59243,
+      "effective_n_polls": 2.09,
+      "sd": 0.02888
+    },
+    {
+      "date": "2025-11-29",
+      "dem_two_party": 0.54407,
+      "lo": 0.49667,
+      "hi": 0.59147,
+      "effective_n_polls": 2.16,
+      "sd": 0.02882
+    },
+    {
+      "date": "2025-11-30",
+      "dem_two_party": 0.5432,
+      "lo": 0.49591,
+      "hi": 0.59048,
+      "effective_n_polls": 2.23,
+      "sd": 0.02875
+    },
+    {
+      "date": "2025-12-01",
+      "dem_two_party": 0.54231,
+      "lo": 0.49516,
+      "hi": 0.58947,
+      "effective_n_polls": 2.29,
+      "sd": 0.02867
+    },
+    {
+      "date": "2025-12-02",
+      "dem_two_party": 0.54142,
+      "lo": 0.49441,
+      "hi": 0.58843,
+      "effective_n_polls": 2.35,
+      "sd": 0.02858
+    },
+    {
+      "date": "2025-12-03",
+      "dem_two_party": 0.54052,
+      "lo": 0.49367,
+      "hi": 0.58738,
+      "effective_n_polls": 2.4,
+      "sd": 0.02849
+    },
+    {
+      "date": "2025-12-04",
+      "dem_two_party": 0.53963,
+      "lo": 0.49294,
+      "hi": 0.58631,
+      "effective_n_polls": 2.44,
+      "sd": 0.02838
+    },
+    {
+      "date": "2025-12-05",
+      "dem_two_party": 0.53874,
+      "lo": 0.49224,
+      "hi": 0.58523,
+      "effective_n_polls": 2.47,
+      "sd": 0.02827
+    },
+    {
+      "date": "2025-12-06",
+      "dem_two_party": 0.53785,
+      "lo": 0.49157,
+      "hi": 0.58414,
+      "effective_n_polls": 2.49,
+      "sd": 0.02814
+    },
+    {
+      "date": "2025-12-07",
+      "dem_two_party": 0.53699,
+      "lo": 0.49092,
+      "hi": 0.58305,
+      "effective_n_polls": 2.49,
+      "sd": 0.028
+    },
+    {
+      "date": "2025-12-08",
+      "dem_two_party": 0.53614,
+      "lo": 0.49032,
+      "hi": 0.58196,
+      "effective_n_polls": 2.48,
+      "sd": 0.02786
+    },
+    {
+      "date": "2025-12-09",
+      "dem_two_party": 0.53531,
+      "lo": 0.48975,
+      "hi": 0.58087,
+      "effective_n_polls": 2.46,
+      "sd": 0.0277
+    },
+    {
+      "date": "2025-12-10",
+      "dem_two_party": 0.5345,
+      "lo": 0.48923,
+      "hi": 0.57978,
+      "effective_n_polls": 2.44,
+      "sd": 0.02752
+    },
+    {
+      "date": "2025-12-11",
+      "dem_two_party": 0.53372,
+      "lo": 0.48875,
+      "hi": 0.5787,
+      "effective_n_polls": 2.4,
+      "sd": 0.02734
+    },
+    {
+      "date": "2025-12-12",
+      "dem_two_party": 0.53297,
+      "lo": 0.48832,
+      "hi": 0.57763,
+      "effective_n_polls": 2.36,
+      "sd": 0.02715
+    },
+    {
+      "date": "2025-12-13",
+      "dem_two_party": 0.53226,
+      "lo": 0.48795,
+      "hi": 0.57656,
+      "effective_n_polls": 2.31,
+      "sd": 0.02694
+    },
+    {
+      "date": "2025-12-14",
+      "dem_two_party": 0.53222,
+      "lo": 0.48832,
+      "hi": 0.57612,
+      "effective_n_polls": 2.36,
+      "sd": 0.02669
+    },
+    {
+      "date": "2025-12-15",
+      "dem_two_party": 0.53218,
+      "lo": 0.48869,
+      "hi": 0.57566,
+      "effective_n_polls": 2.41,
+      "sd": 0.02644
+    },
+    {
+      "date": "2025-12-16",
+      "dem_two_party": 0.53213,
+      "lo": 0.48907,
+      "hi": 0.5752,
+      "effective_n_polls": 2.47,
+      "sd": 0.02618
+    },
+    {
+      "date": "2025-12-17",
+      "dem_two_party": 0.53209,
+      "lo": 0.48945,
+      "hi": 0.57473,
+      "effective_n_polls": 2.52,
+      "sd": 0.02592
+    },
+    {
+      "date": "2025-12-18",
+      "dem_two_party": 0.53204,
+      "lo": 0.48982,
+      "hi": 0.57426,
+      "effective_n_polls": 2.57,
+      "sd": 0.02567
+    },
+    {
+      "date": "2025-12-19",
+      "dem_two_party": 0.53199,
+      "lo": 0.49018,
+      "hi": 0.5738,
+      "effective_n_polls": 2.63,
+      "sd": 0.02542
+    },
+    {
+      "date": "2025-12-20",
+      "dem_two_party": 0.53194,
+      "lo": 0.49054,
+      "hi": 0.57333,
+      "effective_n_polls": 2.68,
+      "sd": 0.02517
+    },
+    {
+      "date": "2025-12-21",
+      "dem_two_party": 0.53188,
+      "lo": 0.49089,
+      "hi": 0.57287,
+      "effective_n_polls": 2.72,
+      "sd": 0.02492
+    },
+    {
+      "date": "2025-12-22",
+      "dem_two_party": 0.53182,
+      "lo": 0.49122,
+      "hi": 0.57242,
+      "effective_n_polls": 2.77,
+      "sd": 0.02468
+    },
+    {
+      "date": "2025-12-23",
+      "dem_two_party": 0.53176,
+      "lo": 0.49155,
+      "hi": 0.57197,
+      "effective_n_polls": 2.8,
+      "sd": 0.02445
+    },
+    {
+      "date": "2025-12-24",
+      "dem_two_party": 0.5317,
+      "lo": 0.49185,
+      "hi": 0.57154,
+      "effective_n_polls": 2.83,
+      "sd": 0.02422
+    },
+    {
+      "date": "2025-12-25",
+      "dem_two_party": 0.53163,
+      "lo": 0.49215,
+      "hi": 0.57111,
+      "effective_n_polls": 2.84,
+      "sd": 0.024
+    },
+    {
+      "date": "2025-12-26",
+      "dem_two_party": 0.53156,
+      "lo": 0.49242,
+      "hi": 0.57071,
+      "effective_n_polls": 2.84,
+      "sd": 0.0238
+    },
+    {
+      "date": "2025-12-27",
+      "dem_two_party": 0.53149,
+      "lo": 0.49268,
+      "hi": 0.57031,
+      "effective_n_polls": 2.83,
+      "sd": 0.0236
+    },
+    {
+      "date": "2025-12-28",
+      "dem_two_party": 0.53142,
+      "lo": 0.49291,
+      "hi": 0.56994,
+      "effective_n_polls": 2.81,
+      "sd": 0.02341
+    },
+    {
+      "date": "2025-12-29",
+      "dem_two_party": 0.53135,
+      "lo": 0.49313,
+      "hi": 0.56958,
+      "effective_n_polls": 2.77,
+      "sd": 0.02324
+    },
+    {
+      "date": "2025-12-30",
+      "dem_two_party": 0.53128,
+      "lo": 0.49333,
+      "hi": 0.56924,
+      "effective_n_polls": 2.72,
+      "sd": 0.02307
+    },
+    {
+      "date": "2025-12-31",
+      "dem_two_party": 0.53121,
+      "lo": 0.4935,
+      "hi": 0.56892,
+      "effective_n_polls": 2.65,
+      "sd": 0.02292
+    },
+    {
+      "date": "2026-01-01",
+      "dem_two_party": 0.53114,
+      "lo": 0.49366,
+      "hi": 0.56862,
+      "effective_n_polls": 2.58,
+      "sd": 0.02278
+    },
+    {
+      "date": "2026-01-02",
+      "dem_two_party": 0.53107,
+      "lo": 0.4938,
+      "hi": 0.56834,
+      "effective_n_polls": 2.5,
+      "sd": 0.02266
+    },
+    {
+      "date": "2026-01-03",
+      "dem_two_party": 0.531,
+      "lo": 0.49392,
+      "hi": 0.56808,
+      "effective_n_polls": 2.42,
+      "sd": 0.02254
+    },
+    {
+      "date": "2026-01-04",
+      "dem_two_party": 0.53093,
+      "lo": 0.49402,
+      "hi": 0.56784,
+      "effective_n_polls": 2.33,
+      "sd": 0.02244
+    },
+    {
+      "date": "2026-01-05",
+      "dem_two_party": 0.53086,
+      "lo": 0.4941,
+      "hi": 0.56762,
+      "effective_n_polls": 2.25,
+      "sd": 0.02235
+    },
+    {
+      "date": "2026-01-06",
+      "dem_two_party": 0.5308,
+      "lo": 0.49417,
+      "hi": 0.56743,
+      "effective_n_polls": 2.16,
+      "sd": 0.02227
+    },
+    {
+      "date": "2026-01-07",
+      "dem_two_party": 0.53073,
+      "lo": 0.49421,
+      "hi": 0.56726,
+      "effective_n_polls": 2.08,
+      "sd": 0.0222
+    },
+    {
+      "date": "2026-01-08",
+      "dem_two_party": 0.53067,
+      "lo": 0.49424,
+      "hi": 0.5671,
+      "effective_n_polls": 2.0,
+      "sd": 0.02215
+    },
+    {
+      "date": "2026-01-09",
+      "dem_two_party": 0.53061,
+      "lo": 0.49425,
+      "hi": 0.56697,
+      "effective_n_polls": 1.92,
+      "sd": 0.0221
+    },
+    {
+      "date": "2026-01-10",
+      "dem_two_party": 0.53056,
+      "lo": 0.49425,
+      "hi": 0.56686,
+      "effective_n_polls": 1.85,
+      "sd": 0.02207
+    },
+    {
+      "date": "2026-01-11",
+      "dem_two_party": 0.5305,
+      "lo": 0.49423,
+      "hi": 0.56677,
+      "effective_n_polls": 1.78,
+      "sd": 0.02205
+    },
+    {
+      "date": "2026-01-12",
+      "dem_two_party": 0.53045,
+      "lo": 0.4942,
+      "hi": 0.56671,
+      "effective_n_polls": 1.72,
+      "sd": 0.02204
+    },
+    {
+      "date": "2026-01-13",
+      "dem_two_party": 0.5304,
+      "lo": 0.49415,
+      "hi": 0.56666,
+      "effective_n_polls": 1.66,
+      "sd": 0.02204
+    },
+    {
+      "date": "2026-01-14",
+      "dem_two_party": 0.53036,
+      "lo": 0.49408,
+      "hi": 0.56663,
+      "effective_n_polls": 1.61,
+      "sd": 0.02205
+    },
+    {
+      "date": "2026-01-15",
+      "dem_two_party": 0.53031,
+      "lo": 0.49401,
+      "hi": 0.56662,
+      "effective_n_polls": 1.56,
+      "sd": 0.02207
+    },
+    {
+      "date": "2026-01-16",
+      "dem_two_party": 0.53027,
+      "lo": 0.49392,
+      "hi": 0.56663,
+      "effective_n_polls": 1.52,
+      "sd": 0.0221
+    },
+    {
+      "date": "2026-01-17",
+      "dem_two_party": 0.53024,
+      "lo": 0.49381,
+      "hi": 0.56666,
+      "effective_n_polls": 1.48,
+      "sd": 0.02214
+    },
+    {
+      "date": "2026-01-18",
+      "dem_two_party": 0.5302,
+      "lo": 0.49369,
+      "hi": 0.56671,
+      "effective_n_polls": 1.44,
+      "sd": 0.02219
+    },
+    {
+      "date": "2026-01-19",
+      "dem_two_party": 0.53017,
+      "lo": 0.49356,
+      "hi": 0.56677,
+      "effective_n_polls": 1.41,
+      "sd": 0.02225
+    },
+    {
+      "date": "2026-01-20",
+      "dem_two_party": 0.53014,
+      "lo": 0.49342,
+      "hi": 0.56685,
+      "effective_n_polls": 1.38,
+      "sd": 0.02232
+    },
+    {
+      "date": "2026-01-21",
+      "dem_two_party": 0.53011,
+      "lo": 0.49327,
+      "hi": 0.56695,
+      "effective_n_polls": 1.35,
+      "sd": 0.0224
+    },
+    {
+      "date": "2026-01-22",
+      "dem_two_party": 0.53008,
+      "lo": 0.49311,
+      "hi": 0.56706,
+      "effective_n_polls": 1.32,
+      "sd": 0.02248
+    },
+    {
+      "date": "2026-01-23",
+      "dem_two_party": 0.53006,
+      "lo": 0.49293,
+      "hi": 0.56718,
+      "effective_n_polls": 1.3,
+      "sd": 0.02257
+    },
+    {
+      "date": "2026-01-24",
+      "dem_two_party": 0.53004,
+      "lo": 0.49275,
+      "hi": 0.56732,
+      "effective_n_polls": 1.28,
+      "sd": 0.02267
+    },
+    {
+      "date": "2026-01-25",
+      "dem_two_party": 0.53014,
+      "lo": 0.49265,
+      "hi": 0.56764,
+      "effective_n_polls": 1.29,
+      "sd": 0.02279
+    },
+    {
+      "date": "2026-01-26",
+      "dem_two_party": 0.53026,
+      "lo": 0.49256,
+      "hi": 0.56796,
+      "effective_n_polls": 1.3,
+      "sd": 0.02292
+    },
+    {
+      "date": "2026-01-27",
+      "dem_two_party": 0.53039,
+      "lo": 0.49248,
+      "hi": 0.56831,
+      "effective_n_polls": 1.31,
+      "sd": 0.02305
+    },
+    {
+      "date": "2026-01-28",
+      "dem_two_party": 0.53054,
+      "lo": 0.49241,
+      "hi": 0.56867,
+      "effective_n_polls": 1.33,
+      "sd": 0.02318
+    },
+    {
+      "date": "2026-01-29",
+      "dem_two_party": 0.53069,
+      "lo": 0.49235,
+      "hi": 0.56904,
+      "effective_n_polls": 1.34,
+      "sd": 0.02331
+    },
+    {
+      "date": "2026-01-30",
+      "dem_two_party": 0.53086,
+      "lo": 0.4923,
+      "hi": 0.56942,
+      "effective_n_polls": 1.36,
+      "sd": 0.02344
+    },
+    {
+      "date": "2026-01-31",
+      "dem_two_party": 0.53105,
+      "lo": 0.49227,
+      "hi": 0.56982,
+      "effective_n_polls": 1.37,
+      "sd": 0.02357
+    },
+    {
+      "date": "2026-02-01",
+      "dem_two_party": 0.53125,
+      "lo": 0.49227,
+      "hi": 0.57023,
+      "effective_n_polls": 1.39,
+      "sd": 0.0237
+    },
+    {
+      "date": "2026-02-02",
+      "dem_two_party": 0.53147,
+      "lo": 0.49228,
+      "hi": 0.57066,
+      "effective_n_polls": 1.41,
+      "sd": 0.02382
+    },
+    {
+      "date": "2026-02-03",
+      "dem_two_party": 0.53171,
+      "lo": 0.49232,
+      "hi": 0.5711,
+      "effective_n_polls": 1.44,
+      "sd": 0.02395
+    },
+    {
+      "date": "2026-02-04",
+      "dem_two_party": 0.53196,
+      "lo": 0.49238,
+      "hi": 0.57155,
+      "effective_n_polls": 1.46,
+      "sd": 0.02406
+    },
+    {
+      "date": "2026-02-05",
+      "dem_two_party": 0.53224,
+      "lo": 0.49247,
+      "hi": 0.57201,
+      "effective_n_polls": 1.49,
+      "sd": 0.02418
+    },
+    {
+      "date": "2026-02-06",
+      "dem_two_party": 0.53254,
+      "lo": 0.4926,
+      "hi": 0.57249,
+      "effective_n_polls": 1.52,
+      "sd": 0.02428
+    },
+    {
+      "date": "2026-02-07",
+      "dem_two_party": 0.53287,
+      "lo": 0.49276,
+      "hi": 0.57298,
+      "effective_n_polls": 1.56,
+      "sd": 0.02439
+    },
+    {
+      "date": "2026-02-08",
+      "dem_two_party": 0.53322,
+      "lo": 0.49295,
+      "hi": 0.57348,
+      "effective_n_polls": 1.6,
+      "sd": 0.02448
+    },
+    {
+      "date": "2026-02-09",
+      "dem_two_party": 0.53359,
+      "lo": 0.49318,
+      "hi": 0.574,
+      "effective_n_polls": 1.64,
+      "sd": 0.02457
+    },
+    {
+      "date": "2026-02-10",
+      "dem_two_party": 0.53399,
+      "lo": 0.49345,
+      "hi": 0.57453,
+      "effective_n_polls": 1.68,
+      "sd": 0.02465
+    },
+    {
+      "date": "2026-02-11",
+      "dem_two_party": 0.53442,
+      "lo": 0.49376,
+      "hi": 0.57507,
+      "effective_n_polls": 1.73,
+      "sd": 0.02472
+    },
+    {
+      "date": "2026-02-12",
+      "dem_two_party": 0.53487,
+      "lo": 0.49411,
+      "hi": 0.57563,
+      "effective_n_polls": 1.78,
+      "sd": 0.02478
+    },
+    {
+      "date": "2026-02-13",
+      "dem_two_party": 0.53535,
+      "lo": 0.4945,
+      "hi": 0.5762,
+      "effective_n_polls": 1.84,
+      "sd": 0.02484
+    },
+    {
+      "date": "2026-02-14",
+      "dem_two_party": 0.53586,
+      "lo": 0.49493,
+      "hi": 0.57678,
+      "effective_n_polls": 1.9,
+      "sd": 0.02488
+    },
+    {
+      "date": "2026-02-15",
+      "dem_two_party": 0.53639,
+      "lo": 0.49541,
+      "hi": 0.57738,
+      "effective_n_polls": 1.97,
+      "sd": 0.02492
+    },
+    {
+      "date": "2026-02-16",
+      "dem_two_party": 0.53695,
+      "lo": 0.49592,
+      "hi": 0.57798,
+      "effective_n_polls": 2.03,
+      "sd": 0.02494
+    },
+    {
+      "date": "2026-02-17",
+      "dem_two_party": 0.53754,
+      "lo": 0.49648,
+      "hi": 0.5786,
+      "effective_n_polls": 2.1,
+      "sd": 0.02496
+    },
+    {
+      "date": "2026-02-18",
+      "dem_two_party": 0.53815,
+      "lo": 0.49708,
+      "hi": 0.57922,
+      "effective_n_polls": 2.18,
+      "sd": 0.02497
+    },
+    {
+      "date": "2026-02-19",
+      "dem_two_party": 0.53878,
+      "lo": 0.49772,
+      "hi": 0.57985,
+      "effective_n_polls": 2.25,
+      "sd": 0.02497
+    },
+    {
+      "date": "2026-02-20",
+      "dem_two_party": 0.53944,
+      "lo": 0.49839,
+      "hi": 0.58048,
+      "effective_n_polls": 2.33,
+      "sd": 0.02495
+    },
+    {
+      "date": "2026-02-21",
+      "dem_two_party": 0.54011,
+      "lo": 0.4991,
+      "hi": 0.58112,
+      "effective_n_polls": 2.4,
+      "sd": 0.02493
+    },
+    {
+      "date": "2026-02-22",
+      "dem_two_party": 0.5408,
+      "lo": 0.49985,
+      "hi": 0.58175,
+      "effective_n_polls": 2.47,
+      "sd": 0.0249
+    },
+    {
+      "date": "2026-02-23",
+      "dem_two_party": 0.5415,
+      "lo": 0.50062,
+      "hi": 0.58238,
+      "effective_n_polls": 2.53,
+      "sd": 0.02485
+    },
+    {
+      "date": "2026-02-24",
+      "dem_two_party": 0.54221,
+      "lo": 0.50142,
+      "hi": 0.583,
+      "effective_n_polls": 2.59,
+      "sd": 0.0248
+    },
+    {
+      "date": "2026-02-25",
+      "dem_two_party": 0.54293,
+      "lo": 0.50224,
+      "hi": 0.58361,
+      "effective_n_polls": 2.64,
+      "sd": 0.02473
+    },
+    {
+      "date": "2026-02-26",
+      "dem_two_party": 0.54364,
+      "lo": 0.50308,
+      "hi": 0.5842,
+      "effective_n_polls": 2.67,
+      "sd": 0.02466
+    },
+    {
+      "date": "2026-02-27",
+      "dem_two_party": 0.54436,
+      "lo": 0.50395,
+      "hi": 0.58478,
+      "effective_n_polls": 2.69,
+      "sd": 0.02457
+    },
+    {
+      "date": "2026-02-28",
+      "dem_two_party": 0.54507,
+      "lo": 0.50482,
+      "hi": 0.58533,
+      "effective_n_polls": 2.7,
+      "sd": 0.02447
+    },
+    {
+      "date": "2026-03-01",
+      "dem_two_party": 0.54578,
+      "lo": 0.50571,
+      "hi": 0.58586,
+      "effective_n_polls": 2.7,
+      "sd": 0.02436
+    },
+    {
+      "date": "2026-03-02",
+      "dem_two_party": 0.54647,
+      "lo": 0.5066,
+      "hi": 0.58635,
+      "effective_n_polls": 2.68,
+      "sd": 0.02424
+    },
+    {
+      "date": "2026-03-03",
+      "dem_two_party": 0.54716,
+      "lo": 0.50749,
+      "hi": 0.58682,
+      "effective_n_polls": 2.65,
+      "sd": 0.02411
+    },
+    {
+      "date": "2026-03-04",
+      "dem_two_party": 0.54782,
+      "lo": 0.50839,
+      "hi": 0.58725,
+      "effective_n_polls": 2.62,
+      "sd": 0.02397
+    },
+    {
+      "date": "2026-03-05",
+      "dem_two_party": 0.54846,
+      "lo": 0.50929,
+      "hi": 0.58764,
+      "effective_n_polls": 2.57,
+      "sd": 0.02382
+    },
+    {
+      "date": "2026-03-06",
+      "dem_two_party": 0.54909,
+      "lo": 0.51018,
+      "hi": 0.58799,
+      "effective_n_polls": 2.52,
+      "sd": 0.02365
+    },
+    {
+      "date": "2026-03-07",
+      "dem_two_party": 0.54968,
+      "lo": 0.51107,
+      "hi": 0.5883,
+      "effective_n_polls": 2.47,
+      "sd": 0.02348
+    },
+    {
+      "date": "2026-03-08",
+      "dem_two_party": 0.55026,
+      "lo": 0.51195,
+      "hi": 0.58857,
+      "effective_n_polls": 2.41,
+      "sd": 0.02329
+    },
+    {
+      "date": "2026-03-09",
+      "dem_two_party": 0.55081,
+      "lo": 0.51282,
+      "hi": 0.5888,
+      "effective_n_polls": 2.35,
+      "sd": 0.0231
+    },
+    {
+      "date": "2026-03-10",
+      "dem_two_party": 0.55133,
+      "lo": 0.51367,
+      "hi": 0.58898,
+      "effective_n_polls": 2.29,
+      "sd": 0.02289
+    },
+    {
+      "date": "2026-03-11",
+      "dem_two_party": 0.55182,
+      "lo": 0.51452,
+      "hi": 0.58913,
+      "effective_n_polls": 2.23,
+      "sd": 0.02268
+    },
+    {
+      "date": "2026-03-12",
+      "dem_two_party": 0.55229,
+      "lo": 0.51535,
+      "hi": 0.58923,
+      "effective_n_polls": 2.18,
+      "sd": 0.02246
+    },
+    {
+      "date": "2026-03-13",
+      "dem_two_party": 0.55273,
+      "lo": 0.51616,
+      "hi": 0.5893,
+      "effective_n_polls": 2.13,
+      "sd": 0.02223
+    },
+    {
+      "date": "2026-03-14",
+      "dem_two_party": 0.55314,
+      "lo": 0.51696,
+      "hi": 0.58933,
+      "effective_n_polls": 2.08,
+      "sd": 0.022
+    },
+    {
+      "date": "2026-03-15",
+      "dem_two_party": 0.55353,
+      "lo": 0.51773,
+      "hi": 0.58932,
+      "effective_n_polls": 2.03,
+      "sd": 0.02176
+    },
+    {
+      "date": "2026-03-16",
+      "dem_two_party": 0.55389,
+      "lo": 0.51849,
+      "hi": 0.58928,
+      "effective_n_polls": 1.98,
+      "sd": 0.02152
+    },
+    {
+      "date": "2026-03-17",
+      "dem_two_party": 0.55422,
+      "lo": 0.51923,
+      "hi": 0.58922,
+      "effective_n_polls": 1.94,
+      "sd": 0.02127
+    },
+    {
+      "date": "2026-03-18",
+      "dem_two_party": 0.55454,
+      "lo": 0.51995,
+      "hi": 0.58913,
+      "effective_n_polls": 1.91,
+      "sd": 0.02103
+    },
+    {
+      "date": "2026-03-19",
+      "dem_two_party": 0.55483,
+      "lo": 0.52064,
+      "hi": 0.58901,
+      "effective_n_polls": 1.87,
+      "sd": 0.02078
+    },
+    {
+      "date": "2026-03-20",
+      "dem_two_party": 0.55509,
+      "lo": 0.52131,
+      "hi": 0.58888,
+      "effective_n_polls": 1.84,
+      "sd": 0.02054
+    },
+    {
+      "date": "2026-03-21",
+      "dem_two_party": 0.55534,
+      "lo": 0.52196,
+      "hi": 0.58872,
+      "effective_n_polls": 1.81,
+      "sd": 0.02029
+    },
+    {
+      "date": "2026-03-22",
+      "dem_two_party": 0.55532,
+      "lo": 0.52227,
+      "hi": 0.58837,
+      "effective_n_polls": 1.86,
+      "sd": 0.02009
+    },
+    {
+      "date": "2026-03-23",
+      "dem_two_party": 0.5553,
+      "lo": 0.52256,
+      "hi": 0.58803,
+      "effective_n_polls": 1.92,
+      "sd": 0.0199
+    },
+    {
+      "date": "2026-03-24",
+      "dem_two_party": 0.55528,
+      "lo": 0.52284,
+      "hi": 0.58771,
+      "effective_n_polls": 1.99,
+      "sd": 0.01972
+    },
+    {
+      "date": "2026-03-25",
+      "dem_two_party": 0.55525,
+      "lo": 0.52311,
+      "hi": 0.58739,
+      "effective_n_polls": 2.06,
+      "sd": 0.01954
+    },
+    {
+      "date": "2026-03-26",
+      "dem_two_party": 0.55522,
+      "lo": 0.52336,
+      "hi": 0.58709,
+      "effective_n_polls": 2.13,
+      "sd": 0.01937
+    },
+    {
+      "date": "2026-03-27",
+      "dem_two_party": 0.5552,
+      "lo": 0.52359,
+      "hi": 0.58681,
+      "effective_n_polls": 2.21,
+      "sd": 0.01922
+    },
+    {
+      "date": "2026-03-28",
+      "dem_two_party": 0.55517,
+      "lo": 0.5238,
+      "hi": 0.58653,
+      "effective_n_polls": 2.29,
+      "sd": 0.01907
+    },
+    {
+      "date": "2026-03-29",
+      "dem_two_party": 0.55514,
+      "lo": 0.524,
+      "hi": 0.58628,
+      "effective_n_polls": 2.37,
+      "sd": 0.01893
+    },
+    {
+      "date": "2026-03-30",
+      "dem_two_party": 0.55511,
+      "lo": 0.52418,
+      "hi": 0.58604,
+      "effective_n_polls": 2.45,
+      "sd": 0.0188
+    },
+    {
+      "date": "2026-03-31",
+      "dem_two_party": 0.55508,
+      "lo": 0.52434,
+      "hi": 0.58581,
+      "effective_n_polls": 2.53,
+      "sd": 0.01868
+    },
+    {
+      "date": "2026-04-01",
+      "dem_two_party": 0.55504,
+      "lo": 0.52449,
+      "hi": 0.5856,
+      "effective_n_polls": 2.61,
+      "sd": 0.01857
+    },
+    {
+      "date": "2026-04-02",
+      "dem_two_party": 0.55501,
+      "lo": 0.52463,
+      "hi": 0.5854,
+      "effective_n_polls": 2.69,
+      "sd": 0.01847
+    },
+    {
+      "date": "2026-04-03",
+      "dem_two_party": 0.55498,
+      "lo": 0.52474,
+      "hi": 0.58521,
+      "effective_n_polls": 2.75,
+      "sd": 0.01838
+    },
+    {
+      "date": "2026-04-04",
+      "dem_two_party": 0.55494,
+      "lo": 0.52485,
+      "hi": 0.58504,
+      "effective_n_polls": 2.81,
+      "sd": 0.0183
+    },
+    {
+      "date": "2026-04-05",
+      "dem_two_party": 0.55491,
+      "lo": 0.52494,
+      "hi": 0.58488,
+      "effective_n_polls": 2.86,
+      "sd": 0.01822
+    },
+    {
+      "date": "2026-04-06",
+      "dem_two_party": 0.55488,
+      "lo": 0.52502,
+      "hi": 0.58473,
+      "effective_n_polls": 2.89,
+      "sd": 0.01815
+    },
+    {
+      "date": "2026-04-07",
+      "dem_two_party": 0.55484,
+      "lo": 0.52509,
+      "hi": 0.5846,
+      "effective_n_polls": 2.92,
+      "sd": 0.01809
+    },
+    {
+      "date": "2026-04-08",
+      "dem_two_party": 0.55481,
+      "lo": 0.52515,
+      "hi": 0.58447,
+      "effective_n_polls": 2.92,
+      "sd": 0.01803
+    },
+    {
+      "date": "2026-04-09",
+      "dem_two_party": 0.55478,
+      "lo": 0.5252,
+      "hi": 0.58435,
+      "effective_n_polls": 2.92,
+      "sd": 0.01798
+    },
+    {
+      "date": "2026-04-10",
+      "dem_two_party": 0.55474,
+      "lo": 0.52524,
+      "hi": 0.58424,
+      "effective_n_polls": 2.89,
+      "sd": 0.01793
+    },
+    {
+      "date": "2026-04-11",
+      "dem_two_party": 0.55471,
+      "lo": 0.52528,
+      "hi": 0.58414,
+      "effective_n_polls": 2.86,
+      "sd": 0.01789
+    },
+    {
+      "date": "2026-04-12",
+      "dem_two_party": 0.55468,
+      "lo": 0.52531,
+      "hi": 0.58405,
+      "effective_n_polls": 2.82,
+      "sd": 0.01786
+    },
+    {
+      "date": "2026-04-13",
+      "dem_two_party": 0.55465,
+      "lo": 0.52534,
+      "hi": 0.58397,
+      "effective_n_polls": 2.77,
+      "sd": 0.01782
+    },
+    {
+      "date": "2026-04-14",
+      "dem_two_party": 0.55462,
+      "lo": 0.52536,
+      "hi": 0.58389,
+      "effective_n_polls": 2.72,
+      "sd": 0.01779
+    },
+    {
+      "date": "2026-04-15",
+      "dem_two_party": 0.5546,
+      "lo": 0.52538,
+      "hi": 0.58382,
+      "effective_n_polls": 2.66,
+      "sd": 0.01776
+    },
+    {
+      "date": "2026-04-16",
+      "dem_two_party": 0.55457,
+      "lo": 0.52539,
+      "hi": 0.58375,
+      "effective_n_polls": 2.6,
+      "sd": 0.01774
+    },
+    {
+      "date": "2026-04-17",
+      "dem_two_party": 0.55455,
+      "lo": 0.5254,
+      "hi": 0.58369,
+      "effective_n_polls": 2.53,
+      "sd": 0.01772
+    },
+    {
+      "date": "2026-04-18",
+      "dem_two_party": 0.55452,
+      "lo": 0.52541,
+      "hi": 0.58363,
+      "effective_n_polls": 2.47,
+      "sd": 0.0177
+    },
+    {
+      "date": "2026-04-19",
+      "dem_two_party": 0.5545,
+      "lo": 0.52542,
+      "hi": 0.58358,
+      "effective_n_polls": 2.41,
+      "sd": 0.01768
+    },
+    {
+      "date": "2026-04-20",
+      "dem_two_party": 0.55448,
+      "lo": 0.52543,
+      "hi": 0.58353,
+      "effective_n_polls": 2.36,
+      "sd": 0.01766
+    },
+    {
+      "date": "2026-04-21",
+      "dem_two_party": 0.55446,
+      "lo": 0.52543,
+      "hi": 0.58348,
+      "effective_n_polls": 2.3,
+      "sd": 0.01765
+    },
+    {
+      "date": "2026-04-22",
+      "dem_two_party": 0.55444,
+      "lo": 0.52544,
+      "hi": 0.58344,
+      "effective_n_polls": 2.25,
+      "sd": 0.01763
+    },
+    {
+      "date": "2026-04-23",
+      "dem_two_party": 0.55442,
+      "lo": 0.52544,
+      "hi": 0.5834,
+      "effective_n_polls": 2.2,
+      "sd": 0.01762
+    },
+    {
+      "date": "2026-04-24",
+      "dem_two_party": 0.55441,
+      "lo": 0.52545,
+      "hi": 0.58337,
+      "effective_n_polls": 2.16,
+      "sd": 0.01761
+    },
+    {
+      "date": "2026-04-25",
+      "dem_two_party": 0.55439,
+      "lo": 0.52545,
+      "hi": 0.58333,
+      "effective_n_polls": 2.11,
+      "sd": 0.01759
+    },
+    {
+      "date": "2026-04-26",
+      "dem_two_party": 0.55449,
+      "lo": 0.52557,
+      "hi": 0.58341,
+      "effective_n_polls": 2.17,
+      "sd": 0.01758
+    },
+    {
+      "date": "2026-04-27",
+      "dem_two_party": 0.5546,
+      "lo": 0.5257,
+      "hi": 0.5835,
+      "effective_n_polls": 2.23,
+      "sd": 0.01757
+    },
+    {
+      "date": "2026-04-28",
+      "dem_two_party": 0.55471,
+      "lo": 0.52583,
+      "hi": 0.5836,
+      "effective_n_polls": 2.29,
+      "sd": 0.01756
+    },
+    {
+      "date": "2026-04-29",
+      "dem_two_party": 0.55483,
+      "lo": 0.52597,
+      "hi": 0.5837,
+      "effective_n_polls": 2.35,
+      "sd": 0.01755
+    },
+    {
+      "date": "2026-04-30",
+      "dem_two_party": 0.55495,
+      "lo": 0.5261,
+      "hi": 0.58381,
+      "effective_n_polls": 2.41,
+      "sd": 0.01754
+    },
+    {
+      "date": "2026-05-01",
+      "dem_two_party": 0.55508,
+      "lo": 0.52624,
+      "hi": 0.58392,
+      "effective_n_polls": 2.47,
+      "sd": 0.01753
+    },
+    {
+      "date": "2026-05-02",
+      "dem_two_party": 0.55521,
+      "lo": 0.52638,
+      "hi": 0.58404,
+      "effective_n_polls": 2.51,
+      "sd": 0.01753
+    },
+    {
+      "date": "2026-05-03",
+      "dem_two_party": 0.55534,
+      "lo": 0.52652,
+      "hi": 0.58417,
+      "effective_n_polls": 2.55,
+      "sd": 0.01752
+    },
+    {
+      "date": "2026-05-04",
+      "dem_two_party": 0.55548,
+      "lo": 0.52666,
+      "hi": 0.5843,
+      "effective_n_polls": 2.58,
+      "sd": 0.01752
+    },
+    {
+      "date": "2026-05-05",
+      "dem_two_party": 0.55562,
+      "lo": 0.52679,
+      "hi": 0.58444,
+      "effective_n_polls": 2.6,
+      "sd": 0.01752
+    },
+    {
+      "date": "2026-05-06",
+      "dem_two_party": 0.55576,
+      "lo": 0.52693,
+      "hi": 0.58458,
+      "effective_n_polls": 2.61,
+      "sd": 0.01753
+    },
+    {
+      "date": "2026-05-07",
+      "dem_two_party": 0.5559,
+      "lo": 0.52706,
+      "hi": 0.58473,
+      "effective_n_polls": 2.6,
+      "sd": 0.01753
+    },
+    {
+      "date": "2026-05-08",
+      "dem_two_party": 0.55604,
+      "lo": 0.52719,
+      "hi": 0.58488,
+      "effective_n_polls": 2.59,
+      "sd": 0.01754
+    },
+    {
+      "date": "2026-05-09",
+      "dem_two_party": 0.55618,
+      "lo": 0.52731,
+      "hi": 0.58504,
+      "effective_n_polls": 2.55,
+      "sd": 0.01755
+    },
+    {
+      "date": "2026-05-10",
+      "dem_two_party": 0.55631,
+      "lo": 0.52743,
+      "hi": 0.5852,
+      "effective_n_polls": 2.51,
+      "sd": 0.01756
+    },
+    {
+      "date": "2026-05-11",
+      "dem_two_party": 0.55645,
+      "lo": 0.52754,
+      "hi": 0.58536,
+      "effective_n_polls": 2.46,
+      "sd": 0.01758
+    },
+    {
+      "date": "2026-05-12",
+      "dem_two_party": 0.55658,
+      "lo": 0.52764,
+      "hi": 0.58553,
+      "effective_n_polls": 2.41,
+      "sd": 0.0176
+    },
+    {
+      "date": "2026-05-13",
+      "dem_two_party": 0.55672,
+      "lo": 0.52773,
+      "hi": 0.5857,
+      "effective_n_polls": 2.34,
+      "sd": 0.01762
+    },
+    {
+      "date": "2026-05-14",
+      "dem_two_party": 0.55684,
+      "lo": 0.52782,
+      "hi": 0.58587,
+      "effective_n_polls": 2.28,
+      "sd": 0.01764
+    },
+    {
+      "date": "2026-05-15",
+      "dem_two_party": 0.55697,
+      "lo": 0.52789,
+      "hi": 0.58604,
+      "effective_n_polls": 2.21,
+      "sd": 0.01767
+    },
+    {
+      "date": "2026-05-16",
+      "dem_two_party": 0.55708,
+      "lo": 0.52796,
+      "hi": 0.58621,
+      "effective_n_polls": 2.14,
+      "sd": 0.01771
+    },
+    {
+      "date": "2026-05-17",
+      "dem_two_party": 0.55699,
+      "lo": 0.52779,
+      "hi": 0.5862,
+      "effective_n_polls": 2.17,
+      "sd": 0.01775
+    },
+    {
+      "date": "2026-05-18",
+      "dem_two_party": 0.5569,
+      "lo": 0.52761,
+      "hi": 0.58618,
+      "effective_n_polls": 2.21,
+      "sd": 0.01781
+    },
+    {
+      "date": "2026-05-19",
+      "dem_two_party": 0.55679,
+      "lo": 0.52742,
+      "hi": 0.58616,
+      "effective_n_polls": 2.24,
+      "sd": 0.01786
+    },
+    {
+      "date": "2026-05-20",
+      "dem_two_party": 0.55668,
+      "lo": 0.52721,
+      "hi": 0.58614,
+      "effective_n_polls": 2.29,
+      "sd": 0.01791
+    },
+    {
+      "date": "2026-05-21",
+      "dem_two_party": 0.55655,
+      "lo": 0.527,
+      "hi": 0.58611,
+      "effective_n_polls": 2.33,
+      "sd": 0.01797
+    },
+    {
+      "date": "2026-05-22",
+      "dem_two_party": 0.55642,
+      "lo": 0.52677,
+      "hi": 0.58607,
+      "effective_n_polls": 2.38,
+      "sd": 0.01802
+    },
+    {
+      "date": "2026-05-23",
+      "dem_two_party": 0.55628,
+      "lo": 0.52653,
+      "hi": 0.58602,
+      "effective_n_polls": 2.44,
+      "sd": 0.01808
+    },
+    {
+      "date": "2026-05-24",
+      "dem_two_party": 0.55612,
+      "lo": 0.52628,
+      "hi": 0.58596,
+      "effective_n_polls": 2.5,
+      "sd": 0.01814
+    },
+    {
+      "date": "2026-05-25",
+      "dem_two_party": 0.55596,
+      "lo": 0.52602,
+      "hi": 0.58589,
+      "effective_n_polls": 2.57,
+      "sd": 0.0182
+    },
+    {
+      "date": "2026-05-26",
+      "dem_two_party": 0.55578,
+      "lo": 0.52575,
+      "hi": 0.58581,
+      "effective_n_polls": 2.64,
+      "sd": 0.01826
+    },
+    {
+      "date": "2026-05-27",
+      "dem_two_party": 0.55559,
+      "lo": 0.52546,
+      "hi": 0.58571,
+      "effective_n_polls": 2.73,
+      "sd": 0.01831
+    },
+    {
+      "date": "2026-05-28",
+      "dem_two_party": 0.55539,
+      "lo": 0.52517,
+      "hi": 0.58561,
+      "effective_n_polls": 2.82,
+      "sd": 0.01837
+    },
+    {
+      "date": "2026-05-29",
+      "dem_two_party": 0.55518,
+      "lo": 0.52486,
+      "hi": 0.58549,
+      "effective_n_polls": 2.91,
+      "sd": 0.01843
+    },
+    {
+      "date": "2026-05-30",
+      "dem_two_party": 0.55495,
+      "lo": 0.52455,
+      "hi": 0.58535,
+      "effective_n_polls": 3.02,
+      "sd": 0.01848
+    },
+    {
+      "date": "2026-05-31",
+      "dem_two_party": 0.55471,
+      "lo": 0.52423,
+      "hi": 0.5852,
+      "effective_n_polls": 3.14,
+      "sd": 0.01853
+    },
+    {
+      "date": "2026-06-01",
+      "dem_two_party": 0.55446,
+      "lo": 0.52389,
+      "hi": 0.58503,
+      "effective_n_polls": 3.26,
+      "sd": 0.01858
+    },
+    {
+      "date": "2026-06-02",
+      "dem_two_party": 0.5542,
+      "lo": 0.52356,
+      "hi": 0.58485,
+      "effective_n_polls": 3.4,
+      "sd": 0.01863
+    },
+    {
+      "date": "2026-06-03",
+      "dem_two_party": 0.55393,
+      "lo": 0.52321,
+      "hi": 0.58465,
+      "effective_n_polls": 3.54,
+      "sd": 0.01868
+    },
+    {
+      "date": "2026-06-04",
+      "dem_two_party": 0.55365,
+      "lo": 0.52286,
+      "hi": 0.58444,
+      "effective_n_polls": 3.69,
+      "sd": 0.01872
+    },
+    {
+      "date": "2026-06-05",
+      "dem_two_party": 0.55336,
+      "lo": 0.52251,
+      "hi": 0.58422,
+      "effective_n_polls": 3.85,
+      "sd": 0.01876
+    },
+    {
+      "date": "2026-06-06",
+      "dem_two_party": 0.55306,
+      "lo": 0.52215,
+      "hi": 0.58398,
+      "effective_n_polls": 4.01,
+      "sd": 0.01879
+    },
+    {
+      "date": "2026-06-07",
+      "dem_two_party": 0.55276,
+      "lo": 0.52179,
+      "hi": 0.58373,
+      "effective_n_polls": 4.17,
+      "sd": 0.01883
+    },
+    {
+      "date": "2026-06-08",
+      "dem_two_party": 0.55245,
+      "lo": 0.52144,
+      "hi": 0.58346,
+      "effective_n_polls": 4.33,
+      "sd": 0.01885
+    },
+    {
+      "date": "2026-06-09",
+      "dem_two_party": 0.55213,
+      "lo": 0.52108,
+      "hi": 0.58319,
+      "effective_n_polls": 4.49,
+      "sd": 0.01888
+    },
+    {
+      "date": "2026-06-10",
+      "dem_two_party": 0.55182,
+      "lo": 0.52073,
+      "hi": 0.58291,
+      "effective_n_polls": 4.64,
+      "sd": 0.0189
+    },
+    {
+      "date": "2026-06-11",
+      "dem_two_party": 0.5515,
+      "lo": 0.52038,
+      "hi": 0.58262,
+      "effective_n_polls": 4.78,
+      "sd": 0.01892
+    },
+    {
+      "date": "2026-06-12",
+      "dem_two_party": 0.55118,
+      "lo": 0.52004,
+      "hi": 0.58232,
+      "effective_n_polls": 4.89,
+      "sd": 0.01893
+    },
+    {
+      "date": "2026-06-13",
+      "dem_two_party": 0.55087,
+      "lo": 0.51971,
+      "hi": 0.58202,
+      "effective_n_polls": 4.99,
+      "sd": 0.01894
+    },
+    {
+      "date": "2026-06-14",
+      "dem_two_party": 0.55055,
+      "lo": 0.51938,
+      "hi": 0.58173,
+      "effective_n_polls": 5.07,
+      "sd": 0.01895
+    },
+    {
+      "date": "2026-06-15",
+      "dem_two_party": 0.55025,
+      "lo": 0.51906,
+      "hi": 0.58143,
+      "effective_n_polls": 5.12,
+      "sd": 0.01896
+    },
+    {
+      "date": "2026-06-16",
+      "dem_two_party": 0.54994,
+      "lo": 0.51876,
+      "hi": 0.58113,
+      "effective_n_polls": 5.14,
+      "sd": 0.01896
+    },
+    {
+      "date": "2026-06-17",
+      "dem_two_party": 0.54965,
+      "lo": 0.51847,
+      "hi": 0.58083,
+      "effective_n_polls": 5.15,
+      "sd": 0.01896
+    },
+    {
+      "date": "2026-06-18",
+      "dem_two_party": 0.54937,
+      "lo": 0.51819,
+      "hi": 0.58055,
+      "effective_n_polls": 5.13,
+      "sd": 0.01896
+    },
+    {
+      "date": "2026-06-19",
+      "dem_two_party": 0.54909,
+      "lo": 0.51792,
+      "hi": 0.58026,
+      "effective_n_polls": 5.08,
+      "sd": 0.01895
+    },
+    {
+      "date": "2026-06-20",
+      "dem_two_party": 0.54883,
+      "lo": 0.51766,
+      "hi": 0.57999,
+      "effective_n_polls": 5.03,
+      "sd": 0.01894
+    },
+    {
+      "date": "2026-06-21",
+      "dem_two_party": 0.54857,
+      "lo": 0.51742,
+      "hi": 0.57972,
+      "effective_n_polls": 4.96,
+      "sd": 0.01894
+    },
+    {
+      "date": "2026-06-22",
+      "dem_two_party": 0.54833,
+      "lo": 0.5172,
+      "hi": 0.57946,
+      "effective_n_polls": 4.88,
+      "sd": 0.01893
+    },
+    {
+      "date": "2026-06-23",
+      "dem_two_party": 0.5481,
+      "lo": 0.51698,
+      "hi": 0.57921,
+      "effective_n_polls": 4.79,
+      "sd": 0.01892
+    },
+    {
+      "date": "2026-06-24",
+      "dem_two_party": 0.54788,
+      "lo": 0.51679,
+      "hi": 0.57897,
+      "effective_n_polls": 4.7,
+      "sd": 0.0189
+    },
+    {
+      "date": "2026-06-25",
+      "dem_two_party": 0.54767,
+      "lo": 0.5166,
+      "hi": 0.57875,
+      "effective_n_polls": 4.61,
+      "sd": 0.01889
+    },
+    {
+      "date": "2026-06-26",
+      "dem_two_party": 0.54748,
+      "lo": 0.51643,
+      "hi": 0.57853,
+      "effective_n_polls": 4.52,
+      "sd": 0.01888
+    },
+    {
+      "date": "2026-06-27",
+      "dem_two_party": 0.5473,
+      "lo": 0.51627,
+      "hi": 0.57833,
+      "effective_n_polls": 4.43,
+      "sd": 0.01886
+    },
+    {
+      "date": "2026-06-28",
+      "dem_two_party": 0.54713,
+      "lo": 0.51612,
+      "hi": 0.57813,
+      "effective_n_polls": 4.35,
+      "sd": 0.01885
+    },
+    {
+      "date": "2026-06-29",
+      "dem_two_party": 0.54697,
+      "lo": 0.51598,
+      "hi": 0.57795,
+      "effective_n_polls": 4.26,
+      "sd": 0.01884
+    },
+    {
+      "date": "2026-06-30",
+      "dem_two_party": 0.54682,
+      "lo": 0.51585,
+      "hi": 0.57778,
+      "effective_n_polls": 4.19,
+      "sd": 0.01882
+    },
+    {
+      "date": "2026-07-01",
+      "dem_two_party": 0.54668,
+      "lo": 0.51574,
+      "hi": 0.57762,
+      "effective_n_polls": 4.11,
+      "sd": 0.01881
+    },
+    {
+      "date": "2026-07-02",
+      "dem_two_party": 0.54655,
+      "lo": 0.51563,
+      "hi": 0.57747,
+      "effective_n_polls": 4.04,
+      "sd": 0.0188
+    },
+    {
+      "date": "2026-07-03",
+      "dem_two_party": 0.54643,
+      "lo": 0.51553,
+      "hi": 0.57733,
+      "effective_n_polls": 3.98,
+      "sd": 0.01879
+    },
+    {
+      "date": "2026-07-04",
+      "dem_two_party": 0.54632,
+      "lo": 0.51544,
+      "hi": 0.5772,
+      "effective_n_polls": 3.92,
+      "sd": 0.01877
+    },
+    {
+      "date": "2026-07-05",
+      "dem_two_party": 0.54622,
+      "lo": 0.51536,
+      "hi": 0.57708,
+      "effective_n_polls": 3.87,
+      "sd": 0.01876
+    },
+    {
+      "date": "2026-07-06",
+      "dem_two_party": 0.54613,
+      "lo": 0.51529,
+      "hi": 0.57697,
+      "effective_n_polls": 3.82,
+      "sd": 0.01875
+    },
+    {
+      "date": "2026-07-07",
+      "dem_two_party": 0.54604,
+      "lo": 0.51522,
+      "hi": 0.57687,
+      "effective_n_polls": 3.77,
+      "sd": 0.01874
+    },
+    {
+      "date": "2026-07-08",
+      "dem_two_party": 0.54597,
+      "lo": 0.51516,
+      "hi": 0.57678,
+      "effective_n_polls": 3.73,
+      "sd": 0.01873
+    },
+    {
+      "date": "2026-07-09",
+      "dem_two_party": 0.54589,
+      "lo": 0.5151,
+      "hi": 0.57669,
+      "effective_n_polls": 3.69,
+      "sd": 0.01872
+    },
+    {
+      "date": "2026-07-10",
+      "dem_two_party": 0.54583,
+      "lo": 0.51505,
+      "hi": 0.57661,
+      "effective_n_polls": 3.65,
+      "sd": 0.01871
+    },
+    {
+      "date": "2026-07-11",
+      "dem_two_party": 0.54577,
+      "lo": 0.515,
+      "hi": 0.57653,
+      "effective_n_polls": 3.62,
+      "sd": 0.0187
+    },
+    {
+      "date": "2026-07-12",
+      "dem_two_party": 0.54571,
+      "lo": 0.51496,
+      "hi": 0.57647,
+      "effective_n_polls": 3.59,
+      "sd": 0.0187
+    },
+    {
+      "date": "2026-07-13",
+      "dem_two_party": 0.54566,
+      "lo": 0.51492,
+      "hi": 0.5764,
+      "effective_n_polls": 3.56,
+      "sd": 0.01869
+    },
+    {
+      "date": "2026-07-14",
+      "dem_two_party": 0.54562,
+      "lo": 0.51489,
+      "hi": 0.57635,
+      "effective_n_polls": 3.54,
+      "sd": 0.01868
+    },
+    {
+      "date": "2026-07-15",
+      "dem_two_party": 0.54557,
+      "lo": 0.51485,
+      "hi": 0.5763,
+      "effective_n_polls": 3.52,
+      "sd": 0.01868
+    },
+    {
+      "date": "2026-07-16",
+      "dem_two_party": 0.54554,
+      "lo": 0.51483,
+      "hi": 0.57625,
+      "effective_n_polls": 3.5,
+      "sd": 0.01867
+    },
+    {
+      "date": "2026-07-17",
+      "dem_two_party": 0.5455,
+      "lo": 0.5148,
+      "hi": 0.5762,
+      "effective_n_polls": 3.48,
+      "sd": 0.01867
+    },
+    {
+      "date": "2026-07-18",
+      "dem_two_party": 0.54547,
+      "lo": 0.51478,
+      "hi": 0.57616,
+      "effective_n_polls": 3.46,
+      "sd": 0.01866
+    },
+    {
+      "date": "2026-07-19",
+      "dem_two_party": 0.54544,
+      "lo": 0.51475,
+      "hi": 0.57613,
+      "effective_n_polls": 3.45,
+      "sd": 0.01866
+    },
+    {
+      "date": "2026-07-20",
+      "dem_two_party": 0.54503,
+      "lo": 0.51444,
+      "hi": 0.57561,
+      "effective_n_polls": 3.55,
+      "sd": 0.01859
+    },
+    {
+      "date": "2026-07-21",
+      "dem_two_party": 0.54462,
+      "lo": 0.51415,
+      "hi": 0.57509,
+      "effective_n_polls": 3.63,
+      "sd": 0.01853
+    },
+    {
+      "date": "2026-07-22",
+      "dem_two_party": 0.54422,
+      "lo": 0.51387,
+      "hi": 0.57458,
+      "effective_n_polls": 3.7,
+      "sd": 0.01845
+    },
+    {
+      "date": "2026-07-23",
+      "dem_two_party": 0.54384,
+      "lo": 0.51361,
+      "hi": 0.57406,
+      "effective_n_polls": 3.75,
+      "sd": 0.01838
+    },
+    {
+      "date": "2026-07-24",
+      "dem_two_party": 0.54346,
+      "lo": 0.51336,
+      "hi": 0.57356,
+      "effective_n_polls": 3.78,
+      "sd": 0.0183
+    },
+    {
+      "date": "2026-07-25",
+      "dem_two_party": 0.5431,
+      "lo": 0.51314,
+      "hi": 0.57306,
+      "effective_n_polls": 3.79,
+      "sd": 0.01821
+    },
+    {
+      "date": "2026-07-26",
+      "dem_two_party": 0.5429,
+      "lo": 0.51309,
+      "hi": 0.57271,
+      "effective_n_polls": 3.83,
+      "sd": 0.01812
+    },
+    {
+      "date": "2026-07-27",
+      "dem_two_party": 0.5427,
+      "lo": 0.51304,
+      "hi": 0.57237,
+      "effective_n_polls": 3.85,
+      "sd": 0.01803
+    },
+    {
+      "date": "2026-07-28",
+      "dem_two_party": 0.5425,
+      "lo": 0.51299,
+      "hi": 0.57201,
+      "effective_n_polls": 3.85,
+      "sd": 0.01794
+    },
+    {
+      "date": "2026-07-29",
+      "dem_two_party": 0.5423,
+      "lo": 0.51294,
+      "hi": 0.57166,
+      "effective_n_polls": 3.84,
+      "sd": 0.01785
+    },
+    {
+      "date": "2026-07-30",
+      "dem_two_party": 0.54209,
+      "lo": 0.51289,
+      "hi": 0.5713,
+      "effective_n_polls": 3.8,
+      "sd": 0.01776
+    },
+    {
+      "date": "2026-07-31",
+      "dem_two_party": 0.54189,
+      "lo": 0.51284,
+      "hi": 0.57094,
+      "effective_n_polls": 3.75,
+      "sd": 0.01766
+    },
+    {
+      "date": "2026-08-01",
+      "dem_two_party": 0.54169,
+      "lo": 0.51279,
+      "hi": 0.57059,
+      "effective_n_polls": 3.68,
+      "sd": 0.01757
+    },
+    {
+      "date": "2026-08-02",
+      "dem_two_party": 0.54149,
+      "lo": 0.51275,
+      "hi": 0.57024,
+      "effective_n_polls": 3.6,
+      "sd": 0.01747
+    },
+    {
+      "date": "2026-08-03",
+      "dem_two_party": 0.5413,
+      "lo": 0.51271,
+      "hi": 0.56989,
+      "effective_n_polls": 3.51,
+      "sd": 0.01738
+    },
+    {
+      "date": "2026-08-04",
+      "dem_two_party": 0.54111,
+      "lo": 0.51267,
+      "hi": 0.56954,
+      "effective_n_polls": 3.42,
+      "sd": 0.01729
+    },
+    {
+      "date": "2026-08-05",
+      "dem_two_party": 0.54092,
+      "lo": 0.51264,
+      "hi": 0.5692,
+      "effective_n_polls": 3.31,
+      "sd": 0.01719
+    },
+    {
+      "date": "2026-08-06",
+      "dem_two_party": 0.54074,
+      "lo": 0.51261,
+      "hi": 0.56887,
+      "effective_n_polls": 3.21,
+      "sd": 0.0171
+    },
+    {
+      "date": "2026-08-07",
+      "dem_two_party": 0.54056,
+      "lo": 0.51258,
+      "hi": 0.56854,
+      "effective_n_polls": 3.11,
+      "sd": 0.01701
+    },
+    {
+      "date": "2026-08-08",
+      "dem_two_party": 0.5404,
+      "lo": 0.51257,
+      "hi": 0.56822,
+      "effective_n_polls": 3.01,
+      "sd": 0.01692
+    },
+    {
+      "date": "2026-08-09",
+      "dem_two_party": 0.54024,
+      "lo": 0.51256,
+      "hi": 0.56792,
+      "effective_n_polls": 2.91,
+      "sd": 0.01683
+    },
+    {
+      "date": "2026-08-10",
+      "dem_two_party": 0.54008,
+      "lo": 0.51255,
+      "hi": 0.56762,
+      "effective_n_polls": 2.81,
+      "sd": 0.01674
+    },
+    {
+      "date": "2026-08-11",
+      "dem_two_party": 0.53994,
+      "lo": 0.51255,
+      "hi": 0.56732,
+      "effective_n_polls": 2.73,
+      "sd": 0.01665
+    },
+    {
+      "date": "2026-08-12",
+      "dem_two_party": 0.5398,
+      "lo": 0.51256,
+      "hi": 0.56704,
+      "effective_n_polls": 2.64,
+      "sd": 0.01656
+    },
+    {
+      "date": "2026-08-13",
+      "dem_two_party": 0.53967,
+      "lo": 0.51257,
+      "hi": 0.56677,
+      "effective_n_polls": 2.57,
+      "sd": 0.01648
+    },
+    {
+      "date": "2026-08-14",
+      "dem_two_party": 0.53955,
+      "lo": 0.51258,
+      "hi": 0.56651,
+      "effective_n_polls": 2.49,
+      "sd": 0.01639
+    },
+    {
+      "date": "2026-08-15",
+      "dem_two_party": 0.53943,
+      "lo": 0.5126,
+      "hi": 0.56626,
+      "effective_n_polls": 2.43,
+      "sd": 0.01631
+    },
+    {
+      "date": "2026-08-16",
+      "dem_two_party": 0.53944,
+      "lo": 0.51263,
+      "hi": 0.56624,
+      "effective_n_polls": 2.47,
+      "sd": 0.0163
+    }
+  ],
+  "environment_gate": {
+    "ok": true,
+    "n_polls": 10,
+    "effective_n_polls": 2.47,
+    "single_poll_influence_pp": 0.83,
+    "max_single_poll_influence_pp": 1.0,
+    "min_polls": 8,
+    "reasons": []
+  },
+  "house_effects": {
+    "Emerson College": 0.00295,
+    "Fox News": -0.00299,
+    "Marist": 0.0091,
+    "Quinnipiac University": -0.0035,
+    "YouGov": -0.00123
+  },
+  "polls": [
+    {
+      "pollster": "Marist",
+      "sponsor": "NPR/PBS News",
+      "date": "2025-11-11",
+      "start_date": "2025-11-10",
+      "end_date": "2025-11-13",
+      "n": 1291,
+      "population": "rv",
+      "dem": 0.55,
+      "rep": 0.41,
+      "dem_two_party": 0.57292,
+      "partisan": "",
+      "source_url": "https://maristpoll.marist.edu/polls/a-look-to-the-2026-midterms-november-2025/"
+    },
+    {
+      "pollster": "Quinnipiac University",
+      "sponsor": "",
+      "date": "2025-12-13",
+      "start_date": "2025-12-11",
+      "end_date": "2025-12-15",
+      "n": 1035,
+      "population": "rv",
+      "dem": 0.47,
+      "rep": 0.43,
+      "dem_two_party": 0.52222,
+      "partisan": "",
+      "source_url": "https://poll.qu.edu/poll-release?releaseid=3943"
+    },
+    {
+      "pollster": "Fox News",
+      "sponsor": "",
+      "date": "2026-01-24",
+      "start_date": "2026-01-23",
+      "end_date": "2026-01-26",
+      "n": 1005,
+      "population": "rv",
+      "dem": 0.52,
+      "rep": 0.46,
+      "dem_two_party": 0.53061,
+      "partisan": "",
+      "source_url": "https://www.foxnews.com/politics/fox-news-poll-early-look-2026-midterms"
+    },
+    {
+      "pollster": "Quinnipiac University",
+      "sponsor": "",
+      "date": "2026-03-21",
+      "start_date": "2026-03-19",
+      "end_date": "2026-03-23",
+      "n": 1191,
+      "population": "rv",
+      "dem": 0.51,
+      "rep": 0.4,
+      "dem_two_party": 0.56044,
+      "partisan": "",
+      "source_url": "https://poll.qu.edu/images/polling/us/us03252026_ueek31.pdf"
+    },
+    {
+      "pollster": "Emerson College",
+      "sponsor": "",
+      "date": "2026-04-25",
+      "start_date": "2026-04-24",
+      "end_date": "2026-04-26",
+      "n": 1000,
+      "population": "lv",
+      "dem": 0.5,
+      "rep": 0.4,
+      "dem_two_party": 0.55556,
+      "partisan": "",
+      "source_url": "https://emersoncollegepolling.com/april-2026-national-poll/"
+    },
+    {
+      "pollster": "Quinnipiac University",
+      "sponsor": "",
+      "date": "2026-05-16",
+      "start_date": "2026-05-14",
+      "end_date": "2026-05-18",
+      "n": 1106,
+      "population": "rv",
+      "dem": 0.5,
+      "rep": 0.39,
+      "dem_two_party": 0.5618,
+      "partisan": "",
+      "source_url": "https://poll.qu.edu/poll-release?releaseid=3959"
+    },
+    {
+      "pollster": "Emerson College",
+      "sponsor": "",
+      "date": "2026-07-19",
+      "start_date": "2026-07-19",
+      "end_date": "2026-07-20",
+      "n": 1100,
+      "population": "lv",
+      "dem": 0.53,
+      "rep": 0.42,
+      "dem_two_party": 0.55789,
+      "partisan": "",
+      "source_url": "https://emersoncollegepolling.com/july-2026-national-poll-democrats-with-11-point-generic-ballot-advantage/"
+    },
+    {
+      "pollster": "Quinnipiac University",
+      "sponsor": "",
+      "date": "2026-07-25",
+      "start_date": "2026-07-23",
+      "end_date": "2026-07-27",
+      "n": 963,
+      "population": "rv",
+      "dem": 0.48,
+      "rep": 0.41,
+      "dem_two_party": 0.53933,
+      "partisan": "",
+      "source_url": "https://poll.qu.edu/poll-release?releaseid=3964"
+    },
+    {
+      "pollster": "YouGov",
+      "sponsor": "The Economist",
+      "date": "2026-08-15",
+      "start_date": "2026-08-14",
+      "end_date": "2026-08-17",
+      "n": 1449,
+      "population": "rv",
+      "dem": 0.46,
+      "rep": 0.39,
+      "dem_two_party": 0.54118,
+      "partisan": "",
+      "source_url": "https://d3nkl3psvxxpe9.cloudfront.net/documents/econTabReport_jNjXIL6.pdf"
+    },
+    {
+      "pollster": "Emerson College",
+      "sponsor": "",
+      "date": "2026-08-16",
+      "start_date": "2026-08-16",
+      "end_date": "2026-08-17",
+      "n": 1000,
+      "population": "lv",
+      "dem": 0.51,
+      "rep": 0.43,
+      "dem_two_party": 0.54255,
+      "partisan": "",
+      "source_url": "https://emersoncollegepolling.com/august-2026-national-poll/"
+    }
+  ],
+  "current": {
+    "date": "2026-08-16",
+    "dem": 0.49467,
+    "rep": 0.42233,
+    "dem_two_party": 0.53944,
+    "margin_pp": 7.23,
+    "lo": 0.51263,
+    "hi": 0.56624
+  }
+}

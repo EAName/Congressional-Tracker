@@ -26,7 +26,7 @@ import yaml
 from scipy.optimize import minimize
 from scipy.stats import norm
 
-from vact.analysis.races import RaceRegistry, load_races
+from vact.analysis.races import Chamber, RaceRegistry, load_races
 from vact.paths import DATA_DIR, REPO_ROOT
 from vact.pipeline.fec import latest_snapshot
 
@@ -343,6 +343,13 @@ def _read_csv(path: Path) -> list[dict[str, str]]:
 
 
 def latest_generic_ballot(as_of: date | None = None) -> dict[str, Any] | None:
+    """Poll average when the primary-poll archive can support one, else the
+    manually-entered aggregate row in data/generic_ballot.csv."""
+    from vact.analysis.poll_average import latest_two_party
+
+    computed = latest_two_party(as_of=as_of)
+    if computed is not None:
+        return computed
     rows = _read_csv(GENERIC_BALLOT_PATH)
     parsed: list[dict[str, str]] = []
     for row in rows:
@@ -631,9 +638,15 @@ def predict_races(
     default_margin = float(max(ENV_MARGIN_MIN, min(ENV_MARGIN_MAX, default_margin)))
     margins = env_margin_grid()
     races_out = []
+    skipped: list[str] = []
     grid_probs: dict[str, list[float]] = {}
     for race in reg.races:
         if race.status.value != "tracked":
+            continue
+        if race.chamber is not Chamber.HOUSE:
+            # Fit is house_races_train.csv on district-level features; a statewide
+            # Senate contest has no district lean to feed it. Excluded, not zeroed.
+            skipped.append(race.race_id)
             continue
         _share, lean_src = _two_party_lean(race)
         nat = NATIONAL_PRES_DEM.get(lean_src)
@@ -714,6 +727,7 @@ def predict_races(
             "probs": grid_probs,
         },
         "races": races_out,
+        "unmodeled_races": skipped,
         "log": load_predictions(),
         "fit": {
             "n_train": fit_doc["n_train"],

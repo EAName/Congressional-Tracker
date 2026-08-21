@@ -382,10 +382,28 @@ Prompt 0 (this file) — **done**. No behavior change.
 **Prompt 10 — midterm race registry + FEC** (midterm kit)
 
 - [x] `data/races.json` for VA-1 / VA-2 / VA-5 (2026-11-03, map_version=2021)
+- [x] Multi-chamber registry: `chamber` per race; `va-sen` (Warner / Mizusawa) is
+      statewide with `district: null` and is excluded from the House-fit seat model
+      (`seats.json.unmodeled_races`), so its race page renders without a probability
 - [x] `vact races validate` + CI on ingest/publish
 - [x] Dated OpenFEC snapshots `data/derived/fec_YYYYMMDD.json` (same-day no-op)
 - [x] Build-time `days_until_election` on export / header countdown
 - [x] `FEC_API_KEY` documented in `.env.example`
+
+**Senate model — `senate-v0.1`**
+
+- [x] MEDSL Senate 1976–2024 + Wikipedia state presidential lean → 244-race extract
+- [x] All eight cycles usable (states are a panel; no redistricting drop)
+- [x] Lean is real presidential share in training *and* production — no transfer
+- [x] Leave-one-cycle-out Brier 0.0885 vs 0.1232 lean+swing, 0.1516 always-incumbent
+- [x] `midterm_dem` tested and dropped (identical Brier; `nat_env` already carries it)
+
+**Generic ballot average**
+
+- [x] Primary-poll archive `data/generic_ballot_polls.csv`; no aggregator ingestion
+- [x] House effects shrunk `n/(n+k)`, frequency penalty, LV/RV/A offsets
+- [x] Predictive band = between-poll spread + single-poll sampling error
+- [x] `environment_gate` separates "render the chart" from "drive the forecasts"
 
 **Prompt 13 — seat model** (midterm kit)
 

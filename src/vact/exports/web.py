@@ -24,8 +24,10 @@ from vact.exports.brand import build_about_payload, build_brand_payload
 from vact.exports.disclosure import build_disclosure_payload
 from vact.analysis.timeseries import expanding_series
 from vact.analysis.cosponsorship import score_cosponsorship, serialize_cosponsor_rows
+from vact.analysis.poll_average import build_generic_ballot
 from vact.analysis.races import races_for_web
 from vact.analysis.seat_model import predict_races
+from vact.analysis.senate_model import predict as predict_senate
 from vact.pipeline.cosponsorship import load_cosp_config
 from vact.pipeline.fec import latest_snapshot
 from vact.analysis.votes import resolve_votes_path, validate_votes_csv, vote_rows_from_warehouse
@@ -160,6 +162,8 @@ def build_web_payload(
         "races": races,
         "fec": fec_payload,
         "seats": predict_races(),
+        "senate": predict_senate(),
+        "generic_ballot": build_generic_ballot(),
         "disclosure": build_disclosure_payload(),
         "brand": build_brand_payload(),
         "about": build_about_payload(),
@@ -217,6 +221,8 @@ def export_web(
         "races",
         "fec",
         "seats",
+        "senate",
+        "generic_ballot",
         "disclosure",
         "brand",
         "about",

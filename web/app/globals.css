@@ -1220,3 +1220,203 @@ a:hover {
     grid-template-columns: 1fr;
   }
 }
+
+/* Generic ballot average --------------------------------------------------- */
+.gb {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.gb-modes {
+  display: flex;
+  gap: 8px;
+}
+
+.gb-mode {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--ink2);
+  cursor: pointer;
+}
+
+.gb-mode.is-active {
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
+}
+
+.gb-svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.gb-grid {
+  stroke: var(--line);
+  stroke-width: 1;
+}
+
+.gb-grid-v {
+  stroke-dasharray: 2 4;
+}
+
+.gb-axis {
+  fill: var(--ink3);
+  font-family: var(--font-body);
+  font-size: 12px;
+}
+
+.gb-axis-y {
+  text-anchor: end;
+}
+
+.gb-axis-year {
+  fill: var(--ink3);
+  font-size: 11px;
+}
+
+.gb-band {
+  stroke: none;
+}
+
+.gb-band-dem {
+  fill: var(--dem-soft);
+}
+
+.gb-band-rep {
+  fill: var(--rep-soft);
+}
+
+.gb-line {
+  fill: none;
+  stroke-width: 2.25;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.gb-line-dem {
+  stroke: var(--dem);
+}
+
+.gb-line-rep {
+  stroke: var(--rep);
+}
+
+.gb-dot-dem {
+  fill: var(--bg);
+  stroke: var(--dem);
+  stroke-width: 2;
+}
+
+.gb-dot-rep {
+  fill: var(--bg);
+  stroke: var(--rep);
+  stroke-width: 2;
+}
+
+.gb-label {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.gb-value {
+  font-family: var(--font-body);
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.gb-label-dem {
+  fill: var(--dem);
+}
+
+.gb-label-rep {
+  fill: var(--rep);
+}
+
+.gb-note {
+  color: var(--ink3);
+  font-size: 0.78rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.gb-margin {
+  padding: 28px 0;
+}
+
+.gb-margin-value {
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  margin: 0 0 8px;
+  color: var(--ink);
+}
+
+.gb-empty {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px 0;
+}
+
+/* Senate forecast ---------------------------------------------------------- */
+.sen-forecast {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sen-headline {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  margin: 0;
+  color: var(--ink);
+}
+
+.sen-headline strong {
+  color: var(--dem);
+}
+
+.sen-decomp {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 8px;
+  margin: 0;
+}
+
+.sen-decomp-row {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 8px 10px;
+  background: var(--panel);
+}
+
+.sen-decomp-row dt {
+  color: var(--ink3);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.sen-decomp-row dd {
+  margin: 2px 0 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+
+.seat-model {
+  color: var(--ink3);
+  font-size: 0.7rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  margin: 6px 0 0;
+}

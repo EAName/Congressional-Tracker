@@ -12,7 +12,9 @@ from vact.analysis.races import (
     RACES_PATH,
     RacesValidationError,
     days_until_election,
+    house_races,
     load_races,
+    race_label,
     races_for_web,
     validate_races,
 )
@@ -22,19 +24,54 @@ from vact.sources import fec as fec_source
 
 def test_committed_registry_validates() -> None:
     reg = validate_races(RACES_PATH)
-    assert {r.race_id for r in reg.races if r.status.value == "tracked"} == {
-        "va-01",
-        "va-02",
-        "va-05",
-    }
+    tracked = {r.race_id for r in reg.races if r.status.value == "tracked"}
+    assert tracked == {f"va-{n:02d}" for n in range(1, 12)} | {"va-sen"}
     assert all(r.election_date.isoformat() == "2026-11-03" for r in reg.races)
     fec_ids = []
     for r in reg.races:
         fec_ids.extend([r.incumbent.fec_candidate_id, r.challenger.fec_candidate_id])
-    assert len(fec_ids) == 6
-    assert len(set(fec_ids)) == 6
+    assert len(fec_ids) == 24  # 12 races x 2 candidates
+    assert len(set(fec_ids)) == 24
     assert reg.races[0].challenger.prior_federal_service is None  # Taylor
     assert reg.races[1].challenger.prior_federal_service is not None  # Luria
+
+
+def test_senate_race_is_statewide_and_dem_held() -> None:
+    reg = validate_races(RACES_PATH)
+    sen = next(r for r in reg.races if r.race_id == "va-sen")
+    assert sen.chamber.value == "Senate"
+    assert sen.district is None
+    # The only tracked race where the Democrat is the incumbent, not the challenger.
+    assert sen.incumbent.party == "Democrat"
+    assert sen.incumbent.bioguide_id == "W000805"
+    assert sen.challenger.party == "Republican"
+    assert race_label(sen) == "VA-Sen"
+
+
+def test_house_races_excludes_senate() -> None:
+    reg = validate_races(RACES_PATH)
+    assert [r.race_id for r in house_races(reg)] == [f"va-{n:02d}" for n in range(1, 12)]
+    assert all(r.district is not None for r in house_races(reg))
+    assert {r.district for r in house_races(reg)} == set(range(1, 12))
+
+
+def test_senate_race_with_district_fails(tmp_path: Path) -> None:
+    payload = json.loads(RACES_PATH.read_text(encoding="utf-8"))
+    sen = next(r for r in payload["races"] if r["race_id"] == "va-sen")
+    sen["district"] = 1
+    path = tmp_path / "races.json"
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    with pytest.raises(RacesValidationError, match="statewide"):
+        validate_races(path)
+
+
+def test_house_race_without_district_fails(tmp_path: Path) -> None:
+    payload = json.loads(RACES_PATH.read_text(encoding="utf-8"))
+    payload["races"][0]["district"] = None
+    path = tmp_path / "races.json"
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    with pytest.raises(RacesValidationError, match="require a district"):
+        validate_races(path)
 
 
 def test_tracked_missing_fec_fails(tmp_path: Path) -> None:
@@ -57,6 +94,19 @@ def test_races_for_web_injects_days() -> None:
     assert out["days_until_election"] == 76
     assert all("days_until_election" in r for r in out["races"])
     assert out["as_of"] == "2026-08-19"
+    labels = {r["race_id"]: r["label"] for r in out["races"]}
+    assert labels["va-01"] == "VA-1"
+    assert labels["va-11"] == "VA-11"
+    assert labels["va-sen"] == "VA-Sen"
+
+
+def test_every_house_race_has_a_lean() -> None:
+    """missing_zeroed lean silently collapses the model to incumbency + midterm."""
+    reg = validate_races(RACES_PATH)
+    for race in reg.races:
+        share = race.district_lean.pres_2024_two_party_dem_share
+        assert share is not None, f"{race.race_id} has no 2024 presidential lean"
+        assert 0.0 < share < 1.0
 
 
 def test_parse_totals_small_dollar_share(tmp_path: Path) -> None:

@@ -1,11 +1,12 @@
 {
-  "version": 1,
+  "version": 2,
   "map_version": "2021",
   "election_date": "2026-11-03",
-  "notes": "Canonical midterm race registry (Prompt 10). district_lean shares are TODO placeholders; fill from the listed sources before publishing lean-dependent modules.",
+  "notes": "Canonical race registry: all 11 Virginia House seats plus the Class 2 Senate seat, 2026-11-03, 2021 court map. House seats carry a district; the statewide Senate race (va-sen) carries district=null and is excluded from the House-fit seat model. district_lean is 2024 presidential two-party Democratic share.",
   "races": [
     {
       "race_id": "va-01",
+      "chamber": "House",
       "district": 1,
       "election_date": "2026-11-03",
       "status": "tracked",
@@ -23,13 +24,14 @@
       },
       "district_lean": {
         "pres_2020_two_party_dem_share": null,
-        "pres_2024_two_party_dem_share": null,
-        "source_url": "https://docs.google.com/spreadsheets/d/1Yje_Cib9ZgXmQfl-RYxLVSLv_cbiNZiQGjJg3F_xPnI/; https://www.vpap.org/"
+        "pres_2024_two_party_dem_share": 0.475,
+        "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/"
       },
       "ratings": []
     },
     {
       "race_id": "va-02",
+      "chamber": "House",
       "district": 2,
       "election_date": "2026-11-03",
       "status": "tracked",
@@ -46,20 +48,74 @@
         "prior_federal_service": [
           {
             "chamber": "House",
-            "congresses": [116, 117],
+            "congresses": [
+              116,
+              117
+            ],
             "bioguide_id": "L000791"
           }
         ]
       },
       "district_lean": {
         "pres_2020_two_party_dem_share": null,
-        "pres_2024_two_party_dem_share": null,
-        "source_url": "https://docs.google.com/spreadsheets/d/1Yje_Cib9ZgXmQfl-RYxLVSLv_cbiNZiQGjJg3F_xPnI/; https://www.vpap.org/"
+        "pres_2024_two_party_dem_share": 0.4986,
+        "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/"
+      },
+      "ratings": []
+    },
+    {
+      "race_id": "va-03",
+      "chamber": "House",
+      "district": 3,
+      "election_date": "2026-11-03",
+      "status": "tracked",
+      "incumbent": {
+        "name": "Robert C. “Bobby” Scott",
+        "party": "Democrat",
+        "bioguide_id": "S000185",
+        "fec_candidate_id": "H6VA01117"
+      },
+      "challenger": {
+        "name": "Edwin Rivera",
+        "party": "Republican",
+        "fec_candidate_id": "H6VA03121",
+        "prior_federal_service": null
+      },
+      "district_lean": {
+        "pres_2020_two_party_dem_share": null,
+        "pres_2024_two_party_dem_share": 0.6759,
+        "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/"
+      },
+      "ratings": []
+    },
+    {
+      "race_id": "va-04",
+      "chamber": "House",
+      "district": 4,
+      "election_date": "2026-11-03",
+      "status": "tracked",
+      "incumbent": {
+        "name": "Jennifer L. McClellan",
+        "party": "Democrat",
+        "bioguide_id": "M001227",
+        "fec_candidate_id": "H4VA04066"
+      },
+      "challenger": {
+        "name": "Robert P. Murray",
+        "party": "Republican",
+        "fec_candidate_id": "H6VA04129",
+        "prior_federal_service": null
+      },
+      "district_lean": {
+        "pres_2020_two_party_dem_share": null,
+        "pres_2024_two_party_dem_share": 0.6659,
+        "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/"
       },
       "ratings": []
     },
     {
       "race_id": "va-05",
+      "chamber": "House",
       "district": 5,
       "election_date": "2026-11-03",
       "status": "tracked",
@@ -76,15 +132,192 @@
         "prior_federal_service": [
           {
             "chamber": "House",
-            "congresses": [111],
+            "congresses": [
+              111
+            ],
             "bioguide_id": "P000601"
           }
         ]
       },
       "district_lean": {
         "pres_2020_two_party_dem_share": null,
-        "pres_2024_two_party_dem_share": null,
-        "source_url": "https://docs.google.com/spreadsheets/d/1Yje_Cib9ZgXmQfl-RYxLVSLv_cbiNZiQGjJg3F_xPnI/; https://www.vpap.org/"
+        "pres_2024_two_party_dem_share": 0.438,
+        "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/"
+      },
+      "ratings": []
+    },
+    {
+      "race_id": "va-06",
+      "chamber": "House",
+      "district": 6,
+      "election_date": "2026-11-03",
+      "status": "tracked",
+      "incumbent": {
+        "name": "Ben Cline",
+        "party": "Republican",
+        "bioguide_id": "C001118",
+        "fec_candidate_id": "H8VA06104"
+      },
+      "challenger": {
+        "name": "Beth Macy",
+        "party": "Democrat",
+        "fec_candidate_id": "H6VA06173",
+        "prior_federal_service": null
+      },
+      "district_lean": {
+        "pres_2020_two_party_dem_share": null,
+        "pres_2024_two_party_dem_share": 0.3792,
+        "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/"
+      },
+      "ratings": []
+    },
+    {
+      "race_id": "va-07",
+      "chamber": "House",
+      "district": 7,
+      "election_date": "2026-11-03",
+      "status": "tracked",
+      "incumbent": {
+        "name": "Eugene Simon Vindman",
+        "party": "Democrat",
+        "bioguide_id": "V000138",
+        "fec_candidate_id": "H4VA07234"
+      },
+      "challenger": {
+        "name": "Doug Ollivant",
+        "party": "Republican",
+        "fec_candidate_id": "H6VA07205",
+        "prior_federal_service": null
+      },
+      "district_lean": {
+        "pres_2020_two_party_dem_share": null,
+        "pres_2024_two_party_dem_share": 0.5146,
+        "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/"
+      },
+      "ratings": []
+    },
+    {
+      "race_id": "va-08",
+      "chamber": "House",
+      "district": 8,
+      "election_date": "2026-11-03",
+      "status": "tracked",
+      "incumbent": {
+        "name": "Donald S. Beyer, Jr.",
+        "party": "Democrat",
+        "bioguide_id": "B001292",
+        "fec_candidate_id": "H4VA08224"
+      },
+      "challenger": {
+        "name": "Tony Sabio",
+        "party": "Republican",
+        "fec_candidate_id": "H6VA08252",
+        "prior_federal_service": null
+      },
+      "district_lean": {
+        "pres_2020_two_party_dem_share": null,
+        "pres_2024_two_party_dem_share": 0.7545,
+        "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/"
+      },
+      "ratings": []
+    },
+    {
+      "race_id": "va-09",
+      "chamber": "House",
+      "district": 9,
+      "election_date": "2026-11-03",
+      "status": "tracked",
+      "incumbent": {
+        "name": "H. Morgan Griffith",
+        "party": "Republican",
+        "bioguide_id": "G000568",
+        "fec_candidate_id": "H0VA09055"
+      },
+      "challenger": {
+        "name": "Joy Powers",
+        "party": "Democrat",
+        "fec_candidate_id": "H6VA09136",
+        "prior_federal_service": null
+      },
+      "district_lean": {
+        "pres_2020_two_party_dem_share": null,
+        "pres_2024_two_party_dem_share": 0.2779,
+        "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/"
+      },
+      "ratings": []
+    },
+    {
+      "race_id": "va-10",
+      "chamber": "House",
+      "district": 10,
+      "election_date": "2026-11-03",
+      "status": "tracked",
+      "incumbent": {
+        "name": "Suhas Subramanyam",
+        "party": "Democrat",
+        "bioguide_id": "S001230",
+        "fec_candidate_id": "H4VA10279"
+      },
+      "challenger": {
+        "name": "Dave Beckwith",
+        "party": "Republican",
+        "fec_candidate_id": "H2VA10273",
+        "prior_federal_service": null
+      },
+      "district_lean": {
+        "pres_2020_two_party_dem_share": null,
+        "pres_2024_two_party_dem_share": 0.5429,
+        "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/"
+      },
+      "ratings": []
+    },
+    {
+      "race_id": "va-11",
+      "chamber": "House",
+      "district": 11,
+      "election_date": "2026-11-03",
+      "status": "tracked",
+      "incumbent": {
+        "name": "James R. Walkinshaw",
+        "party": "Democrat",
+        "bioguide_id": "W000831",
+        "fec_candidate_id": "H6VA11066"
+      },
+      "challenger": {
+        "name": "Arthur Purves",
+        "party": "Republican",
+        "fec_candidate_id": "H6VA11249",
+        "prior_federal_service": null
+      },
+      "district_lean": {
+        "pres_2020_two_party_dem_share": null,
+        "pres_2024_two_party_dem_share": 0.6764,
+        "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/"
+      },
+      "ratings": []
+    },
+    {
+      "race_id": "va-sen",
+      "chamber": "Senate",
+      "district": null,
+      "election_date": "2026-11-03",
+      "status": "tracked",
+      "incumbent": {
+        "name": "Mark R. Warner",
+        "party": "Democrat",
+        "bioguide_id": "W000805",
+        "fec_candidate_id": "S6VA00093"
+      },
+      "challenger": {
+        "name": "Bert Mizusawa",
+        "party": "Republican",
+        "fec_candidate_id": "S8VA00321",
+        "prior_federal_service": null
+      },
+      "district_lean": {
+        "pres_2020_two_party_dem_share": null,
+        "pres_2024_two_party_dem_share": 0.5294,
+        "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/ (statewide, not district)"
       },
       "ratings": []
     }

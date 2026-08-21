@@ -9,6 +9,7 @@ from PIL import Image, ImageDraw, ImageFont
 from vact.exports.data import district_votes_for_member, generated_at_utc, target_four
 from vact.exports.brand import load_brand_config
 from vact.paths import REPO_ROOT
+from vact.warehouse.connection import connect, ensure_schema
 
 DEFAULT_OUT = REPO_ROOT / "docs" / "social"
 WIDTH, HEIGHT = 1200, 675

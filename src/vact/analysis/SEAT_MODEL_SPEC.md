@@ -32,12 +32,23 @@ assumption is load-bearing and is why `lean_status` is published on every
 race. If `races.json` lean shares are still null, lean is zeroed and labeled
 `missing_zeroed`.
 
-Incumbency: previous-cycle two-party winner's normalized name still appears
-for the same party. Open seats get `inc_dem = 0`. Name matching fails on
-hyphenation and retire-and-run-elsewhere; those races are treated as open.
+Incumbency (**changed in v1.1**): the previous cycle's **plurality winner**
+across *all* general-election races, not just races with a two-party pairing.
+v1.0 built this index from the two-party frame, which silently dropped
+California/Washington top-two finals with no major-party opponent and New York
+fusion races where only a minor party opposed. Those drops broke the incumbency
+chain for the safest, longest-serving members, who then entered training as open
+seats: v1.0 coded **27.8%** of races open against a real-world rate near 10%.
+v1.1 codes 18.9%. Fusion rows are summed per candidate before the winner is
+taken. Residual misses are still spelling variants across cycles.
 
-Challenger quality: 1 if the Democratic non-incumbent previously won a House
-race in the MEDSL extract, -1 for the Republican analogue. Production uses
+Challenger quality (**changed in v1.1**): 1 if the Democratic non-incumbent won
+a House seat at least two cycles back **and did not win in the immediately
+preceding cycle**, -1 for the Republican analogue. v1.0 asked only "ever won,"
+which tagged sitting safe-seat members whose incumbency detection had failed —
+`qual_dem = 1` rows had a mean Democratic two-party share of 0.6985 against a
+0.4942 baseline, and OLS priced the flag at +12.5 points. Under v1.1 those rows
+mean 0.5702 against a 0.5016 baseline and the coefficient is +5.3 points. Production uses
 `prior_federal_service` on the challenger in `races.json` (federal only;
 statewide office is not encoded yet).
 
@@ -99,3 +110,4 @@ had ≥60% win probability, minus AK-AL (RCV). Source URL is in
 | version | date | change | reason |
 |---|---|---|---|
 | seat-v1.0 | 2026-08-19 | Initial freeze | Prompt 13 pre-registration |
+| seat-v1.1 | 2026-08-20 | Incumbency index rebuilt from all-race plurality winners; `qual_dem` requires a win two or more cycles back and no win in the preceding cycle | v1.0 coded 27.8% of training races as open seats (real rate ~10%) because top-two and fusion races were dropped from the winner index. `qual_dem` absorbed the resulting misclassified safe-seat incumbents at +12.5pp, which put a challenger at 80% win probability in a Trump+12 district. Holdout Brier moved 0.2196 → 0.2566, but the 12-race holdout is too small to adjudicate and the v1.0 figure was computed on the same contaminated features. |

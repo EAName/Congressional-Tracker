@@ -86,6 +86,42 @@ def aggregate_house_races(raw_rows: Iterable[dict[str, str]]) -> list[dict[str, 
     return races
 
 
+def plurality_winners(raw_rows: Iterable[dict[str, str]]) -> dict[tuple[int, str], str]:
+    """(year, race_key) -> normalized name of the plurality winner.
+
+    Built from every general-election race, including ones the two-party frame
+    drops: California/Washington top-two finals with no major-party opponent, and
+    New York fusion races where only a minor party fielded the opposition. Those
+    drops were breaking the incumbency chain for exactly the safest, longest-
+    serving members, who then entered training as open seats (seat-v1.0 coded
+    27.8% of races open against a real rate near 10%).
+
+    Fusion rows are summed per candidate before the winner is taken.
+    """
+    tally: dict[tuple[int, str], dict[str, float]] = {}
+    for row in raw_rows:
+        if row.get("stage", "").upper() != "GEN":
+            continue
+        if str(row.get("special", "")).upper() == "TRUE":
+            continue
+        if str(row.get("mode", "")).upper() != "TOTAL":
+            continue
+        if str(row.get("writein", "")).upper() == "TRUE":
+            continue
+        name = _norm_name(row.get("candidate") or "")
+        if not name or "BLANK VOTE" in (row.get("candidate") or "").upper():
+            continue
+        key = (int(row["year"]), _district_key(row["state_po"], row["district"]))
+        votes = float(row.get("candidatevotes") or 0.0)
+        tally.setdefault(key, {})
+        tally[key][name] = tally[key].get(name, 0.0) + votes
+    return {
+        key: max(names.items(), key=lambda kv: kv[1])[0]
+        for key, names in tally.items()
+        if names
+    }
+
+
 def _national_dem_share(races: list[dict[str, Any]], year: int) -> float:
     dem = sum(r["dem_votes"] for r in races if r["year"] == year)
     rep = sum(r["rep_votes"] for r in races if r["year"] == year)
@@ -100,19 +136,21 @@ def build_training_rows(
     config: dict[str, Any] | None = None,
 ) -> list[RaceRow]:
     cfg = config or load_seat_config()
-    races = aggregate_house_races(raw_rows)
+    raw_list = list(raw_rows)
+    races = aggregate_house_races(raw_list)
+    # Incumbency and challenger quality come from the all-races winner index, not
+    # from the two-party frame, so top-two and fusion races stay in the chain.
+    winners_all = plurality_winners(raw_list)
     by_year_key: dict[tuple[int, str], dict[str, Any]] = {
         (r["year"], r["race_key"]): r for r in races
     }
-    winners_by_year: dict[int, dict[str, str]] = {}
-    for r in races:
-        winners_by_year.setdefault(r["year"], {})[r["race_key"]] = (
-            "Democrat" if r["dem_winner"] else "Republican"
-        )
-        winners_by_year[r["year"]][f"name:{r['race_key']}:Democrat"] = _norm_name(r["dem_name"])
-        winners_by_year[r["year"]][f"name:{r['race_key']}:Republican"] = _norm_name(r["rep_name"])
-
-    quality_names: set[str] = set()
+    # name -> every year that name won a House seat. Judging quality as-of each
+    # cycle (rather than "ever won") is what separates a genuine former member
+    # returning from a sitting member, which is what inflated qual_dem in v1.0.
+    win_years: dict[str, set[int]] = {}
+    for (win_year, _key), winner in winners_all.items():
+        if winner:
+            win_years.setdefault(winner, set()).add(win_year)
     holdout_ids = {d.upper() for d in cfg["holdout"]["districts"]}
     train_years = {int(y) for y in cfg["train_years"]}
     pres = {int(k): v for k, v in cfg["president_party_by_cycle"].items()}
@@ -130,25 +168,35 @@ def build_training_rows(
         for r in year_races:
             dem_n = _norm_name(r["dem_name"])
             rep_n = _norm_name(r["rep_name"])
-            prev = winners_by_year.get(year - 2, {})
-            prev_party = prev.get(r["race_key"])
-            prev_dem = prev.get(f"name:{r['race_key']}:Democrat")
-            prev_rep = prev.get(f"name:{r['race_key']}:Republican")
+            prev_winner = winners_all.get((year - 2, r["race_key"]))
             incumbent_party = None
-            if prev_party == "Democrat" and dem_n and dem_n == prev_dem:
+            if prev_winner and dem_n and dem_n == prev_winner:
                 incumbent_party = "Democrat"
-            elif prev_party == "Republican" and rep_n and rep_n == prev_rep:
+            elif prev_winner and rep_n and rep_n == prev_winner:
                 incumbent_party = "Republican"
             inc_dem = 1 if incumbent_party == "Democrat" else -1 if incumbent_party == "Republican" else 0
+            def _is_quality(name: str) -> bool:
+                """Won a House seat at least two cycles back, and not in the
+                immediately preceding one. A win at year-2 means a sitting member,
+                not a returning challenger."""
+                if not name:
+                    return False
+                years_won = win_years.get(name)
+                if not years_won or (year - 2) in years_won:
+                    return False
+                return any(w <= year - 4 for w in years_won)
+
+            dem_q = _is_quality(dem_n)
+            rep_q = _is_quality(rep_n)
             qual_dem = 0
-            if incumbent_party == "Republican" and dem_n in quality_names:
+            if incumbent_party == "Republican" and dem_q:
                 qual_dem = 1
-            elif incumbent_party == "Democrat" and rep_n in quality_names:
+            elif incumbent_party == "Democrat" and rep_q:
                 qual_dem = -1
             elif incumbent_party is None:
-                if dem_n in quality_names and rep_n not in quality_names:
+                if dem_q and not rep_q:
                     qual_dem = 1
-                elif rep_n in quality_names and dem_n not in quality_names:
+                elif rep_q and not dem_q:
                     qual_dem = -1
             lag = by_year_key.get((lean_year, r["race_key"]))
             if lag is not None and nat_lean_year is not None:
@@ -179,8 +227,6 @@ def build_training_rows(
                         holdout=holdout,
                     )
                 )
-        for r in year_races:
-            quality_names.add(_norm_name(r["dem_name"] if r["dem_winner"] else r["rep_name"]))
     return rows
 
 

@@ -7,6 +7,7 @@ from datetime import date
 import pytest
 
 from vact.analysis.seat_model import (
+    load_seat_config,
     OLS_FEATURES,
     SeatModelError,
     blend_mu,
@@ -122,10 +123,10 @@ def test_fit_and_holdout_brier_in_summary() -> None:
     assert summary["ols_beta"]["inc_dem"] > 0
 
 
-def test_predict_three_tracked_races() -> None:
+def test_predict_all_tracked_house_races() -> None:
     payload = predict_races(as_of=date(2026, 8, 19), fit=load_fit())
     ids = {r["race_id"] for r in payload["races"]}
-    assert ids == {"va-01", "va-02", "va-05"}
+    assert ids == {f"va-{n:02d}" for n in range(1, 12)}
     grid = payload["env_grid"]
     assert grid["margin_pp"][0] == -4.0
     assert grid["margin_pp"][-1] == 12.0
@@ -135,7 +136,7 @@ def test_predict_three_tracked_races() -> None:
         assert race["share_lo"] <= race["mu_dem_two_party"] <= race["share_hi"]
         assert "intercept" in race["decomposition"]
         assert race["blend"] == "fundamentals_only"
-        assert race["model_version"] == "seat-v1.0"
+        assert race["model_version"] == load_seat_config()["model_version"]
         assert race["takeaway"].startswith("VA-")
         assert "vote" not in race["takeaway"].lower()
         assert len(race["env_probs"]) == 33
@@ -163,3 +164,23 @@ def test_env_grid_monotonic_and_flip_threshold() -> None:
     assert "stays above 50%" in takeaway_sentence(district=2, margins=margins, probs=always)
     never = [0.2] * len(margins)
     assert "stays below 50%" in takeaway_sentence(district=5, margins=margins, probs=never)
+
+
+def test_training_extract_incumbency_is_not_contaminated() -> None:
+    """seat-v1.0 coded 27.8% of races open because top-two and fusion races were
+    dropped from the winner index; qual_dem then absorbed the misclassified
+    safe-seat incumbents at +12.5pp. Guard both symptoms."""
+    import csv
+    import statistics
+
+    from vact.analysis.seat_model import TRAIN_PATH
+
+    rows = list(csv.DictReader(TRAIN_PATH.open(encoding="utf-8", newline="")))
+    open_rate = sum(1 for r in rows if r["inc_dem"] == "0") / len(rows)
+    assert open_rate < 0.22, f"open-seat rate {open_rate:.3f} back near the v1.0 defect"
+
+    qual_pos = [float(r["dem_two_party"]) for r in rows if r["qual_dem"] == "1"]
+    base = [float(r["dem_two_party"]) for r in rows if r["qual_dem"] == "0"]
+    assert qual_pos, "no qual_dem=1 rows at all — the flag stopped firing"
+    # A real quality signal is a few points, not the 20pp gap v1.0 produced.
+    assert statistics.mean(qual_pos) - statistics.mean(base) < 0.12

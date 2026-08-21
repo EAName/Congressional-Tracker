@@ -4,17 +4,28 @@ import SiteFooter from "@/components/SiteFooter";
 import SiteHeader from "@/components/SiteHeader";
 import RaceWorkspace from "@/components/RaceWorkspace";
 import { pageTitle } from "@/lib/brand";
-import type { FecDoc, HeadToHeadDoc, Meta, RacesDoc, SeatsDoc, TimeSeriesDoc } from "@/lib/types";
+import { raceLabel } from "@/lib/types";
+import type {
+  FecDoc,
+  HeadToHeadDoc,
+  Meta,
+  RacesDoc,
+  SeatsDoc,
+  SenateDoc,
+  TimeSeriesDoc,
+} from "@/lib/types";
 import fecJson from "@/data/fec.json";
 import headToHeadJson from "@/data/head_to_head.json";
 import metaJson from "@/data/meta.json";
 import racesJson from "@/data/races.json";
 import seatsJson from "@/data/seats.json";
+import senateJson from "@/data/senate.json";
 import timeseriesJson from "@/data/timeseries.json";
 
 const meta = metaJson as Meta;
 const races = racesJson as RacesDoc;
 const seats = seatsJson as SeatsDoc;
+const senate = senateJson as unknown as SenateDoc;
 const fec = fecJson as FecDoc;
 const timeseries = timeseriesJson as TimeSeriesDoc;
 const headToHead = headToHeadJson as HeadToHeadDoc;
@@ -27,9 +38,23 @@ export async function generateMetadata({ params }: { params: Promise<{ raceId: s
   const { raceId } = await params;
   const entry = races.races.find((r) => r.race_id === raceId);
   const seat = seats.races.find((r) => r.race_id === raceId);
-  if (!entry || !seat) return { title: "Race" };
+  const sen = senate.races.find((r) => r.race_id === raceId);
+  if (!entry) return { title: "Race" };
+  const label = raceLabel(entry);
+  if (sen) {
+    return {
+      title: pageTitle(`${label} · ${Math.round(sen.prob_dem * 100)}% Dem`),
+      description: `${entry.incumbent.name} vs ${entry.challenger.name}, ${entry.election_date}.`,
+    };
+  }
+  if (!seat) {
+    return {
+      title: pageTitle(label),
+      description: `${entry.incumbent.name} vs ${entry.challenger.name}, ${entry.election_date}.`,
+    };
+  }
   return {
-    title: pageTitle(`VA-${entry.district} · ${Math.round(seat.prob_dem * 100)}% Dem`),
+    title: pageTitle(`${label} · ${Math.round(seat.prob_dem * 100)}% Dem`),
     description: seat.takeaway ?? seat.plain_language,
   };
 }
@@ -38,7 +63,8 @@ export default async function RacePage({ params }: { params: Promise<{ raceId: s
   const { raceId } = await params;
   const entry = races.races.find((r) => r.race_id === raceId);
   const seat = seats.races.find((r) => r.race_id === raceId);
-  if (!entry || !seat) notFound();
+  const senateRace = senate.races.find((r) => r.race_id === raceId);
+  if (!entry) notFound();
   const fecRows = (fec.snapshot?.candidates ?? []).filter((c) => c.race_id === entry.race_id);
 
   return (
@@ -53,6 +79,8 @@ export default async function RacePage({ params }: { params: Promise<{ raceId: s
         <RaceWorkspace
           entry={entry}
           seat={seat}
+          senate={senateRace}
+          senateDoc={senate}
           seats={seats}
           fec={fecRows}
           timeseries={timeseries}

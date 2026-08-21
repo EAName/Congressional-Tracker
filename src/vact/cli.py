@@ -47,6 +47,8 @@ fec_app = typer.Typer(help="OpenFEC campaign-finance snapshots.")
 app.add_typer(fec_app, name="fec")
 seats_app = typer.Typer(help="Pre-registered House seat model.")
 app.add_typer(seats_app, name="seats")
+senate_app = typer.Typer(help="Senate seat model (senate-v0.1).")
+app.add_typer(senate_app, name="senate")
 historical_app = typer.Typer(help="Challenger historical House voting (Prompt 11).")
 app.add_typer(historical_app, name="historical")
 audit_app = typer.Typer(help="Symmetry and selection-bias audits (Prompt 17).")
@@ -588,6 +590,103 @@ def fec_snapshot_cmd(
     result = snapshot_fec(api_key=api_key, cycle=cycle, force=force)
     tag = "no-op" if result["noop"] else "wrote"
     typer.echo(f"FEC snapshot {tag}: {result['path']} ({result['n_candidates']} candidates)")
+
+
+@app.command("polls")
+def polls_cmd() -> None:
+    """Validate the primary-poll archive and report the current average."""
+    from vact.analysis.poll_average import build_generic_ballot
+
+    doc = build_generic_ballot()
+    cur = doc["current"]
+    if cur is None:
+        typer.echo(f"generic ballot: {doc.get('status')}")
+        raise typer.Exit(0)
+    typer.echo(
+        f"generic ballot: D {cur['dem'] * 100:.1f}% / R {cur['rep'] * 100:.1f}% "
+        f"(D{cur['margin_pp']:+.1f}) from {doc['n_polls']} polls as of {cur['date']}"
+    )
+    if doc["house_effects"]:
+        worst = sorted(doc["house_effects"].items(), key=lambda kv: -abs(kv[1]))[:3]
+        shown = ", ".join(f"{k} {v * 100:+.1f}" for k, v in worst)
+        typer.echo(f"  largest house effects (pp): {shown}")
+
+
+@senate_app.command("build-train")
+def senate_build_train_cmd() -> None:
+    """MEDSL Senate returns + state presidential lean -> training extract."""
+    import yaml
+
+    from vact.analysis.senate_model import CONFIG_PATH
+    from vact.analysis.senate_train import build_training_rows, write_training_csv
+
+    cfg = yaml.safe_load(CONFIG_PATH.read_text(encoding="utf-8"))
+    rows = build_training_rows(
+        president_party_by_cycle={int(k): v for k, v in cfg["president_party_by_cycle"].items()},
+        train_years=cfg["train_years"],
+    )
+    path = write_training_csv(rows)
+    typer.echo(f"wrote {path} ({len(rows)} races)")
+
+
+@senate_app.command("fit")
+def senate_fit_cmd() -> None:
+    """Fit senate-v0.1 and score it leave-one-cycle-out."""
+    from vact.analysis.senate_model import fit
+
+    summary = fit()
+    cv = summary["cv"]
+    typer.echo(
+        f"fit {summary['model_version']}: n_train={summary['n_train']} "
+        f"sigma={summary['sigma']:.4f}"
+    )
+    typer.echo(
+        f"  LOCO Brier n={cv['n']}: model={cv['brier_model']} "
+        f"lean+swing={cv['brier_lean_swing']} always-inc={cv['brier_always_incumbent']}"
+    )
+
+
+@senate_app.command("predict")
+def senate_predict_cmd() -> None:
+    """Current Senate forecast."""
+    from vact.analysis.senate_model import predict
+
+    payload = predict()
+    for race in payload["races"]:
+        typer.echo(
+            f"{race['race_id']}: P(Dem)={race['prob_dem']:.3f} "
+            f"mu={race['mu_dem_two_party']:.3f} "
+            f"80% [{race['share_lo']:.3f}, {race['share_hi']:.3f}] {race['blend']}"
+        )
+
+
+@senate_app.command("validate")
+def senate_validate_cmd() -> None:
+    """Fail loud if the fit is stale or a published race has no lean."""
+    from vact.analysis.senate_model import SenateModelError, load_config, load_fit, predict
+
+    cfg = load_config()
+    doc = load_fit()
+    if doc["model_version"] != cfg["model_version"]:
+        raise SenateModelError(
+            f"fit {doc['model_version']} != config {cfg['model_version']}; run `vact senate fit`"
+        )
+    payload = predict()
+    for race in payload["races"]:
+        if race["meta"]["lean_status"] == "missing_zeroed":
+            raise SenateModelError(f"{race['race_id']}: lean missing; refusing to publish")
+        if not 0.0 <= race["prob_dem"] <= 1.0:
+            raise SenateModelError(f"{race['race_id']}: prob_dem out of range")
+    cv = doc["cv"]
+    if cv["brier_model"] >= cv["brier_lean_swing"]:
+        raise SenateModelError(
+            f"model Brier {cv['brier_model']} does not beat the lean+swing baseline "
+            f"{cv['brier_lean_swing']}"
+        )
+    typer.echo(
+        f"senate ok version={cfg['model_version']} races={len(payload['races'])} "
+        f"LOCO_brier={cv['brier_model']} spec=SENATE_MODEL_SPEC.md"
+    )
 
 
 @seats_app.command("build-train")

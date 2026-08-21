@@ -92,13 +92,20 @@ export interface RaceCandidate {
 
 export interface RaceEntry {
   race_id: string;
-  district: number;
+  chamber: "House" | "Senate";
+  /** Null for the statewide Senate race. */
+  district: number | null;
   election_date: string;
   status: "tracked" | "watch";
   incumbent: RaceCandidate;
   challenger: RaceCandidate;
   days_until_election: number;
+  label?: string;
 }
+
+/** `VA-2` for House seats, `VA-Sen` for the statewide race. */
+export const raceLabel = (entry: Pick<RaceEntry, "chamber" | "district" | "label">): string =>
+  entry.label ?? (entry.chamber === "Senate" ? "VA-Sen" : `VA-${entry.district}`);
 
 export interface RacesDoc {
   version: number;
@@ -161,6 +168,8 @@ export interface SeatsDoc {
   model_version: string;
   as_of: string;
   races: SeatRace[];
+  /** Tracked races the House-fit model does not score (e.g. the statewide Senate race). */
+  unmodeled_races?: string[];
   env_grid?: EnvGrid;
   log: Array<{ race_id: string; date: string; prob_dem: string; model_version: string }>;
 }
@@ -524,4 +533,112 @@ export interface AboutDoc {
   repo_url: string;
   methodology_href: string;
   symmetry_href: string;
+}
+
+export interface GenericBallotPoint {
+  date: string;
+  dem_two_party: number;
+  lo: number;
+  hi: number;
+  effective_n_polls: number;
+  sd?: number;
+}
+
+export interface GenericBallotPoll {
+  pollster: string;
+  sponsor: string;
+  date: string;
+  start_date: string;
+  end_date: string;
+  n: number;
+  population: "lv" | "rv" | "a";
+  dem: number;
+  rep: number;
+  dem_two_party: number;
+  partisan: string;
+  source_url: string;
+}
+
+export interface GenericBallotDoc {
+  version: number;
+  as_of: string;
+  n_polls: number;
+  min_polls: number;
+  band_coverage: number;
+  half_life_days: number;
+  sample_type_offsets_are_priors: boolean;
+  series: GenericBallotPoint[];
+  environment_gate?: {
+    ok: boolean;
+    n_polls: number;
+    effective_n_polls: number;
+    /** Largest move in the average, in margin points, from dropping any one poll. */
+    single_poll_influence_pp: number | null;
+    max_single_poll_influence_pp: number;
+    min_polls: number;
+    reasons: string[];
+  };
+  house_effects: Record<string, number>;
+  polls: GenericBallotPoll[];
+  current: {
+    date: string;
+    dem: number;
+    rep: number;
+    dem_two_party: number;
+    margin_pp: number;
+    lo: number;
+    hi: number;
+  } | null;
+  status?: string;
+}
+
+export interface SenateRace {
+  race_id: string;
+  state_po: string;
+  as_of: string;
+  model_version: string;
+  prob_dem: number;
+  prob_rep: number;
+  mu_dem_two_party: number;
+  mu_fundamentals: number;
+  share_lo: number;
+  share_hi: number;
+  sigma: number;
+  blend: string;
+  plain_language: string;
+  takeaway: string;
+  flip_threshold_pp: number | null;
+  n_polls: number;
+  decomposition: Record<string, number>;
+  meta: { lean_status: string; lean_rel_dem: number; environment_source: string };
+  env_probs: number[];
+  env_mu: number[];
+}
+
+export interface SenateCycleScore {
+  year: number;
+  n: number;
+  brier_model: number;
+  brier_lean_swing: number;
+  brier_always_incumbent: number;
+}
+
+export interface SenateDoc {
+  model_version: string;
+  as_of: string;
+  sigma_fundamentals: number;
+  env_grid?: EnvGrid;
+  races: SenateRace[];
+  fit: {
+    n_train: number;
+    cycles: number[];
+    cv: {
+      scheme: string;
+      n: number;
+      brier_model: number;
+      brier_lean_swing: number;
+      brier_always_incumbent: number;
+      per_cycle: SenateCycleScore[];
+    };
+  };
 }

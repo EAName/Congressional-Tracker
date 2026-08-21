@@ -1,0 +1,31 @@
+# Pre-registered Senate seat model. Frozen at model_version. Changes require a
+# version bump and a changelog entry in src/vact/analysis/SENATE_MODEL_SPEC.md.
+model_version: senate-v0.1
+interval_level: 0.80
+poll_half_life_days: 14
+president_party: Republican  # sitting president on 2026-11-03
+cycle: 2026
+
+# Every cycle is usable: states are a permanent panel, so there is no
+# redistricting exclusion like the House model's 2012/2022 drop.
+train_years: [2010, 2012, 2014, 2016, 2018, 2020, 2022, 2024]
+
+# n is ~265 across 8 cycles and races within a cycle share the national
+# environment, so validation is leave-one-cycle-out rather than a single holdout.
+# A 33-race single-year holdout cannot separate these models.
+validation:
+  scheme: leave_one_cycle_out
+  baselines:
+    - always_incumbent
+    - lean_plus_uniform_swing
+
+president_party_by_cycle:
+  2010: Democrat
+  2012: Democrat
+  2014: Democrat
+  2016: Democrat
+  2018: Republican
+  2020: Republican
+  2022: Democrat
+  2024: Democrat
+  2026: Republican

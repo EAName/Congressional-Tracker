@@ -2,7 +2,7 @@
 # Changes require a version bump and a changelog entry in
 # src/vact/analysis/SEAT_MODEL_SPEC.md.
 
-model_version: seat-v1.0
+model_version: seat-v1.1
 interval_level: 0.80
 poll_half_life_days: 14
 president_party: Republican  # sitting president on 2026-11-03

@@ -8,6 +8,7 @@ persisted in DuckDB (AGENTS.md §8).
 from __future__ import annotations
 
 import json
+import re
 from datetime import date
 from enum import StrEnum
 from pathlib import Path
@@ -18,12 +19,21 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator, model_valida
 from vact.paths import REPO_ROOT
 
 RACES_PATH = REPO_ROOT / "data" / "races.json"
-TRACKED_RACE_IDS = frozenset({"va-01", "va-02", "va-05"})
+TRACKED_RACE_IDS = frozenset(
+    {f"va-{n:02d}" for n in range(1, 12)} | {"va-sen"}
+)
+SENATE_RACE_ID_RE = re.compile(r"^va-sen(-\d{4})?$")
+HOUSE_RACE_ID_RE = re.compile(r"^va-\d{2}$")
 
 
 class RaceStatus(StrEnum):
     TRACKED = "tracked"
     WATCH = "watch"
+
+
+class Chamber(StrEnum):
+    HOUSE = "House"
+    SENATE = "Senate"
 
 
 class PriorFederalService(BaseModel):
@@ -81,7 +91,8 @@ class Race(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     race_id: str
-    district: int
+    chamber: Chamber = Chamber.HOUSE
+    district: int | None = None
     election_date: date
     status: RaceStatus
     incumbent: Candidate
@@ -93,9 +104,26 @@ class Race(BaseModel):
     @classmethod
     def _race_id(cls, value: str) -> str:
         text = value.strip().lower()
-        if not text.startswith("va-"):
-            raise ValueError(f"race_id must look like va-01, got {value!r}")
+        if not (HOUSE_RACE_ID_RE.match(text) or SENATE_RACE_ID_RE.match(text)):
+            raise ValueError(f"race_id must look like va-01 or va-sen, got {value!r}")
         return text
+
+    @model_validator(mode="after")
+    def _chamber_matches_geography(self) -> Race:
+        """District is the House join key; a statewide Senate race must not carry one."""
+        if self.chamber is Chamber.HOUSE:
+            if self.district is None:
+                raise ValueError(f"{self.race_id}: House races require a district number")
+            if not HOUSE_RACE_ID_RE.match(self.race_id):
+                raise ValueError(f"{self.race_id}: House race_id must look like va-01")
+        else:
+            if self.district is not None:
+                raise ValueError(
+                    f"{self.race_id}: Senate races are statewide; district must be null"
+                )
+            if not SENATE_RACE_ID_RE.match(self.race_id):
+                raise ValueError(f"{self.race_id}: Senate race_id must look like va-sen")
+        return self
 
     @model_validator(mode="after")
     def _tracked_requires_ids(self) -> Race:
@@ -157,6 +185,19 @@ def validate_races(path: Path | None = None) -> RaceRegistry:
     return load_races(path)
 
 
+def race_label(race: Race) -> str:
+    """Display label: `VA-2` for House seats, `VA-Sen` for the statewide race."""
+    if race.chamber is Chamber.SENATE:
+        return "VA-Sen"
+    return f"VA-{race.district}"
+
+
+def house_races(registry: RaceRegistry | None = None) -> list[Race]:
+    """House races only. The seat model is fit on House contests (AGENTS §8)."""
+    reg = registry or load_races()
+    return [r for r in reg.races if r.chamber is Chamber.HOUSE]
+
+
 def days_until_election(election_date: date, *, as_of: date | None = None) -> int:
     """Calendar days from as_of to election_date. Negative after election day.
 
@@ -179,6 +220,7 @@ def races_for_web(
     for race in reg.races:
         payload = race.model_dump(mode="json")
         payload["days_until_election"] = days_until_election(race.election_date, as_of=day)
+        payload["label"] = race_label(race)
         races.append(payload)
     return {
         "version": reg.version,

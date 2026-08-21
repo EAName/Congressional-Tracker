@@ -94,6 +94,53 @@ it as analysis UI until wired.
 | Vercel dashboard | `vact export-web` → `web/data/*.json` | Build-time import; Root Directory = `web` |
 | Social cards | `vact social` | 1200×675 Target seats |
 
+## Race registry
+
+`data/races.json` covers all 11 Virginia House seats plus the Class 2 Senate seat
+(Warner), 2026-11-03, 2021 court map. House rows carry a `district`; `va-sen` is
+statewide with `district: null` and is excluded from the House-fit seat model —
+`seats.json.unmodeled_races` names it and its race page renders without a
+probability rather than borrowing a model that has no statewide baseline.
+
+## Generic ballot
+
+`data/generic_ballot_polls.csv` is a **primary-poll archive**; no aggregator
+output is ingested. `vact polls` recomputes the average: sample-type shift to a
+likely-voter basis, per-pollster house effects shrunk by `n / (n + k)`, a
+sample-size and recency weighted daily trend with a per-firm frequency penalty,
+and a predictive band combining between-poll spread with single-poll sampling
+error. Config is `config/polls.yaml`.
+
+Two separate bars. Below `min_polls` nothing is published at all. Above it the
+chart renders, but the average only drives `nat_env` in the seat models once it
+clears `environment_gate`, which measures **stability rather than volume**: the
+largest move in the current average, in margin points, from dropping any single
+poll (jackknife). Twenty polls from one firm in one week are less trustworthy
+than eight from eight firms, so counting them answers the wrong question.
+
+Calibration is from the archive itself — at 6 polls a single survey moved the
+average 1.38 points and a Trump+12 district's win probability by 23; at 10 it
+moves 0.83 and the average lands within a point of published aggregates. The
+limit is set at 1.0.
+
+## Senate model
+
+`senate-v0.1` (`config/senate_model.yaml`, pre-registered in
+`src/vact/analysis/SENATE_MODEL_SPEC.md`) scores statewide races the House-fit
+model cannot. State presidential lean, incumbency, a frozen uniform national
+swing, and a poll blend, fit on 244 races across all eight cycles 2010–2024.
+Validated leave-one-cycle-out, not on a single holdout:
+
+| model | Brier (n=244) |
+|---|---|
+| `senate-v0.1` | **0.0885** |
+| lean + uniform swing | 0.1232 |
+| always-incumbent | 0.1516 |
+
+```bash
+./bin/vact senate build-train && ./bin/vact senate fit && ./bin/vact senate validate
+```
+
 Sheet: [VA Congressional Vote Tracker](https://docs.google.com/spreadsheets/d/1fbjfNKB79-Rzq70X9Ixg67aVzxYmv6nxxj-hCVQDyi0).
 Repo: [EAName/Congressional-Tracker](https://github.com/EAName/Congressional-Tracker).
 
@@ -108,6 +155,9 @@ uv sync && uv pip install -e .
 ./bin/vact votes export        # warehouse → versioned data/votes.csv
 ./bin/vact votes validate
 ./bin/vact races validate
+./bin/vact polls           # primary-poll archive -> generic ballot average
+./bin/vact senate fit      # senate-v0.1, leave-one-cycle-out validated
+./bin/vact senate validate
 ./bin/vact score --write       # reads votes.csv when present
 ./bin/vact deviations
 ./bin/vact export-web          # refresh web/data for Vercel (from votes.csv)

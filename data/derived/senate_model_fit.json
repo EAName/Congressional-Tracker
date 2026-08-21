@@ -1,0 +1,91 @@
+{
+  "model_version": "senate-v0.1",
+  "n_train": 244,
+  "cycles": [
+    2010,
+    2012,
+    2014,
+    2016,
+    2018,
+    2020,
+    2022,
+    2024
+  ],
+  "features": [
+    "intercept",
+    "lean_rel_dem",
+    "inc_dem"
+  ],
+  "ols_beta": {
+    "intercept": 0.4940710266234942,
+    "lean_rel_dem": 0.5321186421673564,
+    "inc_dem": 0.06153737169998682
+  },
+  "nat_env_beta": 1.0,
+  "sigma": 0.07337974090800067,
+  "cv": {
+    "scheme": "leave_one_cycle_out",
+    "n": 244,
+    "brier_model": 0.0885,
+    "brier_lean_swing": 0.1232,
+    "brier_always_incumbent": 0.1516,
+    "per_cycle": [
+      {
+        "year": 2010,
+        "n": 31,
+        "brier_model": 0.0574,
+        "brier_lean_swing": 0.0901,
+        "brier_always_incumbent": 0.1613
+      },
+      {
+        "year": 2012,
+        "n": 31,
+        "brier_model": 0.1197,
+        "brier_lean_swing": 0.1829,
+        "brier_always_incumbent": 0.1129
+      },
+      {
+        "year": 2014,
+        "n": 31,
+        "brier_model": 0.0901,
+        "brier_lean_swing": 0.1214,
+        "brier_always_incumbent": 0.25
+      },
+      {
+        "year": 2016,
+        "n": 32,
+        "brier_model": 0.0669,
+        "brier_lean_swing": 0.0967,
+        "brier_always_incumbent": 0.1094
+      },
+      {
+        "year": 2018,
+        "n": 30,
+        "brier_model": 0.1312,
+        "brier_lean_swing": 0.1436,
+        "brier_always_incumbent": 0.2083
+      },
+      {
+        "year": 2020,
+        "n": 31,
+        "brier_model": 0.0409,
+        "brier_lean_swing": 0.0974,
+        "brier_always_incumbent": 0.0968
+      },
+      {
+        "year": 2022,
+        "n": 28,
+        "brier_model": 0.0851,
+        "brier_lean_swing": 0.1234,
+        "brier_always_incumbent": 0.0893
+      },
+      {
+        "year": 2024,
+        "n": 30,
+        "brier_model": 0.1193,
+        "brier_lean_swing": 0.1323,
+        "brier_always_incumbent": 0.1833
+      }
+    ]
+  }
+}
