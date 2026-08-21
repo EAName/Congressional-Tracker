@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import EnvSlider from "@/components/EnvSlider";
 import FecBars from "@/components/FecBars";
 import HeadToHead from "@/components/HeadToHead";
+import LeanShare from "@/components/LeanShare";
 import SeatForecast from "@/components/SeatForecast";
 import ScoreOverTime from "@/components/ScoreOverTime";
 import Module from "@/components/Module";
@@ -20,12 +21,6 @@ import type {
   SenateRace,
   TimeSeriesDoc,
 } from "@/lib/types";
-
-function leanPct(entry: RaceEntry): string | null {
-  const share = entry.district_lean?.pres_2024_two_party_dem_share;
-  if (share == null) return null;
-  return `${(share * 100).toFixed(1)}%`;
-}
 
 export default function RaceWorkspace({
   entry,
@@ -98,7 +93,7 @@ export default function RaceWorkspace({
     }
   }
 
-  const lean = leanPct(entry);
+  const leanShare = entry.district_lean?.pres_2024_two_party_dem_share ?? null;
   const isSenate = entry.chamber === "Senate";
 
   return (
@@ -167,21 +162,13 @@ export default function RaceWorkspace({
         kicker="2024 presidential two-party Dem share"
         span={6}
       >
-        {lean ? (
-          <>
-            <p className="sen-headline">
-              <strong>{lean}</strong> Democratic
-            </p>
-            <p className="cap">
-              {isSenate ? "Statewide" : "District"} presidential baseline from races.json.
-              Record-vs-lean gap analysis is Prompt 12 and is not published yet.
-            </p>
-          </>
+        {leanShare != null ? (
+          <LeanShare
+            demShare={leanShare}
+            geographyLabel={isSenate ? "Statewide" : "District"}
+          />
         ) : (
-          <p className="cap">
-            Presidential lean not yet filled for this race. Record-vs-lean gap analysis is
-            Prompt 12 and is not published yet.
-          </p>
+          <p className="cap">Presidential lean not yet filled for this race.</p>
         )}
       </Module>
       <Module
