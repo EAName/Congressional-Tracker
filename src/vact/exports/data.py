@@ -48,7 +48,7 @@ CATEGORY_DISPLAY = {
 
 TAG_DISPLAY = {
     "ACCESS_TO_CAPITAL": "Access to capital",
-    "TAX_BURDEN": "Tax burden",
+    "TAX_BURDEN": "Taxes and credits",
     "FEDERAL_CONTRACTING": "Federal contracting",
     "HEALTH_COSTS": "Health costs",
     "INPUT_COSTS": "Input costs",

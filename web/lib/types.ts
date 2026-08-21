@@ -201,7 +201,7 @@ export const THEME_LABELS: Record<string, string> = {
   REGULATORY_BURDEN: "Compliance and reporting",
   HEALTH_COSTS: "Health costs",
   ACCESS_TO_CAPITAL: "Access to capital",
-  TAX_BURDEN: "Tax burden",
+  TAX_BURDEN: "Taxes and credits",
   WORKFORCE: "Workforce",
   FEDERAL_CONTRACTING: "Federal contracting",
 };
