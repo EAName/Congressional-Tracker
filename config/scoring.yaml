@@ -24,11 +24,15 @@ scoreable:
   include_categories:
     - PASSAGE
     - AMENDMENT
+    # Added in vote-inclusion-v1.1. Small-business legislation is
+    # disproportionately bipartisan, so the SBA / PPP / microloan bills most
+    # on-point for this axis move on the suspension calendar. Excluding the
+    # category made the scorecard blind to its own subject matter.
+    - SUSPENSION
   exclude_categories:
     - PROCEDURAL
     - CLOTURE
     - NOMINATION
-    - SUSPENSION
     - MOTION_TO_RECOMMIT
   # Special-rule resolutions — a chamber adopting the terms of floor debate for
   # another bill — surface as bill_type hres/sres with a "Providing for

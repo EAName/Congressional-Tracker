@@ -141,7 +141,18 @@
             "historical": false,
             "congress_era": null
           },
-          "challenger": null
+          "challenger": {
+            "bioguide_id": "L000591",
+            "full_name": "Elaine G. Luria",
+            "party": "Democrat",
+            "eb_score": 0.9983,
+            "cred_lo": 0.9887,
+            "cred_hi": 1.0,
+            "n_contested": 11,
+            "sufficient": true,
+            "historical": true,
+            "congress_era": "117"
+          }
         },
         {
           "theme": "FEDERAL_CONTRACTING",
@@ -594,7 +605,18 @@
             "historical": false,
             "congress_era": null
           },
-          "challenger": null
+          "challenger": {
+            "bioguide_id": "P000600",
+            "full_name": "Thomas Perriello",
+            "party": "Democrat",
+            "eb_score": 0.2,
+            "cred_lo": -0.6118,
+            "cred_hi": 0.8648,
+            "n_contested": 1,
+            "sufficient": false,
+            "historical": true,
+            "congress_era": "111"
+          }
         },
         {
           "theme": "HEALTH_COSTS",
