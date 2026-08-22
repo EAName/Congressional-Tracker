@@ -17,6 +17,7 @@ from vact.analysis.races import (
     race_label,
     races_for_web,
     validate_races,
+    verify_bioguide_ids,
 )
 from vact.pipeline.fec import snapshot_fec, snapshot_path
 from vact.sources import fec as fec_source
@@ -169,3 +170,45 @@ def test_snapshot_same_day_is_noop(tmp_path: Path, monkeypatch: pytest.MonkeyPat
     result = snapshot_fec(api_key="unused", as_of=day)
     assert result["noop"] is True
     assert result["path"] == dest
+
+
+def test_committed_bioguide_ids_resolve_to_the_right_people() -> None:
+    """The most dangerous error in races.json, because it fails silently in the
+    worst direction. `P000601` was committed for Tom Perriello but belongs to
+    Steven Palazzo (MS-4, Republican); while the 116th/117th were unbackfilled it
+    returned zero rows and was indistinguishable from "no data yet"."""
+    assert verify_bioguide_ids(validate_races(RACES_PATH)) == []
+
+
+def test_wrong_state_bioguide_is_caught(tmp_path: Path) -> None:
+    payload = json.loads(RACES_PATH.read_text(encoding="utf-8"))
+    for race in payload["races"]:
+        if race["race_id"] == "va-05":
+            race["challenger"]["prior_federal_service"][0]["bioguide_id"] = "P000601"
+    path = tmp_path / "races.json"
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    problems = verify_bioguide_ids(load_races(path))
+    assert any("never served VA" in p for p in problems), problems
+
+
+def test_nonexistent_bioguide_is_caught(tmp_path: Path) -> None:
+    payload = json.loads(RACES_PATH.read_text(encoding="utf-8"))
+    for race in payload["races"]:
+        if race["race_id"] == "va-02":
+            race["challenger"]["prior_federal_service"][0]["bioguide_id"] = "L000791"
+    path = tmp_path / "races.json"
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    problems = verify_bioguide_ids(load_races(path))
+    assert any("not in roster" in p for p in problems), problems
+
+
+def test_congress_outside_a_members_service_is_caught(tmp_path: Path) -> None:
+    """Right person, wrong era: Luria did not serve in the 111th."""
+    payload = json.loads(RACES_PATH.read_text(encoding="utf-8"))
+    for race in payload["races"]:
+        if race["race_id"] == "va-02":
+            race["challenger"]["prior_federal_service"][0]["congresses"] = [111]
+    path = tmp_path / "races.json"
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    problems = verify_bioguide_ids(load_races(path))
+    assert any("no House term overlapping" in p for p in problems), problems

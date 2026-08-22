@@ -1,114 +1,125 @@
-# Impact taxonomy rulebook for VA Congressional Tracker.
-# Rules are evaluated in file order within each tag. A vote may receive multiple tags.
-# Patterns are Python regex, matched case-insensitively against:
-#   vote_question | bill title | bill short_title | policy_area (joined with " || ")
-
-version: 1
-
+version: 2
 exclude_categories:
-  - NOMINATION
-  - CLOTURE
-
-# Curated Congress.gov policy_area → impact tag mapping (populated by
-# `vact ingest-bills`). policy_area is a single, human-assigned topic label per
-# bill, so mapping it directly is precise and drift-resistant — a far stronger
-# signal than title regex. Applied to non-amendment votes only (amendments carry
-# no bill-level subject; see OWN_TEXT_ONLY_CATEGORIES). Only unambiguous mappings
-# live here; broad labels (Commerce, Finance, Economics and Public Finance) are
-# deliberately omitted and left to title patterns, because they span many themes.
-# Over-inclusion is acceptable: valence adjudication (valence=0) is the second
-# gate, so a mapped-but-irrelevant vote is caught before it ever scores.
+- NOMINATION
+- CLOTURE
 policy_area_tags:
-  Energy: [INPUT_COSTS]
-  Taxation: [TAX_BURDEN]
-  Health: [HEALTH_COSTS]
-  Labor and Employment: [WORKFORCE]
-  Environmental Protection: [REGULATORY_BURDEN]
-
+  Energy:
+  - INPUT_COSTS
+  Taxation:
+  - TAX_BURDEN
+  Health:
+  - HEALTH_COSTS
+  Labor and Employment:
+  - WORKFORCE
+  Environmental Protection:
+  - REGULATORY_BURDEN
 tags:
   ACCESS_TO_CAPITAL:
-    - pattern: 'SBA|Small Business Administration|7\(a\)|504\b|CDFI|community development financial'
-      notes: SBA lending and CDFI credit channels
-    - pattern: 'small business loan|lending|credit union.*small|Export-Import|EXIM'
-      notes: general small-business credit
-    - pattern: 'Entrepreneur|start-?up|venture|SBIC|venture capital'
-      notes: entrepreneurship capital
-
+  - pattern: SBA|Small Business Administration|7\(a\)|504\b|CDFI|community development financial
+    notes: SBA lending and CDFI credit channels
+  - pattern: small business loan|lending|credit union.*small|Export-Import|EXIM
+    notes: general small-business credit
+  - pattern: Entrepreneur|start-?up|venture|SBIC|venture capital
+    notes: entrepreneurship capital
+  - pattern: small business (jobs|lending|investment|credit|capital|financing)|access to capital
+    notes: plain-language small-business capital titles (e.g. Small Business Jobs Act)
+  - pattern: microloan|micro-loan|disaster loan|economic injury|Paycheck Protection|\bPPP\b
+    notes: targeted lending programs
+  - pattern: credit card|CARD Act|consumer credit|community bank
+    notes: non-SBA credit channels small firms actually use
   TAX_BURDEN:
-    - pattern: 'pass[- ]through|qualified business income|section 199A|QBI'
-      notes: pass-through deduction
-    - pattern: 'expensing|bonus depreciation|section 179|depreciation'
-      notes: capital cost recovery
-    - pattern: 'estimated tax|payroll tax|self-employment tax|corporate tax|tax rate|tax cut|tax relief'
-      notes: tax payments and rates
-    - pattern: 'opportunity zone|research credit|R&D tax'
-      notes: targeted tax provisions
-
+  - pattern: pass[- ]through|qualified business income|section 199A|QBI
+    notes: pass-through deduction
+  - pattern: expensing|bonus depreciation|section 179|depreciation
+    notes: capital cost recovery
+  - pattern: estimated tax|payroll tax|self-employment tax|corporate tax|tax rate|tax cut|tax relief
+    notes: tax payments and rates
+  - pattern: opportunity zone|research credit|R&D tax
+    notes: targeted tax provisions
+  - pattern: hiring incentive|payroll tax holiday|employment tax|employer tax credit
+    notes: hiring-side tax provisions (e.g. HIRE Act)
+  - pattern: tax extender|expiring provision|estate tax|death tax|capital gains
+    notes: recurring tax-base fights
+  - pattern: alternative minimum tax|\bAMT\b|qualified small business stock|section 1202
+    notes: small-business-specific tax provisions
   FEDERAL_CONTRACTING:
-    - pattern: '8\(a\)|set[- ]aside|small business concern|HUBZone|WOSB|SDVOSB|SWaM'
-      notes: socioeconomic contracting
-    - pattern: 'prompt pay|payment terms|contracting|procurement|GSA schedule'
-      notes: federal procurement terms
-    - pattern: 'Buy American|Buy America|domestic preference|Made in America'
-      notes: domestic procurement preferences
-
+  - pattern: 8\(a\)|set[- ]aside|small business concern|HUBZone|WOSB|SDVOSB|SWaM
+    notes: socioeconomic contracting
+  - pattern: prompt pay|payment terms|contracting|procurement|GSA schedule
+    notes: federal procurement terms
+  - pattern: Buy American|Buy America|domestic preference|Made in America
+    notes: domestic procurement preferences
+  - pattern: Federal Acquisition|\bFAR\b|bid protest|subcontract|contract bundling
+    notes: 'acquisition process. Bare ''acquisition reform'' was dropped: its only match was the Weapon Systems Acquisition Reform Act, defense procurement with no small-business contracting content.'
+  - pattern: \bSBIR\b|\bSTTR\b|research and development contract
+    notes: small-business innovation contracting
   HEALTH_COSTS:
-    - pattern: 'affordable care|ACA\b|premium tax credit|exchange subsid|marketplace'
-      notes: exchange coverage
-    - pattern: 'association health|self-employed|small group|health insurance|Medicaid'
-      notes: insurance costs for small employers / self-employed
-    - pattern: 'prescription drug|insulin|pharmacy benefit|PBM'
-      notes: drug cost drivers
-
+  - pattern: affordable care|ACA\b|premium tax credit|exchange subsid|marketplace
+    notes: exchange coverage
+  - pattern: association health|self-employed|small group|health insurance|Medicaid
+    notes: insurance costs for small employers / self-employed
+  - pattern: prescription drug|insulin|pharmacy benefit|PBM
+    notes: drug cost drivers
+  - pattern: health care reform|health reform|public option|health insurance exchange
+    notes: pre-ACA and ACA-era reform titles
+  - pattern: employer mandate|individual mandate|employer-sponsored|group health|\bCOBRA\b
+    notes: employer coverage obligations
+  - pattern: health savings account|\bHSA\b|flexible spending
+    notes: tax-advantaged health accounts
   INPUT_COSTS:
-    - pattern: 'tariff|duties|trade authority|Section 232|Section 301|USMCA|trade agreement'
-      notes: trade and tariffs
-    - pattern: 'energy price|crude oil|natural gas|electricity rate|fuel price|gasoline'
-      notes: energy inputs
-    - pattern: 'supply chain|semiconductor|CHIPS|critical mineral|\bport\b|freight'
-      notes: supply chain inputs (word-boundaried port; avoids matching support)
-
+  - pattern: tariff|duties|trade authority|Section 232|Section 301|USMCA|trade agreement
+    notes: trade and tariffs
+  - pattern: energy price|crude oil|natural gas|electricity rate|fuel price|gasoline
+    notes: energy inputs
+  - pattern: supply chain|semiconductor|CHIPS|critical mineral|\bport\b|freight
+    notes: supply chain inputs (word-boundaried port; avoids matching support)
+  - pattern: \bNAFTA\b|trade promotion|normal trade relations|most favored nation
+    notes: pre-USMCA trade vocabulary
+  - pattern: cap[- ]and[- ]trade|emissions trading|clean energy and security|renewable fuel|ethanol
+    notes: energy-cost legislation of the 111th era
+  - pattern: shipping|freight|trucking|hours of service|inflation reduction
+    notes: logistics and price inputs
   REGULATORY_BURDEN:
-    - pattern: 'paperwork|regulatory flex|Regulatory Flexibility|REG Flex|compliance cost'
-      notes: paperwork / RFA
-    - pattern: 'beneficial ownership|CTA\b|corporate transparency|BOI\b'
-      notes: ownership reporting
-    - pattern: 'reporting mandate|disclosure requirement|EPA rule|SEC rule|fiduciary'
-      notes: reporting and agency rules
-    - pattern: 'NEPA|permitting|environmental review'
-      notes: permitting burden
-
+  - pattern: paperwork|regulatory flex|Regulatory Flexibility|REG Flex|compliance cost
+    notes: paperwork / RFA
+  - pattern: beneficial ownership|CTA\b|corporate transparency|BOI\b
+    notes: ownership reporting
+  - pattern: reporting mandate|disclosure requirement|EPA rule|SEC rule|fiduciary
+    notes: reporting and agency rules
+  - pattern: NEPA|permitting|environmental review
+    notes: permitting burden
+  - pattern: red tape|deregulat|regulatory reform|regulatory accountability|unfunded mandate
+    notes: general regulatory-burden titles
+  - pattern: Congressional Review Act|resolution of disapproval|cost[- ]benefit|regulatory impact
+    notes: CRA disapprovals and RIA requirements
+  - pattern: Dodd[- ]Frank|Wall Street Reform|occupational licens
+    notes: compliance regimes that bind small firms
   WORKFORCE:
-    - pattern: 'independent contractor|employee classification|ABC test|joint employer'
-      notes: worker classification
-    - pattern: 'minimum wage|overtime|Fair Labor|NLRA|collective bargaining'
-      notes: wage and labor rules
-    - pattern: 'apprenticeship|workforce development|career and technical|CTE\b'
-      notes: training pipeline
-    - pattern: 'immigration|H-1B|H-2B|work visa|border security|border patrol|southern border|border enforcement|asylum|E-Verify'
-      notes: >-
-        labor supply / immigration. NB: bare "border" was removed — it false-matched
-        "cross-border" energy/trade bills (e.g. hr-3062). Immigration-context border
-        phrases are enumerated instead. "immigration" still tags immigration-enforcement
-        bills (e.g. hr-2056) as WORKFORCE by design; handle those with valence=0.
-    - pattern: 'paid leave|child care|family leave'
-      notes: workforce participation costs
-
-# Stage-2 eligibility: residual votes whose text matches these (appropriations /
-# reconciliation / trade vehicles) may be sent to the LLM classifier.
-#
-# DECISION (audit, step 3): the Stage-2 LLM stays OFF by default and omnibus
-# vehicles (consolidated/continuing appropriations, reconciliation, budget
-# resolutions, rescissions — Congress.gov policy_area "Economics and Public
-# Finance") are intentionally LEFT UNTAGGED. A single small-business theme cannot
-# honestly describe a bill that funds the whole government; forcing one would be a
-# fabricated signal. These patterns are retained only so that, if an operator
-# opts into the LLM (`classify` without --no-llm, with an LLM key), trade/tariff
-# vehicles can still be surfaced for review — never auto-published.
+  - pattern: independent contractor|employee classification|ABC test|joint employer
+    notes: worker classification
+  - pattern: minimum wage|overtime|Fair Labor|NLRA|collective bargaining
+    notes: wage and labor rules
+  - pattern: apprenticeship|workforce development|career and technical|CTE\b
+    notes: training pipeline
+  - pattern: immigration|H-1B|H-2B|work visa|border security|border patrol|southern border|border enforcement|asylum|E-Verify
+    notes: 'labor supply / immigration. NB: bare "border" was removed — it false-matched "cross-border" energy/trade bills (e.g. hr-3062). Immigration-context border phrases are enumerated instead. "immigration"
+      still tags immigration-enforcement bills (e.g. hr-2056) as WORKFORCE by design; handle those with valence=0.'
+  - pattern: paid leave|child care|family leave
+    notes: workforce participation costs
+  - pattern: fair pay|pay equity|equal pay|Ledbetter
+    notes: wage-discrimination compliance (e.g. Lilly Ledbetter)
+  - pattern: Employee Free Choice|card check|union representation|prevailing wage|Davis[- ]Bacon
+    notes: labor-organizing and wage-floor rules
+  - pattern: \bOSHA\b|occupational safety|workplace safety
+    notes: workplace regulation
+  - pattern: unemployment insurance|unemployment compensation|guest worker|seasonal worker
+    notes: labor supply and payroll-adjacent benefits
+  - pattern: workforce investment|\bWIOA\b|Job Corps
+    notes: training programs
 llm_eligible_patterns:
-  - '(?i)appropriat'
-  - '(?i)reconcil'
-  - '(?i)continuing resolution|\bCR\b'
-  - '(?i)omnibus'
-  - '(?i)tariff|trade|USMCA|customs'
-  - '(?i)one big beautiful|fiscal|budget'
+- (?i)appropriat
+- (?i)reconcil
+- (?i)continuing resolution|\bCR\b
+- (?i)omnibus
+- (?i)tariff|trade|USMCA|customs
+- (?i)one big beautiful|fiscal|budget

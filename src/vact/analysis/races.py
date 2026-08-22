@@ -165,6 +165,85 @@ class RaceRegistry(BaseModel):
         return self
 
 
+CONGRESS_TERMS_PATH = REPO_ROOT / "config" / "congress_terms.yaml"
+
+
+def verify_bioguide_ids(registry: RaceRegistry | None = None) -> list[str]:
+    """Check every bioguide id against the congress-legislators roster.
+
+    A wrong id is the most dangerous error in this file, because it fails
+    silently in the worst direction: `P000601` was committed for Tom Perriello
+    when it belongs to Steven Palazzo (MS-4, Republican). While the 116th and
+    117th were unbackfilled it returned zero rows and looked exactly like
+    "no data yet"; the moment those congresses were ingested it started
+    resolving, and the head-to-head would have published a Mississippi
+    Republican's roll calls under Perriello's name.
+
+    Returns a list of problems; empty means clean.
+    """
+    import yaml
+
+    from vact.sources import legislators as legislator_source
+
+    reg = registry or load_races()
+    paths = legislator_source.fetch_all()
+    people = legislator_source.parse_legislators(
+        paths["legislators-current"]
+    ) + legislator_source.parse_legislators(paths["legislators-historical"])
+    by_id = {p.id.bioguide: p for p in people}
+    terms_cfg = yaml.safe_load(CONGRESS_TERMS_PATH.read_text(encoding="utf-8"))["terms"]
+
+    problems: list[str] = []
+    for race in reg.races:
+        state = race.race_id.split("-")[0].upper()
+
+        inc_id = race.incumbent.bioguide_id
+        if inc_id:
+            person = by_id.get(inc_id)
+            if person is None:
+                problems.append(f"{race.race_id}: incumbent bioguide {inc_id} not in roster")
+            elif not any(t.state == state for t in person.terms):
+                problems.append(
+                    f"{race.race_id}: incumbent {inc_id} "
+                    f"({person.name.official_full or person.name.last}) never served {state}"
+                )
+
+        for svc in race.challenger.prior_federal_service or []:
+            person = by_id.get(svc.bioguide_id)
+            if person is None:
+                problems.append(
+                    f"{race.race_id}: challenger bioguide {svc.bioguide_id} not in roster"
+                )
+                continue
+            label = person.name.official_full or person.name.last
+            if not any(t.state == state for t in person.terms):
+                problems.append(
+                    f"{race.race_id}: {svc.bioguide_id} is {label}, who never served {state} "
+                    f"(claimed as {race.challenger.name})"
+                )
+            want_chamber = "rep" if svc.chamber == "House" else "sen"
+            for congress in svc.congresses:
+                window = terms_cfg.get(congress)
+                if window is None:
+                    problems.append(
+                        f"{race.race_id}: congress {congress} missing from congress_terms.yaml"
+                    )
+                    continue
+                lo, hi = str(window["start"]), str(window["end"])
+                served = any(
+                    t.type == want_chamber
+                    and str(t.start) < hi
+                    and str(t.end) > lo
+                    for t in person.terms
+                )
+                if not served:
+                    problems.append(
+                        f"{race.race_id}: {label} ({svc.bioguide_id}) has no {svc.chamber} "
+                        f"term overlapping the {congress}th Congress"
+                    )
+    return problems
+
+
 class RacesValidationError(ValueError):
     """Registry failed structural / business-rule validation."""
 

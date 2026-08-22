@@ -4,12 +4,70 @@
     "full_name": "Eugene Simon Vindman",
     "party": "Democrat",
     "district_number": 7,
-    "theme": "INPUT_COSTS",
-    "signed_score": -0.5,
-    "party_baseline": -1.0,
-    "deviation": 0.5,
-    "n_contested": 4,
+    "theme": "TAX_BURDEN",
+    "signed_score": 0.3333,
+    "party_baseline": -0.3333,
+    "deviation": 0.6666,
+    "n_contested": 3,
     "defection_votes": [
+      {
+        "vote_id": "h-119-1-71",
+        "vote_date": "2025-03-11",
+        "bill_id": "hjres-25-119",
+        "summary": null,
+        "position": "YEA",
+        "source_link": "https://clerk.house.gov/evs/2025/roll071.xml"
+      }
+    ]
+  },
+  {
+    "bioguide_id": "S001230",
+    "full_name": "Suhas Subramanyam",
+    "party": "Democrat",
+    "district_number": 10,
+    "theme": "TAX_BURDEN",
+    "signed_score": 0.3333,
+    "party_baseline": -0.3333,
+    "deviation": 0.6666,
+    "n_contested": 3,
+    "defection_votes": [
+      {
+        "vote_id": "h-119-1-71",
+        "vote_date": "2025-03-11",
+        "bill_id": "hjres-25-119",
+        "summary": null,
+        "position": "YEA",
+        "source_link": "https://clerk.house.gov/evs/2025/roll071.xml"
+      }
+    ]
+  },
+  {
+    "bioguide_id": "V000138",
+    "full_name": "Eugene Simon Vindman",
+    "party": "Democrat",
+    "district_number": 7,
+    "theme": "INPUT_COSTS",
+    "signed_score": -0.5385,
+    "party_baseline": -1.0,
+    "deviation": 0.4615,
+    "n_contested": 26,
+    "defection_votes": [
+      {
+        "vote_id": "h-119-1-53",
+        "vote_date": "2025-02-27",
+        "bill_id": "hjres-20-119",
+        "summary": null,
+        "position": "YEA",
+        "source_link": "https://clerk.house.gov/evs/2025/roll053.xml"
+      },
+      {
+        "vote_id": "h-119-1-303",
+        "vote_date": "2025-11-20",
+        "bill_id": "hr-3109-119",
+        "summary": null,
+        "position": "YEA",
+        "source_link": "https://clerk.house.gov/evs/2025/roll303.xml"
+      },
       {
         "vote_id": "h-119-1-324",
         "vote_date": "2025-12-11",
@@ -17,6 +75,30 @@
         "summary": null,
         "position": "YEA",
         "source_link": "https://clerk.house.gov/evs/2025/roll324.xml"
+      },
+      {
+        "vote_id": "h-119-1-347",
+        "vote_date": "2025-12-17",
+        "bill_id": "hr-3616-119",
+        "summary": null,
+        "position": "YEA",
+        "source_link": "https://clerk.house.gov/evs/2025/roll347.xml"
+      },
+      {
+        "vote_id": "h-119-2-12",
+        "vote_date": "2026-01-09",
+        "bill_id": "hr-5184-119",
+        "summary": null,
+        "position": "YEA",
+        "source_link": "https://clerk.house.gov/evs/2026/roll012.xml"
+      },
+      {
+        "vote_id": "h-119-2-137",
+        "vote_date": "2026-04-23",
+        "bill_id": "hr-5587-119",
+        "summary": null,
+        "position": "YEA",
+        "source_link": "https://clerk.house.gov/evs/2026/roll137.xml"
       }
     ]
   },
@@ -26,10 +108,10 @@
     "party": "Democrat",
     "district_number": 7,
     "theme": "REGULATORY_BURDEN",
-    "signed_score": -0.5385,
-    "party_baseline": -0.8462,
-    "deviation": 0.3077,
-    "n_contested": 13,
+    "signed_score": -0.5714,
+    "party_baseline": -0.8571,
+    "deviation": 0.2857,
+    "n_contested": 14,
     "defection_votes": [
       {
         "vote_id": "h-119-1-114",
@@ -56,9 +138,9 @@
     "district_number": 2,
     "theme": "REGULATORY_BURDEN",
     "signed_score": 1.0,
-    "party_baseline": 0.8462,
-    "deviation": 0.1538,
-    "n_contested": 13,
+    "party_baseline": 0.8571,
+    "deviation": 0.1429,
+    "n_contested": 14,
     "defection_votes": [
       {
         "vote_id": "h-119-2-164",
@@ -77,9 +159,9 @@
     "district_number": 1,
     "theme": "REGULATORY_BURDEN",
     "signed_score": 1.0,
-    "party_baseline": 0.8462,
-    "deviation": 0.1538,
-    "n_contested": 12,
+    "party_baseline": 0.8571,
+    "deviation": 0.1429,
+    "n_contested": 13,
     "defection_votes": [
       {
         "vote_id": "h-119-2-164",
@@ -88,6 +170,48 @@
         "summary": null,
         "position": "YEA",
         "source_link": "https://clerk.house.gov/evs/2026/roll164.xml"
+      }
+    ]
+  },
+  {
+    "bioguide_id": "V000138",
+    "full_name": "Eugene Simon Vindman",
+    "party": "Democrat",
+    "district_number": 7,
+    "theme": "WORKFORCE",
+    "signed_score": -0.4286,
+    "party_baseline": -0.7143,
+    "deviation": 0.2857,
+    "n_contested": 7,
+    "defection_votes": [
+      {
+        "vote_id": "h-119-1-68",
+        "vote_date": "2025-03-11",
+        "bill_id": "hr-1156-119",
+        "summary": null,
+        "position": "YEA",
+        "source_link": "https://clerk.house.gov/evs/2025/roll068.xml"
+      }
+    ]
+  },
+  {
+    "bioguide_id": "S001230",
+    "full_name": "Suhas Subramanyam",
+    "party": "Democrat",
+    "district_number": 10,
+    "theme": "WORKFORCE",
+    "signed_score": -0.4286,
+    "party_baseline": -0.7143,
+    "deviation": 0.2857,
+    "n_contested": 7,
+    "defection_votes": [
+      {
+        "vote_id": "h-119-1-68",
+        "vote_date": "2025-03-11",
+        "bill_id": "hr-1156-119",
+        "summary": null,
+        "position": "YEA",
+        "source_link": "https://clerk.house.gov/evs/2025/roll068.xml"
       }
     ]
   }

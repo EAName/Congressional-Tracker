@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-08-21T14:44:54Z",
+  "generated_at_utc": "2026-08-22T05:39:32Z",
   "map_version": "2021",
   "axis": {
     "name": "small_business_climate",
@@ -20,19 +20,19 @@
     {
       "theme": "ACCESS_TO_CAPITAL",
       "party": "Democrat",
-      "eb_center": 0.8333,
-      "weighted_median": null,
+      "eb_center": -0.3125,
+      "weighted_median": -0.3333,
       "prior_alpha": 5.5,
-      "prior_beta": 0.5,
+      "prior_beta": 10.5,
       "prior_source": "degenerate",
       "n_members": 5
     },
     {
       "theme": "ACCESS_TO_CAPITAL",
       "party": "Republican",
-      "eb_center": -0.8333,
-      "weighted_median": null,
-      "prior_alpha": 0.5,
+      "eb_center": 0.3125,
+      "weighted_median": 0.3333,
+      "prior_alpha": 10.5,
       "prior_beta": 5.5,
       "prior_source": "degenerate",
       "n_members": 5
@@ -60,19 +60,19 @@
     {
       "theme": "HEALTH_COSTS",
       "party": "Democrat",
-      "eb_center": 0.8571,
-      "weighted_median": null,
-      "prior_alpha": 6.5,
-      "prior_beta": 0.5,
-      "prior_source": "degenerate",
+      "eb_center": 0.2778,
+      "weighted_median": 0.3333,
+      "prior_alpha": 31.199074,
+      "prior_beta": 17.634259,
+      "prior_source": "moments",
       "n_members": 6
     },
     {
       "theme": "HEALTH_COSTS",
       "party": "Republican",
-      "eb_center": -0.8333,
-      "weighted_median": null,
-      "prior_alpha": 0.5,
+      "eb_center": 0.3125,
+      "weighted_median": 0.3333,
+      "prior_alpha": 10.5,
       "prior_beta": 5.5,
       "prior_source": "degenerate",
       "n_members": 5
@@ -80,19 +80,19 @@
     {
       "theme": "INPUT_COSTS",
       "party": "Democrat",
-      "eb_center": -0.9167,
+      "eb_center": -0.9231,
       "weighted_median": -1.0,
-      "prior_alpha": 0.118056,
-      "prior_beta": 2.715278,
+      "prior_alpha": 0.121795,
+      "prior_beta": 3.044872,
       "prior_source": "moments",
       "n_members": 6
     },
     {
       "theme": "INPUT_COSTS",
       "party": "Republican",
-      "eb_center": 0.9524,
+      "eb_center": 0.9922,
       "weighted_median": 1.0,
-      "prior_alpha": 20.5,
+      "prior_alpha": 128.5,
       "prior_beta": 0.5,
       "prior_source": "degenerate",
       "n_members": 5
@@ -100,39 +100,39 @@
     {
       "theme": "REGULATORY_BURDEN",
       "party": "Democrat",
-      "eb_center": -0.8718,
-      "weighted_median": -0.8462,
-      "prior_alpha": 0.411455,
-      "prior_beta": 6.007244,
+      "eb_center": -0.881,
+      "weighted_median": -0.8571,
+      "prior_alpha": 0.41836,
+      "prior_beta": 6.610095,
       "prior_source": "moments",
       "n_members": 6
     },
     {
       "theme": "REGULATORY_BURDEN",
       "party": "Republican",
-      "eb_center": 0.9077,
-      "weighted_median": 0.8462,
-      "prior_alpha": 22.701538,
-      "prior_beta": 1.098462,
+      "eb_center": 0.9143,
+      "weighted_median": 0.8571,
+      "prior_alpha": 24.694286,
+      "prior_beta": 1.105714,
       "prior_source": "moments",
       "n_members": 5
     },
     {
       "theme": "TAX_BURDEN",
       "party": "Democrat",
-      "eb_center": 0.4,
-      "weighted_median": null,
-      "prior_alpha": 1.26,
-      "prior_beta": 0.54,
+      "eb_center": -0.2222,
+      "weighted_median": -0.3333,
+      "prior_alpha": 1.078976,
+      "prior_beta": 1.695534,
       "prior_source": "moments",
-      "n_members": 5
+      "n_members": 6
     },
     {
       "theme": "TAX_BURDEN",
       "party": "Republican",
-      "eb_center": 0.9091,
-      "weighted_median": null,
-      "prior_alpha": 10.5,
+      "eb_center": 0.9375,
+      "weighted_median": 1.0,
+      "prior_alpha": 15.5,
       "prior_beta": 0.5,
       "prior_source": "degenerate",
       "n_members": 5
@@ -140,25 +140,25 @@
     {
       "theme": "WORKFORCE",
       "party": "Democrat",
-      "eb_center": -0.9231,
-      "weighted_median": null,
-      "prior_alpha": 0.5,
-      "prior_beta": 12.5,
-      "prior_source": "degenerate",
+      "eb_center": -0.6,
+      "weighted_median": -0.7143,
+      "prior_alpha": 6.333333,
+      "prior_beta": 25.333333,
+      "prior_source": "moments",
       "n_members": 6
     },
     {
       "theme": "WORKFORCE",
       "party": "Republican",
-      "eb_center": 0.9091,
-      "weighted_median": null,
-      "prior_alpha": 10.5,
-      "prior_beta": 0.5,
+      "eb_center": 0.6944,
+      "weighted_median": 0.7143,
+      "prior_alpha": 30.5,
+      "prior_beta": 5.5,
       "prior_source": "degenerate",
       "n_members": 5
     }
   ],
   "election_date": "2026-11-03",
-  "days_until_election": 74,
-  "races_as_of": "2026-08-21"
+  "days_until_election": 73,
+  "races_as_of": "2026-08-22"
 }

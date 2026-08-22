@@ -2,8 +2,8 @@
   "version": 2,
   "map_version": "2021",
   "election_date": "2026-11-03",
-  "as_of": "2026-08-21",
-  "days_until_election": 74,
+  "as_of": "2026-08-22",
+  "days_until_election": 73,
   "notes": "Canonical race registry: all 11 Virginia House seats plus the Class 2 Senate seat, 2026-11-03, 2021 court map. House seats carry a district; the statewide Senate race (va-sen) carries district=null and is excluded from the House-fit seat model. district_lean is 2024 presidential two-party Democratic share.",
   "races": [
     {
@@ -32,7 +32,7 @@
         "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/"
       },
       "ratings": [],
-      "days_until_election": 74,
+      "days_until_election": 73,
       "label": "VA-1"
     },
     {
@@ -60,7 +60,7 @@
               116,
               117
             ],
-            "bioguide_id": "L000791"
+            "bioguide_id": "L000591"
           }
         ]
       },
@@ -70,7 +70,7 @@
         "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/"
       },
       "ratings": [],
-      "days_until_election": 74,
+      "days_until_election": 73,
       "label": "VA-2"
     },
     {
@@ -99,7 +99,7 @@
         "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/"
       },
       "ratings": [],
-      "days_until_election": 74,
+      "days_until_election": 73,
       "label": "VA-3"
     },
     {
@@ -128,7 +128,7 @@
         "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/"
       },
       "ratings": [],
-      "days_until_election": 74,
+      "days_until_election": 73,
       "label": "VA-4"
     },
     {
@@ -155,7 +155,7 @@
             "congresses": [
               111
             ],
-            "bioguide_id": "P000601"
+            "bioguide_id": "P000600"
           }
         ]
       },
@@ -165,7 +165,7 @@
         "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/"
       },
       "ratings": [],
-      "days_until_election": 74,
+      "days_until_election": 73,
       "label": "VA-5"
     },
     {
@@ -194,7 +194,7 @@
         "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/"
       },
       "ratings": [],
-      "days_until_election": 74,
+      "days_until_election": 73,
       "label": "VA-6"
     },
     {
@@ -223,7 +223,7 @@
         "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/"
       },
       "ratings": [],
-      "days_until_election": 74,
+      "days_until_election": 73,
       "label": "VA-7"
     },
     {
@@ -252,7 +252,7 @@
         "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/"
       },
       "ratings": [],
-      "days_until_election": 74,
+      "days_until_election": 73,
       "label": "VA-8"
     },
     {
@@ -281,7 +281,7 @@
         "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/"
       },
       "ratings": [],
-      "days_until_election": 74,
+      "days_until_election": 73,
       "label": "VA-9"
     },
     {
@@ -310,7 +310,7 @@
         "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/"
       },
       "ratings": [],
-      "days_until_election": 74,
+      "days_until_election": 73,
       "label": "VA-10"
     },
     {
@@ -339,7 +339,7 @@
         "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/"
       },
       "ratings": [],
-      "days_until_election": 74,
+      "days_until_election": 73,
       "label": "VA-11"
     },
     {
@@ -368,7 +368,7 @@
         "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/ (statewide, not district)"
       },
       "ratings": [],
-      "days_until_election": 74,
+      "days_until_election": 73,
       "label": "VA-Sen"
     }
   ]

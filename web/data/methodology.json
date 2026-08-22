@@ -32,19 +32,19 @@
     {
       "theme": "ACCESS_TO_CAPITAL",
       "party": "Democrat",
-      "eb_center": 0.8333,
-      "weighted_median": null,
+      "eb_center": -0.3125,
+      "weighted_median": -0.3333,
       "prior_alpha": 5.5,
-      "prior_beta": 0.5,
+      "prior_beta": 10.5,
       "prior_source": "degenerate",
       "n_members": 5
     },
     {
       "theme": "ACCESS_TO_CAPITAL",
       "party": "Republican",
-      "eb_center": -0.8333,
-      "weighted_median": null,
-      "prior_alpha": 0.5,
+      "eb_center": 0.3125,
+      "weighted_median": 0.3333,
+      "prior_alpha": 10.5,
       "prior_beta": 5.5,
       "prior_source": "degenerate",
       "n_members": 5
@@ -72,19 +72,19 @@
     {
       "theme": "HEALTH_COSTS",
       "party": "Democrat",
-      "eb_center": 0.8571,
-      "weighted_median": null,
-      "prior_alpha": 6.5,
-      "prior_beta": 0.5,
-      "prior_source": "degenerate",
+      "eb_center": 0.2778,
+      "weighted_median": 0.3333,
+      "prior_alpha": 31.199074,
+      "prior_beta": 17.634259,
+      "prior_source": "moments",
       "n_members": 6
     },
     {
       "theme": "HEALTH_COSTS",
       "party": "Republican",
-      "eb_center": -0.8333,
-      "weighted_median": null,
-      "prior_alpha": 0.5,
+      "eb_center": 0.3125,
+      "weighted_median": 0.3333,
+      "prior_alpha": 10.5,
       "prior_beta": 5.5,
       "prior_source": "degenerate",
       "n_members": 5
@@ -92,19 +92,19 @@
     {
       "theme": "INPUT_COSTS",
       "party": "Democrat",
-      "eb_center": -0.9167,
+      "eb_center": -0.9231,
       "weighted_median": -1.0,
-      "prior_alpha": 0.118056,
-      "prior_beta": 2.715278,
+      "prior_alpha": 0.121795,
+      "prior_beta": 3.044872,
       "prior_source": "moments",
       "n_members": 6
     },
     {
       "theme": "INPUT_COSTS",
       "party": "Republican",
-      "eb_center": 0.9524,
+      "eb_center": 0.9922,
       "weighted_median": 1.0,
-      "prior_alpha": 20.5,
+      "prior_alpha": 128.5,
       "prior_beta": 0.5,
       "prior_source": "degenerate",
       "n_members": 5
@@ -112,39 +112,39 @@
     {
       "theme": "REGULATORY_BURDEN",
       "party": "Democrat",
-      "eb_center": -0.8718,
-      "weighted_median": -0.8462,
-      "prior_alpha": 0.411455,
-      "prior_beta": 6.007244,
+      "eb_center": -0.881,
+      "weighted_median": -0.8571,
+      "prior_alpha": 0.41836,
+      "prior_beta": 6.610095,
       "prior_source": "moments",
       "n_members": 6
     },
     {
       "theme": "REGULATORY_BURDEN",
       "party": "Republican",
-      "eb_center": 0.9077,
-      "weighted_median": 0.8462,
-      "prior_alpha": 22.701538,
-      "prior_beta": 1.098462,
+      "eb_center": 0.9143,
+      "weighted_median": 0.8571,
+      "prior_alpha": 24.694286,
+      "prior_beta": 1.105714,
       "prior_source": "moments",
       "n_members": 5
     },
     {
       "theme": "TAX_BURDEN",
       "party": "Democrat",
-      "eb_center": 0.4,
-      "weighted_median": null,
-      "prior_alpha": 1.26,
-      "prior_beta": 0.54,
+      "eb_center": -0.2222,
+      "weighted_median": -0.3333,
+      "prior_alpha": 1.078976,
+      "prior_beta": 1.695534,
       "prior_source": "moments",
-      "n_members": 5
+      "n_members": 6
     },
     {
       "theme": "TAX_BURDEN",
       "party": "Republican",
-      "eb_center": 0.9091,
-      "weighted_median": null,
-      "prior_alpha": 10.5,
+      "eb_center": 0.9375,
+      "weighted_median": 1.0,
+      "prior_alpha": 15.5,
       "prior_beta": 0.5,
       "prior_source": "degenerate",
       "n_members": 5
@@ -152,20 +152,20 @@
     {
       "theme": "WORKFORCE",
       "party": "Democrat",
-      "eb_center": -0.9231,
-      "weighted_median": null,
-      "prior_alpha": 0.5,
-      "prior_beta": 12.5,
-      "prior_source": "degenerate",
+      "eb_center": -0.6,
+      "weighted_median": -0.7143,
+      "prior_alpha": 6.333333,
+      "prior_beta": 25.333333,
+      "prior_source": "moments",
       "n_members": 6
     },
     {
       "theme": "WORKFORCE",
       "party": "Republican",
-      "eb_center": 0.9091,
-      "weighted_median": null,
-      "prior_alpha": 10.5,
-      "prior_beta": 0.5,
+      "eb_center": 0.6944,
+      "weighted_median": 0.7143,
+      "prior_alpha": 30.5,
+      "prior_beta": 5.5,
       "prior_source": "degenerate",
       "n_members": 5
     }
@@ -176,24 +176,24 @@
     "party": "Democrat",
     "chamber": "House",
     "district_number": 7,
-    "theme": "INPUT_COSTS",
-    "k": 1,
-    "n": 4,
-    "p_raw": 0.25,
-    "raw_score": -0.5,
-    "wilson_lo": -0.9088,
-    "wilson_hi": 0.3987,
-    "prior_alpha": 0.118056,
-    "prior_beta": 2.715278,
+    "theme": "TAX_BURDEN",
+    "k": 2,
+    "n": 3,
+    "p_raw": 0.6667,
+    "raw_score": 0.3333,
+    "wilson_lo": -0.5847,
+    "wilson_hi": 0.877,
+    "prior_alpha": 1.078976,
+    "prior_beta": 1.695534,
     "prior_source": "moments",
-    "prior_mean": 0.0417,
-    "post_alpha": 1.118056,
-    "post_beta": 5.715278,
-    "post_mean": 0.1636,
-    "eb_score": -0.6728,
-    "cred_lo": -0.9864,
-    "cred_hi": -0.0115,
-    "shrinkage": -0.1728
+    "prior_mean": 0.3889,
+    "post_alpha": 3.078976,
+    "post_beta": 2.695534,
+    "post_mean": 0.5332,
+    "eb_score": 0.0664,
+    "cred_lo": -0.6701,
+    "cred_hi": 0.7601,
+    "shrinkage": -0.2669
   },
   "separation": {
     "weakly_informative": {
@@ -231,12 +231,12 @@
         0.0,
         0.25
       ],
-      "prior_alpha": 0.118056,
-      "prior_beta": 2.715278,
+      "prior_alpha": 1.078976,
+      "prior_beta": 1.695534,
       "prior_source": "moments",
       "n_needed": null,
       "power_at_n": null,
-      "power_at_max_n": 0.779,
+      "power_at_max_n": 0.78,
       "max_n": 400,
       "reached": false
     }
@@ -273,20 +273,19 @@
     "spec_path": "src/vact/analysis/VOTE_INCLUSION_SPEC.md",
     "excluded_path": "data/votes_excluded.csv",
     "excluded_counts_by_reason": {
-      "PROCEDURAL_CATEGORY": 1067,
-      "NO_IMPACT_TAG": 338,
-      "NEAR_UNANIMOUS": 1,
-      "RULE_RESOLUTION": 63,
-      "UNADJUDICATED_DIRECTION": 33
+      "PROCEDURAL_CATEGORY": 3028,
+      "NO_IMPACT_TAG": 1708,
+      "RULE_RESOLUTION": 336,
+      "NEAR_UNANIMOUS": 1
     },
     "caucus_advancing_by_theme": [
       {
         "theme": "ACCESS_TO_CAPITAL",
-        "n_rollcalls_dem": 1,
-        "n_rollcalls_rep": 1,
-        "dem_caucus_advancing_share": 1.0,
-        "rep_caucus_advancing_share": 0.0,
-        "gap_pp": 100.0,
+        "n_rollcalls_dem": 3,
+        "n_rollcalls_rep": 3,
+        "dem_caucus_advancing_share": 0.333,
+        "rep_caucus_advancing_share": 0.667,
+        "gap_pp": -33.3,
         "note": "A lopsided share means that caucus's floor majority more often voted with the coded axis direction on that theme. It does not by itself prove biased adjudication."
       },
       {
@@ -300,17 +299,17 @@
       },
       {
         "theme": "HEALTH_COSTS",
-        "n_rollcalls_dem": 1,
-        "n_rollcalls_rep": 1,
-        "dem_caucus_advancing_share": 1.0,
-        "rep_caucus_advancing_share": 0.0,
-        "gap_pp": 100.0,
+        "n_rollcalls_dem": 3,
+        "n_rollcalls_rep": 3,
+        "dem_caucus_advancing_share": 0.667,
+        "rep_caucus_advancing_share": 0.667,
+        "gap_pp": 0.0,
         "note": "A lopsided share means that caucus's floor majority more often voted with the coded axis direction on that theme. It does not by itself prove biased adjudication."
       },
       {
         "theme": "INPUT_COSTS",
-        "n_rollcalls_dem": 4,
-        "n_rollcalls_rep": 4,
+        "n_rollcalls_dem": 26,
+        "n_rollcalls_rep": 26,
         "dem_caucus_advancing_share": 0.0,
         "rep_caucus_advancing_share": 1.0,
         "gap_pp": -100.0,
@@ -318,29 +317,29 @@
       },
       {
         "theme": "REGULATORY_BURDEN",
-        "n_rollcalls_dem": 12,
-        "n_rollcalls_rep": 13,
+        "n_rollcalls_dem": 13,
+        "n_rollcalls_rep": 14,
         "dem_caucus_advancing_share": 0.0,
-        "rep_caucus_advancing_share": 0.923,
-        "gap_pp": -92.3,
+        "rep_caucus_advancing_share": 0.929,
+        "gap_pp": -92.9,
         "note": "A lopsided share means that caucus's floor majority more often voted with the coded axis direction on that theme. It does not by itself prove biased adjudication."
       },
       {
         "theme": "TAX_BURDEN",
-        "n_rollcalls_dem": 2,
-        "n_rollcalls_rep": 2,
-        "dem_caucus_advancing_share": 0.5,
+        "n_rollcalls_dem": 3,
+        "n_rollcalls_rep": 3,
+        "dem_caucus_advancing_share": 0.333,
         "rep_caucus_advancing_share": 1.0,
-        "gap_pp": -50.0,
+        "gap_pp": -66.7,
         "note": "A lopsided share means that caucus's floor majority more often voted with the coded axis direction on that theme. It does not by itself prove biased adjudication."
       },
       {
         "theme": "WORKFORCE",
-        "n_rollcalls_dem": 2,
-        "n_rollcalls_rep": 2,
-        "dem_caucus_advancing_share": 0.0,
-        "rep_caucus_advancing_share": 1.0,
-        "gap_pp": -100.0,
+        "n_rollcalls_dem": 7,
+        "n_rollcalls_rep": 7,
+        "dem_caucus_advancing_share": 0.143,
+        "rep_caucus_advancing_share": 0.857,
+        "gap_pp": -71.4,
         "note": "A lopsided share means that caucus's floor majority more often voted with the coded axis direction on that theme. It does not by itself prove biased adjudication."
       }
     ],
@@ -348,77 +347,81 @@
     "n_depth_by_party": {
       "by_party": {
         "Democrat": {
-          "n_cells": 40,
-          "median": 2.0,
+          "n_cells": 41,
+          "median": 3,
           "min": 1,
-          "max": 13
+          "max": 26
         },
         "Republican": {
           "n_cells": 35,
-          "median": 2,
+          "median": 3,
           "min": 1,
-          "max": 13
+          "max": 26
         }
       },
-      "median_gap": 0.0
+      "median_gap": 0
     },
     "ci_width_at_matched_n": [
       {
         "n_contested": 1,
-        "dem_median_width": 0.6606,
+        "dem_median_width": 1.4766,
         "rep_median_width": 0.6606,
+        "gap": 0.816
+      },
+      {
+        "n_contested": 3,
+        "dem_median_width": 0.8199,
+        "rep_median_width": 0.8199,
         "gap": 0.0
       },
       {
-        "n_contested": 2,
-        "dem_median_width": 0.323,
-        "rep_median_width": 0.3705,
-        "gap": 0.0475
+        "n_contested": 7,
+        "dem_median_width": 0.4826,
+        "rep_median_width": 0.4181,
+        "gap": 0.0645
       },
       {
-        "n_contested": 4,
-        "dem_median_width": 0.3192,
-        "rep_median_width": 0.1968,
-        "gap": 0.1224
+        "n_contested": 14,
+        "dem_median_width": 0.3989,
+        "rep_median_width": 0.265,
+        "gap": 0.1339
       },
       {
-        "n_contested": 13,
-        "dem_median_width": 0.4288,
-        "rep_median_width": 0.2852,
-        "gap": 0.1436
+        "n_contested": 26,
+        "dem_median_width": 0.0765,
+        "rep_median_width": 0.0323,
+        "gap": 0.0442
       }
     ],
-    "max_ci_width_gap": 0.1436,
+    "max_ci_width_gap": 0.816,
     "exclusion_by_sponsor_party": {
       "totals_by_sponsor_party": {
-        "Unknown": 1461,
-        "Republican": 25,
+        "Unknown": 5033,
+        "Republican": 24,
         "Democrat": 16
       },
       "by_reason": {
         "Unknown": {
-          "PROCEDURAL_CATEGORY": 1038,
-          "NO_IMPACT_TAG": 334,
-          "NEAR_UNANIMOUS": 1,
-          "RULE_RESOLUTION": 56,
-          "UNADJUDICATED_DIRECTION": 32
+          "PROCEDURAL_CATEGORY": 2999,
+          "NO_IMPACT_TAG": 1704,
+          "RULE_RESOLUTION": 329,
+          "NEAR_UNANIMOUS": 1
         },
         "Republican": {
           "PROCEDURAL_CATEGORY": 13,
           "RULE_RESOLUTION": 7,
-          "NO_IMPACT_TAG": 4,
-          "UNADJUDICATED_DIRECTION": 1
+          "NO_IMPACT_TAG": 4
         },
         "Democrat": {
           "PROCEDURAL_CATEGORY": 16
         }
       },
-      "democrat_share_pp": 39.0,
-      "rate_gap_pp": 22.0
+      "democrat_share_pp": 40.0,
+      "rate_gap_pp": 20.0
     },
     "coded_blind": {
-      "n_units": 24,
-      "false_count": 24,
+      "n_units": 57,
+      "false_count": 57,
       "false_share": 1.0,
       "false_share_pp": 100.0
     },

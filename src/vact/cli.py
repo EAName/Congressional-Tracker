@@ -566,13 +566,18 @@ def cosp_validate_cmd() -> None:
 
 @races_app.command("validate")
 def races_validate_cmd() -> None:
-    """Validate data/races.json schema and tracked-race requirements."""
-    from vact.analysis.races import validate_races
+    """Validate data/races.json schema, tracked-race requirements, and bioguide ids."""
+    from vact.analysis.races import RacesValidationError, validate_races, verify_bioguide_ids
 
     reg = validate_races()
+    problems = verify_bioguide_ids(reg)
+    if problems:
+        for line in problems:
+            typer.echo(f"  BAD  {line}")
+        raise RacesValidationError(f"{len(problems)} bioguide problem(s) in races.json")
     typer.echo(
         f"races.json ok ({len(reg.races)} races, election {reg.election_date.isoformat()}, "
-        f"map_version={reg.map_version})"
+        f"map_version={reg.map_version}, bioguide ids verified)"
     )
 
 
@@ -817,6 +822,41 @@ def valence_set_cmd(
     finally:
         conn.close()
     typer.echo(f"Set valence[{vote_id}, {impact_tag}] = {valence:+d} (HUMAN).")
+
+
+@valence_app.command("apply-worksheet")
+def valence_apply_worksheet_cmd(
+    worksheet: Path | None = typer.Option(None, "--worksheet"),
+    dry_run: bool = typer.Option(False, "--dry-run", help="Validate without writing."),
+    warehouse: Path | None = typer.Option(None, "--warehouse"),
+) -> None:
+    """Apply a filled adjudication worksheet (119th -> HUMAN valence, challengers -> review queue)."""
+    from vact.analysis.worksheet import apply_current, apply_historical, plan_worksheet
+
+    plan = plan_worksheet(worksheet)
+    for problem in plan.problems:
+        typer.echo(f"  BAD  {problem}")
+    if plan.problems:
+        raise typer.Exit(code=1)
+    typer.echo(
+        f"worksheet: {plan.n} filled ({len(plan.current)} current, "
+        f"{len(plan.historical)} historical), {plan.skipped_blank} blank"
+    )
+    if plan.missing_summary:
+        typer.echo(
+            f"  NOTE {len(plan.missing_summary)} scored row(s) have no "
+            "plain_language_summary; docs/ and briefs will refuse them."
+        )
+    if dry_run:
+        return
+    conn = connect(warehouse)
+    try:
+        ensure_schema(conn)
+        n_cur = apply_current(conn, plan.current)
+    finally:
+        conn.close()
+    n_hist = apply_historical(plan.historical)
+    typer.echo(f"applied: {n_cur} valence rows (HUMAN), {n_hist} historical rows marked adjudicated")
 
 
 @valence_app.command("review-queue")

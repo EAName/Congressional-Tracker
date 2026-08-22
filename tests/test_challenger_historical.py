@@ -15,8 +15,8 @@ from vact.analysis.votes import VoteRow
 def test_challenger_targets_from_races() -> None:
     targets = challenger_targets()
     bios = {t["bioguide_id"] for t in targets}
-    assert "L000791" in bios
-    assert "P000601" in bios
+    assert "L000591" in bios
+    assert "P000600" in bios
 
 
 def test_era_caption_two_congresses() -> None:
@@ -90,7 +90,7 @@ def test_head_to_head_with_adjudicated_historical(monkeypatch) -> None:
     rows = [
         VoteRow.model_validate(
             {
-                "member_bioguide_id": "L000791",
+                "member_bioguide_id": "L000591",
                 "member_name": "Elaine Luria",
                 "district": "2",
                 "party": "Democrat",
@@ -135,7 +135,10 @@ def test_head_to_head_with_adjudicated_historical(monkeypatch) -> None:
             }
         ),
     ]
-    monkeypatch.setattr(mod, "load_historical_candidates", lambda path=None: rows)
+    def fake_adjudicated(passed: list[VoteRow] | None = None) -> list[VoteRow]:
+        return passed if passed is not None else rows
+
+    monkeypatch.setattr(mod, "adjudicated_historical_rows", fake_adjudicated)
     incumbent_scores = [
         {
             "bioguide_id": "K000399",

@@ -40,7 +40,11 @@ scoreable:
   # filter lives here, where "what counts as a policy vote" belongs.)
   exclude_rule_resolutions: true
   rule_resolution_bill_types: [hres, sres]
-  rule_resolution_title_pattern: '(?i)^\s*providing for consideration'
+  rule_resolution_title_pattern: '(?i)^\s*(rule\s+)?providing for (further )?consideration'
+  # Widened: the original missed 'Providing for further consideration' (15 rows)
+  # and 'Rule providing for consideration' (13) in the historical queue. Those are
+  # special-order rules and must not be scoreable. No adjudicated row sits on an
+  # hres/sres bill, so this changes no published score.
 
 # A member-theme cell is `sufficient` (eligible to seed a party baseline or be
 # published on its own) only with at least this many contested scoreable votes.
@@ -98,3 +102,22 @@ valence_rules:
   REGULATORY_BURDEN:
     - { pattern: 'regulatory relief|reduce.*paperwork|repeal.*rule|exempt', valence: 1 }
     - { pattern: 'new.*mandate|reporting requirement|disclosure requirement', valence: -1 }
+  HEALTH_COSTS:
+    - { pattern: 'lower.*premium|reduce.*(cost|price).*(drug|health)|price transparen|association health|health savings', valence: 1 }
+    - { pattern: 'employer mandate|coverage mandate', valence: -1 }
+  FEDERAL_CONTRACTING:
+    - { pattern: 'set[- ]aside|small business (goal|participation)|prompt pay|\bSBIR\b|\bSTTR\b', valence: 1 }
+    - { pattern: 'contract bundling|consolidat.*requirement', valence: -1 }
+  WORKFORCE:
+    - { pattern: 'apprenticeship|workforce (development|training)|expand.*(guest worker|work visa)', valence: 1 }
+    - { pattern: 'minimum wage increase|joint employer|card check|mandat.*(paid leave|family leave)', valence: -1 }
+  # INPUT_COSTS is deliberately narrow. 22 of the 33 pending 119th pairs are
+  # energy-production bills (LNG export, pipelines, coal, grid, appliance
+  # standards). Whether more domestic production advances "lower input costs" is
+  # the single most consequential and most contestable call in the queue, and a
+  # regex that fired on it would silently make that judgment 22 times where a
+  # reviewer would make it once, visibly. Only unambiguous cost language matches;
+  # energy-production framing is left unmatched for a human.
+  INPUT_COSTS:
+    - { pattern: 'lower.*(cost|price)|reduce.*(cost|price)|cost reduction', valence: 1 }
+    - { pattern: 'price control|export ban|impose.*tariff|raise.*(cost|price)', valence: -1 }

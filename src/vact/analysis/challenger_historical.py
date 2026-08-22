@@ -393,16 +393,47 @@ def write_review_queue(rows: Sequence[dict[str, str]], path: Path | None = None)
     return dest
 
 
+# Fields a person owns. Never overwritten by a re-propose.
+HUMAN_QUEUE_FIELDS = ("adjudicated", "notes", "plain_language_summary")
+# Fields the rulebook owns. Refreshed on rows nobody has adjudicated yet.
+MACHINE_QUEUE_FIELDS = ("suggested_theme", "suggested", "title", "vote_category", "bill_id")
+
+
 def merge_review_queue(
     proposed: Sequence[dict[str, str]],
     existing: Sequence[dict[str, str]],
 ) -> list[dict[str, str]]:
-    """Preserve operator adjudication; append new roll calls."""
+    """Preserve operator adjudication, append new roll calls, and refresh stale
+    machine suggestions.
+
+    The original merge kept existing rows whole, which froze `suggested_theme` at
+    whatever rulebook version first saw the vote. Improving `impact_rules.yaml`
+    then had no effect on an already-built queue, and the only way to pick up new
+    patterns was deleting the file — which would take the adjudication work with
+    it. Rulebook v2 lifted 111th-Congress recall from 4.25% to 16.08% and none of
+    it reached the queue.
+
+    A row a person has adjudicated is left exactly as it stands. On every other
+    row the machine-suggested fields are refreshed, while any human field that
+    already carries content is kept.
+    """
     by_id = {r["vote_id"]: dict(r) for r in existing}
     for row in proposed:
         vid = row["vote_id"]
-        if vid not in by_id:
+        current = by_id.get(vid)
+        if current is None:
             by_id[vid] = dict(row)
+            continue
+        if str(current.get("adjudicated", "")).strip().lower() == "true":
+            continue
+        merged = dict(current)
+        for field in MACHINE_QUEUE_FIELDS:
+            if field in row:
+                merged[field] = row[field]
+        for field in HUMAN_QUEUE_FIELDS:
+            if (current.get(field) or "").strip():
+                merged[field] = current[field]
+        by_id[vid] = merged
     return sorted(by_id.values(), key=lambda r: (r["vote_date"], r["vote_id"]))
 
 
@@ -572,7 +603,16 @@ def propose_historical_artifacts(
     proposed_review = build_review_queue_rows(conn, vote_ids=ids, targets=targets)
     merged_review = merge_review_queue(proposed_review, load_review_queue())
     review_path = write_review_queue(merged_review)
-    candidate_rows = build_historical_candidate_rows(conn, vote_ids=ids, review_rows=merged_review)
+    # Only adjudicated roll calls can produce candidate rows —
+    # build_historical_candidate_rows discards the rest anyway, but not before
+    # pulling every member vote for all of them and resolving each member's party
+    # by date. Passing the full seed set meant ~1.5M rows and a party_at() call
+    # per row to keep the 35 that mattered: 17+ minutes of pegged CPU for work
+    # that is thrown away. Restricting the ids here is semantically identical.
+    adjudicated_ids = set(_adjudicated_themes(merged_review))
+    candidate_rows = build_historical_candidate_rows(
+        conn, vote_ids=adjudicated_ids, review_rows=merged_review
+    )
     prior_candidates = load_historical_candidates_raw()
     by_key = {
         (r["member_bioguide_id"], r["rollcall_id"], r["theme"]): r for r in prior_candidates
