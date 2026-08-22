@@ -11,14 +11,14 @@
     "axis_description": "Positive = a YEA advances the small-business / affordability axis (lower input costs, easier access to capital, lighter compliance burden).",
     "include_categories": [
       "AMENDMENT",
-      "PASSAGE"
+      "PASSAGE",
+      "SUSPENSION"
     ],
     "exclude_categories": [
       "CLOTURE",
       "MOTION_TO_RECOMMIT",
       "NOMINATION",
-      "PROCEDURAL",
-      "SUSPENSION"
+      "PROCEDURAL"
     ],
     "exclude_rule_resolutions": true,
     "min_contested": 3,
@@ -243,6 +243,11 @@
   },
   "changelog": [
     {
+      "sha": "e36e5e4",
+      "date": "2026-08-22",
+      "subject": "Ship impact rules v2, adjudication workflow, and corrected challenger bioguides."
+    },
+    {
       "sha": "828fd34",
       "date": "2026-08-19",
       "subject": "Add challenger historical scoring and head-to-head race module."
@@ -273,9 +278,10 @@
     "spec_path": "src/vact/analysis/VOTE_INCLUSION_SPEC.md",
     "excluded_path": "data/votes_excluded.csv",
     "excluded_counts_by_reason": {
-      "PROCEDURAL_CATEGORY": 3028,
-      "NO_IMPACT_TAG": 1708,
-      "RULE_RESOLUTION": 336,
+      "PROCEDURAL_CATEGORY": 1599,
+      "NO_IMPACT_TAG": 3036,
+      "UNADJUDICATED_DIRECTION": 103,
+      "RULE_RESOLUTION": 337,
       "NEAR_UNANIMOUS": 1
     },
     "caucus_advancing_by_theme": [
@@ -396,21 +402,22 @@
     "max_ci_width_gap": 0.816,
     "exclusion_by_sponsor_party": {
       "totals_by_sponsor_party": {
-        "Unknown": 5033,
+        "Unknown": 5036,
         "Republican": 24,
         "Democrat": 16
       },
       "by_reason": {
         "Unknown": {
-          "PROCEDURAL_CATEGORY": 2999,
-          "NO_IMPACT_TAG": 1704,
-          "RULE_RESOLUTION": 329,
+          "PROCEDURAL_CATEGORY": 1571,
+          "NO_IMPACT_TAG": 3031,
+          "UNADJUDICATED_DIRECTION": 103,
+          "RULE_RESOLUTION": 330,
           "NEAR_UNANIMOUS": 1
         },
         "Republican": {
-          "PROCEDURAL_CATEGORY": 13,
+          "PROCEDURAL_CATEGORY": 12,
           "RULE_RESOLUTION": 7,
-          "NO_IMPACT_TAG": 4
+          "NO_IMPACT_TAG": 5
         },
         "Democrat": {
           "PROCEDURAL_CATEGORY": 16

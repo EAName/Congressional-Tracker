@@ -1,4 +1,4 @@
-# Vote inclusion spec — `vote-inclusion-v1.0`
+# Vote inclusion spec — `vote-inclusion-v1.1`
 
 Frozen 2026-08-19. This file pre-registers which roll calls may enter the
 signed score before outcomes are examined. Changes bump `version` in
@@ -46,3 +46,4 @@ their share.
 | version | date | change | reason |
 |---------|------|--------|--------|
 | vote-inclusion-v1.0 | 2026-08-19 | Initial freeze | Prompt 17 pre-registration |
+| vote-inclusion-v1.1 | 2026-08-22 | Add SUSPENSION to `include_categories` | Small-business bills are disproportionately bipartisan and move on the suspension calendar: PPP Flexibility, PPP Extension, Microloan Improvement, SBA 7(a) Transparency were all unreachable. 70 tagged suspension pairs become eligible; none carry an adjudicated valence, so no published score moves on the bump itself. **Known divergence:** `NEAR_UNANIMOUS` is emitted by the exclusions report but is not enforced in the scoring path (`h-119-1-15/TAX_BURDEN` is labelled excluded yet contributes 10 scored member rows). Enforcing it would remove most of what this bump adds. |
