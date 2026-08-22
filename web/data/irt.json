@@ -13,40 +13,40 @@
     "rule": "theta[high] >= theta[low] on every draw"
   },
   "diagnostics": {
-    "rhat_max": 1.0026,
-    "ess_bulk_min_theta": 2008.7,
+    "rhat_max": 1.005,
+    "ess_bulk_min_theta": 1797.2,
     "n_draws": 1000,
     "n_chains": 4
   },
   "hdi_prob": 0.95,
-  "gamma_median_abs": 2.5213,
-  "votes_csv_commit": "348b066b47e72b6b80a23783b362c4192627e7cc",
-  "fitted_at_utc": "2026-08-20T00:54:54Z",
-  "n_obs": 233,
+  "gamma_median_abs": 2.3544,
+  "votes_csv_commit": "e36e5e483ebb7ebb5498f0ecf91bc2730a990f06",
+  "fitted_at_utc": "2026-08-22T05:43:46Z",
+  "n_obs": 574,
   "n_members": 11,
-  "n_items": 22,
+  "n_items": 54,
   "members": [
-    {
-      "bioguide_id": "M001227",
-      "full_name": "Jennifer L. McClellan",
-      "party": "Democrat",
-      "chamber": "House",
-      "district_number": 4,
-      "theta_mean": -2.115,
-      "theta_hdi_lo": -3.2512,
-      "theta_hdi_hi": -0.9685,
-      "is_anchor_low": false,
-      "is_anchor_high": false
-    },
     {
       "bioguide_id": "S000185",
       "full_name": "Robert C. \"Bobby\" Scott",
       "party": "Democrat",
       "chamber": "House",
       "district_number": 3,
-      "theta_mean": -2.091,
-      "theta_hdi_lo": -3.1989,
-      "theta_hdi_hi": -0.9717,
+      "theta_mean": -2.8794,
+      "theta_hdi_lo": -3.8963,
+      "theta_hdi_hi": -1.8877,
+      "is_anchor_low": false,
+      "is_anchor_high": false
+    },
+    {
+      "bioguide_id": "M001227",
+      "full_name": "Jennifer L. McClellan",
+      "party": "Democrat",
+      "chamber": "House",
+      "district_number": 4,
+      "theta_mean": -2.8658,
+      "theta_hdi_lo": -3.8759,
+      "theta_hdi_hi": -1.8851,
       "is_anchor_low": false,
       "is_anchor_high": false
     },
@@ -56,9 +56,9 @@
       "party": "Democrat",
       "chamber": "House",
       "district_number": 8,
-      "theta_mean": -2.0608,
-      "theta_hdi_lo": -3.2226,
-      "theta_hdi_hi": -1.0486,
+      "theta_mean": -2.8594,
+      "theta_hdi_lo": -3.8915,
+      "theta_hdi_hi": -1.847,
       "is_anchor_low": true,
       "is_anchor_high": false
     },
@@ -68,9 +68,9 @@
       "party": "Democrat",
       "chamber": "House",
       "district_number": 11,
-      "theta_mean": -1.7556,
-      "theta_hdi_lo": -2.8572,
-      "theta_hdi_hi": -0.6105,
+      "theta_mean": -2.5342,
+      "theta_hdi_lo": -3.537,
+      "theta_hdi_hi": -1.5142,
       "is_anchor_low": false,
       "is_anchor_high": false
     },
@@ -80,9 +80,9 @@
       "party": "Democrat",
       "chamber": "House",
       "district_number": 10,
-      "theta_mean": -1.7019,
-      "theta_hdi_lo": -2.7601,
-      "theta_hdi_hi": -0.7703,
+      "theta_mean": -2.339,
+      "theta_hdi_lo": -3.2398,
+      "theta_hdi_hi": -1.5435,
       "is_anchor_low": false,
       "is_anchor_high": false
     },
@@ -92,9 +92,9 @@
       "party": "Democrat",
       "chamber": "House",
       "district_number": 7,
-      "theta_mean": -0.7895,
-      "theta_hdi_lo": -1.615,
-      "theta_hdi_hi": -0.0418,
+      "theta_mean": -1.1605,
+      "theta_hdi_lo": -1.7957,
+      "theta_hdi_hi": -0.5549,
       "is_anchor_low": false,
       "is_anchor_high": false
     },
@@ -104,21 +104,9 @@
       "party": "Republican",
       "chamber": "House",
       "district_number": 1,
-      "theta_mean": 2.0422,
-      "theta_hdi_lo": 1.0023,
-      "theta_hdi_hi": 3.1453,
-      "is_anchor_low": false,
-      "is_anchor_high": false
-    },
-    {
-      "bioguide_id": "G000568",
-      "full_name": "H. Morgan Griffith",
-      "party": "Republican",
-      "chamber": "House",
-      "district_number": 9,
-      "theta_mean": 2.0757,
-      "theta_hdi_lo": 1.0336,
-      "theta_hdi_hi": 3.1804,
+      "theta_mean": 2.8055,
+      "theta_hdi_lo": 1.8912,
+      "theta_hdi_hi": 3.8093,
       "is_anchor_low": false,
       "is_anchor_high": false
     },
@@ -128,9 +116,9 @@
       "party": "Republican",
       "chamber": "House",
       "district_number": 2,
-      "theta_mean": 2.0763,
-      "theta_hdi_lo": 1.0857,
-      "theta_hdi_hi": 3.158,
+      "theta_mean": 2.8264,
+      "theta_hdi_lo": 1.7925,
+      "theta_hdi_hi": 3.7988,
       "is_anchor_low": false,
       "is_anchor_high": true
     },
@@ -140,9 +128,21 @@
       "party": "Republican",
       "chamber": "House",
       "district_number": 5,
-      "theta_mean": 2.0909,
-      "theta_hdi_lo": 1.0565,
-      "theta_hdi_hi": 3.2487,
+      "theta_mean": 2.8461,
+      "theta_hdi_lo": 1.8922,
+      "theta_hdi_hi": 3.8228,
+      "is_anchor_low": false,
+      "is_anchor_high": false
+    },
+    {
+      "bioguide_id": "G000568",
+      "full_name": "H. Morgan Griffith",
+      "party": "Republican",
+      "chamber": "House",
+      "district_number": 9,
+      "theta_mean": 2.8577,
+      "theta_hdi_lo": 1.8976,
+      "theta_hdi_hi": 3.8403,
       "is_anchor_low": false,
       "is_anchor_high": false
     },
@@ -152,9 +152,9 @@
       "party": "Republican",
       "chamber": "House",
       "district_number": 6,
-      "theta_mean": 2.0956,
-      "theta_hdi_lo": 0.9983,
-      "theta_hdi_hi": 3.1935,
+      "theta_mean": 2.8609,
+      "theta_hdi_lo": 1.9058,
+      "theta_hdi_hi": 3.8836,
       "is_anchor_low": false,
       "is_anchor_high": false
     }
@@ -168,16 +168,16 @@
         "REGULATORY_BURDEN"
       ],
       "source_url": "https://clerk.house.gov/evs/2025/roll111.xml",
-      "b_mean": 0.2329,
-      "b_hdi_lo": -1.3339,
-      "b_hdi_hi": 1.5941,
-      "gamma_mean": 2.4783,
+      "b_mean": 0.2919,
+      "b_hdi_lo": -1.4196,
+      "b_hdi_hi": 2.1189,
+      "gamma_mean": 2.3252,
       "gamma_hdi": [
-        0.4876,
-        4.601
+        0.481,
+        4.5346
       ],
-      "gamma_hdi_lo": 0.4876,
-      "gamma_hdi_hi": 4.601
+      "gamma_hdi_lo": 0.481,
+      "gamma_hdi_hi": 4.5346
     },
     {
       "vote_id": "h-119-1-112",
@@ -187,16 +187,16 @@
         "REGULATORY_BURDEN"
       ],
       "source_url": "https://clerk.house.gov/evs/2025/roll112.xml",
-      "b_mean": 0.2331,
-      "b_hdi_lo": -1.164,
-      "b_hdi_hi": 1.6863,
-      "gamma_mean": 2.5083,
+      "b_mean": 0.3167,
+      "b_hdi_lo": -1.6321,
+      "b_hdi_hi": 2.0233,
+      "gamma_mean": 2.3637,
       "gamma_hdi": [
-        0.4716,
-        4.7935
+        0.4509,
+        4.6674
       ],
-      "gamma_hdi_lo": 0.4716,
-      "gamma_hdi_hi": 4.7935
+      "gamma_hdi_lo": 0.4509,
+      "gamma_hdi_hi": 4.6674
     },
     {
       "vote_id": "h-119-1-114",
@@ -206,16 +206,16 @@
         "REGULATORY_BURDEN"
       ],
       "source_url": "https://clerk.house.gov/evs/2025/roll114.xml",
-      "b_mean": -0.6937,
-      "b_hdi_lo": -2.2152,
-      "b_hdi_hi": 0.7965,
-      "gamma_mean": 2.171,
+      "b_mean": -1.0661,
+      "b_hdi_lo": -2.6517,
+      "b_hdi_hi": 0.7584,
+      "gamma_mean": 2.0803,
       "gamma_hdi": [
-        0.3163,
-        4.5712
+        0.2753,
+        4.3499
       ],
-      "gamma_hdi_lo": 0.3163,
-      "gamma_hdi_hi": 4.5712
+      "gamma_hdi_lo": 0.2753,
+      "gamma_hdi_hi": 4.3499
     },
     {
       "vote_id": "h-119-1-143",
@@ -225,16 +225,35 @@
         "REGULATORY_BURDEN"
       ],
       "source_url": "https://clerk.house.gov/evs/2025/roll143.xml",
-      "b_mean": 0.2119,
-      "b_hdi_lo": -1.1645,
-      "b_hdi_hi": 1.6672,
-      "gamma_mean": 2.5205,
+      "b_mean": 0.2949,
+      "b_hdi_lo": -1.443,
+      "b_hdi_hi": 2.1178,
+      "gamma_mean": 2.3301,
       "gamma_hdi": [
-        0.5114,
-        4.7613
+        0.445,
+        4.5692
       ],
-      "gamma_hdi_lo": 0.5114,
-      "gamma_hdi_hi": 4.7613
+      "gamma_hdi_lo": 0.445,
+      "gamma_hdi_hi": 4.5692
+    },
+    {
+      "vote_id": "h-119-1-153",
+      "bill_id": "hr-2931-119",
+      "date": "2025-06-05",
+      "themes": [
+        "ACCESS_TO_CAPITAL"
+      ],
+      "source_url": "https://clerk.house.gov/evs/2025/roll153.xml",
+      "b_mean": 0.2953,
+      "b_hdi_lo": -1.5224,
+      "b_hdi_hi": 2.1065,
+      "gamma_mean": 2.3027,
+      "gamma_hdi": [
+        0.42,
+        4.4418
+      ],
+      "gamma_hdi_lo": 0.42,
+      "gamma_hdi_hi": 4.4418
     },
     {
       "vote_id": "h-119-1-156",
@@ -244,16 +263,35 @@
         "ACCESS_TO_CAPITAL"
       ],
       "source_url": "https://clerk.house.gov/evs/2025/roll156.xml",
-      "b_mean": 0.2159,
-      "b_hdi_lo": -1.1187,
-      "b_hdi_hi": 1.6952,
-      "gamma_mean": 2.5008,
+      "b_mean": 0.2906,
+      "b_hdi_lo": -1.4653,
+      "b_hdi_hi": 2.1487,
+      "gamma_mean": 2.3279,
       "gamma_hdi": [
-        0.4292,
-        4.6935
+        0.4607,
+        4.6159
       ],
-      "gamma_hdi_lo": 0.4292,
-      "gamma_hdi_hi": 4.6935
+      "gamma_hdi_lo": 0.4607,
+      "gamma_hdi_hi": 4.6159
+    },
+    {
+      "vote_id": "h-119-1-171",
+      "bill_id": "hr-2056-119",
+      "date": "2025-06-12",
+      "themes": [
+        "WORKFORCE"
+      ],
+      "source_url": "https://clerk.house.gov/evs/2025/roll171.xml",
+      "b_mean": 0.296,
+      "b_hdi_lo": -1.5663,
+      "b_hdi_hi": 2.0866,
+      "gamma_mean": 2.3439,
+      "gamma_hdi": [
+        0.5128,
+        4.6944
+      ],
+      "gamma_hdi_lo": 0.5128,
+      "gamma_hdi_hi": 4.6944
     },
     {
       "vote_id": "h-119-1-262",
@@ -263,16 +301,168 @@
         "FEDERAL_CONTRACTING"
       ],
       "source_url": "https://clerk.house.gov/evs/2025/roll262.xml",
-      "b_mean": -0.5585,
-      "b_hdi_lo": -1.8478,
-      "b_hdi_hi": 1.0339,
-      "gamma_mean": 2.1934,
+      "b_mean": -1.0136,
+      "b_hdi_lo": -2.4072,
+      "b_hdi_hi": 0.72,
+      "gamma_mean": 2.2024,
       "gamma_hdi": [
-        0.3022,
-        4.5114
+        0.3308,
+        4.5755
       ],
-      "gamma_hdi_lo": 0.3022,
-      "gamma_hdi_hi": 4.5114
+      "gamma_hdi_lo": 0.3308,
+      "gamma_hdi_hi": 4.5755
+    },
+    {
+      "vote_id": "h-119-1-277",
+      "bill_id": "hr-3062-119",
+      "date": "2025-09-18",
+      "themes": [
+        "INPUT_COSTS"
+      ],
+      "source_url": "https://clerk.house.gov/evs/2025/roll277.xml",
+      "b_mean": 0.342,
+      "b_hdi_lo": -1.4097,
+      "b_hdi_hi": 2.0764,
+      "gamma_mean": 2.3952,
+      "gamma_hdi": [
+        0.4303,
+        4.6409
+      ],
+      "gamma_hdi_lo": 0.4303,
+      "gamma_hdi_hi": 4.6409
+    },
+    {
+      "vote_id": "h-119-1-278",
+      "bill_id": "hr-3015-119",
+      "date": "2025-09-18",
+      "themes": [
+        "INPUT_COSTS"
+      ],
+      "source_url": "https://clerk.house.gov/evs/2025/roll278.xml",
+      "b_mean": 0.3399,
+      "b_hdi_lo": -1.4936,
+      "b_hdi_hi": 2.0732,
+      "gamma_mean": 2.3593,
+      "gamma_hdi": [
+        0.5909,
+        4.6246
+      ],
+      "gamma_hdi_lo": 0.5909,
+      "gamma_hdi_hi": 4.6246
+    },
+    {
+      "vote_id": "h-119-1-279",
+      "bill_id": "hr-1047-119",
+      "date": "2025-09-18",
+      "themes": [
+        "INPUT_COSTS"
+      ],
+      "source_url": "https://clerk.house.gov/evs/2025/roll279.xml",
+      "b_mean": 0.3219,
+      "b_hdi_lo": -1.4978,
+      "b_hdi_hi": 2.1244,
+      "gamma_mean": 2.3728,
+      "gamma_hdi": [
+        0.5239,
+        4.6166
+      ],
+      "gamma_hdi_lo": 0.5239,
+      "gamma_hdi_hi": 4.6166
+    },
+    {
+      "vote_id": "h-119-1-295",
+      "bill_id": "hjres-131-119",
+      "date": "2025-11-18",
+      "themes": [
+        "INPUT_COSTS"
+      ],
+      "source_url": "https://clerk.house.gov/evs/2025/roll295.xml",
+      "b_mean": 0.3209,
+      "b_hdi_lo": -1.4902,
+      "b_hdi_hi": 2.0506,
+      "gamma_mean": 2.3629,
+      "gamma_hdi": [
+        0.5438,
+        4.6244
+      ],
+      "gamma_hdi_lo": 0.5438,
+      "gamma_hdi_hi": 4.6244
+    },
+    {
+      "vote_id": "h-119-1-296",
+      "bill_id": "sjres-80-119",
+      "date": "2025-11-18",
+      "themes": [
+        "INPUT_COSTS"
+      ],
+      "source_url": "https://clerk.house.gov/evs/2025/roll296.xml",
+      "b_mean": 0.3493,
+      "b_hdi_lo": -1.4775,
+      "b_hdi_hi": 2.1828,
+      "gamma_mean": 2.3791,
+      "gamma_hdi": [
+        0.4194,
+        4.5421
+      ],
+      "gamma_hdi_lo": 0.4194,
+      "gamma_hdi_hi": 4.5421
+    },
+    {
+      "vote_id": "h-119-1-303",
+      "bill_id": "hr-3109-119",
+      "date": "2025-11-20",
+      "themes": [
+        "INPUT_COSTS"
+      ],
+      "source_url": "https://clerk.house.gov/evs/2025/roll303.xml",
+      "b_mean": -0.983,
+      "b_hdi_lo": -2.504,
+      "b_hdi_hi": 0.7085,
+      "gamma_mean": 2.0905,
+      "gamma_hdi": [
+        0.2937,
+        4.2126
+      ],
+      "gamma_hdi_lo": 0.2937,
+      "gamma_hdi_hi": 4.2126
+    },
+    {
+      "vote_id": "h-119-1-304",
+      "bill_id": "hr-1949-119",
+      "date": "2025-11-20",
+      "themes": [
+        "INPUT_COSTS"
+      ],
+      "source_url": "https://clerk.house.gov/evs/2025/roll304.xml",
+      "b_mean": 0.3554,
+      "b_hdi_lo": -1.4473,
+      "b_hdi_hi": 2.2043,
+      "gamma_mean": 2.3619,
+      "gamma_hdi": [
+        0.5373,
+        4.6033
+      ],
+      "gamma_hdi_lo": 0.5373,
+      "gamma_hdi_hi": 4.6033
+    },
+    {
+      "vote_id": "h-119-1-323",
+      "bill_id": "hr-3628-119",
+      "date": "2025-12-11",
+      "themes": [
+        "INPUT_COSTS"
+      ],
+      "source_url": "https://clerk.house.gov/evs/2025/roll323.xml",
+      "b_mean": 0.3292,
+      "b_hdi_lo": -1.4801,
+      "b_hdi_hi": 2.1326,
+      "gamma_mean": 2.3544,
+      "gamma_hdi": [
+        0.5367,
+        4.5846
+      ],
+      "gamma_hdi_lo": 0.5367,
+      "gamma_hdi_hi": 4.5846
     },
     {
       "vote_id": "h-119-1-324",
@@ -282,16 +472,16 @@
         "INPUT_COSTS"
       ],
       "source_url": "https://clerk.house.gov/evs/2025/roll324.xml",
-      "b_mean": -0.576,
-      "b_hdi_lo": -1.8317,
-      "b_hdi_hi": 0.9015,
-      "gamma_mean": 2.2253,
+      "b_mean": -0.9793,
+      "b_hdi_lo": -2.5356,
+      "b_hdi_hi": 0.8347,
+      "gamma_mean": 2.1341,
       "gamma_hdi": [
-        0.3289,
-        4.4746
+        0.3185,
+        4.4922
       ],
-      "gamma_hdi_lo": 0.3289,
-      "gamma_hdi_hi": 4.4746
+      "gamma_hdi_lo": 0.3185,
+      "gamma_hdi_hi": 4.4922
     },
     {
       "vote_id": "h-119-1-330",
@@ -301,16 +491,130 @@
         "REGULATORY_BURDEN"
       ],
       "source_url": "https://clerk.house.gov/evs/2025/roll330.xml",
-      "b_mean": 0.27,
-      "b_hdi_lo": -1.2155,
-      "b_hdi_hi": 1.6329,
-      "gamma_mean": 2.5416,
+      "b_mean": 0.3173,
+      "b_hdi_lo": -1.3669,
+      "b_hdi_hi": 2.2752,
+      "gamma_mean": 2.3619,
       "gamma_hdi": [
-        0.5848,
-        4.7715
+        0.5638,
+        4.6313
       ],
-      "gamma_hdi_lo": 0.5848,
-      "gamma_hdi_hi": 4.7715
+      "gamma_hdi_lo": 0.5638,
+      "gamma_hdi_hi": 4.6313
+    },
+    {
+      "vote_id": "h-119-1-332",
+      "bill_id": "hr-2550-119",
+      "date": "2025-12-11",
+      "themes": [
+        "WORKFORCE"
+      ],
+      "source_url": "https://clerk.house.gov/evs/2025/roll332.xml",
+      "b_mean": 0.3192,
+      "b_hdi_lo": -1.4173,
+      "b_hdi_hi": 2.2058,
+      "gamma_mean": -2.3501,
+      "gamma_hdi": [
+        -4.6038,
+        -0.5711
+      ],
+      "gamma_hdi_lo": -4.6038,
+      "gamma_hdi_hi": -0.5711
+    },
+    {
+      "vote_id": "h-119-1-334",
+      "bill_id": "hr-3668-119",
+      "date": "2025-12-12",
+      "themes": [
+        "INPUT_COSTS"
+      ],
+      "source_url": "https://clerk.house.gov/evs/2025/roll334.xml",
+      "b_mean": 0.3328,
+      "b_hdi_lo": -1.4601,
+      "b_hdi_hi": 2.0556,
+      "gamma_mean": 2.353,
+      "gamma_hdi": [
+        0.5099,
+        4.5081
+      ],
+      "gamma_hdi_lo": 0.5099,
+      "gamma_hdi_hi": 4.5081
+    },
+    {
+      "vote_id": "h-119-1-342",
+      "bill_id": "hr-3632-119",
+      "date": "2025-12-16",
+      "themes": [
+        "INPUT_COSTS"
+      ],
+      "source_url": "https://clerk.house.gov/evs/2025/roll342.xml",
+      "b_mean": 0.3287,
+      "b_hdi_lo": -1.4766,
+      "b_hdi_hi": 2.1424,
+      "gamma_mean": 2.4087,
+      "gamma_hdi": [
+        0.4846,
+        4.6897
+      ],
+      "gamma_hdi_lo": 0.4846,
+      "gamma_hdi_hi": 4.6897
+    },
+    {
+      "vote_id": "h-119-1-347",
+      "bill_id": "hr-3616-119",
+      "date": "2025-12-17",
+      "themes": [
+        "INPUT_COSTS"
+      ],
+      "source_url": "https://clerk.house.gov/evs/2025/roll347.xml",
+      "b_mean": -0.9915,
+      "b_hdi_lo": -2.6062,
+      "b_hdi_hi": 0.5804,
+      "gamma_mean": 2.1507,
+      "gamma_hdi": [
+        0.3453,
+        4.5085
+      ],
+      "gamma_hdi_lo": 0.3453,
+      "gamma_hdi_hi": 4.5085
+    },
+    {
+      "vote_id": "h-119-1-349",
+      "bill_id": "hr-6703-119",
+      "date": "2025-12-17",
+      "themes": [
+        "HEALTH_COSTS"
+      ],
+      "source_url": "https://clerk.house.gov/evs/2025/roll349.xml",
+      "b_mean": 0.3421,
+      "b_hdi_lo": -1.4107,
+      "b_hdi_hi": 2.0928,
+      "gamma_mean": 2.3751,
+      "gamma_hdi": [
+        0.5351,
+        4.5631
+      ],
+      "gamma_hdi_lo": 0.5351,
+      "gamma_hdi_hi": 4.5631
+    },
+    {
+      "vote_id": "h-119-1-35",
+      "bill_id": "hr-26-119",
+      "date": "2025-02-07",
+      "themes": [
+        "INPUT_COSTS"
+      ],
+      "source_url": "https://clerk.house.gov/evs/2025/roll035.xml",
+      "b_mean": 0.289,
+      "b_hdi_lo": -1.5006,
+      "b_hdi_hi": 2.0979,
+      "gamma_mean": 2.3545,
+      "gamma_hdi": [
+        0.3911,
+        4.4797
+      ],
+      "gamma_hdi_lo": 0.3911,
+      "gamma_hdi_hi": 4.4797
     },
     {
       "vote_id": "h-119-1-356",
@@ -320,16 +624,16 @@
         "REGULATORY_BURDEN"
       ],
       "source_url": "https://clerk.house.gov/evs/2025/roll356.xml",
-      "b_mean": 0.2672,
-      "b_hdi_lo": -1.2046,
-      "b_hdi_hi": 1.632,
-      "gamma_mean": 2.54,
+      "b_mean": 0.3578,
+      "b_hdi_lo": -1.4262,
+      "b_hdi_hi": 2.0951,
+      "gamma_mean": 2.3594,
       "gamma_hdi": [
-        0.5365,
-        4.7233
+        0.5434,
+        4.6582
       ],
-      "gamma_hdi_lo": 0.5365,
-      "gamma_hdi_hi": 4.7233
+      "gamma_hdi_lo": 0.5434,
+      "gamma_hdi_hi": 4.6582
     },
     {
       "vote_id": "h-119-1-358",
@@ -339,16 +643,35 @@
         "REGULATORY_BURDEN"
       ],
       "source_url": "https://clerk.house.gov/evs/2025/roll358.xml",
-      "b_mean": -0.5819,
-      "b_hdi_lo": -1.9118,
-      "b_hdi_hi": 0.8411,
-      "gamma_mean": 2.2342,
+      "b_mean": -0.9837,
+      "b_hdi_lo": -2.4892,
+      "b_hdi_hi": 0.6749,
+      "gamma_mean": 2.1281,
       "gamma_hdi": [
-        0.3892,
-        4.5281
+        0.3331,
+        4.3246
       ],
-      "gamma_hdi_lo": 0.3892,
-      "gamma_hdi_hi": 4.5281
+      "gamma_hdi_lo": 0.3331,
+      "gamma_hdi_hi": 4.3246
+    },
+    {
+      "vote_id": "h-119-1-360",
+      "bill_id": "hr-845-119",
+      "date": "2025-12-18",
+      "themes": [
+        "REGULATORY_BURDEN"
+      ],
+      "source_url": "https://clerk.house.gov/evs/2025/roll360.xml",
+      "b_mean": 0.3395,
+      "b_hdi_lo": -1.4826,
+      "b_hdi_hi": 2.1493,
+      "gamma_mean": 2.3679,
+      "gamma_hdi": [
+        0.4201,
+        4.543
+      ],
+      "gamma_hdi_lo": 0.4201,
+      "gamma_hdi_hi": 4.543
     },
     {
       "vote_id": "h-119-1-362",
@@ -358,16 +681,16 @@
         "HEALTH_COSTS"
       ],
       "source_url": "https://clerk.house.gov/evs/2025/roll362.xml",
-      "b_mean": 0.2661,
-      "b_hdi_lo": -1.0344,
-      "b_hdi_hi": 1.6284,
-      "gamma_mean": 2.5371,
+      "b_mean": 0.3309,
+      "b_hdi_lo": -1.4436,
+      "b_hdi_hi": 2.0763,
+      "gamma_mean": 2.3927,
       "gamma_hdi": [
-        0.6201,
-        4.7731
+        0.5027,
+        4.6809
       ],
-      "gamma_hdi_lo": 0.6201,
-      "gamma_hdi_hi": 4.7731
+      "gamma_hdi_lo": 0.5027,
+      "gamma_hdi_hi": 4.6809
     },
     {
       "vote_id": "h-119-1-52",
@@ -378,16 +701,35 @@
         "REGULATORY_BURDEN"
       ],
       "source_url": "https://clerk.house.gov/evs/2025/roll052.xml",
-      "b_mean": 0.2087,
-      "b_hdi_lo": -1.2438,
-      "b_hdi_hi": 1.6901,
-      "gamma_mean": 2.522,
+      "b_mean": 0.2803,
+      "b_hdi_lo": -1.6348,
+      "b_hdi_hi": 2.0343,
+      "gamma_mean": 2.3172,
       "gamma_hdi": [
-        0.4491,
-        4.7093
+        0.5017,
+        4.4816
       ],
-      "gamma_hdi_lo": 0.4491,
-      "gamma_hdi_hi": 4.7093
+      "gamma_hdi_lo": 0.5017,
+      "gamma_hdi_hi": 4.4816
+    },
+    {
+      "vote_id": "h-119-1-53",
+      "bill_id": "hjres-20-119",
+      "date": "2025-02-27",
+      "themes": [
+        "INPUT_COSTS"
+      ],
+      "source_url": "https://clerk.house.gov/evs/2025/roll053.xml",
+      "b_mean": -1.0934,
+      "b_hdi_lo": -2.5733,
+      "b_hdi_hi": 0.6861,
+      "gamma_mean": 2.1568,
+      "gamma_hdi": [
+        0.3194,
+        4.5185
+      ],
+      "gamma_hdi_lo": 0.3194,
+      "gamma_hdi_hi": 4.5185
     },
     {
       "vote_id": "h-119-1-58",
@@ -397,16 +739,54 @@
         "REGULATORY_BURDEN"
       ],
       "source_url": "https://clerk.house.gov/evs/2025/roll058.xml",
-      "b_mean": 0.2982,
-      "b_hdi_lo": -1.3001,
-      "b_hdi_hi": 1.7303,
-      "gamma_mean": 2.4455,
+      "b_mean": 0.376,
+      "b_hdi_lo": -1.4696,
+      "b_hdi_hi": 2.2836,
+      "gamma_mean": 2.2756,
       "gamma_hdi": [
-        0.4266,
-        4.6871
+        0.3301,
+        4.4492
       ],
-      "gamma_hdi_lo": 0.4266,
-      "gamma_hdi_hi": 4.6871
+      "gamma_hdi_lo": 0.3301,
+      "gamma_hdi_hi": 4.4492
+    },
+    {
+      "vote_id": "h-119-1-59",
+      "bill_id": "hjres-42-119",
+      "date": "2025-03-05",
+      "themes": [
+        "INPUT_COSTS"
+      ],
+      "source_url": "https://clerk.house.gov/evs/2025/roll059.xml",
+      "b_mean": 0.294,
+      "b_hdi_lo": -1.3863,
+      "b_hdi_hi": 2.1915,
+      "gamma_mean": 2.3298,
+      "gamma_hdi": [
+        0.4838,
+        4.5685
+      ],
+      "gamma_hdi_lo": 0.4838,
+      "gamma_hdi_hi": 4.5685
+    },
+    {
+      "vote_id": "h-119-1-68",
+      "bill_id": "hr-1156-119",
+      "date": "2025-03-11",
+      "themes": [
+        "WORKFORCE"
+      ],
+      "source_url": "https://clerk.house.gov/evs/2025/roll068.xml",
+      "b_mean": -1.7731,
+      "b_hdi_lo": -3.3856,
+      "b_hdi_hi": 0.1031,
+      "gamma_mean": 1.7538,
+      "gamma_hdi": [
+        0.1718,
+        4.0284
+      ],
+      "gamma_hdi_lo": 0.1718,
+      "gamma_hdi_hi": 4.0284
     },
     {
       "vote_id": "h-119-1-71",
@@ -416,16 +796,73 @@
         "TAX_BURDEN"
       ],
       "source_url": "https://clerk.house.gov/evs/2025/roll071.xml",
-      "b_mean": -1.2994,
-      "b_hdi_lo": -2.8975,
-      "b_hdi_hi": 0.3637,
-      "gamma_mean": 1.8367,
+      "b_mean": -1.7434,
+      "b_hdi_lo": -3.5656,
+      "b_hdi_hi": 0.085,
+      "gamma_mean": 1.743,
       "gamma_hdi": [
-        0.0203,
-        4.0696
+        0.0506,
+        3.9297
       ],
-      "gamma_hdi_lo": 0.0203,
-      "gamma_hdi_hi": 4.0696
+      "gamma_hdi_lo": 0.0506,
+      "gamma_hdi_hi": 3.9297
+    },
+    {
+      "vote_id": "h-119-1-77",
+      "bill_id": "hjres-24-119",
+      "date": "2025-03-27",
+      "themes": [
+        "INPUT_COSTS"
+      ],
+      "source_url": "https://clerk.house.gov/evs/2025/roll077.xml",
+      "b_mean": 0.3479,
+      "b_hdi_lo": -1.4436,
+      "b_hdi_hi": 2.2188,
+      "gamma_mean": 2.3119,
+      "gamma_hdi": [
+        0.4427,
+        4.4536
+      ],
+      "gamma_hdi_lo": 0.4427,
+      "gamma_hdi_hi": 4.4536
+    },
+    {
+      "vote_id": "h-119-1-78",
+      "bill_id": "hjres-75-119",
+      "date": "2025-03-27",
+      "themes": [
+        "INPUT_COSTS"
+      ],
+      "source_url": "https://clerk.house.gov/evs/2025/roll078.xml",
+      "b_mean": 0.2882,
+      "b_hdi_lo": -1.4827,
+      "b_hdi_hi": 2.169,
+      "gamma_mean": 2.306,
+      "gamma_hdi": [
+        0.5493,
+        4.4519
+      ],
+      "gamma_hdi_lo": 0.5493,
+      "gamma_hdi_hi": 4.4519
+    },
+    {
+      "vote_id": "h-119-1-96",
+      "bill_id": "sjres-18-119",
+      "date": "2025-04-09",
+      "themes": [
+        "ACCESS_TO_CAPITAL"
+      ],
+      "source_url": "https://clerk.house.gov/evs/2025/roll096.xml",
+      "b_mean": 0.3041,
+      "b_hdi_lo": -1.5099,
+      "b_hdi_hi": 2.0708,
+      "gamma_mean": 2.4025,
+      "gamma_hdi": [
+        0.4049,
+        4.766
+      ],
+      "gamma_hdi_lo": 0.4049,
+      "gamma_hdi_hi": 4.766
     },
     {
       "vote_id": "h-119-2-116",
@@ -435,16 +872,16 @@
         "REGULATORY_BURDEN"
       ],
       "source_url": "https://clerk.house.gov/evs/2026/roll116.xml",
-      "b_mean": 0.2588,
-      "b_hdi_lo": -1.1551,
-      "b_hdi_hi": 1.58,
-      "gamma_mean": 2.5432,
+      "b_mean": 0.3796,
+      "b_hdi_lo": -1.4119,
+      "b_hdi_hi": 2.1181,
+      "gamma_mean": 2.4072,
       "gamma_hdi": [
-        0.5774,
-        4.8551
+        0.5689,
+        4.675
       ],
-      "gamma_hdi_lo": 0.5774,
-      "gamma_hdi_hi": 4.8551
+      "gamma_hdi_lo": 0.5689,
+      "gamma_hdi_hi": 4.675
     },
     {
       "vote_id": "h-119-2-118",
@@ -454,16 +891,73 @@
         "REGULATORY_BURDEN"
       ],
       "source_url": "https://clerk.house.gov/evs/2026/roll118.xml",
-      "b_mean": 0.2587,
-      "b_hdi_lo": -1.1428,
-      "b_hdi_hi": 1.6394,
-      "gamma_mean": 2.594,
+      "b_mean": 0.3453,
+      "b_hdi_lo": -1.4771,
+      "b_hdi_hi": 2.0348,
+      "gamma_mean": 2.3827,
       "gamma_hdi": [
-        0.6141,
-        4.9943
+        0.5305,
+        4.6033
       ],
-      "gamma_hdi_lo": 0.6141,
-      "gamma_hdi_hi": 4.9943
+      "gamma_hdi_lo": 0.5305,
+      "gamma_hdi_hi": 4.6033
+    },
+    {
+      "vote_id": "h-119-2-12",
+      "bill_id": "hr-5184-119",
+      "date": "2026-01-09",
+      "themes": [
+        "INPUT_COSTS"
+      ],
+      "source_url": "https://clerk.house.gov/evs/2026/roll012.xml",
+      "b_mean": -0.9664,
+      "b_hdi_lo": -2.4085,
+      "b_hdi_hi": 0.838,
+      "gamma_mean": 2.1323,
+      "gamma_hdi": [
+        0.3712,
+        4.4616
+      ],
+      "gamma_hdi_lo": 0.3712,
+      "gamma_hdi_hi": 4.4616
+    },
+    {
+      "vote_id": "h-119-2-121",
+      "bill_id": "hres-1156-119",
+      "date": "2026-04-16",
+      "themes": [
+        "TAX_BURDEN"
+      ],
+      "source_url": "https://clerk.house.gov/evs/2026/roll121.xml",
+      "b_mean": 0.3223,
+      "b_hdi_lo": -1.488,
+      "b_hdi_hi": 2.1238,
+      "gamma_mean": 2.3656,
+      "gamma_hdi": [
+        0.4648,
+        4.5885
+      ],
+      "gamma_hdi_lo": 0.4648,
+      "gamma_hdi_hi": 4.5885
+    },
+    {
+      "vote_id": "h-119-2-134",
+      "bill_id": "hr-4690-119",
+      "date": "2026-04-22",
+      "themes": [
+        "INPUT_COSTS"
+      ],
+      "source_url": "https://clerk.house.gov/evs/2026/roll134.xml",
+      "b_mean": 0.3823,
+      "b_hdi_lo": -1.5458,
+      "b_hdi_hi": 2.25,
+      "gamma_mean": 2.3431,
+      "gamma_hdi": [
+        0.4826,
+        4.6224
+      ],
+      "gamma_hdi_lo": 0.4826,
+      "gamma_hdi_hi": 4.6224
     },
     {
       "vote_id": "h-119-2-136",
@@ -473,16 +967,35 @@
         "REGULATORY_BURDEN"
       ],
       "source_url": "https://clerk.house.gov/evs/2026/roll136.xml",
-      "b_mean": 0.2764,
-      "b_hdi_lo": -1.1742,
-      "b_hdi_hi": 1.6316,
-      "gamma_mean": 2.5852,
+      "b_mean": 0.3035,
+      "b_hdi_lo": -1.5245,
+      "b_hdi_hi": 2.0942,
+      "gamma_mean": 2.3582,
       "gamma_hdi": [
-        0.5814,
-        4.8381
+        0.5053,
+        4.5579
       ],
-      "gamma_hdi_lo": 0.5814,
-      "gamma_hdi_hi": 4.8381
+      "gamma_hdi_lo": 0.5053,
+      "gamma_hdi_hi": 4.5579
+    },
+    {
+      "vote_id": "h-119-2-137",
+      "bill_id": "hr-5587-119",
+      "date": "2026-04-23",
+      "themes": [
+        "INPUT_COSTS"
+      ],
+      "source_url": "https://clerk.house.gov/evs/2026/roll137.xml",
+      "b_mean": -0.9814,
+      "b_hdi_lo": -2.4765,
+      "b_hdi_hi": 0.8352,
+      "gamma_mean": 2.1278,
+      "gamma_hdi": [
+        0.4065,
+        4.4846
+      ],
+      "gamma_hdi_lo": 0.4065,
+      "gamma_hdi_hi": 4.4846
     },
     {
       "vote_id": "h-119-2-164",
@@ -492,16 +1005,16 @@
         "REGULATORY_BURDEN"
       ],
       "source_url": "https://clerk.house.gov/evs/2026/roll164.xml",
-      "b_mean": -0.0377,
-      "b_hdi_lo": -3.0386,
-      "b_hdi_hi": 3.6477,
-      "gamma_mean": -0.0621,
+      "b_mean": -0.0998,
+      "b_hdi_lo": -3.4836,
+      "b_hdi_hi": 3.5157,
+      "gamma_mean": -0.0469,
       "gamma_hdi": [
-        -0.6416,
-        0.4979
+        -0.4556,
+        0.3717
       ],
-      "gamma_hdi_lo": -0.6416,
-      "gamma_hdi_hi": 0.4979
+      "gamma_hdi_lo": -0.4556,
+      "gamma_hdi_hi": 0.3717
     },
     {
       "vote_id": "h-119-2-19",
@@ -511,16 +1024,35 @@
         "WORKFORCE"
       ],
       "source_url": "https://clerk.house.gov/evs/2026/roll019.xml",
-      "b_mean": 0.2577,
-      "b_hdi_lo": -1.087,
-      "b_hdi_hi": 1.6909,
-      "gamma_mean": 2.5471,
+      "b_mean": 0.3524,
+      "b_hdi_lo": -1.3744,
+      "b_hdi_hi": 2.1759,
+      "gamma_mean": 2.4174,
       "gamma_hdi": [
-        0.6246,
-        4.7396
+        0.5204,
+        4.7326
       ],
-      "gamma_hdi_lo": 0.6246,
-      "gamma_hdi_hi": 4.7396
+      "gamma_hdi_lo": 0.5204,
+      "gamma_hdi_hi": 4.7326
+    },
+    {
+      "vote_id": "h-119-2-198",
+      "bill_id": "hr-7726-119",
+      "date": "2026-06-03",
+      "themes": [
+        "WORKFORCE"
+      ],
+      "source_url": "https://clerk.house.gov/evs/2026/roll198.xml",
+      "b_mean": 0.3364,
+      "b_hdi_lo": -1.384,
+      "b_hdi_hi": 2.1312,
+      "gamma_mean": 2.3639,
+      "gamma_hdi": [
+        0.4723,
+        4.5217
+      ],
+      "gamma_hdi_lo": 0.4723,
+      "gamma_hdi_hi": 4.5217
     },
     {
       "vote_id": "h-119-2-216",
@@ -530,16 +1062,54 @@
         "WORKFORCE"
       ],
       "source_url": "https://clerk.house.gov/evs/2026/roll216.xml",
-      "b_mean": 0.2773,
-      "b_hdi_lo": -1.0963,
-      "b_hdi_hi": 1.6957,
-      "gamma_mean": -2.5571,
+      "b_mean": 0.322,
+      "b_hdi_lo": -1.4864,
+      "b_hdi_hi": 2.0659,
+      "gamma_mean": -2.3612,
       "gamma_hdi": [
-        -4.8865,
-        -0.5981
+        -4.6631,
+        -0.5435
       ],
-      "gamma_hdi_lo": -4.8865,
-      "gamma_hdi_hi": -0.5981
+      "gamma_hdi_lo": -4.6631,
+      "gamma_hdi_hi": -0.5435
+    },
+    {
+      "vote_id": "h-119-2-23",
+      "bill_id": "hr-4593-119",
+      "date": "2026-01-13",
+      "themes": [
+        "INPUT_COSTS"
+      ],
+      "source_url": "https://clerk.house.gov/evs/2026/roll023.xml",
+      "b_mean": 0.3489,
+      "b_hdi_lo": -1.416,
+      "b_hdi_hi": 2.126,
+      "gamma_mean": 2.3741,
+      "gamma_hdi": [
+        0.5805,
+        4.7739
+      ],
+      "gamma_hdi_lo": 0.5805,
+      "gamma_hdi_hi": 4.7739
+    },
+    {
+      "vote_id": "h-119-2-31",
+      "bill_id": "hr-2988-119",
+      "date": "2026-01-15",
+      "themes": [
+        "WORKFORCE"
+      ],
+      "source_url": "https://clerk.house.gov/evs/2026/roll031.xml",
+      "b_mean": 0.3405,
+      "b_hdi_lo": -1.4405,
+      "b_hdi_hi": 2.1659,
+      "gamma_mean": 2.3568,
+      "gamma_hdi": [
+        0.6048,
+        4.5681
+      ],
+      "gamma_hdi_lo": 0.6048,
+      "gamma_hdi_hi": 4.5681
     },
     {
       "vote_id": "h-119-2-55",
@@ -549,16 +1119,16 @@
         "INPUT_COSTS"
       ],
       "source_url": "https://clerk.house.gov/evs/2026/roll055.xml",
-      "b_mean": 0.2658,
-      "b_hdi_lo": -1.1195,
-      "b_hdi_hi": 1.721,
-      "gamma_mean": 2.5476,
+      "b_mean": 0.3098,
+      "b_hdi_lo": -1.5375,
+      "b_hdi_hi": 2.0835,
+      "gamma_mean": 2.3707,
       "gamma_hdi": [
-        0.5607,
-        4.7368
+        0.5112,
+        4.5719
       ],
-      "gamma_hdi_lo": 0.5607,
-      "gamma_hdi_hi": 4.7368
+      "gamma_hdi_lo": 0.5112,
+      "gamma_hdi_hi": 4.5719
     },
     {
       "vote_id": "h-119-2-64",
@@ -568,18 +1138,56 @@
         "INPUT_COSTS"
       ],
       "source_url": "https://clerk.house.gov/evs/2026/roll064.xml",
-      "b_mean": 0.2824,
-      "b_hdi_lo": -1.0816,
-      "b_hdi_hi": 1.7148,
-      "gamma_mean": 2.5583,
+      "b_mean": 0.3543,
+      "b_hdi_lo": -1.3986,
+      "b_hdi_hi": 2.3205,
+      "gamma_mean": 2.3755,
       "gamma_hdi": [
-        0.4493,
-        4.7708
+        0.5432,
+        4.5382
       ],
-      "gamma_hdi_lo": 0.4493,
-      "gamma_hdi_hi": 4.7708
+      "gamma_hdi_lo": 0.5432,
+      "gamma_hdi_hi": 4.5382
+    },
+    {
+      "vote_id": "h-119-2-76",
+      "bill_id": "hr-4626-119",
+      "date": "2026-02-24",
+      "themes": [
+        "INPUT_COSTS"
+      ],
+      "source_url": "https://clerk.house.gov/evs/2026/roll076.xml",
+      "b_mean": 0.3192,
+      "b_hdi_lo": -1.4382,
+      "b_hdi_hi": 2.1613,
+      "gamma_mean": 2.3587,
+      "gamma_hdi": [
+        0.553,
+        4.6672
+      ],
+      "gamma_hdi_lo": 0.553,
+      "gamma_hdi_hi": 4.6672
+    },
+    {
+      "vote_id": "h-119-2-78",
+      "bill_id": "hr-4758-119",
+      "date": "2026-02-25",
+      "themes": [
+        "INPUT_COSTS"
+      ],
+      "source_url": "https://clerk.house.gov/evs/2026/roll078.xml",
+      "b_mean": 0.367,
+      "b_hdi_lo": -1.4741,
+      "b_hdi_hi": 2.0853,
+      "gamma_mean": 2.3513,
+      "gamma_hdi": [
+        0.4905,
+        4.6027
+      ],
+      "gamma_hdi_lo": 0.4905,
+      "gamma_hdi_hi": 4.6027
     }
   ],
-  "rhat_max": 1.0026,
-  "ess_bulk_min": 2008.7
+  "rhat_max": 1.005,
+  "ess_bulk_min": 1797.2
 }
