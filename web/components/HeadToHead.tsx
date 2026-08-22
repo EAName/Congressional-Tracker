@@ -15,6 +15,7 @@ function ScoreBar({
   n,
   historical,
   missingLabel,
+  sufficient,
 }: {
   label: string;
   score: number | null | undefined;
@@ -23,6 +24,8 @@ function ScoreBar({
   n: number | null | undefined;
   historical?: boolean;
   missingLabel?: string;
+  /** False when the cell is below the contested-vote floor. */
+  sufficient?: boolean;
 }) {
   if (score == null) {
     return (
@@ -33,12 +36,21 @@ function ScoreBar({
     );
   }
   const pct = ((score + 1) / 2) * 100;
+  const thin = sufficient === false;
   return (
-    <div className={`h2h-row${historical ? " h2h-historical" : ""}`}>
+    <div className={`h2h-row${historical ? " h2h-historical" : ""}${thin ? " h2h-thin" : ""}`}>
       <span className="h2h-name">{label}</span>
       <div className="h2h-bar-wrap">
         <div className="h2h-bar" style={{ width: `${pct}%` }} aria-hidden />
         <span className="h2h-score">{fmtScore(score)}</span>
+        {thin ? (
+          <span
+            className="h2h-thin-flag"
+            title={`Below the ${n ?? 0}-vote sufficiency floor — indicative only`}
+          >
+            thin
+          </span>
+        ) : null}
       </div>
       <span className="h2h-meta">
         n={n ?? "—"}
@@ -70,6 +82,7 @@ function ThemeBars({
             credLo={row.incumbent?.cred_lo}
             credHi={row.incumbent?.cred_hi}
             n={row.incumbent?.n_contested}
+            sufficient={row.incumbent?.sufficient}
           />
           <ScoreBar
             label={chLast}
@@ -77,6 +90,7 @@ function ThemeBars({
             credLo={row.challenger?.cred_lo}
             credHi={row.challenger?.cred_hi}
             n={row.challenger?.n_contested}
+            sufficient={row.challenger?.sufficient}
             historical
             missingLabel={challengerMissing}
           />
