@@ -3,11 +3,12 @@
 import { useMemo, useState } from "react";
 import type { Score, ScoreMode } from "@/lib/types";
 import { shortName, themeLabel } from "@/lib/types";
+import { clampTickX, scoreTickLabel, tickAnchorAtIndex } from "@/lib/chart-axis";
 import { estimate, fmtScore } from "@/lib/viz";
 
 const W = 720;
 const PAD_L = 36;
-const PAD_R = 36;
+const PAD_R = 44;
 const PAD_T = 28;
 const LANE_H = 56;
 const PAD_B = 36;
@@ -96,6 +97,7 @@ export default function PartySpread({
   }
 
   const ticks = [-1, -0.5, 0, 0.5, 1];
+  const tickBounds = { min: PAD_L + 4, max: W - PAD_R - 4 };
 
   return (
     <div className="viz-frame">
@@ -122,31 +124,33 @@ export default function PartySpread({
           strokeWidth={1}
         />
 
-        {ticks.map((t) => (
-          <g key={t}>
-            <line
-              x1={layout.x(t)}
-              y1={PAD_T}
-              x2={layout.x(t)}
-              y2={PAD_T + LANE_H * 2}
-              stroke={t === 0 ? "var(--navy)" : "var(--line)"}
-              strokeWidth={t === 0 ? 1.3 : 1}
-              strokeDasharray={t === 0 ? undefined : "2 4"}
-              opacity={t === 0 ? 0.45 : 1}
-            />
-            <text
-              x={layout.x(t)}
-              y={PAD_T + LANE_H * 2 + 16}
-              textAnchor="middle"
-              fontSize={10.5}
-              fill="var(--ink3)"
-              fontWeight={t === 0 ? 600 : 400}
-            >
-              {t > 0 ? "+" : ""}
-              {t}
-            </text>
-          </g>
-        ))}
+        {ticks.map((t, i) => {
+          const anchor = tickAnchorAtIndex(i, ticks.length);
+          return (
+            <g key={t}>
+              <line
+                x1={layout.x(t)}
+                y1={PAD_T}
+                x2={layout.x(t)}
+                y2={PAD_T + LANE_H * 2}
+                stroke={t === 0 ? "var(--navy)" : "var(--line)"}
+                strokeWidth={t === 0 ? 1.3 : 1}
+                strokeDasharray={t === 0 ? undefined : "2 4"}
+                opacity={t === 0 ? 0.45 : 1}
+              />
+              <text
+                x={clampTickX(layout.x(t), tickBounds, anchor)}
+                y={PAD_T + LANE_H * 2 + 16}
+                textAnchor={anchor}
+                fontSize={10.5}
+                fill="var(--ink3)"
+                fontWeight={t === 0 ? 600 : 400}
+              >
+                {scoreTickLabel(t)}
+              </text>
+            </g>
+          );
+        })}
 
         <text x={10} y={PAD_T + LANE_H * 0.55 + 4} fontSize={11} fontWeight={700} fill="var(--dem)">
           Dem

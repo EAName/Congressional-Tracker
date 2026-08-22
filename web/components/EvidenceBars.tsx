@@ -5,11 +5,11 @@ import type { Score } from "@/lib/types";
 import { themeLabel } from "@/lib/types";
 
 const W = 720;
-const H = 240;
+const H = 252;
 const PAD_L = 128;
 const PAD_R = 24;
 const PAD_T = 28;
-const PAD_B = 52;
+const PAD_B = 58;
 
 export default function EvidenceBars({
   scores,
@@ -115,11 +115,12 @@ export default function EvidenceBars({
               </text>
               <text
                 x={x + barW / 2}
-                y={H - 22}
+                y={H - 28}
                 textAnchor="middle"
-                fontSize={9.5}
+                fontSize={9}
                 fontWeight={active ? 700 : 500}
                 fill={active ? "var(--navy)" : "var(--ink2)"}
+                transform={`rotate(-28 ${x + barW / 2} ${H - 28})`}
               >
                 {themeLabel(b.theme)}
               </text>

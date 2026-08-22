@@ -3,6 +3,7 @@
 import { useId, useMemo, useState } from "react";
 import type { Score, ScoreMode } from "@/lib/types";
 import { shortName } from "@/lib/types";
+import { clampTickX, scoreTickLabel, tickAnchorAtIndex } from "@/lib/chart-axis";
 import { estimate, fmtScore } from "@/lib/viz";
 
 const W = 760;
@@ -62,6 +63,7 @@ export default function ForestPlot({
   const H = PAD_T + sorted.length * ROW_H + PAD_B;
   const x = (v: number) => PAD_L + ((Math.max(-1, Math.min(1, v)) + 1) / 2) * (W - PAD_L - PAD_R);
   const ticks = [-1, -0.5, 0, 0.5, 1];
+  const tickBounds = { min: PAD_L + 4, max: W - PAD_R - 4 };
   const active = focusId ?? selectedId;
 
   return (
@@ -96,31 +98,33 @@ export default function ForestPlot({
             advanced axis
           </text>
 
-          {ticks.map((t) => (
-            <g key={t}>
-              <line
-                x1={x(t)}
-                y1={PAD_T}
-                x2={x(t)}
-                y2={H - PAD_B}
-                stroke={t === 0 ? "var(--navy)" : "var(--line)"}
-                strokeWidth={t === 0 ? 1.4 : 1}
-                strokeDasharray={t === 0 ? undefined : "2 4"}
-                opacity={t === 0 ? 0.55 : 1}
-              />
-              <text
-                x={x(t)}
-                y={H - PAD_B + 16}
-                textAnchor="middle"
-                fontSize={10.5}
-                fill="var(--ink3)"
-                fontWeight={t === 0 ? 600 : 400}
-              >
-                {t > 0 ? "+" : ""}
-                {t}
-              </text>
-            </g>
-          ))}
+          {ticks.map((t, i) => {
+            const anchor = tickAnchorAtIndex(i, ticks.length);
+            return (
+              <g key={t}>
+                <line
+                  x1={x(t)}
+                  y1={PAD_T}
+                  x2={x(t)}
+                  y2={H - PAD_B}
+                  stroke={t === 0 ? "var(--navy)" : "var(--line)"}
+                  strokeWidth={t === 0 ? 1.4 : 1}
+                  strokeDasharray={t === 0 ? undefined : "2 4"}
+                  opacity={t === 0 ? 0.55 : 1}
+                />
+                <text
+                  x={clampTickX(x(t), tickBounds, anchor)}
+                  y={H - PAD_B + 16}
+                  textAnchor={anchor}
+                  fontSize={10.5}
+                  fill="var(--ink3)"
+                  fontWeight={t === 0 ? 600 : 400}
+                >
+                  {scoreTickLabel(t)}
+                </text>
+              </g>
+            );
+          })}
 
           {partyBaselines?.Democrat != null && (
             <line
