@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { clampTickX, separateLabelYs, tickAnchorAtIndex } from "@/lib/chart-axis";
 import type { GenericBallotDoc, GenericBallotPoint } from "@/lib/types";
 
 const W = 900;
@@ -86,6 +87,7 @@ export default function GenericBallot({ doc }: { doc: GenericBallotDoc }) {
   };
 
   const ticks = niceDateTicks(doc.series);
+  const tickBounds = { min: PAD.left + 4, max: W - PAD.right - 4 };
   const gridVals: number[] = [];
   const startTick = Math.ceil(yMin * 20) / 20;
   for (let v = startTick; v <= yMax + 1e-9; v += 0.05) gridVals.push(Number(v.toFixed(2)));
@@ -93,6 +95,9 @@ export default function GenericBallot({ doc }: { doc: GenericBallotDoc }) {
   const last = rows[rows.length - 1];
   const cur = doc.current;
   const leader = cur.margin_pp >= 0 ? "Democrats" : "Republicans";
+  const [demLabelY, repLabelY] = separateLabelYs(y(last.dem), y(last.rep), 34);
+  const demValueY = demLabelY + 22;
+  const repValueY = repLabelY + 22;
 
   return (
     <div className="gb">
@@ -129,14 +134,16 @@ export default function GenericBallot({ doc }: { doc: GenericBallotDoc }) {
               </text>
             </g>
           ))}
-          {ticks.map(([month, i]) => {
+          {ticks.map(([month, i], tickIndex) => {
             const { name, year } = fmtMonth(month);
+            const anchor = tickAnchorAtIndex(tickIndex, ticks.length);
+            const tx = clampTickX(x(i), tickBounds, anchor);
             return (
               <g key={month}>
                 <line x1={x(i)} x2={x(i)} y1={PAD.top} y2={H - PAD.bottom} className="gb-grid gb-grid-v" />
-                <text x={x(i)} y={H - PAD.bottom + 18} className="gb-axis" textAnchor="middle">{name}</text>
+                <text x={tx} y={H - PAD.bottom + 18} className="gb-axis" textAnchor={anchor}>{name}</text>
                 {month.endsWith("-01") ? (
-                  <text x={x(i)} y={H - PAD.bottom + 32} className="gb-axis gb-axis-year" textAnchor="middle">
+                  <text x={tx} y={H - PAD.bottom + 32} className="gb-axis gb-axis-year" textAnchor={anchor}>
                     {year}
                   </text>
                 ) : null}
@@ -149,12 +156,12 @@ export default function GenericBallot({ doc }: { doc: GenericBallotDoc }) {
           <path d={line("dem")} className="gb-line gb-line-dem" />
           <circle cx={x(rows.length - 1)} cy={y(last.dem)} r={4} className="gb-dot gb-dot-dem" />
           <circle cx={x(rows.length - 1)} cy={y(last.rep)} r={4} className="gb-dot gb-dot-rep" />
-          <text x={W - PAD.right + 14} y={y(last.dem) - 2} className="gb-label gb-label-dem">Democrats</text>
-          <text x={W - PAD.right + 14} y={y(last.dem) + 20} className="gb-value gb-label-dem">
+          <text x={W - PAD.right + 14} y={demLabelY - 2} className="gb-label gb-label-dem">Democrats</text>
+          <text x={W - PAD.right + 14} y={demValueY} className="gb-value gb-label-dem">
             {(cur.dem * 100).toFixed(1)}%
           </text>
-          <text x={W - PAD.right + 14} y={y(last.rep) - 2} className="gb-label gb-label-rep">Republicans</text>
-          <text x={W - PAD.right + 14} y={y(last.rep) + 20} className="gb-value gb-label-rep">
+          <text x={W - PAD.right + 14} y={repLabelY - 2} className="gb-label gb-label-rep">Republicans</text>
+          <text x={W - PAD.right + 14} y={repValueY} className="gb-value gb-label-rep">
             {(cur.rep * 100).toFixed(1)}%
           </text>
         </svg>

@@ -671,7 +671,10 @@ a:hover {
 .h2h-meta {
   color: var(--ink3);
   font-variant-numeric: tabular-nums;
-  white-space: nowrap;
+  white-space: normal;
+  text-align: right;
+  max-width: 11rem;
+  line-height: 1.35;
 }
 
 .h2h-missing {
@@ -869,7 +872,8 @@ a:hover {
 
 .time-chart {
   min-width: 0;
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: visible;
   background: var(--bg-elev);
   border: 1px solid var(--line);
   border-radius: 8px;

@@ -3,12 +3,13 @@
 import { useMemo, useState } from "react";
 import type { Score, ScoreMode } from "@/lib/types";
 import { shortName } from "@/lib/types";
+import { clampTickX, scoreTickLabel, tickAnchorAtIndex } from "@/lib/chart-axis";
 import { estimate, fmtScore } from "@/lib/viz";
 
 const W = 680;
 const H = 168;
 const PAD_L = 150;
-const PAD_R = 28;
+const PAD_R = 40;
 const PAD_T = 28;
 const PAD_B = 36;
 const ROW = 44;
@@ -54,6 +55,8 @@ export default function CompareOverlay({
 
   const colorFor = (s: Score) =>
     s.party === "Democrat" ? "var(--dem)" : s.party === "Republican" ? "var(--rep)" : "var(--ink3)";
+  const ticks = [-1, -0.5, 0, 0.5, 1];
+  const tickBounds = { min: PAD_L + 4, max: W - PAD_R - 4 };
 
   const renderRow = (s: Score, idx: number) => {
     const est = estimate(s, mode);
@@ -170,19 +173,21 @@ export default function CompareOverlay({
                 strokeWidth={1.4}
                 opacity={0.7}
               />
-              {[-1, -0.5, 0, 0.5, 1].map((t) => (
-                <text
-                  key={t}
-                  x={x(t)}
-                  y={H - 12}
-                  textAnchor="middle"
-                  fontSize={10}
-                  fill="var(--ink3)"
-                >
-                  {t > 0 ? "+" : ""}
-                  {t}
-                </text>
-              ))}
+              {ticks.map((t, i) => {
+                const anchor = tickAnchorAtIndex(i, ticks.length);
+                return (
+                  <text
+                    key={t}
+                    x={clampTickX(x(t), tickBounds, anchor)}
+                    y={H - 12}
+                    textAnchor={anchor}
+                    fontSize={10}
+                    fill="var(--ink3)"
+                  >
+                    {scoreTickLabel(t)}
+                  </text>
+                );
+              })}
               {a && renderRow(a, 0)}
               {b && renderRow(b, 1)}
             </svg>

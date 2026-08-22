@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { clampTickX, filterTicksByGap, tickAnchorAtIndex } from "@/lib/chart-axis";
 import type { IrtDoc, IrtMember, Member } from "@/lib/types";
 import { shortName } from "@/lib/types";
 
@@ -48,7 +49,9 @@ export default function IdealPoints({
   const x = (v: number) => PAD_L + ((v - lo) / span) * (W - PAD_L - PAD_R);
   const H = PAD_T + sorted.length * ROW_H + PAD_B;
   const active = focusId ?? selectedId;
-  const ticks = [lo, 0, hi].filter((t, i, a) => a.findIndex((x) => Math.abs(x - t) < 1e-6) === i);
+  const tickCandidates = [lo, 0, hi].filter((t, i, a) => a.findIndex((x) => Math.abs(x - t) < 1e-6) === i);
+  const ticks = filterTicksByGap(tickCandidates, x, 52);
+  const tickBounds = { min: PAD_L + 4, max: W - PAD_R - 4 };
   const lowName = sorted.find((m) => m.is_anchor_low);
   const highName = sorted.find((m) => m.is_anchor_high);
 
@@ -71,23 +74,32 @@ export default function IdealPoints({
           <text x={W - PAD_R} y={12} fontSize={9.5} fill="var(--ink3)" textAnchor="end">
             {highName ? shortName(highName.full_name) : "high anchor"} pole
           </text>
-          {ticks.map((t) => (
-            <g key={t}>
-              <line
-                x1={x(t)}
-                y1={PAD_T}
-                x2={x(t)}
-                y2={H - PAD_B}
-                stroke={Math.abs(t) < 1e-6 ? "var(--navy)" : "var(--line)"}
-                strokeWidth={Math.abs(t) < 1e-6 ? 1.4 : 1}
-                strokeDasharray={Math.abs(t) < 1e-6 ? undefined : "2 4"}
-                opacity={Math.abs(t) < 1e-6 ? 0.55 : 1}
-              />
-              <text x={x(t)} y={H - PAD_B + 16} textAnchor="middle" fontSize={10.5} fill="var(--ink3)">
-                {t.toFixed(1)}
-              </text>
-            </g>
-          ))}
+          {ticks.map((t, i) => {
+            const anchor = tickAnchorAtIndex(i, ticks.length);
+            return (
+              <g key={t}>
+                <line
+                  x1={x(t)}
+                  y1={PAD_T}
+                  x2={x(t)}
+                  y2={H - PAD_B}
+                  stroke={Math.abs(t) < 1e-6 ? "var(--navy)" : "var(--line)"}
+                  strokeWidth={Math.abs(t) < 1e-6 ? 1.4 : 1}
+                  strokeDasharray={Math.abs(t) < 1e-6 ? undefined : "2 4"}
+                  opacity={Math.abs(t) < 1e-6 ? 0.55 : 1}
+                />
+                <text
+                  x={clampTickX(x(t), tickBounds, anchor)}
+                  y={H - PAD_B + 16}
+                  textAnchor={anchor}
+                  fontSize={10.5}
+                  fill="var(--ink3)"
+                >
+                  {t.toFixed(1)}
+                </text>
+              </g>
+            );
+          })}
           {sorted.map((r, i) => {
             const cy = PAD_T + i * ROW_H + ROW_H / 2;
             const isTarget = targets.has(r.bioguide_id);
