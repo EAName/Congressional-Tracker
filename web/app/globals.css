@@ -1576,7 +1576,7 @@ a:hover {
   font-variant-numeric: tabular-nums;
 }
 
-.lean-svg { width: 100%; height: auto; overflow: visible; }
+.lean-svg { width: 100%; height: auto; overflow: hidden; }
 
 .lean-mid { stroke: var(--line-strong); stroke-width: 1; stroke-dasharray: 3 3; }
 
