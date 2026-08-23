@@ -22,7 +22,7 @@ function odds(p: number) {
 
 function Sparkline({ points }: { points: Array<{ date: string; prob: number }> }) {
   if (points.length < 2) {
-    return <p className="seat-cap">No history yet. Today is the first logged probability.</p>;
+    return null;
   }
   const w = 280;
   const h = 56;
