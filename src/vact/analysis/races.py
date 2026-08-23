@@ -62,12 +62,49 @@ class Candidate(BaseModel):
         return text
 
 
+class LeanPoint(BaseModel):
+    """One presidential cycle's two-party Democratic share for this geography."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    year: int
+    dem_two_party: float = Field(gt=0.0, lt=1.0)
+    map_version: str
+    precision: Literal["exact_votes", "rounded_percent"]
+    source_url: str
+
+    @field_validator("year")
+    @classmethod
+    def _presidential(cls, value: int) -> int:
+        if value % 4 != 0:
+            raise ValueError(f"{value} is not a presidential year")
+        return value
+
+
 class DistrictLean(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     pres_2020_two_party_dem_share: float | None = None
     pres_2024_two_party_dem_share: float | None = None
     source_url: str
+    # Ordered oldest-first. Every point must share a map_version: comparing a
+    # district across cycles is only meaningful under one set of boundaries.
+    history: list[LeanPoint] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def _one_map_version(self) -> DistrictLean:
+        maps = {p.map_version for p in self.history}
+        if len(maps) > 1:
+            raise ValueError(
+                f"district_lean.history mixes map versions {sorted(maps)}; a district "
+                "number means different geography under each, so the trend is not comparable"
+            )
+        years = [p.year for p in self.history]
+        if years != sorted(years):
+            raise ValueError("district_lean.history must be ordered oldest-first")
+        if len(years) != len(set(years)):
+            raise ValueError("district_lean.history has duplicate years")
+        return self
 
     @field_validator("source_url")
     @classmethod

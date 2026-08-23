@@ -141,13 +141,21 @@ def assert_source_contracts(conn: duckdb.DuckDBPyConnection) -> None:
     if mismatches:
         raise AssertionError(f"member totals mismatch for {mismatches[:10]}")
 
+    # A real SCD2 gap is a member whose tracked service STARTS before this vote
+    # but has no term row covering it — that is the mis-attribution this catches.
+    # A vote predating the member's earliest tracked term is not a gap: it is an
+    # era dim_legislator was never built for. The dimension holds the current VA
+    # delegation, so historical backfills (111th/116th/117th) sit outside it, and
+    # a sitting member's own earlier service would otherwise trip this.
     bad_va = conn.execute(
         """
         SELECT m.vote_id, m.bioguide_id, v.vote_date
         FROM fact_member_vote m
         JOIN fact_vote v USING (vote_id)
         WHERE EXISTS (
-            SELECT 1 FROM dim_legislator d WHERE d.bioguide_id = m.bioguide_id
+            SELECT 1 FROM dim_legislator d
+            WHERE d.bioguide_id = m.bioguide_id
+              AND d.term_start <= v.vote_date
         )
           AND NOT EXISTS (
             SELECT 1 FROM dim_legislator d

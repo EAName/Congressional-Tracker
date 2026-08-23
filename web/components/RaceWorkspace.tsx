@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import EnvSlider from "@/components/EnvSlider";
 import FecBars from "@/components/FecBars";
 import HeadToHead from "@/components/HeadToHead";
+import LeanTrend from "@/components/LeanTrend";
 import LeanShare from "@/components/LeanShare";
 import SeatForecast from "@/components/SeatForecast";
 import ScoreOverTime from "@/components/ScoreOverTime";
@@ -94,6 +95,7 @@ export default function RaceWorkspace({
   }
 
   const leanShare = entry.district_lean?.pres_2024_two_party_dem_share ?? null;
+  const leanHistory = entry.district_lean?.history ?? [];
   const isSenate = entry.chamber === "Senate";
 
   return (
@@ -159,10 +161,19 @@ export default function RaceWorkspace({
       </Module>
       <Module
         title={isSenate ? "Statewide lean" : "District lean"}
-        kicker="2024 presidential two-party Dem share"
+        kicker={
+          leanHistory.length > 1
+            ? `Presidential two-party Dem share, ${leanHistory[0].year}\u2013${leanHistory[leanHistory.length - 1].year}`
+            : "2024 presidential two-party Dem share"
+        }
         span={6}
       >
-        {leanShare != null ? (
+        {leanHistory.length ? (
+          <LeanTrend
+            history={leanHistory}
+            geographyLabel={isSenate ? "Statewide" : "District"}
+          />
+        ) : leanShare != null ? (
           <LeanShare
             demShare={leanShare}
             geographyLabel={isSenate ? "Statewide" : "District"}

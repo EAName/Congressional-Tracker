@@ -243,6 +243,11 @@
   },
   "changelog": [
     {
+      "sha": "a9006a6",
+      "date": "2026-08-22",
+      "subject": "Bump vote inclusion to v1.1 and refresh vote exports."
+    },
+    {
       "sha": "e36e5e4",
       "date": "2026-08-22",
       "subject": "Ship impact rules v2, adjudication workflow, and corrected challenger bioguides."

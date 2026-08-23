@@ -27,9 +27,32 @@
         "prior_federal_service": null
       },
       "district_lean": {
-        "pres_2020_two_party_dem_share": null,
+        "pres_2020_two_party_dem_share": 0.479592,
         "pres_2024_two_party_dem_share": 0.475,
-        "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/"
+        "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/",
+        "history": [
+          {
+            "year": 2016,
+            "dem_two_party": 0.43617,
+            "map_version": "2021",
+            "precision": "rounded_percent",
+            "source_url": "https://en.wikipedia.org/wiki/2016_United_States_presidential_election_in_Virginia (by congressional district, Dave's Redistricting App)"
+          },
+          {
+            "year": 2020,
+            "dem_two_party": 0.479592,
+            "map_version": "2021",
+            "precision": "rounded_percent",
+            "source_url": "https://en.wikipedia.org/wiki/2020_United_States_presidential_election_in_Virginia (by congressional district, Dave's Redistricting App)"
+          },
+          {
+            "year": 2024,
+            "dem_two_party": 0.475,
+            "map_version": "2021",
+            "precision": "exact_votes",
+            "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (by congressional district, Dave's Redistricting App)"
+          }
+        ]
       },
       "ratings": [],
       "days_until_election": 73,
@@ -65,9 +88,32 @@
         ]
       },
       "district_lean": {
-        "pres_2020_two_party_dem_share": null,
+        "pres_2020_two_party_dem_share": 0.520408,
         "pres_2024_two_party_dem_share": 0.4986,
-        "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/"
+        "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/",
+        "history": [
+          {
+            "year": 2016,
+            "dem_two_party": 0.483871,
+            "map_version": "2021",
+            "precision": "rounded_percent",
+            "source_url": "https://en.wikipedia.org/wiki/2016_United_States_presidential_election_in_Virginia (by congressional district, Dave's Redistricting App)"
+          },
+          {
+            "year": 2020,
+            "dem_two_party": 0.520408,
+            "map_version": "2021",
+            "precision": "rounded_percent",
+            "source_url": "https://en.wikipedia.org/wiki/2020_United_States_presidential_election_in_Virginia (by congressional district, Dave's Redistricting App)"
+          },
+          {
+            "year": 2024,
+            "dem_two_party": 0.4986,
+            "map_version": "2021",
+            "precision": "exact_votes",
+            "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (by congressional district, Dave's Redistricting App)"
+          }
+        ]
       },
       "ratings": [],
       "days_until_election": 73,
@@ -94,9 +140,32 @@
         "prior_federal_service": null
       },
       "district_lean": {
-        "pres_2020_two_party_dem_share": null,
+        "pres_2020_two_party_dem_share": 0.683673,
         "pres_2024_two_party_dem_share": 0.6759,
-        "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/"
+        "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/",
+        "history": [
+          {
+            "year": 2016,
+            "dem_two_party": 0.663158,
+            "map_version": "2021",
+            "precision": "rounded_percent",
+            "source_url": "https://en.wikipedia.org/wiki/2016_United_States_presidential_election_in_Virginia (by congressional district, Dave's Redistricting App)"
+          },
+          {
+            "year": 2020,
+            "dem_two_party": 0.683673,
+            "map_version": "2021",
+            "precision": "rounded_percent",
+            "source_url": "https://en.wikipedia.org/wiki/2020_United_States_presidential_election_in_Virginia (by congressional district, Dave's Redistricting App)"
+          },
+          {
+            "year": 2024,
+            "dem_two_party": 0.6759,
+            "map_version": "2021",
+            "precision": "exact_votes",
+            "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (by congressional district, Dave's Redistricting App)"
+          }
+        ]
       },
       "ratings": [],
       "days_until_election": 73,
@@ -123,9 +192,32 @@
         "prior_federal_service": null
       },
       "district_lean": {
-        "pres_2020_two_party_dem_share": null,
+        "pres_2020_two_party_dem_share": 0.626263,
         "pres_2024_two_party_dem_share": 0.6659,
-        "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/"
+        "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/",
+        "history": [
+          {
+            "year": 2016,
+            "dem_two_party": 0.610526,
+            "map_version": "2021",
+            "precision": "rounded_percent",
+            "source_url": "https://en.wikipedia.org/wiki/2016_United_States_presidential_election_in_Virginia (by congressional district, Dave's Redistricting App)"
+          },
+          {
+            "year": 2020,
+            "dem_two_party": 0.626263,
+            "map_version": "2021",
+            "precision": "rounded_percent",
+            "source_url": "https://en.wikipedia.org/wiki/2020_United_States_presidential_election_in_Virginia (by congressional district, Dave's Redistricting App)"
+          },
+          {
+            "year": 2024,
+            "dem_two_party": 0.6659,
+            "map_version": "2021",
+            "precision": "exact_votes",
+            "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (by congressional district, Dave's Redistricting App)"
+          }
+        ]
       },
       "ratings": [],
       "days_until_election": 73,
@@ -160,9 +252,32 @@
         ]
       },
       "district_lean": {
-        "pres_2020_two_party_dem_share": null,
+        "pres_2020_two_party_dem_share": 0.459184,
         "pres_2024_two_party_dem_share": 0.438,
-        "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/"
+        "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/",
+        "history": [
+          {
+            "year": 2016,
+            "dem_two_party": 0.442105,
+            "map_version": "2021",
+            "precision": "rounded_percent",
+            "source_url": "https://en.wikipedia.org/wiki/2016_United_States_presidential_election_in_Virginia (by congressional district, Dave's Redistricting App)"
+          },
+          {
+            "year": 2020,
+            "dem_two_party": 0.459184,
+            "map_version": "2021",
+            "precision": "rounded_percent",
+            "source_url": "https://en.wikipedia.org/wiki/2020_United_States_presidential_election_in_Virginia (by congressional district, Dave's Redistricting App)"
+          },
+          {
+            "year": 2024,
+            "dem_two_party": 0.438,
+            "map_version": "2021",
+            "precision": "exact_votes",
+            "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (by congressional district, Dave's Redistricting App)"
+          }
+        ]
       },
       "ratings": [],
       "days_until_election": 73,
@@ -189,9 +304,32 @@
         "prior_federal_service": null
       },
       "district_lean": {
-        "pres_2020_two_party_dem_share": null,
+        "pres_2020_two_party_dem_share": 0.387755,
         "pres_2024_two_party_dem_share": 0.3792,
-        "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/"
+        "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/",
+        "history": [
+          {
+            "year": 2016,
+            "dem_two_party": 0.37234,
+            "map_version": "2021",
+            "precision": "rounded_percent",
+            "source_url": "https://en.wikipedia.org/wiki/2016_United_States_presidential_election_in_Virginia (by congressional district, Dave's Redistricting App)"
+          },
+          {
+            "year": 2020,
+            "dem_two_party": 0.387755,
+            "map_version": "2021",
+            "precision": "rounded_percent",
+            "source_url": "https://en.wikipedia.org/wiki/2020_United_States_presidential_election_in_Virginia (by congressional district, Dave's Redistricting App)"
+          },
+          {
+            "year": 2024,
+            "dem_two_party": 0.3792,
+            "map_version": "2021",
+            "precision": "exact_votes",
+            "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (by congressional district, Dave's Redistricting App)"
+          }
+        ]
       },
       "ratings": [],
       "days_until_election": 73,
@@ -218,9 +356,32 @@
         "prior_federal_service": null
       },
       "district_lean": {
-        "pres_2020_two_party_dem_share": null,
+        "pres_2020_two_party_dem_share": 0.505051,
         "pres_2024_two_party_dem_share": 0.5146,
-        "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/"
+        "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/",
+        "history": [
+          {
+            "year": 2016,
+            "dem_two_party": 0.468085,
+            "map_version": "2021",
+            "precision": "rounded_percent",
+            "source_url": "https://en.wikipedia.org/wiki/2016_United_States_presidential_election_in_Virginia (by congressional district, Dave's Redistricting App)"
+          },
+          {
+            "year": 2020,
+            "dem_two_party": 0.505051,
+            "map_version": "2021",
+            "precision": "rounded_percent",
+            "source_url": "https://en.wikipedia.org/wiki/2020_United_States_presidential_election_in_Virginia (by congressional district, Dave's Redistricting App)"
+          },
+          {
+            "year": 2024,
+            "dem_two_party": 0.5146,
+            "map_version": "2021",
+            "precision": "exact_votes",
+            "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (by congressional district, Dave's Redistricting App)"
+          }
+        ]
       },
       "ratings": [],
       "days_until_election": 73,
@@ -247,9 +408,32 @@
         "prior_federal_service": null
       },
       "district_lean": {
-        "pres_2020_two_party_dem_share": null,
+        "pres_2020_two_party_dem_share": 0.785714,
         "pres_2024_two_party_dem_share": 0.7545,
-        "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/"
+        "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/",
+        "history": [
+          {
+            "year": 2016,
+            "dem_two_party": 0.774194,
+            "map_version": "2021",
+            "precision": "rounded_percent",
+            "source_url": "https://en.wikipedia.org/wiki/2016_United_States_presidential_election_in_Virginia (by congressional district, Dave's Redistricting App)"
+          },
+          {
+            "year": 2020,
+            "dem_two_party": 0.785714,
+            "map_version": "2021",
+            "precision": "rounded_percent",
+            "source_url": "https://en.wikipedia.org/wiki/2020_United_States_presidential_election_in_Virginia (by congressional district, Dave's Redistricting App)"
+          },
+          {
+            "year": 2024,
+            "dem_two_party": 0.7545,
+            "map_version": "2021",
+            "precision": "exact_votes",
+            "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (by congressional district, Dave's Redistricting App)"
+          }
+        ]
       },
       "ratings": [],
       "days_until_election": 73,
@@ -276,9 +460,32 @@
         "prior_federal_service": null
       },
       "district_lean": {
-        "pres_2020_two_party_dem_share": null,
+        "pres_2020_two_party_dem_share": 0.285714,
         "pres_2024_two_party_dem_share": 0.2779,
-        "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/"
+        "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/",
+        "history": [
+          {
+            "year": 2016,
+            "dem_two_party": 0.284211,
+            "map_version": "2021",
+            "precision": "rounded_percent",
+            "source_url": "https://en.wikipedia.org/wiki/2016_United_States_presidential_election_in_Virginia (by congressional district, Dave's Redistricting App)"
+          },
+          {
+            "year": 2020,
+            "dem_two_party": 0.285714,
+            "map_version": "2021",
+            "precision": "rounded_percent",
+            "source_url": "https://en.wikipedia.org/wiki/2020_United_States_presidential_election_in_Virginia (by congressional district, Dave's Redistricting App)"
+          },
+          {
+            "year": 2024,
+            "dem_two_party": 0.2779,
+            "map_version": "2021",
+            "precision": "exact_votes",
+            "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (by congressional district, Dave's Redistricting App)"
+          }
+        ]
       },
       "ratings": [],
       "days_until_election": 73,
@@ -305,9 +512,32 @@
         "prior_federal_service": null
       },
       "district_lean": {
-        "pres_2020_two_party_dem_share": null,
+        "pres_2020_two_party_dem_share": 0.602041,
         "pres_2024_two_party_dem_share": 0.5429,
-        "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/"
+        "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/",
+        "history": [
+          {
+            "year": 2016,
+            "dem_two_party": 0.553191,
+            "map_version": "2021",
+            "precision": "rounded_percent",
+            "source_url": "https://en.wikipedia.org/wiki/2016_United_States_presidential_election_in_Virginia (by congressional district, Dave's Redistricting App)"
+          },
+          {
+            "year": 2020,
+            "dem_two_party": 0.602041,
+            "map_version": "2021",
+            "precision": "rounded_percent",
+            "source_url": "https://en.wikipedia.org/wiki/2020_United_States_presidential_election_in_Virginia (by congressional district, Dave's Redistricting App)"
+          },
+          {
+            "year": 2024,
+            "dem_two_party": 0.5429,
+            "map_version": "2021",
+            "precision": "exact_votes",
+            "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (by congressional district, Dave's Redistricting App)"
+          }
+        ]
       },
       "ratings": [],
       "days_until_election": 73,
@@ -334,9 +564,32 @@
         "prior_federal_service": null
       },
       "district_lean": {
-        "pres_2020_two_party_dem_share": null,
+        "pres_2020_two_party_dem_share": 0.714286,
         "pres_2024_two_party_dem_share": 0.6764,
-        "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/"
+        "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/",
+        "history": [
+          {
+            "year": 2016,
+            "dem_two_party": 0.709677,
+            "map_version": "2021",
+            "precision": "rounded_percent",
+            "source_url": "https://en.wikipedia.org/wiki/2016_United_States_presidential_election_in_Virginia (by congressional district, Dave's Redistricting App)"
+          },
+          {
+            "year": 2020,
+            "dem_two_party": 0.714286,
+            "map_version": "2021",
+            "precision": "rounded_percent",
+            "source_url": "https://en.wikipedia.org/wiki/2020_United_States_presidential_election_in_Virginia (by congressional district, Dave's Redistricting App)"
+          },
+          {
+            "year": 2024,
+            "dem_two_party": 0.6764,
+            "map_version": "2021",
+            "precision": "exact_votes",
+            "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (by congressional district, Dave's Redistricting App)"
+          }
+        ]
       },
       "ratings": [],
       "days_until_election": 73,
@@ -364,8 +617,45 @@
       },
       "district_lean": {
         "pres_2020_two_party_dem_share": null,
-        "pres_2024_two_party_dem_share": 0.5294,
-        "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/ (statewide, not district)"
+        "pres_2024_two_party_dem_share": 0.52951,
+        "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election_in_Virginia (Dave's Redistricting App, 2021 court map); https://www.vpap.org/ (statewide, not district)",
+        "history": [
+          {
+            "year": 2008,
+            "dem_two_party": 0.531826,
+            "map_version": "statewide",
+            "precision": "exact_votes",
+            "source_url": "https://en.wikipedia.org/wiki/2008_United_States_presidential_election"
+          },
+          {
+            "year": 2012,
+            "dem_two_party": 0.519674,
+            "map_version": "statewide",
+            "precision": "exact_votes",
+            "source_url": "https://en.wikipedia.org/wiki/2012_United_States_presidential_election"
+          },
+          {
+            "year": 2016,
+            "dem_two_party": 0.528264,
+            "map_version": "statewide",
+            "precision": "exact_votes",
+            "source_url": "https://en.wikipedia.org/wiki/2016_United_States_presidential_election"
+          },
+          {
+            "year": 2020,
+            "dem_two_party": 0.551547,
+            "map_version": "statewide",
+            "precision": "exact_votes",
+            "source_url": "https://en.wikipedia.org/wiki/2020_United_States_presidential_election"
+          },
+          {
+            "year": 2024,
+            "dem_two_party": 0.52951,
+            "map_version": "statewide",
+            "precision": "exact_votes",
+            "source_url": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election"
+          }
+        ]
       },
       "ratings": [],
       "days_until_election": 73,

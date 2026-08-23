@@ -658,6 +658,18 @@ a:hover {
   border-radius: 4px;
 }
 
+.h2h-bar.is-dem {
+  background: linear-gradient(90deg, var(--dem), color-mix(in srgb, var(--dem) 55%, white));
+}
+
+.h2h-bar.is-rep {
+  background: linear-gradient(90deg, var(--rep), color-mix(in srgb, var(--rep) 55%, white));
+}
+
+.h2h-thin .h2h-bar {
+  opacity: 0.55;
+}
+
 .h2h-score {
   position: absolute;
   right: 0.35rem;
@@ -1526,12 +1538,6 @@ a:hover {
   margin: 6px 0 0;
 }
 
-.h2h-thin .h2h-bar {
-  opacity: 0.45;
-  background-image: repeating-linear-gradient(
-    45deg, transparent, transparent 3px, rgba(0, 0, 0, 0.25) 3px, rgba(0, 0, 0, 0.25) 6px
-  );
-}
 
 .h2h-thin-flag {
   margin-left: 8px;
@@ -1546,3 +1552,53 @@ a:hover {
   text-transform: uppercase;
   cursor: help;
 }
+
+/* Presidential lean trend ------------------------------------------------- */
+.lean-trend { display: flex; flex-direction: column; gap: 10px; }
+
+.lean-headline {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--ink2);
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.lean-headline strong {
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+}
+
+.lean-headline strong.dem { color: var(--dem); }
+.lean-headline strong.rep { color: var(--rep); }
+
+.lean-margin {
+  margin-left: auto;
+  font-weight: 700;
+  color: var(--ink2);
+  font-variant-numeric: tabular-nums;
+}
+
+.lean-svg { width: 100%; height: auto; overflow: visible; }
+
+.lean-mid { stroke: var(--line-strong); stroke-width: 1; stroke-dasharray: 3 3; }
+
+.lean-mid-label,
+.lean-year {
+  fill: var(--ink3);
+  font-family: var(--font-body);
+  font-size: 10px;
+}
+
+.lean-line {
+  fill: none;
+  stroke: var(--ink3);
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+
+.lean-dot { stroke: var(--bg); stroke-width: 2; }
+.lean-dot.is-dem { fill: var(--dem); }
+.lean-dot.is-rep { fill: var(--rep); }

@@ -16,6 +16,7 @@ function ScoreBar({
   historical,
   missingLabel,
   sufficient,
+  party,
 }: {
   label: string;
   score: number | null | undefined;
@@ -26,6 +27,8 @@ function ScoreBar({
   missingLabel?: string;
   /** False when the cell is below the contested-vote floor. */
   sufficient?: boolean;
+  /** Drives the bar colour: Democrat blue, Republican red. */
+  party?: string | null;
 }) {
   if (score == null) {
     return (
@@ -41,7 +44,13 @@ function ScoreBar({
     <div className={`h2h-row${historical ? " h2h-historical" : ""}${thin ? " h2h-thin" : ""}`}>
       <span className="h2h-name">{label}</span>
       <div className="h2h-bar-wrap">
-        <div className="h2h-bar" style={{ width: `${pct}%` }} aria-hidden />
+        <div
+          className={`h2h-bar${
+            party === "Democrat" ? " is-dem" : party === "Republican" ? " is-rep" : ""
+          }`}
+          style={{ width: `${pct}%` }}
+          aria-hidden
+        />
         <span className="h2h-score">{fmtScore(score)}</span>
         {thin ? (
           <span
@@ -83,6 +92,7 @@ function ThemeBars({
             credHi={row.incumbent?.cred_hi}
             n={row.incumbent?.n_contested}
             sufficient={row.incumbent?.sufficient}
+            party={row.incumbent?.party}
           />
           <ScoreBar
             label={chLast}
@@ -91,6 +101,7 @@ function ThemeBars({
             credHi={row.challenger?.cred_hi}
             n={row.challenger?.n_contested}
             sufficient={row.challenger?.sufficient}
+            party={row.challenger?.party}
             historical
             missingLabel={challengerMissing}
           />

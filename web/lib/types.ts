@@ -90,6 +90,14 @@ export interface RaceCandidate {
   }> | null;
 }
 
+export interface LeanPoint {
+  year: number;
+  dem_two_party: number;
+  map_version: string;
+  precision: "exact_votes" | "rounded_percent";
+  source_url: string;
+}
+
 export interface RaceEntry {
   race_id: string;
   chamber: "House" | "Senate";
@@ -103,6 +111,8 @@ export interface RaceEntry {
     pres_2020_two_party_dem_share: number | null;
     pres_2024_two_party_dem_share: number | null;
     source_url: string;
+    /** Ordered oldest-first; all points share one map_version. */
+    history?: LeanPoint[];
   };
   days_until_election: number;
   label?: string;
