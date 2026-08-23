@@ -13,6 +13,8 @@
   --dem-soft: rgba(91, 156, 245, 0.16);
   --rep: #f07167;
   --rep-soft: rgba(240, 113, 103, 0.14);
+  --dem-vivid: #3b82f6;
+  --rep-vivid: #ef5350;
   --flag: #e6b84d;
   --flag-soft: rgba(230, 184, 77, 0.14);
   --zero: #5c6b82;
@@ -640,8 +642,12 @@ a:hover {
 }
 
 .h2h-historical .h2h-bar {
-  opacity: 0.72;
-  border-style: dashed;
+  /* Solid, full strength, no border. The cross-era caveat lives in the caption
+     above the block. Dimming and dashing the challenger bar made the Democratic
+     side read as washed-out and ticked while the incumbent bar rendered clean. */
+  opacity: 1;
+  border: 0;
+  border: 0;
 }
 
 .h2h-bar-wrap {
@@ -659,15 +665,17 @@ a:hover {
 }
 
 .h2h-bar.is-dem {
-  background: linear-gradient(90deg, var(--dem), color-mix(in srgb, var(--dem) 55%, white));
+  background: linear-gradient(90deg, var(--dem-vivid), var(--dem));
 }
 
 .h2h-bar.is-rep {
-  background: linear-gradient(90deg, var(--rep), color-mix(in srgb, var(--rep) 55%, white));
+  background: linear-gradient(90deg, var(--rep-vivid), var(--rep));
 }
 
 .h2h-thin .h2h-bar {
-  opacity: 0.55;
+  /* Thin cells are signalled by the n= count in the row meta, not by fading. */
+  opacity: 1;
+  border: 0;
 }
 
 .h2h-score {
@@ -1539,19 +1547,6 @@ a:hover {
 }
 
 
-.h2h-thin-flag {
-  margin-left: 8px;
-  padding: 1px 6px;
-  border-radius: 999px;
-  border: 1px solid var(--flag);
-  background: var(--flag-soft);
-  color: var(--flag);
-  font-size: 0.66rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  cursor: help;
-}
 
 /* Presidential lean trend ------------------------------------------------- */
 .lean-trend { display: flex; flex-direction: column; gap: 10px; }

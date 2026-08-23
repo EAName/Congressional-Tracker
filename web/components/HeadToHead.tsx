@@ -52,14 +52,6 @@ function ScoreBar({
           aria-hidden
         />
         <span className="h2h-score">{fmtScore(score)}</span>
-        {thin ? (
-          <span
-            className="h2h-thin-flag"
-            title={`Below the ${n ?? 0}-vote sufficiency floor — indicative only`}
-          >
-            thin
-          </span>
-        ) : null}
       </div>
       <span className="h2h-meta">
         n={n ?? "—"}
