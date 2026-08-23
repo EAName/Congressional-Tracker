@@ -64,6 +64,9 @@ class ScoringConfig:
     eb_min_caucus: int = 3
     eb_fallback_alpha: float = 2.0
     eb_fallback_beta: float = 2.0
+    # When true, the web surface drops scored units with no plain-language
+    # summary, matching the gate docs/ and briefs already apply.
+    require_plain_language_summary: bool = False
     ts_window_days: int = 90
 
 
@@ -116,6 +119,7 @@ def load_scoring_config(path: Path | None = None) -> ScoringConfig:
         include_categories=include,
         exclude_categories=exclude,
         min_contested=int(sufficiency.get("min_contested") or 3),
+        require_plain_language_summary=bool(payload.get("require_plain_language_summary", False)),
         wilson_z=float(wilson.get("z") or 1.96),
         min_eligible_for_display=int(analysis.get("min_eligible_for_display") or 3),
         deviation_baseline=str(deviations.get("baseline") or "weighted_median"),

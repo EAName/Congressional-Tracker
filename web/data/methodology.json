@@ -279,7 +279,7 @@
     }
   ],
   "symmetry_audit": {
-    "inclusion_spec_version": "vote-inclusion-v1.0",
+    "inclusion_spec_version": "vote-inclusion-v1.1",
     "spec_path": "src/vact/analysis/VOTE_INCLUSION_SPEC.md",
     "excluded_path": "data/votes_excluded.csv",
     "excluded_counts_by_reason": {
