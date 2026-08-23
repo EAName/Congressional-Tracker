@@ -19,7 +19,10 @@ export default function LeanTrend({
   const hi = Math.max(0.58, ...shares) + 0.02;
   const W = 320;
   const H = 96;
-  const PAD = { l: 6, r: 6, t: 10, b: 18 };
+  // l/r leave room for the end-year labels; the dashed 50% line is labelled
+  // inside the left gutter rather than at the right edge, where it collided
+  // with the final dot.
+  const PAD = { l: 34, r: 30, t: 14, b: 22 };
   const x = (i: number) =>
     PAD.l + (history.length === 1 ? (W - PAD.l - PAD.r) / 2
       : (i / (history.length - 1)) * (W - PAD.l - PAD.r));
@@ -49,7 +52,13 @@ export default function LeanTrend({
              .map((h) => `${h.year} ${(h.dem_two_party * 100).toFixed(1)} percent`)
              .join(", ")}`}>
         <line x1={PAD.l} x2={W - PAD.r} y1={y(0.5)} y2={y(0.5)} className="lean-mid" />
-        <text x={W - PAD.r} y={y(0.5) - 4} className="lean-mid-label" textAnchor="end">
+        <text
+          x={PAD.l - 8}
+          y={y(0.5)}
+          className="lean-mid-label"
+          textAnchor="end"
+          dominantBaseline="middle"
+        >
           50%
         </text>
         <path d={line} className="lean-line" />
@@ -61,7 +70,14 @@ export default function LeanTrend({
               r={4}
               className={`lean-dot ${h.dem_two_party >= 0.5 ? "is-dem" : "is-rep"}`}
             />
-            <text x={x(i)} y={H - 4} className="lean-year" textAnchor="middle">
+            <text
+              x={x(i)}
+              y={H - 5}
+              className="lean-year"
+              textAnchor={
+                i === 0 ? "start" : i === history.length - 1 ? "end" : "middle"
+              }
+            >
               {h.year}
             </text>
           </g>
