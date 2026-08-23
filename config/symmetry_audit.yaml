@@ -1,7 +1,7 @@
 # Symmetry audit thresholds (Prompt 17). Falsification trips when a metric
 # crosses its threshold; see methodology page for live values.
 
-inclusion_spec_version: vote-inclusion-v1.0
+inclusion_spec_version: vote-inclusion-v1.1
 
 near_unanimous_share: 0.95
 

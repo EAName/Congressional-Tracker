@@ -11,6 +11,15 @@ version: 1
 # The measured axis. A positive signed score means the member, on the votes
 # where a position advanced this axis, tended to advance it. The axis label is
 # descriptive only; direction lives entirely in per-vote valence.
+# Publication gate for the web surface. docs/ and briefs already refuse rows
+# without a plain-language summary; web/ historically did not, so the live site
+# could show a score whose reasoning was never written down.
+#
+# Left OFF because turning it on today removes every scored unit (0 of 57 carry a
+# summary) and blanks the scorecard. `vact export-web` reports the shortfall on
+# every run so the debt stays visible. Flip to true once summaries are written.
+require_plain_language_summary: false
+
 axis:
   name: small_business_climate
   description: >-

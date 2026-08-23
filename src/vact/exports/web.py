@@ -13,6 +13,8 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+import structlog
+
 from vact.analysis.deviations import compute_party_deviations
 from vact.analysis.estimators import attach_empirical_bayes
 from vact.analysis.excluded_votes import export_excluded_votes
@@ -33,6 +35,8 @@ from vact.pipeline.fec import latest_snapshot
 from vact.analysis.votes import resolve_votes_path, validate_votes_csv, vote_rows_from_warehouse
 from vact.exports.data import list_delegation
 from vact.paths import REPO_ROOT
+
+logger = structlog.get_logger(__name__)
 from vact.warehouse.connection import connect, ensure_schema
 
 # Default target: the Next.js app reads these via `import ... from "@/data/*.json"`.
@@ -209,6 +213,28 @@ def export_web(
 
     dest = out_dir or WEB_DATA_DIR
     dest.mkdir(parents=True, exist_ok=True)
+
+    # Publication debt, reported on every build. docs/ and briefs already refuse
+    # scored rows with no plain-language summary; web/ only enforces it when
+    # require_plain_language_summary is on. Keeping the count visible stops the
+    # gap between the published methodology and the live site going quiet.
+    scores = payload.get("scores") or []
+    missing = [
+        s_ for s_ in scores
+        if s_.get("signed_score") is not None
+        and not str(s_.get("plain_language_summary") or "").strip()
+    ]
+    if missing:
+        logger.warning(
+            "web.summary_debt",
+            scored_rows=len(scores),
+            without_summary=len(missing),
+            enforced=cfg.require_plain_language_summary,
+        )
+        if cfg.require_plain_language_summary:
+            keep = {id(s_) for s_ in scores} - {id(s_) for s_ in missing}
+            payload["scores"] = [s_ for s_ in scores if id(s_) in keep]
+
     written: list[Path] = []
     for name in (
         "meta",

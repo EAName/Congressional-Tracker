@@ -103,6 +103,11 @@ jobs:
             ./bin/vact export-web --from-warehouse
           fi
           if [[ -f data/warehouse/warehouse.duckdb ]]; then
+            # NOTE: --strict makes a tripped falsification threshold block this job.
+            # Deliberately not enabled yet: caucus_advancing_gap,
+            # ci_width_gap_at_matched_n, exclusion_rate_gap_pp and
+            # coded_blind_false_share_pp are all tripping, so turning it on
+            # today would halt publishing. Enable once the audit is green.
             ./bin/vact audit symmetry
           fi
           ./bin/vact brand check

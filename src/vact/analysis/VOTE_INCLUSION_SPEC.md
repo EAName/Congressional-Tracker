@@ -12,7 +12,7 @@ gate below. Eligibility is decided without looking at how Virginia members voted
 ## Inclusion gates (all required)
 
 1. **Category**: `vote_category` is in `scoreable.include_categories` from
-   `config/scoring.yaml` (currently PASSAGE, AMENDMENT).
+   `config/scoring.yaml` (currently PASSAGE, AMENDMENT, SUSPENSION).
 2. **Impact tag**: at least one row in `bridge_vote_impact` for the vote.
 3. **Valence adjudicated**: `fact_vote_valence` carries `valence ∈ {-1, +1}` with
    source HUMAN (RULE/LLM proposals do not publish until promoted).
@@ -25,10 +25,10 @@ gate below. Eligibility is decided without looking at how Virginia members voted
 |------|---------|
 | `PROCEDURAL_CATEGORY` | Category in `exclude_categories` (CLOTURE, NOMINATION, …) |
 | `RULE_RESOLUTION` | Special-order H/S Res matching the configured title pattern |
-| `NEAR_UNANIMOUS` | ≥95% of contested chamber positions on the same side (YEA or NAY) |
+| `NEAR_UNANIMOUS` | ≥95% of contested chamber positions on the same side. **Reported, not enforced** — see below. |
 | `UNADJUDICATED_DIRECTION` | Impact tag present but no adjudicated valence ±1 |
 | `NO_IMPACT_TAG` | No bridge row (classification queue) |
-| `OTHER` | Documented in `notes` column |
+| `OTHER` | Reserved. Not currently emitted by `excluded_votes.py`; if used, document in `notes`. |
 
 Near-unanimous uses the full roll call in `fact_member_vote`, not VA-only rows.
 That catches consensus technical votes that would not discriminate caucuses.

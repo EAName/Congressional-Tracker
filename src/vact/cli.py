@@ -859,6 +859,96 @@ def valence_apply_worksheet_cmd(
     typer.echo(f"applied: {n_cur} valence rows (HUMAN), {n_hist} historical rows marked adjudicated")
 
 
+@valence_app.command("irr-sample")
+def valence_irr_sample_cmd(
+    n: int = typer.Option(20, "--n", help="How many adjudicated units to draw."),
+    seed: str = typer.Option("irr-v1", "--seed", help="Deterministic, so the draw is auditable."),
+    out: Path | None = typer.Option(None, "--out"),
+) -> None:
+    """Draw a blind sample for a second coder (inter-rater reliability)."""
+    import csv as _csv
+    import json as _json
+    import re as _re
+
+    from vact.analysis.interrater import draw_sample, write_sample
+    from vact.analysis.votes import VOTES_CSV_PATH as VOTES_PATH
+
+    with VOTES_PATH.open(encoding="utf-8", newline="") as fh:
+        rows = list(_csv.DictReader(fh))
+    seen: dict[tuple[str, str], dict[str, str]] = {}
+    for r in rows:
+        seen.setdefault(
+            (r["rollcall_id"], r["theme"]),
+            {
+                "vote_id": r["rollcall_id"],
+                "impact_tag": r["theme"],
+                "vote_date": r["rollcall_date"],
+                "bill_id": r["bill_id"],
+                "title": "",
+                "crs_lead": "",
+            },
+        )
+    # attach titles / CRS lead so the coder can judge without a browser
+    root = Path("data/raw/congress_summaries")
+    tag = _re.compile(r"<[^>]+>")
+    for unit in seen.values():
+        bill = unit["bill_id"]
+        parts = bill.split("-")
+        if len(parts) != 3:
+            continue
+        path = root / parts[2] / f"{parts[0]}{parts[1]}.json"
+        if not path.is_file():
+            continue
+        try:
+            items = _json.loads(path.read_text(encoding="utf-8")).get("summaries") or []
+        except Exception:
+            continue
+        if not items:
+            continue
+        items.sort(key=lambda x: (x.get("actionDate") or ""))
+        text = tag.sub(" ", items[-1].get("text", "")).replace("&nbsp;", " ")
+        unit["crs_lead"] = " ".join(text.split())[:420]
+    sample = draw_sample(list(seen.values()), n=n, seed=seed)
+    path = write_sample(sample, out)
+    typer.echo(
+        f"wrote {path} ({len(sample)} units, seed={seed}). "
+        "Hand to a second coder: no party columns, no first-coder valence."
+    )
+
+
+@valence_app.command("irr-score")
+def valence_irr_score_cmd(
+    sample: Path | None = typer.Option(None, "--sample"),
+) -> None:
+    """Compare a filled second-coder sample against the committed adjudication."""
+    import csv as _csv
+
+    from vact.analysis.interrater import SAMPLE_PATH, compare
+    from vact.analysis.votes import VOTES_CSV_PATH as VOTES_PATH
+
+    src = sample or SAMPLE_PATH
+    with src.open(encoding="utf-8", newline="") as fh:
+        sample_rows = list(_csv.DictReader(fh))
+    with VOTES_PATH.open(encoding="utf-8", newline="") as fh:
+        adjudicated = {
+            (r["rollcall_id"], r["theme"]): (1 if r["axis_direction"] == "advance" else -1)
+            for r in _csv.DictReader(fh)
+        }
+    agree, kappa = compare(sample_rows, adjudicated)
+    if not agree.n:
+        typer.echo("no filled rows in the sample yet")
+        raise typer.Exit(0)
+    typer.echo(
+        f"inter-rater: {agree.agreed}/{agree.n} agreed ({agree.rate:.1%})"
+        + (f", Cohen's kappa {kappa:.3f}" if kappa is not None else ", kappa undefined")
+    )
+    for d in agree.disagreements:
+        typer.echo(
+            f"  DISAGREE {d['vote_id']} {d['impact_tag']}: "
+            f"first={d['first_coder']:+d} second={d['second_coder']:+d}  {d['title'][:50]}"
+        )
+
+
 @valence_app.command("review-queue")
 def valence_review_queue_cmd(
     warehouse: Path | None = typer.Option(None, "--warehouse"),
