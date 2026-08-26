@@ -243,6 +243,11 @@
   },
   "changelog": [
     {
+      "sha": "867ab09",
+      "date": "2026-08-22",
+      "subject": "Close spec/implementation drift and add rigor tooling."
+    },
+    {
       "sha": "a9006a6",
       "date": "2026-08-22",
       "subject": "Bump vote inclusion to v1.1 and refresh vote exports."

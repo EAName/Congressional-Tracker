@@ -14,6 +14,8 @@ from vact.analysis.poll_average import (
     environment_support,
     estimate_house_effects,
     aggregate_sampling_se_pp,
+    append_poll,
+    archive_status,
     firm_influence_pp,
     influence_limit_pp,
     single_poll_influence_pp,
@@ -317,3 +319,82 @@ def test_influence_stays_well_inside_the_aggregate_margin_of_error() -> None:
     assert gate["max_single_poll_influence_pp"] < 1.96 * se, (
         "limit must sit inside the aggregate's own 95% margin of error"
     )
+
+
+def test_append_rejects_a_duplicate_source(tmp_path: Path) -> None:
+    """The same release fetched twice is the obvious way to double-count a firm."""
+    base = date(2026, 8, 1)
+    path = _write(tmp_path / "p.csv", [_poll("A", base, 50, 45)])
+    row = {
+        "pollster": "B", "sponsor": "", "start_date": "2026-08-10",
+        "end_date": "2026-08-12", "n": "900", "population": "rv",
+        "dem": "48", "rep": "44", "partisan": "",
+        "source_url": "https://example.invalid/b",
+    }
+    append_poll(row, path=path)
+    with pytest.raises(PollArchiveError, match="already in the archive"):
+        append_poll(row, path=path)
+
+
+def test_append_rejects_the_same_firm_and_end_date(tmp_path: Path) -> None:
+    """A re-release under a different URL is still the same poll."""
+    path = _write(tmp_path / "p.csv", [])
+    first = {
+        "pollster": "B", "sponsor": "", "start_date": "2026-08-10",
+        "end_date": "2026-08-12", "n": "900", "population": "rv",
+        "dem": "48", "rep": "44", "partisan": "",
+        "source_url": "https://example.invalid/one",
+    }
+    append_poll(first, path=path)
+    with pytest.raises(PollArchiveError, match="already has a poll ending"):
+        append_poll({**first, "source_url": "https://example.invalid/two"}, path=path)
+
+
+def test_append_requires_a_primary_source(tmp_path: Path) -> None:
+    path = _write(tmp_path / "p.csv", [])
+    with pytest.raises(PollArchiveError, match="primary-source"):
+        append_poll(
+            {"pollster": "B", "sponsor": "", "start_date": "2026-08-10",
+             "end_date": "2026-08-12", "n": "900", "population": "rv",
+             "dem": "48", "rep": "44", "partisan": "", "source_url": ""},
+            path=path,
+        )
+
+
+def test_append_validates_on_reparse(tmp_path: Path) -> None:
+    """A bad row must fail at write time, not silently at the next export."""
+    path = _write(tmp_path / "p.csv", [])
+    with pytest.raises(PollArchiveError, match="population"):
+        append_poll(
+            {"pollster": "B", "sponsor": "", "start_date": "2026-08-10",
+             "end_date": "2026-08-12", "n": "900", "population": "voters",
+             "dem": "48", "rep": "44", "partisan": "",
+             "source_url": "https://example.invalid/x"},
+            path=path,
+        )
+
+
+def test_status_separates_recent_firms_from_stale_ones(tmp_path: Path) -> None:
+    """Recency weighting means an old firm contributes ~nothing, however many
+    polls it has. The weekly check has to show that, not just a total count."""
+    now = date(2026, 8, 22)
+    rows = [
+        _poll("Fresh", now - timedelta(days=2), 50, 45),
+        _poll("Fresh", now - timedelta(days=9), 50, 45),
+        _poll("Stale", now - timedelta(days=300), 50, 45),
+        _poll("Stale", now - timedelta(days=320), 50, 45),
+    ]
+    st = archive_status(polls_path=_write(tmp_path / "p.csv", rows), as_of=now)
+    assert st["n_polls"] == 4
+    assert st["n_firms"] == 2
+    assert st["recent_firms"] == ["Fresh"]
+    assert st["firms"]["Stale"]["recent"] == 0
+    assert st["firms"]["Fresh"]["recent"] == 2
+    assert st["days_stale"] == 2
+
+
+def test_committed_archive_status_is_reportable() -> None:
+    st = archive_status()
+    assert st["n_polls"] >= 3
+    assert st["newest"] is not None
+    assert "ok" in st["gate"]

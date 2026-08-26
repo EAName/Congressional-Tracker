@@ -597,6 +597,96 @@ def fec_snapshot_cmd(
     typer.echo(f"FEC snapshot {tag}: {result['path']} ({result['n_candidates']} candidates)")
 
 
+@app.command("polls-status")
+def polls_status_cmd() -> None:
+    """Weekly check: staleness, firm coverage, and what the environment gate needs."""
+    from vact.analysis.poll_average import archive_status
+
+    st = archive_status()
+    cur = st["current"]
+    typer.echo(
+        f"archive: {st['n_polls']} polls / {st['n_firms']} firms · "
+        f"newest {st['newest']} ({st['days_stale']}d ago)"
+    )
+    if cur:
+        typer.echo(
+            f"average: D {cur['dem'] * 100:.1f}% / R {cur['rep'] * 100:.1f}% "
+            f"(D{cur['margin_pp']:+.1f})"
+        )
+    typer.echo(
+        f"recent window ({st['recency_window_days']}d): {st['n_recent']} polls "
+        f"from {', '.join(st['recent_firms']) or 'nobody'}"
+    )
+    typer.echo("")
+    typer.echo("by firm (most recent first):")
+    for name, e in st["firms"].items():
+        mark = "  " if e["recent"] else " *"
+        typer.echo(
+            f"{mark} {name[:26]:26} last {e['last']} ({e['days_since']:>3}d)  "
+            f"{e['n_polls']} total, {e['recent']} in window"
+        )
+    if any(not e["recent"] for e in st["firms"].values()):
+        typer.echo("   * = nothing inside the recency window; its weight is ~0")
+
+    gate = st["gate"]
+    typer.echo("")
+    if gate.get("ok"):
+        typer.echo("environment gate: OPEN — the average is driving the seat models")
+    else:
+        typer.echo("environment gate: CLOSED — seat models on a neutral environment")
+        for r in gate.get("reasons") or []:
+            typer.echo(f"   - {r}")
+        firm = gate.get("most_influential_firm")
+        if firm and gate.get("firm_influence_pp", 0) > gate.get("max_firm_influence_pp", 0):
+            typer.echo(
+                f"   -> a recent poll from any firm OTHER than {firm} lowers this; "
+                f"another {firm} wave raises it"
+            )
+
+
+@app.command("polls-add")
+def polls_add_cmd(
+    pollster: str = typer.Option(..., "--pollster"),
+    start: str = typer.Option(..., "--start", help="YYYY-MM-DD field start."),
+    end: str = typer.Option(..., "--end", help="YYYY-MM-DD field end."),
+    n: int = typer.Option(..., "--n", help="Sample size for the reported subgroup."),
+    dem: float = typer.Option(..., "--dem"),
+    rep: float = typer.Option(..., "--rep"),
+    source_url: str = typer.Option(..., "--source-url", help="Primary source, not an aggregator."),
+    population: str = typer.Option("rv", "--population", help="lv | rv | a"),
+    sponsor: str = typer.Option("", "--sponsor"),
+    partisan: str = typer.Option("", "--partisan"),
+) -> None:
+    """Append one primary poll to the generic-ballot archive, with validation."""
+    from vact.analysis.poll_average import PollArchiveError, append_poll, archive_status
+
+    try:
+        path, poll = append_poll(
+            {
+                "pollster": pollster, "sponsor": sponsor,
+                "start_date": start, "end_date": end, "n": str(n),
+                "population": population, "dem": str(dem), "rep": str(rep),
+                "partisan": partisan, "source_url": source_url,
+            }
+        )
+    except PollArchiveError as err:
+        typer.echo(f"rejected: {err}")
+        raise typer.Exit(code=1)
+
+    st = archive_status()
+    cur = st["current"]
+    typer.echo(
+        f"added {poll.pollster} {poll.start_date}..{poll.end_date} "
+        f"(n={poll.n}, {poll.population}) -> {path.name}"
+    )
+    if cur:
+        typer.echo(f"average now D{cur['margin_pp']:+.1f} from {st['n_polls']} polls")
+    gate = st["gate"]
+    typer.echo("environment gate: " + ("OPEN" if gate.get("ok") else "CLOSED"))
+    for r in gate.get("reasons") or []:
+        typer.echo(f"   - {r}")
+
+
 @app.command("polls")
 def polls_cmd() -> None:
     """Validate the primary-poll archive and report the current average."""
