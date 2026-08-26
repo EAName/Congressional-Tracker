@@ -90,6 +90,47 @@ def _pct(value: str, field: str, pollster: str) -> float:
     return num / 100.0 if num > 1.5 else num
 
 
+def append_poll(
+    row: dict[str, str], *, path: Path | None = None
+) -> tuple[Path, Poll]:
+    """Validated append. Refuses a duplicate source URL or a repeat of the same
+    firm and field-end date, which is how the same release gets counted twice."""
+    dest = path or POLLS_PATH
+    existing = load_polls(dest)
+    url = (row.get("source_url") or "").strip()
+    if not url.startswith("http"):
+        raise PollArchiveError("source_url must be a primary-source link")
+    for p in existing:
+        if p.source_url == url:
+            raise PollArchiveError(f"already in the archive: {url}")
+        if p.pollster == (row.get("pollster") or "").strip() and p.end_date.isoformat() == (
+            row.get("end_date") or ""
+        ).strip():
+            raise PollArchiveError(
+                f"{p.pollster} already has a poll ending {p.end_date}; "
+                "same release, or correct the existing row"
+            )
+
+    fields = ["pollster", "sponsor", "start_date", "end_date", "n",
+              "population", "dem", "rep", "partisan", "source_url"]
+    line = ",".join((row.get(f) or "").replace(",", " ").strip() for f in fields)
+
+    raw = dest.read_bytes() if dest.is_file() else b""
+    crlf = b"\r\n" in raw
+    text = raw.decode("utf-8").rstrip("\r\n")
+    if not text:
+        text = ",".join(fields)
+    text = text + "\n" + line + "\n"
+    out = text.encode("utf-8")
+    if crlf:
+        out = out.replace(b"\r\n", b"\n").replace(b"\n", b"\r\n")
+    dest.write_bytes(out)
+
+    polls = load_polls(dest)          # re-parse: schema validation happens here
+    added = next(p for p in polls if p.source_url == url)
+    return dest, added
+
+
 def load_polls(path: Path | None = None) -> list[Poll]:
     dest = path or POLLS_PATH
     if not dest.is_file():
@@ -496,6 +537,51 @@ def environment_support(
         "max_firm_influence_pp": round(max_firm, 2),
         "min_polls": min_polls,
         "reasons": reasons,
+    }
+
+
+def archive_status(
+    *, polls_path: Path | None = None, as_of: date | None = None
+) -> dict[str, Any]:
+    """What a weekly update needs to know: staleness, firm coverage, gate state.
+
+    Recency weighting means only the recent window matters. An archive with
+    forty polls, all older than a few half-lives, is as good as empty for the
+    current estimate — and a recent window carried by one firm trips the firm
+    gate no matter how many polls sit behind it.
+    """
+    cfg = load_config()
+    polls = load_polls(polls_path)
+    doc = build_generic_ballot(polls_path=polls_path, as_of=as_of)
+    today = as_of or (polls[-1].mid_date if polls else date.today())
+    half_life = float(cfg["half_life_days"])
+    window = int(round(2 * half_life))
+    recent = [p for p in polls if (today - p.mid_date).days <= window]
+
+    by_firm: dict[str, dict[str, Any]] = {}
+    for p in polls:
+        e = by_firm.setdefault(p.pollster, {"n_polls": 0, "last": p.mid_date, "recent": 0})
+        e["n_polls"] += 1
+        e["last"] = max(e["last"], p.mid_date)
+        if (today - p.mid_date).days <= window:
+            e["recent"] += 1
+    for name, e in by_firm.items():
+        e["days_since"] = (today - e["last"]).days
+        e["last"] = e["last"].isoformat()
+
+    gate = doc.get("environment_gate") or {}
+    return {
+        "as_of": today.isoformat(),
+        "n_polls": len(polls),
+        "n_firms": len(by_firm),
+        "newest": polls[-1].mid_date.isoformat() if polls else None,
+        "days_stale": (today - polls[-1].mid_date).days if polls else None,
+        "recency_window_days": window,
+        "n_recent": len(recent),
+        "recent_firms": sorted({p.pollster for p in recent}),
+        "firms": dict(sorted(by_firm.items(), key=lambda kv: kv[1]["days_since"])),
+        "gate": gate,
+        "current": doc.get("current"),
     }
 
 

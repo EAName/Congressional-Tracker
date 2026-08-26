@@ -1,11 +1,11 @@
 {
   "model_version": "seat-v1.1",
-  "as_of": "2026-08-22",
+  "as_of": "2026-08-26",
   "sigma_fundamentals": 0.08207134387873016,
   "generic_ballot": {
-    "date": "2026-08-22",
-    "dem_two_party": 0.53944,
-    "source": "vact poll average (10 primary polls)",
+    "date": "2026-08-26",
+    "dem_two_party": 0.53378,
+    "source": "vact poll average (12 primary polls)",
     "source_url": ""
   },
   "env_grid": {
@@ -48,7 +48,7 @@
     "step": 0.5,
     "min": -4.0,
     "max": 12.0,
-    "default_margin_pp": 8.0,
+    "default_margin_pp": 7.0,
     "probs": {
       "va-01": [
         0.2024,
@@ -441,18 +441,18 @@
     {
       "race_id": "va-01",
       "district": 1,
-      "as_of": "2026-08-22",
+      "as_of": "2026-08-26",
       "model_version": "seat-v1.1",
-      "prob_dem": 0.4593,
-      "prob_rep": 0.5407,
-      "mu_dem_two_party": 0.4916,
-      "mu_fundamentals": 0.4916,
+      "prob_dem": 0.4352,
+      "prob_rep": 0.5648,
+      "mu_dem_two_party": 0.4866,
+      "mu_fundamentals": 0.4866,
       "mu_ols": 0.4516,
-      "share_lo": 0.3864,
-      "share_hi": 0.5968,
+      "share_lo": 0.3814,
+      "share_hi": 0.5918,
       "sigma": 0.0821,
       "blend": "fundamentals_only",
-      "plain_language": "The race is a toss-up",
+      "plain_language": "Republicans are modest favorites, roughly 3 in 5",
       "takeaway": "VA-1 crosses 50% Democratic win probability if the national environment reaches D+10.",
       "flip_threshold_pp": 10.0,
       "decomposition": {
@@ -462,7 +462,7 @@
         "midterm_dem": 0.03,
         "log_ratio_dem": -0.0,
         "qual_dem": 0.0,
-        "nat_env": 0.04,
+        "nat_env": 0.035,
         "polls": 0.0
       },
       "components_raw": {
@@ -471,12 +471,12 @@
         "midterm_dem": 1.0,
         "log_ratio_dem": -0.6382,
         "qual_dem": 0.0,
-        "nat_env": 0.0394
+        "nat_env": 0.0338
       },
       "meta": {
         "lean_status": "pres_2024",
         "environment_source": "generic_ballot",
-        "generic_date": "2026-08-22",
+        "generic_date": "2026-08-26",
         "dem_receipts": 2140980.12,
         "rep_receipts": 4053141.52
       },
@@ -555,15 +555,15 @@
     {
       "race_id": "va-02",
       "district": 2,
-      "as_of": "2026-08-22",
+      "as_of": "2026-08-26",
       "model_version": "seat-v1.1",
-      "prob_dem": 0.764,
-      "prob_rep": 0.236,
-      "mu_dem_two_party": 0.559,
-      "mu_fundamentals": 0.559,
+      "prob_dem": 0.7449,
+      "prob_rep": 0.2551,
+      "mu_dem_two_party": 0.554,
+      "mu_fundamentals": 0.554,
       "mu_ols": 0.519,
-      "share_lo": 0.4539,
-      "share_hi": 0.6642,
+      "share_lo": 0.4489,
+      "share_hi": 0.6592,
       "sigma": 0.0821,
       "blend": "fundamentals_only",
       "plain_language": "Democrats are modest favorites, roughly 4 in 5",
@@ -576,7 +576,7 @@
         "midterm_dem": 0.03,
         "log_ratio_dem": -0.0,
         "qual_dem": 0.0533,
-        "nat_env": 0.04,
+        "nat_env": 0.035,
         "polls": 0.0
       },
       "components_raw": {
@@ -585,12 +585,12 @@
         "midterm_dem": 1.0,
         "log_ratio_dem": -0.2451,
         "qual_dem": 1.0,
-        "nat_env": 0.0394
+        "nat_env": 0.0338
       },
       "meta": {
         "lean_status": "pres_2024",
         "environment_source": "generic_ballot",
-        "generic_date": "2026-08-22",
+        "generic_date": "2026-08-26",
         "dem_receipts": 4659795.3,
         "rep_receipts": 5954338.07
       },
@@ -669,15 +669,15 @@
     {
       "race_id": "va-03",
       "district": 3,
-      "as_of": "2026-08-22",
+      "as_of": "2026-08-26",
       "model_version": "seat-v1.1",
-      "prob_dem": 0.9991,
-      "prob_rep": 0.0009,
-      "mu_dem_two_party": 0.755,
-      "mu_fundamentals": 0.755,
+      "prob_dem": 0.9988,
+      "prob_rep": 0.0012,
+      "mu_dem_two_party": 0.75,
+      "mu_fundamentals": 0.75,
       "mu_ols": 0.715,
-      "share_lo": 0.6498,
-      "share_hi": 0.8601,
+      "share_lo": 0.6448,
+      "share_hi": 0.8551,
       "sigma": 0.0821,
       "blend": "fundamentals_only",
       "plain_language": "Democrats are overwhelmingly likely to win",
@@ -690,7 +690,7 @@
         "midterm_dem": 0.03,
         "log_ratio_dem": 0.0,
         "qual_dem": 0.0,
-        "nat_env": 0.04,
+        "nat_env": 0.035,
         "polls": 0.0
       },
       "components_raw": {
@@ -699,12 +699,12 @@
         "midterm_dem": 1.0,
         "log_ratio_dem": 4.6538,
         "qual_dem": 0.0,
-        "nat_env": 0.0394
+        "nat_env": 0.0338
       },
       "meta": {
         "lean_status": "pres_2024",
         "environment_source": "generic_ballot",
-        "generic_date": "2026-08-22",
+        "generic_date": "2026-08-26",
         "dem_receipts": 688200.26,
         "rep_receipts": 6554.63
       },
@@ -783,15 +783,15 @@
     {
       "race_id": "va-04",
       "district": 4,
-      "as_of": "2026-08-22",
+      "as_of": "2026-08-26",
       "model_version": "seat-v1.1",
-      "prob_dem": 0.9988,
-      "prob_rep": 0.0012,
-      "mu_dem_two_party": 0.749,
-      "mu_fundamentals": 0.749,
+      "prob_dem": 0.9985,
+      "prob_rep": 0.0015,
+      "mu_dem_two_party": 0.744,
+      "mu_fundamentals": 0.744,
       "mu_ols": 0.709,
-      "share_lo": 0.6438,
-      "share_hi": 0.8542,
+      "share_lo": 0.6388,
+      "share_hi": 0.8492,
       "sigma": 0.0821,
       "blend": "fundamentals_only",
       "plain_language": "Democrats are overwhelmingly likely to win",
@@ -804,7 +804,7 @@
         "midterm_dem": 0.03,
         "log_ratio_dem": 0.0,
         "qual_dem": 0.0,
-        "nat_env": 0.04,
+        "nat_env": 0.035,
         "polls": 0.0
       },
       "components_raw": {
@@ -813,12 +813,12 @@
         "midterm_dem": 1.0,
         "log_ratio_dem": 13.9423,
         "qual_dem": 0.0,
-        "nat_env": 0.0394
+        "nat_env": 0.0338
       },
       "meta": {
         "lean_status": "pres_2024",
         "environment_source": "generic_ballot",
-        "generic_date": "2026-08-22",
+        "generic_date": "2026-08-26",
         "dem_receipts": 1135225.39,
         "rep_receipts": 0.0
       },
@@ -897,18 +897,18 @@
     {
       "race_id": "va-05",
       "district": 5,
-      "as_of": "2026-08-22",
+      "as_of": "2026-08-26",
       "model_version": "seat-v1.1",
-      "prob_dem": 0.6095,
-      "prob_rep": 0.3905,
-      "mu_dem_two_party": 0.5228,
-      "mu_fundamentals": 0.5228,
+      "prob_dem": 0.5859,
+      "prob_rep": 0.4141,
+      "mu_dem_two_party": 0.5178,
+      "mu_fundamentals": 0.5178,
       "mu_ols": 0.4828,
-      "share_lo": 0.4176,
-      "share_hi": 0.628,
+      "share_lo": 0.4126,
+      "share_hi": 0.623,
       "sigma": 0.0821,
       "blend": "fundamentals_only",
-      "plain_language": "Democrats are modest favorites, roughly 3 in 5",
+      "plain_language": "The race is a toss-up",
       "takeaway": "VA-5 crosses 50% Democratic win probability if the national environment reaches D+3.5.",
       "flip_threshold_pp": 3.5,
       "decomposition": {
@@ -918,7 +918,7 @@
         "midterm_dem": 0.03,
         "log_ratio_dem": 0.0,
         "qual_dem": 0.0533,
-        "nat_env": 0.04,
+        "nat_env": 0.035,
         "polls": 0.0
       },
       "components_raw": {
@@ -927,12 +927,12 @@
         "midterm_dem": 1.0,
         "log_ratio_dem": 0.1833,
         "qual_dem": 1.0,
-        "nat_env": 0.0394
+        "nat_env": 0.0338
       },
       "meta": {
         "lean_status": "pres_2024",
         "environment_source": "generic_ballot",
-        "generic_date": "2026-08-22",
+        "generic_date": "2026-08-26",
         "dem_receipts": 2140401.63,
         "rep_receipts": 1781840.34
       },
@@ -1011,18 +1011,18 @@
     {
       "race_id": "va-06",
       "district": 6,
-      "as_of": "2026-08-22",
+      "as_of": "2026-08-26",
       "model_version": "seat-v1.1",
-      "prob_dem": 0.2119,
-      "prob_rep": 0.7881,
-      "mu_dem_two_party": 0.4344,
-      "mu_fundamentals": 0.4344,
+      "prob_dem": 0.1947,
+      "prob_rep": 0.8053,
+      "mu_dem_two_party": 0.4294,
+      "mu_fundamentals": 0.4294,
       "mu_ols": 0.3944,
-      "share_lo": 0.3292,
-      "share_hi": 0.5395,
+      "share_lo": 0.3242,
+      "share_hi": 0.5345,
       "sigma": 0.0821,
       "blend": "fundamentals_only",
-      "plain_language": "Republicans are modest favorites, roughly 4 in 5",
+      "plain_language": "Republicans are likely to win, about 4 in 5",
       "takeaway": "VA-6 stays below 50% Democratic win probability even if the national environment reaches D+12.",
       "flip_threshold_pp": null,
       "decomposition": {
@@ -1032,7 +1032,7 @@
         "midterm_dem": 0.03,
         "log_ratio_dem": 0.0,
         "qual_dem": 0.0,
-        "nat_env": 0.04,
+        "nat_env": 0.035,
         "polls": 0.0
       },
       "components_raw": {
@@ -1041,12 +1041,12 @@
         "midterm_dem": 1.0,
         "log_ratio_dem": 0.1569,
         "qual_dem": 0.0,
-        "nat_env": 0.0394
+        "nat_env": 0.0338
       },
       "meta": {
         "lean_status": "pres_2024",
         "environment_source": "generic_ballot",
-        "generic_date": "2026-08-22",
+        "generic_date": "2026-08-26",
         "dem_receipts": 1686322.36,
         "rep_receipts": 1441436.38
       },
@@ -1125,15 +1125,15 @@
     {
       "race_id": "va-07",
       "district": 7,
-      "as_of": "2026-08-22",
+      "as_of": "2026-08-26",
       "model_version": "seat-v1.1",
-      "prob_dem": 0.9733,
-      "prob_rep": 0.0267,
-      "mu_dem_two_party": 0.6585,
-      "mu_fundamentals": 0.6585,
+      "prob_dem": 0.9693,
+      "prob_rep": 0.0307,
+      "mu_dem_two_party": 0.6535,
+      "mu_fundamentals": 0.6535,
       "mu_ols": 0.6185,
-      "share_lo": 0.5534,
-      "share_hi": 0.7637,
+      "share_lo": 0.5484,
+      "share_hi": 0.7587,
       "sigma": 0.0821,
       "blend": "fundamentals_only",
       "plain_language": "Democrats are overwhelmingly likely to win",
@@ -1146,7 +1146,7 @@
         "midterm_dem": 0.03,
         "log_ratio_dem": 0.0,
         "qual_dem": 0.0,
-        "nat_env": 0.04,
+        "nat_env": 0.035,
         "polls": 0.0
       },
       "components_raw": {
@@ -1155,12 +1155,12 @@
         "midterm_dem": 1.0,
         "log_ratio_dem": 3.8959,
         "qual_dem": 0.0,
-        "nat_env": 0.0394
+        "nat_env": 0.0338
       },
       "meta": {
         "lean_status": "pres_2024",
         "environment_source": "generic_ballot",
-        "generic_date": "2026-08-22",
+        "generic_date": "2026-08-26",
         "dem_receipts": 12355663.9,
         "rep_receipts": 251134.26
       },
@@ -1239,15 +1239,15 @@
     {
       "race_id": "va-08",
       "district": 8,
-      "as_of": "2026-08-22",
+      "as_of": "2026-08-26",
       "model_version": "seat-v1.1",
       "prob_dem": 0.9999,
       "prob_rep": 0.0001,
-      "mu_dem_two_party": 0.8019,
-      "mu_fundamentals": 0.8019,
+      "mu_dem_two_party": 0.7969,
+      "mu_fundamentals": 0.7969,
       "mu_ols": 0.7619,
-      "share_lo": 0.6968,
-      "share_hi": 0.9071,
+      "share_lo": 0.6918,
+      "share_hi": 0.9021,
       "sigma": 0.0821,
       "blend": "fundamentals_only",
       "plain_language": "Democrats are overwhelmingly likely to win",
@@ -1260,7 +1260,7 @@
         "midterm_dem": 0.03,
         "log_ratio_dem": 0.0,
         "qual_dem": 0.0,
-        "nat_env": 0.04,
+        "nat_env": 0.035,
         "polls": 0.0
       },
       "components_raw": {
@@ -1269,12 +1269,12 @@
         "midterm_dem": 1.0,
         "log_ratio_dem": 4.5746,
         "qual_dem": 0.0,
-        "nat_env": 0.0394
+        "nat_env": 0.0338
       },
       "meta": {
         "lean_status": "pres_2024",
         "environment_source": "generic_ballot",
-        "generic_date": "2026-08-22",
+        "generic_date": "2026-08-26",
         "dem_receipts": 2125761.32,
         "rep_receipts": 21917.19
       },
@@ -1353,15 +1353,15 @@
     {
       "race_id": "va-09",
       "district": 9,
-      "as_of": "2026-08-22",
+      "as_of": "2026-08-26",
       "model_version": "seat-v1.1",
-      "prob_dem": 0.0621,
-      "prob_rep": 0.9379,
-      "mu_dem_two_party": 0.3738,
-      "mu_fundamentals": 0.3738,
+      "prob_dem": 0.055,
+      "prob_rep": 0.945,
+      "mu_dem_two_party": 0.3688,
+      "mu_fundamentals": 0.3688,
       "mu_ols": 0.3338,
-      "share_lo": 0.2686,
-      "share_hi": 0.479,
+      "share_lo": 0.2636,
+      "share_hi": 0.474,
       "sigma": 0.0821,
       "blend": "fundamentals_only",
       "plain_language": "Republicans are likely to win, about 4 in 5",
@@ -1374,7 +1374,7 @@
         "midterm_dem": 0.03,
         "log_ratio_dem": -0.0,
         "qual_dem": 0.0,
-        "nat_env": 0.04,
+        "nat_env": 0.035,
         "polls": 0.0
       },
       "components_raw": {
@@ -1383,12 +1383,12 @@
         "midterm_dem": 1.0,
         "log_ratio_dem": -3.0648,
         "qual_dem": 0.0,
-        "nat_env": 0.0394
+        "nat_env": 0.0338
       },
       "meta": {
         "lean_status": "pres_2024",
         "environment_source": "generic_ballot",
-        "generic_date": "2026-08-22",
+        "generic_date": "2026-08-26",
         "dem_receipts": 85335.47,
         "rep_receipts": 1828838.6
       },
@@ -1467,15 +1467,15 @@
     {
       "race_id": "va-10",
       "district": 10,
-      "as_of": "2026-08-22",
+      "as_of": "2026-08-26",
       "model_version": "seat-v1.1",
-      "prob_dem": 0.9837,
-      "prob_rep": 0.0163,
-      "mu_dem_two_party": 0.6755,
-      "mu_fundamentals": 0.6755,
+      "prob_dem": 0.9811,
+      "prob_rep": 0.0189,
+      "mu_dem_two_party": 0.6705,
+      "mu_fundamentals": 0.6705,
       "mu_ols": 0.6355,
-      "share_lo": 0.5703,
-      "share_hi": 0.7806,
+      "share_lo": 0.5653,
+      "share_hi": 0.7756,
       "sigma": 0.0821,
       "blend": "fundamentals_only",
       "plain_language": "Democrats are overwhelmingly likely to win",
@@ -1488,7 +1488,7 @@
         "midterm_dem": 0.03,
         "log_ratio_dem": 0.0,
         "qual_dem": 0.0,
-        "nat_env": 0.04,
+        "nat_env": 0.035,
         "polls": 0.0
       },
       "components_raw": {
@@ -1497,12 +1497,12 @@
         "midterm_dem": 1.0,
         "log_ratio_dem": 2.3892,
         "qual_dem": 0.0,
-        "nat_env": 0.0394
+        "nat_env": 0.0338
       },
       "meta": {
         "lean_status": "pres_2024",
         "environment_source": "generic_ballot",
-        "generic_date": "2026-08-22",
+        "generic_date": "2026-08-26",
         "dem_receipts": 1170445.74,
         "rep_receipts": 107333.72
       },
@@ -1581,15 +1581,15 @@
     {
       "race_id": "va-11",
       "district": 11,
-      "as_of": "2026-08-22",
+      "as_of": "2026-08-26",
       "model_version": "seat-v1.1",
-      "prob_dem": 0.9991,
-      "prob_rep": 0.0009,
-      "mu_dem_two_party": 0.7553,
-      "mu_fundamentals": 0.7553,
+      "prob_dem": 0.9989,
+      "prob_rep": 0.0011,
+      "mu_dem_two_party": 0.7503,
+      "mu_fundamentals": 0.7503,
       "mu_ols": 0.7153,
-      "share_lo": 0.6501,
-      "share_hi": 0.8604,
+      "share_lo": 0.6451,
+      "share_hi": 0.8554,
       "sigma": 0.0821,
       "blend": "fundamentals_only",
       "plain_language": "Democrats are overwhelmingly likely to win",
@@ -1602,7 +1602,7 @@
         "midterm_dem": 0.03,
         "log_ratio_dem": 0.0,
         "qual_dem": 0.0,
-        "nat_env": 0.04,
+        "nat_env": 0.035,
         "polls": 0.0
       },
       "components_raw": {
@@ -1611,12 +1611,12 @@
         "midterm_dem": 1.0,
         "log_ratio_dem": 6.1931,
         "qual_dem": 0.0,
-        "nat_env": 0.0394
+        "nat_env": 0.0338
       },
       "meta": {
         "lean_status": "pres_2024",
         "environment_source": "generic_ballot",
-        "generic_date": "2026-08-22",
+        "generic_date": "2026-08-26",
         "dem_receipts": 2758960.53,
         "rep_receipts": 5637.08
       },

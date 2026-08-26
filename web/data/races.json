@@ -2,8 +2,8 @@
   "version": 2,
   "map_version": "2021",
   "election_date": "2026-11-03",
-  "as_of": "2026-08-22",
-  "days_until_election": 73,
+  "as_of": "2026-08-26",
+  "days_until_election": 69,
   "notes": "Canonical race registry: all 11 Virginia House seats plus the Class 2 Senate seat, 2026-11-03, 2021 court map. House seats carry a district; the statewide Senate race (va-sen) carries district=null and is excluded from the House-fit seat model. district_lean is 2024 presidential two-party Democratic share.",
   "races": [
     {
@@ -55,7 +55,7 @@
         ]
       },
       "ratings": [],
-      "days_until_election": 73,
+      "days_until_election": 69,
       "label": "VA-1"
     },
     {
@@ -116,7 +116,7 @@
         ]
       },
       "ratings": [],
-      "days_until_election": 73,
+      "days_until_election": 69,
       "label": "VA-2"
     },
     {
@@ -168,7 +168,7 @@
         ]
       },
       "ratings": [],
-      "days_until_election": 73,
+      "days_until_election": 69,
       "label": "VA-3"
     },
     {
@@ -220,7 +220,7 @@
         ]
       },
       "ratings": [],
-      "days_until_election": 73,
+      "days_until_election": 69,
       "label": "VA-4"
     },
     {
@@ -280,7 +280,7 @@
         ]
       },
       "ratings": [],
-      "days_until_election": 73,
+      "days_until_election": 69,
       "label": "VA-5"
     },
     {
@@ -332,7 +332,7 @@
         ]
       },
       "ratings": [],
-      "days_until_election": 73,
+      "days_until_election": 69,
       "label": "VA-6"
     },
     {
@@ -384,7 +384,7 @@
         ]
       },
       "ratings": [],
-      "days_until_election": 73,
+      "days_until_election": 69,
       "label": "VA-7"
     },
     {
@@ -436,7 +436,7 @@
         ]
       },
       "ratings": [],
-      "days_until_election": 73,
+      "days_until_election": 69,
       "label": "VA-8"
     },
     {
@@ -488,7 +488,7 @@
         ]
       },
       "ratings": [],
-      "days_until_election": 73,
+      "days_until_election": 69,
       "label": "VA-9"
     },
     {
@@ -540,7 +540,7 @@
         ]
       },
       "ratings": [],
-      "days_until_election": 73,
+      "days_until_election": 69,
       "label": "VA-10"
     },
     {
@@ -592,7 +592,7 @@
         ]
       },
       "ratings": [],
-      "days_until_election": 73,
+      "days_until_election": 69,
       "label": "VA-11"
     },
     {
@@ -658,7 +658,7 @@
         ]
       },
       "ratings": [],
-      "days_until_election": 73,
+      "days_until_election": 69,
       "label": "VA-Sen"
     }
   ]
