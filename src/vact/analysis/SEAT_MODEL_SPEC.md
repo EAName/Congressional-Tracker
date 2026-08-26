@@ -98,6 +98,67 @@ had ≥60% win probability, minus AK-AL (RCV). Source URL is in
 `config/seat_model.yaml`. Metric: Brier vs an always-incumbent baseline
 (open seats dropped from that baseline).
 
+## Tested and rejected
+
+Measured by leave-one-cycle-out Brier over the five training cycles (n=1,946),
+not by the 12-race 2022 holdout, which is too small to separate candidate
+models. Baseline is `seat-v1.1` as shipped: **0.0702**.
+
+### Per-district elasticity of the national environment
+
+`nat_env` is applied uniformly — a +1pp generic-ballot move shifts every
+district's μ by +1pp. The obvious objection is that real districts differ in how
+hard they swing with the national environment. Three specifications were tried:
+
+| specification | LOCO Brier | verdict |
+|---|---|---|
+| uniform swing (shipped) | 0.0702 | — |
+| `nat_env × \|lean\|`, coefficient estimated | **0.0685** | **rejected** |
+| `nat_env × exp(-k·\|lean\|)`, k grid-searched | 0.0691 at k=6 | rejected |
+
+The linear form gives the best Brier of anything tested and is still wrong. Its
+fitted coefficient is −5.697, so the effective environment multiplier
+`1 + β·|lean|` crosses zero at `|lean| = 0.176` and inverts beyond it: **28% of
+training rows, and 4 of 11 Virginia districts**, would respond to a pro-
+Democratic national environment by moving toward Republicans. VA-8 (Beyer,
+|lean| 0.262) gets a multiplier of −0.49. The Brier gain is free money from
+seats already pinned near P=1, where a sign error costs nothing in the metric.
+
+The constrained form cannot invert, but improves monotonically through k=6 with
+no interior optimum — damping safe-seat response to 21%. That is not an
+elasticity being identified; it is shrinkage arriving through the environment
+term, because a damped `nat_env` leaves more variance for OLS to absorb.
+
+### Heteroskedastic σ
+
+Residual RMSE really is about 3× higher in the most marginal districts than in
+the 0.15–0.25 lean band, and 82% of Brier loss sits in the three most marginal
+bins against 2.8% in the safest. That suggests a σ that widens as `|lean| → 0`.
+It does not work:
+
+| σ model | LOCO Brier |
+|---|---|
+| constant (shipped) | **0.0702** |
+| `σ·(1 + 0.5·exp(-\|lean\|/0.05))` | 0.0728 |
+| `σ·(1 + 2.0·exp(-\|lean\|/0.05))` | 0.0801 |
+| `σ·(1 + 0.5·min(1, \|lean\|/0.20))` — opposite direction | 0.0730 |
+
+Monotonically worse in both directions; constant σ sits at a local optimum.
+Brier does not reward matching residual variance, it rewards being decisive when
+correct. Widening σ in marginal seats pulls P toward 0.5, and the model gets
+more than half of those races right, so hedging costs more than the misses save.
+The marginal bin carries high loss because those races are genuinely hard, not
+because the model is miscalibrated about them.
+
+### What would change this
+
+A specification that constrains the multiplier to `(0, 1]` *and* has an interior
+optimum, or an elasticity estimated from a source other than lean itself
+(district-level swing history, which redistricting makes hard to panel). Absent
+that, uniform swing is the defensible choice — not because it is obviously
+right, but because the alternatives tested either invert the environment or fail
+to converge.
+
 ## Decision rules
 
 - Same-day re-append of `(race_id, date, model_version)` is a no-op.
@@ -110,4 +171,5 @@ had ≥60% win probability, minus AK-AL (RCV). Source URL is in
 | version | date | change | reason |
 |---|---|---|---|
 | seat-v1.0 | 2026-08-19 | Initial freeze | Prompt 13 pre-registration |
+| seat-v1.1 | 2026-08-22 | Documented three rejected alternatives (per-district elasticity ×2, heteroskedastic σ) under **Tested and rejected**. No functional-form change, so no version bump. |
 | seat-v1.1 | 2026-08-20 | Incumbency index rebuilt from all-race plurality winners; `qual_dem` requires a win two or more cycles back and no win in the preceding cycle | v1.0 coded 27.8% of training races as open seats (real rate ~10%) because top-two and fusion races were dropped from the winner index. `qual_dem` absorbed the resulting misclassified safe-seat incumbents at +12.5pp, which put a challenger at 80% win probability in a Trump+12 district. Holdout Brier moved 0.2196 → 0.2566, but the 12-race holdout is too small to adjudicate and the v1.0 figure was computed on the same contaminated features. |

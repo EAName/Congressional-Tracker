@@ -184,3 +184,28 @@ def test_training_extract_incumbency_is_not_contaminated() -> None:
     assert qual_pos, "no qual_dem=1 rows at all — the flag stopped firing"
     # A real quality signal is a few points, not the 20pp gap v1.0 produced.
     assert statistics.mean(qual_pos) - statistics.mean(base) < 0.12
+
+
+def test_uniform_swing_stays_uniform() -> None:
+    """seat-v1.1 applies nat_env identically to every district. Per-district
+    elasticity was tested and rejected (see SEAT_MODEL_SPEC.md "Tested and
+    rejected"): the best-fitting form inverts the environment for 28% of
+    training rows. If someone reintroduces it, this fails."""
+    payload = predict_races(as_of=date(2026, 8, 22))
+    envs = {round(r["decomposition"]["nat_env"], 9) for r in payload["races"]}
+    assert len(envs) == 1, f"nat_env varies across districts: {sorted(envs)}"
+
+
+def test_environment_never_inverts() -> None:
+    """A pro-Democratic national environment must never move a district toward
+    Republicans, whatever its lean. This is the specific failure that
+    disqualified the elasticity variant."""
+    payload = predict_races(as_of=date(2026, 8, 22))
+    grid = payload["env_grid"]
+    for race_id, probs in grid["probs"].items():
+        pairs = list(zip(grid["margin_pp"], probs))
+        for (m1, p1), (m2, p2) in zip(pairs, pairs[1:]):
+            assert p2 >= p1 - 1e-9, (
+                f"{race_id}: P(Dem) fell from {p1} to {p2} as the environment "
+                f"moved from D{m1:+g} to D{m2:+g}"
+            )
