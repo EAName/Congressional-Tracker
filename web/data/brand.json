@@ -3,9 +3,9 @@
   "site_name_note": "",
   "tagline": "Independent Virginia congressional voting analysis",
   "product_name": "Commonwealth Index",
-  "domain": "olddominionvoteindex.org",
-  "domain_note": "TODO: replace with production domain before launch",
-  "canonical_base": "https://olddominionvoteindex.org",
+  "domain": "commonwealthindex.com",
+  "domain_note": "",
+  "canonical_base": "https://commonwealthindex.com",
   "publisher_line": "Independent analysis",
   "github": {
     "repo_url": "https://github.com/EAName/Congressional-Tracker",
