@@ -423,3 +423,16 @@ def test_staleness_is_measured_from_now_not_the_last_poll(tmp_path: Path) -> Non
     default = archive_status(polls_path=path)
     assert default["days_stale"] >= 0
     assert default["as_of"] != rows[0]["end_date"] or default["days_stale"] != 0
+
+
+def test_generated_at_is_distinct_from_the_newest_poll_date(tmp_path: Path) -> None:
+    """The chart footnote says "Updated {date}". Using as_of there made it claim
+    the average was refreshed on the newest poll's field date, which is always in
+    the past and drifts further every day nobody polls."""
+    base = date(2026, 9, 4)
+    rows = [_poll(f"P{i}", base - timedelta(days=20 + i), 50, 45) for i in range(4)]
+    # No as_of override: this is how the weekly rebuild actually calls it.
+    doc = build_generic_ballot(polls_path=_write(tmp_path / "p.csv", rows))
+    assert doc["as_of"] == "2026-08-15"          # newest poll's field midpoint
+    assert doc["generated_at"] == date.today().isoformat()
+    assert doc["generated_at"] > doc["as_of"]

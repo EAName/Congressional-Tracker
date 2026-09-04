@@ -576,7 +576,10 @@ export interface GenericBallotPoll {
 
 export interface GenericBallotDoc {
   version: number;
+  /** Newest poll's field midpoint: the date the average is computed through. */
   as_of: string;
+  /** When this payload was last rebuilt. */
+  generated_at?: string;
   n_polls: number;
   min_polls: number;
   band_coverage: number;
