@@ -553,7 +553,11 @@ def archive_status(
     cfg = load_config()
     polls = load_polls(polls_path)
     doc = build_generic_ballot(polls_path=polls_path, as_of=as_of)
-    today = as_of or (polls[-1].mid_date if polls else date.today())
+    # Staleness is measured from now, not from the newest poll. Defaulting to
+    # the last poll's own date made days_stale identically 0 and reported every
+    # firm as current, which is the opposite of what this command is for. The
+    # average keeps its own as_of, which correctly ends the trend at the last poll.
+    today = as_of or date.today()
     half_life = float(cfg["half_life_days"])
     window = int(round(2 * half_life))
     recent = [p for p in polls if (today - p.mid_date).days <= window]

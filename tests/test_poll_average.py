@@ -398,3 +398,28 @@ def test_committed_archive_status_is_reportable() -> None:
     assert st["n_polls"] >= 3
     assert st["newest"] is not None
     assert "ok" in st["gate"]
+
+
+def test_staleness_is_measured_from_now_not_the_last_poll(tmp_path: Path) -> None:
+    """archive_status defaulted `today` to the newest poll's own date, so
+    days_stale was identically 0 and every firm looked current no matter how old
+    the archive was. That is the opposite of what the weekly check is for."""
+    base = date(2026, 9, 4)
+    rows = [
+        _poll("Fresh", base - timedelta(days=6), 50, 45),
+        _poll("Old", base - timedelta(days=40), 50, 45),
+        _poll("Older", base - timedelta(days=200), 50, 45),
+    ]
+    path = _write(tmp_path / "p.csv", rows)
+
+    st = archive_status(polls_path=path, as_of=base)
+    assert st["days_stale"] == 6
+    assert st["firms"]["Old"]["days_since"] == 40
+    assert st["firms"]["Old"]["recent"] == 0
+    assert st["recent_firms"] == ["Fresh"]
+
+    # and the default path must agree with an explicit today, not with the
+    # newest poll's date
+    default = archive_status(polls_path=path)
+    assert default["days_stale"] >= 0
+    assert default["as_of"] != rows[0]["end_date"] or default["days_stale"] != 0

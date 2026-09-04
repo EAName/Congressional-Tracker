@@ -1,11 +1,11 @@
 {
   "model_version": "senate-v0.1",
-  "as_of": "2026-08-26",
+  "as_of": "2026-09-04",
   "sigma_fundamentals": 0.07337974090800067,
   "generic_ballot": {
-    "date": "2026-08-26",
-    "dem_two_party": 0.53378,
-    "source": "vact poll average (12 primary polls)",
+    "date": "2026-09-04",
+    "dem_two_party": 0.53544,
+    "source": "vact poll average (14 primary polls)",
     "source_url": ""
   },
   "env_grid": {
@@ -91,7 +91,7 @@
     {
       "race_id": "va-sen",
       "state_po": "VA",
-      "as_of": "2026-08-26",
+      "as_of": "2026-09-04",
       "model_version": "senate-v0.1",
       "prob_dem": 0.9336,
       "prob_rep": 0.0664,
