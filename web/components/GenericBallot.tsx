@@ -186,7 +186,7 @@ export default function GenericBallot({ doc }: { doc: GenericBallotDoc }) {
         {gate?.single_poll_influence_pp != null
           ? ` No single poll moves the average by more than ${gate.single_poll_influence_pp.toFixed(1)} points.`
           : ""}{" "}
-        Updated {doc.as_of}.
+        Updated {doc.generated_at ?? doc.as_of}, covering polls through {doc.as_of}.
       </p>
       {gate && !gate.ok ? (
         <p className="gb-note">

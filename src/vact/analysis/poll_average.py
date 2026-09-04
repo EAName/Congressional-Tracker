@@ -316,7 +316,14 @@ def build_generic_ballot(
     effects = estimate_house_effects(polls, conf) if polls else {}
     payload: dict[str, Any] = {
         "version": int(conf["version"]),
+        # as_of is the newest poll's field midpoint: the date the average is
+        # computed THROUGH, since the trend is never extrapolated past it.
         "as_of": (as_of or (polls[-1].mid_date if polls else date.today())).isoformat(),
+        # generated_at is when this payload was rebuilt. Labelling as_of
+        # "Updated" made the chart claim it was last refreshed on the newest
+        # poll's field date, which is always in the past and drifts further
+        # every day nobody polls.
+        "generated_at": date.today().isoformat(),
         "n_polls": len(polls),
         "min_polls": int(conf["min_polls"]),
         "band_coverage": float(conf["band_coverage"]),

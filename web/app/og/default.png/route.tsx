@@ -8,9 +8,12 @@ import racesJson from "@/data/races.json";
 import seatsJson from "@/data/seats.json";
 import senateJson from "@/data/senate.json";
 
-// Static so it is baked at build time and regenerates whenever web/data/*.json
-// changes — the same export step that refreshes the site refreshes the card.
+// Baked at build time so it regenerates whenever web/data/*.json changes, and
+// revalidated daily so the countdown does not freeze at the deploy date. The
+// card carries "N days to 2026-11-03", which drifts by a day every day the site
+// is not rebuilt; without this it would be wrong more often than right.
 export const dynamic = "force-static";
+export const revalidate = 86400;
 const SIZE = { width: 1200, height: 630 };
 
 const meta = metaJson as Meta;
