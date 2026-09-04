@@ -1,11 +1,11 @@
 {
   "model_version": "seat-v1.1",
-  "as_of": "2026-08-26",
+  "as_of": "2026-09-04",
   "sigma_fundamentals": 0.08207134387873016,
   "generic_ballot": {
-    "date": "2026-08-26",
-    "dem_two_party": 0.53378,
-    "source": "vact poll average (12 primary polls)",
+    "date": "2026-09-04",
+    "dem_two_party": 0.53544,
+    "source": "vact poll average (14 primary polls)",
     "source_url": ""
   },
   "env_grid": {
@@ -441,7 +441,7 @@
     {
       "race_id": "va-01",
       "district": 1,
-      "as_of": "2026-08-26",
+      "as_of": "2026-09-04",
       "model_version": "seat-v1.1",
       "prob_dem": 0.4352,
       "prob_rep": 0.5648,
@@ -471,12 +471,12 @@
         "midterm_dem": 1.0,
         "log_ratio_dem": -0.6382,
         "qual_dem": 0.0,
-        "nat_env": 0.0338
+        "nat_env": 0.0354
       },
       "meta": {
         "lean_status": "pres_2024",
         "environment_source": "generic_ballot",
-        "generic_date": "2026-08-26",
+        "generic_date": "2026-09-04",
         "dem_receipts": 2140980.12,
         "rep_receipts": 4053141.52
       },
@@ -555,7 +555,7 @@
     {
       "race_id": "va-02",
       "district": 2,
-      "as_of": "2026-08-26",
+      "as_of": "2026-09-04",
       "model_version": "seat-v1.1",
       "prob_dem": 0.7449,
       "prob_rep": 0.2551,
@@ -585,12 +585,12 @@
         "midterm_dem": 1.0,
         "log_ratio_dem": -0.2451,
         "qual_dem": 1.0,
-        "nat_env": 0.0338
+        "nat_env": 0.0354
       },
       "meta": {
         "lean_status": "pres_2024",
         "environment_source": "generic_ballot",
-        "generic_date": "2026-08-26",
+        "generic_date": "2026-09-04",
         "dem_receipts": 4659795.3,
         "rep_receipts": 5954338.07
       },
@@ -669,7 +669,7 @@
     {
       "race_id": "va-03",
       "district": 3,
-      "as_of": "2026-08-26",
+      "as_of": "2026-09-04",
       "model_version": "seat-v1.1",
       "prob_dem": 0.9988,
       "prob_rep": 0.0012,
@@ -699,12 +699,12 @@
         "midterm_dem": 1.0,
         "log_ratio_dem": 4.6538,
         "qual_dem": 0.0,
-        "nat_env": 0.0338
+        "nat_env": 0.0354
       },
       "meta": {
         "lean_status": "pres_2024",
         "environment_source": "generic_ballot",
-        "generic_date": "2026-08-26",
+        "generic_date": "2026-09-04",
         "dem_receipts": 688200.26,
         "rep_receipts": 6554.63
       },
@@ -783,7 +783,7 @@
     {
       "race_id": "va-04",
       "district": 4,
-      "as_of": "2026-08-26",
+      "as_of": "2026-09-04",
       "model_version": "seat-v1.1",
       "prob_dem": 0.9985,
       "prob_rep": 0.0015,
@@ -813,12 +813,12 @@
         "midterm_dem": 1.0,
         "log_ratio_dem": 13.9423,
         "qual_dem": 0.0,
-        "nat_env": 0.0338
+        "nat_env": 0.0354
       },
       "meta": {
         "lean_status": "pres_2024",
         "environment_source": "generic_ballot",
-        "generic_date": "2026-08-26",
+        "generic_date": "2026-09-04",
         "dem_receipts": 1135225.39,
         "rep_receipts": 0.0
       },
@@ -897,7 +897,7 @@
     {
       "race_id": "va-05",
       "district": 5,
-      "as_of": "2026-08-26",
+      "as_of": "2026-09-04",
       "model_version": "seat-v1.1",
       "prob_dem": 0.5859,
       "prob_rep": 0.4141,
@@ -927,12 +927,12 @@
         "midterm_dem": 1.0,
         "log_ratio_dem": 0.1833,
         "qual_dem": 1.0,
-        "nat_env": 0.0338
+        "nat_env": 0.0354
       },
       "meta": {
         "lean_status": "pres_2024",
         "environment_source": "generic_ballot",
-        "generic_date": "2026-08-26",
+        "generic_date": "2026-09-04",
         "dem_receipts": 2140401.63,
         "rep_receipts": 1781840.34
       },
@@ -1011,7 +1011,7 @@
     {
       "race_id": "va-06",
       "district": 6,
-      "as_of": "2026-08-26",
+      "as_of": "2026-09-04",
       "model_version": "seat-v1.1",
       "prob_dem": 0.1947,
       "prob_rep": 0.8053,
@@ -1041,12 +1041,12 @@
         "midterm_dem": 1.0,
         "log_ratio_dem": 0.1569,
         "qual_dem": 0.0,
-        "nat_env": 0.0338
+        "nat_env": 0.0354
       },
       "meta": {
         "lean_status": "pres_2024",
         "environment_source": "generic_ballot",
-        "generic_date": "2026-08-26",
+        "generic_date": "2026-09-04",
         "dem_receipts": 1686322.36,
         "rep_receipts": 1441436.38
       },
@@ -1125,7 +1125,7 @@
     {
       "race_id": "va-07",
       "district": 7,
-      "as_of": "2026-08-26",
+      "as_of": "2026-09-04",
       "model_version": "seat-v1.1",
       "prob_dem": 0.9693,
       "prob_rep": 0.0307,
@@ -1155,12 +1155,12 @@
         "midterm_dem": 1.0,
         "log_ratio_dem": 3.8959,
         "qual_dem": 0.0,
-        "nat_env": 0.0338
+        "nat_env": 0.0354
       },
       "meta": {
         "lean_status": "pres_2024",
         "environment_source": "generic_ballot",
-        "generic_date": "2026-08-26",
+        "generic_date": "2026-09-04",
         "dem_receipts": 12355663.9,
         "rep_receipts": 251134.26
       },
@@ -1239,7 +1239,7 @@
     {
       "race_id": "va-08",
       "district": 8,
-      "as_of": "2026-08-26",
+      "as_of": "2026-09-04",
       "model_version": "seat-v1.1",
       "prob_dem": 0.9999,
       "prob_rep": 0.0001,
@@ -1269,12 +1269,12 @@
         "midterm_dem": 1.0,
         "log_ratio_dem": 4.5746,
         "qual_dem": 0.0,
-        "nat_env": 0.0338
+        "nat_env": 0.0354
       },
       "meta": {
         "lean_status": "pres_2024",
         "environment_source": "generic_ballot",
-        "generic_date": "2026-08-26",
+        "generic_date": "2026-09-04",
         "dem_receipts": 2125761.32,
         "rep_receipts": 21917.19
       },
@@ -1353,7 +1353,7 @@
     {
       "race_id": "va-09",
       "district": 9,
-      "as_of": "2026-08-26",
+      "as_of": "2026-09-04",
       "model_version": "seat-v1.1",
       "prob_dem": 0.055,
       "prob_rep": 0.945,
@@ -1383,12 +1383,12 @@
         "midterm_dem": 1.0,
         "log_ratio_dem": -3.0648,
         "qual_dem": 0.0,
-        "nat_env": 0.0338
+        "nat_env": 0.0354
       },
       "meta": {
         "lean_status": "pres_2024",
         "environment_source": "generic_ballot",
-        "generic_date": "2026-08-26",
+        "generic_date": "2026-09-04",
         "dem_receipts": 85335.47,
         "rep_receipts": 1828838.6
       },
@@ -1467,7 +1467,7 @@
     {
       "race_id": "va-10",
       "district": 10,
-      "as_of": "2026-08-26",
+      "as_of": "2026-09-04",
       "model_version": "seat-v1.1",
       "prob_dem": 0.9811,
       "prob_rep": 0.0189,
@@ -1497,12 +1497,12 @@
         "midterm_dem": 1.0,
         "log_ratio_dem": 2.3892,
         "qual_dem": 0.0,
-        "nat_env": 0.0338
+        "nat_env": 0.0354
       },
       "meta": {
         "lean_status": "pres_2024",
         "environment_source": "generic_ballot",
-        "generic_date": "2026-08-26",
+        "generic_date": "2026-09-04",
         "dem_receipts": 1170445.74,
         "rep_receipts": 107333.72
       },
@@ -1581,7 +1581,7 @@
     {
       "race_id": "va-11",
       "district": 11,
-      "as_of": "2026-08-26",
+      "as_of": "2026-09-04",
       "model_version": "seat-v1.1",
       "prob_dem": 0.9989,
       "prob_rep": 0.0011,
@@ -1611,12 +1611,12 @@
         "midterm_dem": 1.0,
         "log_ratio_dem": 6.1931,
         "qual_dem": 0.0,
-        "nat_env": 0.0338
+        "nat_env": 0.0354
       },
       "meta": {
         "lean_status": "pres_2024",
         "environment_source": "generic_ballot",
-        "generic_date": "2026-08-26",
+        "generic_date": "2026-09-04",
         "dem_receipts": 2758960.53,
         "rep_receipts": 5637.08
       },
