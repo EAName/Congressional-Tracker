@@ -939,6 +939,34 @@ def valence_set_cmd(
     typer.echo(f"Set valence[{vote_id}, {impact_tag}] = {valence:+d} (HUMAN).")
 
 
+@valence_app.command("worksheet")
+def valence_worksheet_cmd(
+    chamber: str | None = typer.Option(
+        None, "--chamber", help="Limit to one chamber, e.g. Senate."
+    ),
+    out: Path | None = typer.Option(None, "--out"),
+    warehouse: Path | None = typer.Option(None, "--warehouse"),
+) -> None:
+    """Write a blind adjudication worksheet for every pending (vote, theme) pair."""
+    from vact.analysis.worksheet import build_worksheet_rows, write_worksheet
+
+    conn = connect(warehouse)
+    try:
+        ensure_schema(conn)
+        rows = build_worksheet_rows(conn, chamber=chamber)
+    finally:
+        conn.close()
+    if not rows:
+        typer.echo("nothing pending; no worksheet written")
+        return
+    path = write_worksheet(rows, out)
+    themes: dict[str, int] = {}
+    for r in rows:
+        themes[r["theme"]] = themes.get(r["theme"], 0) + 1
+    breakdown = ", ".join(f"{k} {v}" for k, v in sorted(themes.items(), key=lambda kv: -kv[1]))
+    typer.echo(f"wrote {path} — {len(rows)} pending pair(s): {breakdown}")
+
+
 @valence_app.command("apply-worksheet")
 def valence_apply_worksheet_cmd(
     worksheet: Path | None = typer.Option(None, "--worksheet"),

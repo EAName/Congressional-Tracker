@@ -15,11 +15,50 @@ from __future__ import annotations
 import csv
 from dataclasses import dataclass, field
 from pathlib import Path
+from collections.abc import Sequence
 from typing import Any
 
 from vact.paths import DATA_DIR
 
 WORKSHEET_PATH = DATA_DIR / "adjudication_worksheet.csv"
+
+# The blind surface. Party, caucus splits and member positions are deliberately
+# absent: the spec requires valence to be set without seeing who voted how, and
+# the cheapest way to guarantee that is to never put it in the file.
+WORKSHEET_COLUMNS = (
+    "queue",
+    "who",
+    "vote_id",
+    "date",
+    "bill",
+    "theme",
+    "policy_area",
+    "title",
+    "crs_lead",
+    "valence",
+    "plain_language_summary",
+    "coded_blind",
+    "notes",
+)
+
+_PENDING_SQL = """
+SELECT DISTINCT
+    v.vote_id,
+    CAST(v.vote_date AS VARCHAR) AS vote_date,
+    coalesce(v.bill_id, '') AS bill_id,
+    b.impact_tag,
+    coalesce(d.policy_area, '') AS policy_area,
+    coalesce(d.title, '') AS title
+FROM fact_vote v
+JOIN bridge_vote_impact b ON b.vote_id = v.vote_id
+LEFT JOIN dim_bill d ON d.bill_id = v.bill_id
+LEFT JOIN fact_vote_valence val
+       ON val.vote_id = v.vote_id AND val.impact_tag = b.impact_tag
+WHERE val.vote_id IS NULL
+  AND v.vote_category IN ({category_ph})
+  AND (? IS NULL OR v.chamber = ?)
+ORDER BY b.impact_tag, v.vote_date, v.vote_id
+"""
 HISTORICAL_REVIEW_PATH = DATA_DIR / "historical_rollcall_review.csv"
 VALID_VALENCE = {"-1", "0", "1", "+1"}
 
@@ -134,3 +173,63 @@ def apply_historical(entries: list[dict[str, Any]], path: Path | None = None) ->
         out = out.replace(b"\r\n", b"\n").replace(b"\n", b"\r\n")
     dest.write_bytes(out)
     return touched
+
+
+
+def build_worksheet_rows(
+    conn,
+    *,
+    chamber: str | None = None,
+    config: Any | None = None,
+) -> list[dict[str, str]]:
+    """
+    Rows for every (vote, theme) pair that clears category and tagging but has no
+    valence yet, in the blind worksheet shape.
+
+    `valence` and `plain_language_summary` are left empty on purpose. Pre-filling
+    either would be the tool answering the question it is asking, and a title in
+    statute-speak is not a plain-language summary.
+    """
+    from vact.analysis.scoring import load_scoring_config
+
+    cfg = config or load_scoring_config()
+    categories = sorted(cfg.include_categories)
+    sql = _PENDING_SQL.format(category_ph=", ".join("?" for _ in categories))
+    raw = conn.execute(sql, [*categories, chamber, chamber]).fetchall()
+    return [
+        {
+            "queue": "119th",
+            "who": "incumbents",
+            "vote_id": vote_id,
+            "date": vote_date,
+            "bill": bill_id,
+            "theme": impact_tag,
+            "policy_area": policy_area,
+            "title": title,
+            "crs_lead": "",
+            "valence": "",
+            "plain_language_summary": "",
+            "coded_blind": "true",
+            "notes": "",
+        }
+        for vote_id, vote_date, bill_id, impact_tag, policy_area, title in raw
+    ]
+
+
+def write_worksheet(rows: Sequence[dict[str, str]], path: Path | None = None) -> Path:
+    """Write a blind worksheet. Refuses to clobber a file that has filled rows."""
+    dest = path or WORKSHEET_PATH
+    if dest.is_file():
+        existing = load_worksheet(dest)
+        filled = [r for r in existing if (r.get("valence") or "").strip()]
+        if filled:
+            raise WorksheetError(
+                f"{dest} already holds {len(filled)} filled row(s); "
+                "apply or move it before regenerating"
+            )
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    with dest.open("w", encoding="utf-8", newline="") as fh:
+        writer = csv.DictWriter(fh, fieldnames=list(WORKSHEET_COLUMNS))
+        writer.writeheader()
+        writer.writerows(rows)
+    return dest
