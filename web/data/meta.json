@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-09-05T00:03:11Z",
+  "generated_at_utc": "2026-09-05T00:56:42Z",
   "map_version": "2021",
   "axis": {
     "name": "small_business_climate",
@@ -20,12 +20,12 @@
     {
       "theme": "ACCESS_TO_CAPITAL",
       "party": "Democrat",
-      "eb_center": -0.3125,
+      "eb_center": -0.5238,
       "weighted_median": -0.3333,
-      "prior_alpha": 5.5,
-      "prior_beta": 10.5,
-      "prior_source": "degenerate",
-      "n_members": 5
+      "prior_alpha": 1.394558,
+      "prior_beta": 4.462585,
+      "prior_source": "moments",
+      "n_members": 7
     },
     {
       "theme": "ACCESS_TO_CAPITAL",
@@ -80,12 +80,12 @@
     {
       "theme": "INPUT_COSTS",
       "party": "Democrat",
-      "eb_center": -0.9231,
+      "eb_center": -0.715,
       "weighted_median": -1.0,
-      "prior_alpha": 0.121795,
-      "prior_beta": 3.044872,
+      "prior_alpha": 0.258287,
+      "prior_beta": 1.554473,
       "prior_source": "moments",
-      "n_members": 6
+      "n_members": 8
     },
     {
       "theme": "INPUT_COSTS",
@@ -100,12 +100,12 @@
     {
       "theme": "REGULATORY_BURDEN",
       "party": "Democrat",
-      "eb_center": -0.881,
+      "eb_center": -0.8274,
       "weighted_median": -0.8571,
-      "prior_alpha": 0.41836,
-      "prior_beta": 6.610095,
+      "prior_alpha": 0.828469,
+      "prior_beta": 8.770341,
       "prior_source": "moments",
-      "n_members": 6
+      "n_members": 8
     },
     {
       "theme": "REGULATORY_BURDEN",
@@ -120,12 +120,12 @@
     {
       "theme": "TAX_BURDEN",
       "party": "Democrat",
-      "eb_center": -0.2222,
+      "eb_center": -0.1667,
       "weighted_median": -0.3333,
-      "prior_alpha": 1.078976,
-      "prior_beta": 1.695534,
+      "prior_alpha": 0.434028,
+      "prior_beta": 0.607639,
       "prior_source": "moments",
-      "n_members": 6
+      "n_members": 8
     },
     {
       "theme": "TAX_BURDEN",
