@@ -20,8 +20,14 @@ import type {
   SeatsDoc,
   SenateDoc,
   SenateRace,
+  TimeSeriesCell,
   TimeSeriesDoc,
 } from "@/lib/types";
+
+/** Contested-vote count at the newest point, which is what sufficiency is judged on. */
+function lastN(cell: TimeSeriesCell): number {
+  return cell.points[cell.points.length - 1]?.n ?? 0;
+}
 
 export default function RaceWorkspace({
   entry,
@@ -57,12 +63,22 @@ export default function RaceWorkspace({
   // Same source as the head-to-head block, so the two cannot contradict each other
   // about what is outstanding on this race.
   const pendingValence = headToHead?.races?.[entry.race_id]?.pending_valence ?? 0;
+  // meta.themes is alphabetical, so themes[0] is whatever sorts first rather than
+  // whatever the member has evidence on. For Warner that is a single-vote cell,
+  // which made the page headline its weakest number. Prefer a cell that clears
+  // the contested-vote floor before falling back to the nominal theme.
+  const mine = useMemo(
+    () => timeseries.series.filter((s) => s.bioguide_id === incumbentId),
+    [timeseries.series, incumbentId],
+  );
   const cell = useMemo(
     () =>
-      timeseries.series.find((s) => s.bioguide_id === incumbentId && s.theme === theme) ??
-      timeseries.series.find((s) => s.bioguide_id === incumbentId) ??
+      mine.find((s) => s.theme === theme && lastN(s) >= meta.sufficient_min) ??
+      mine.filter((s) => lastN(s) >= meta.sufficient_min).sort((a, b) => lastN(b) - lastN(a))[0] ??
+      mine.find((s) => s.theme === theme) ??
+      mine[0] ??
       null,
-    [timeseries.series, incumbentId, theme],
+    [mine, theme, meta.sufficient_min],
   );
 
   if (!houseGrid && !senateGrid) {
@@ -215,6 +231,7 @@ export default function RaceWorkspace({
             cell={cell}
             selectedId={incumbentId}
             themeLabel={themeLabel(cell?.theme ?? theme)}
+            sufficientMin={meta.sufficient_min}
           />
         )}
       </Module>

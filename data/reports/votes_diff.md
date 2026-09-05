@@ -1,10 +1,10 @@
 # votes.csv diff
 
-Generated `2026-08-22T05:59:06Z`.
+Generated `2026-09-05T00:56:26Z`.
 
 - previous rows: 607
-- current rows: 607
-- added keys: 0
+- current rows: 647
+- added keys: 40
 - removed keys: 0
 - changed keys: 0
 
@@ -12,7 +12,46 @@ Key = `(member_bioguide_id, rollcall_id, theme)`.
 
 ## Added
 
-_none_
+- `K000384` · `s-119-1-102` · `TAX_BURDEN`
+- `K000384` · `s-119-1-151` · `TAX_BURDEN`
+- `K000384` · `s-119-1-153` · `ACCESS_TO_CAPITAL`
+- `K000384` · `s-119-1-160` · `INPUT_COSTS`
+- `K000384` · `s-119-1-162` · `INPUT_COSTS`
+- `K000384` · `s-119-1-207` · `INPUT_COSTS`
+- `K000384` · `s-119-1-223` · `INPUT_COSTS`
+- `K000384` · `s-119-1-225` · `INPUT_COSTS`
+- `K000384` · `s-119-1-228` · `INPUT_COSTS`
+- `K000384` · `s-119-1-229` · `REGULATORY_BURDEN`
+- `K000384` · `s-119-1-232` · `REGULATORY_BURDEN`
+- `K000384` · `s-119-1-277` · `REGULATORY_BURDEN`
+- `K000384` · `s-119-1-279` · `REGULATORY_BURDEN`
+- `K000384` · `s-119-1-281` · `REGULATORY_BURDEN`
+- `K000384` · `s-119-1-594` · `INPUT_COSTS`
+- `K000384` · `s-119-1-598` · `INPUT_COSTS`
+- `K000384` · `s-119-1-599` · `INPUT_COSTS`
+- `K000384` · `s-119-1-600` · `INPUT_COSTS`
+- `K000384` · `s-119-1-632` · `INPUT_COSTS`
+- `K000384` · `s-119-1-97` · `REGULATORY_BURDEN`
+- `W000805` · `s-119-1-102` · `TAX_BURDEN`
+- `W000805` · `s-119-1-151` · `TAX_BURDEN`
+- `W000805` · `s-119-1-153` · `ACCESS_TO_CAPITAL`
+- `W000805` · `s-119-1-160` · `INPUT_COSTS`
+- `W000805` · `s-119-1-162` · `INPUT_COSTS`
+- `W000805` · `s-119-1-207` · `INPUT_COSTS`
+- `W000805` · `s-119-1-223` · `INPUT_COSTS`
+- `W000805` · `s-119-1-225` · `INPUT_COSTS`
+- `W000805` · `s-119-1-228` · `INPUT_COSTS`
+- `W000805` · `s-119-1-229` · `REGULATORY_BURDEN`
+- `W000805` · `s-119-1-232` · `REGULATORY_BURDEN`
+- `W000805` · `s-119-1-277` · `REGULATORY_BURDEN`
+- `W000805` · `s-119-1-279` · `REGULATORY_BURDEN`
+- `W000805` · `s-119-1-281` · `REGULATORY_BURDEN`
+- `W000805` · `s-119-1-594` · `INPUT_COSTS`
+- `W000805` · `s-119-1-598` · `INPUT_COSTS`
+- `W000805` · `s-119-1-599` · `INPUT_COSTS`
+- `W000805` · `s-119-1-600` · `INPUT_COSTS`
+- `W000805` · `s-119-1-632` · `INPUT_COSTS`
+- `W000805` · `s-119-1-97` · `REGULATORY_BURDEN`
 
 ## Removed
 
