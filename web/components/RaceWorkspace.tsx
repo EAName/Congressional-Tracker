@@ -54,6 +54,9 @@ export default function RaceWorkspace({
   );
   const theme = meta.themes[0];
   const incumbentId = entry.incumbent.bioguide_id ?? null;
+  // Same source as the head-to-head block, so the two cannot contradict each other
+  // about what is outstanding on this race.
+  const pendingValence = headToHead?.races?.[entry.race_id]?.pending_valence ?? 0;
   const cell = useMemo(
     () =>
       timeseries.series.find((s) => s.bioguide_id === incumbentId && s.theme === theme) ??
@@ -193,11 +196,19 @@ export default function RaceWorkspace({
       >
         {isSenate && !cell ? (
           <p className="cap">
-            {entry.incumbent.name}&rsquo;s Senate roll calls are ingested, but no
-            PASSAGE/AMENDMENT votes carry HUMAN-adjudicated theme valence yet (current
-            Senate impact tags are procedural-only and excluded from scoring). This chart
-            publishes after substantive Senate votes are tagged, valence is set to HUMAN,
-            and votes are re-exported.
+            {pendingValence > 0 ? (
+              <>
+                {entry.incumbent.name}&rsquo;s Senate roll calls are ingested and{" "}
+                {pendingValence} {pendingValence === 1 ? "vote is" : "votes are"} tagged to a
+                theme. The series publishes once those carry a HUMAN-adjudicated valence;
+                nothing else is outstanding.
+              </>
+            ) : (
+              <>
+                {entry.incumbent.name}&rsquo;s Senate roll calls are ingested, but no
+                scoreable vote carries a theme tag yet, so there is nothing to adjudicate.
+              </>
+            )}
           </p>
         ) : (
           <ScoreOverTime
