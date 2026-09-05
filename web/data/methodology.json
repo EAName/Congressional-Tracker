@@ -284,13 +284,13 @@
     }
   ],
   "symmetry_audit": {
-    "inclusion_spec_version": "vote-inclusion-v1.1",
+    "inclusion_spec_version": "vote-inclusion-v1.2",
     "spec_path": "src/vact/analysis/VOTE_INCLUSION_SPEC.md",
     "excluded_path": "data/votes_excluded.csv",
     "excluded_counts_by_reason": {
-      "PROCEDURAL_CATEGORY": 1599,
-      "NO_IMPACT_TAG": 3036,
-      "UNADJUDICATED_DIRECTION": 103,
+      "PROCEDURAL_CATEGORY": 1563,
+      "NO_IMPACT_TAG": 3051,
+      "UNADJUDICATED_DIRECTION": 124,
       "RULE_RESOLUTION": 337,
       "NEAR_UNANIMOUS": 1
     },
@@ -418,19 +418,22 @@
       },
       "by_reason": {
         "Unknown": {
-          "PROCEDURAL_CATEGORY": 1571,
-          "NO_IMPACT_TAG": 3031,
-          "UNADJUDICATED_DIRECTION": 103,
+          "PROCEDURAL_CATEGORY": 1541,
+          "NO_IMPACT_TAG": 3044,
+          "UNADJUDICATED_DIRECTION": 120,
           "RULE_RESOLUTION": 330,
           "NEAR_UNANIMOUS": 1
         },
         "Republican": {
-          "PROCEDURAL_CATEGORY": 12,
+          "PROCEDURAL_CATEGORY": 11,
           "RULE_RESOLUTION": 7,
-          "NO_IMPACT_TAG": 5
+          "NO_IMPACT_TAG": 5,
+          "UNADJUDICATED_DIRECTION": 1
         },
         "Democrat": {
-          "PROCEDURAL_CATEGORY": 16
+          "NO_IMPACT_TAG": 2,
+          "UNADJUDICATED_DIRECTION": 3,
+          "PROCEDURAL_CATEGORY": 11
         }
       },
       "democrat_share_pp": 40.0,

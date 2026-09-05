@@ -12,4 +12,5 @@ INSERT INTO ref_vote_category_rule (rule_id, priority, vote_category, question_r
   (5,  50, 'AMENDMENT',           '(?i)amendment|agreeing to the amendment', NULL, NULL),
   (6,  60, 'PASSAGE',             '(?i)on passage|passage of the bill|agreeing to the (bill|resolution|conference report)', NULL, 'Ordinary passage / adoption'),
   (7,  70, 'PROCEDURAL',          '(?i)previous question|motion to (adjourn|table|proceed|discharge)|ordering the previous|consideration of|motion to concur', NULL, NULL),
+  (9,  65, 'PASSAGE',             '(?i)^on the joint resolution', NULL, 'Senate final passage on a joint resolution. The House says "On Passage" and is caught by rule 6; the Senate says "On the Joint Resolution" and was falling through to the rule-8 fallback, so the same CRA disapproval was scoreable in one chamber and invisible in the other. Anchored: "On the Motion to Proceed" must stay procedural. Joint resolutions only, since they carry force of law; simple and concurrent resolutions do not.'),
   (8, 100, 'PROCEDURAL',          NULL, NULL, 'Fallback when no higher-priority rule matches');

@@ -1458,7 +1458,14 @@
       "status": "no_federal_record",
       "era_caption": null,
       "themes": [],
-      "incumbent_only": true
+      "incumbent_only": true,
+      "pending_valence": 21,
+      "pending_themes": {
+        "INPUT_COSTS": 12,
+        "REGULATORY_BURDEN": 6,
+        "TAX_BURDEN": 2,
+        "ACCESS_TO_CAPITAL": 1
+      }
     }
   }
 }

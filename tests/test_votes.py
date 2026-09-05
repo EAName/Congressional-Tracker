@@ -264,3 +264,33 @@ def test_committed_votes_csv_matches_web_scores_json() -> None:
         for r in published
     }
     assert csv_map == json_map
+
+
+def test_senate_joint_resolution_is_passage_not_procedural() -> None:
+    """The House votes final passage on a joint resolution as "On Passage" and
+    rule 6 catches it; the Senate says "On the Joint Resolution", which matched no
+    rule and fell to the PROCEDURAL fallback. The same CRA disapproval was
+    therefore scoreable in one chamber and invisible in the other."""
+    import duckdb
+
+    from vact.transforms.vote_category import classify_vote_category, ensure_category_rules
+
+    conn = duckdb.connect(":memory:")
+    ensure_category_rules(conn)
+    assert classify_vote_category("On the Joint Resolution", None, conn=conn) == "PASSAGE"
+    assert classify_vote_category("On Passage", None, conn=conn) == "PASSAGE"
+
+    # The rule is anchored at ^ precisely so these stay procedural. An unanchored
+    # "joint resolution" alternative would sweep motions to proceed into scoring.
+    for question in (
+        "On the Motion to Proceed",
+        "On the Motion to Proceed to the Joint Resolution",
+        "On the Motion to Table",
+    ):
+        assert classify_vote_category(question, None, conn=conn) == "PROCEDURAL"
+
+    # Force of law is the line: joint resolutions are signed, simple and
+    # concurrent resolutions are not, so only the first becomes scoreable.
+    assert classify_vote_category("On the Resolution", None, conn=conn) == "PROCEDURAL"
+    assert classify_vote_category("On the Concurrent Resolution", None, conn=conn) == "PROCEDURAL"
+    assert classify_vote_category("On Cloture on the Joint Resolution", None, conn=conn) == "CLOTURE"

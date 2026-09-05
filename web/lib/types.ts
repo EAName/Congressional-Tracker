@@ -510,6 +510,10 @@ export interface HeadToHeadRace {
   congress_eras?: string[];
   themes: HeadToHeadTheme[];
   incumbent_only?: boolean;
+  /** (vote, theme) pairs that clear category and tagging but await valence adjudication. */
+  pending_valence?: number;
+  /** Those pending pairs broken out by theme, largest first. */
+  pending_themes?: Record<string, number>;
 }
 
 export interface HeadToHeadDoc {
