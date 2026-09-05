@@ -414,6 +414,31 @@ def reclassify_cmd(
     typer.echo(f"Reclassify complete. Diff: {path}")
 
 
+@app.command("recategorize")
+def recategorize_cmd(
+    all_: bool = typer.Option(
+        False,
+        "--all",
+        help="Re-derive vote_category for every fact_vote row.",
+    ),
+    confirm: bool = typer.Option(
+        False,
+        "--confirm",
+        help="Required. Refuses without this flag.",
+    ),
+    warehouse: Path | None = typer.Option(None, "--warehouse"),
+) -> None:
+    """Re-derive vote_category from the rule table. Writes recategorize_diff.md first."""
+    from vact.transforms.vote_category import recategorize_all
+
+    if not all_:
+        raise typer.BadParameter("pass --all (partial recategorize is not supported)")
+    if not confirm:
+        raise typer.BadParameter("refusing without --confirm")
+    path = recategorize_all(confirm=True, warehouse_path=warehouse)
+    typer.echo(f"Recategorize complete. Diff: {path}")
+
+
 @sheets_app.command("auth")
 def sheets_auth_cmd() -> None:
     """Browser OAuth login (Desktop client). Saves token for later push/preflight."""

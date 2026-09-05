@@ -119,14 +119,28 @@ export default function HeadToHead({
   }
 
   if (race.status === "no_federal_record" && race.themes.length === 0) {
+    // A queue and a gap read the same on the page unless we say which it is.
+    // When the votes are identified and tagged and only the valence call is
+    // outstanding, name the count rather than implying we have nothing.
+    const pending = race.pending_valence ?? 0;
+    const themes = Object.entries(race.pending_themes ?? {});
     return (
       <div className="h2h-block">
         <p className="cap">
-          {entry.chamber === "Senate" ? (
+          {pending > 0 ? (
             <>
-              No scored Senate voting record on this axis yet for {entry.incumbent.name} (Senate
-              PASSAGE/AMENDMENT tags + HUMAN valence still pending). {entry.challenger.name} has
-              no prior House record to compare.
+              {pending} {entry.chamber} {pending === 1 ? "vote is" : "votes are"} identified and
+              theme-tagged for {entry.incumbent.name}, awaiting valence adjudication before any
+              score publishes
+              {themes.length > 0 ? (
+                <> ({themes.map(([t, n]) => `${themeLabel(t)} ${n}`).join(", ")})</>
+              ) : null}
+              . {entry.challenger.name} has no prior federal voting record to compare.
+            </>
+          ) : entry.chamber === "Senate" ? (
+            <>
+              No scored Senate voting record on this axis yet for {entry.incumbent.name}.{" "}
+              {entry.challenger.name} has no prior House record to compare.
             </>
           ) : (
             <>

@@ -21,7 +21,7 @@ from vact.analysis.scoring import ScoringConfig, load_scoring_config
 from vact.analysis.votes import CSV_COLUMNS, VoteRow
 from vact.analysis.estimators import attach_empirical_bayes_by_era
 from vact.models.legislators import LegislatorRecord
-from vact.paths import REPO_ROOT
+from vact.paths import DATA_DIR, REPO_ROOT
 from vact.sources import legislators as legislator_source
 from vact.transforms.classify import load_rulebook, tags_for_corpus
 from vact.warehouse.connection import ensure_schema
@@ -484,6 +484,33 @@ def era_caption(congresses: Sequence[int], terms: dict[int, dict[str, str]] | No
     return ERA_CAPTION.format(eras=eras)
 
 
+def pending_valence_by_chamber(path: Path | None = None) -> dict[str, dict[str, Any]]:
+    """
+    Count (vote, tag) pairs that clear category and impact-tag eligibility but
+    have no adjudicated valence, per chamber.
+
+    This is the difference between "we have nothing on this member" and "we have
+    the votes and still owe the reader an adjudication". Saying which one it is
+    is the difference between a gap and a queue.
+    """
+    src = path or (DATA_DIR / "votes_excluded.csv")
+    if not src.exists():
+        return {}
+    out: dict[str, dict[str, Any]] = {}
+    with src.open(newline="", encoding="utf-8") as fh:
+        for row in csv.DictReader(fh):
+            if row.get("reason_code") != "UNADJUDICATED_DIRECTION":
+                continue
+            chamber = "Senate" if str(row.get("vote_id", "")).startswith("s-") else "House"
+            entry = out.setdefault(chamber, {"pairs": 0, "themes": {}})
+            entry["pairs"] += 1
+            tag = row.get("impact_tag") or "(untagged)"
+            entry["themes"][tag] = entry["themes"].get(tag, 0) + 1
+    for entry in out.values():
+        entry["themes"] = dict(sorted(entry["themes"].items(), key=lambda kv: -kv[1]))
+    return out
+
+
 def build_head_to_head_payload(
     incumbent_scores: Sequence[dict[str, Any]],
     *,
@@ -524,6 +551,15 @@ def build_head_to_head_payload(
             for theme in sorted(inc_rows)
         ]
 
+    pending = pending_valence_by_chamber()
+
+    def _pending_for(chamber: str) -> dict[str, Any]:
+        """What the reader is owed on this race, when no theme has published yet."""
+        entry = pending.get(chamber)
+        if not entry or not entry["pairs"]:
+            return {}
+        return {"pending_valence": entry["pairs"], "pending_themes": entry["themes"]}
+
     races_out: dict[str, Any] = {}
     for race in reg.races:
         rid = race.race_id
@@ -535,6 +571,7 @@ def build_head_to_head_payload(
                 "era_caption": None,
                 "themes": themes,
                 "incumbent_only": True,
+                **({} if themes else _pending_for(race.chamber)),
             }
             continue
         svc = next(
@@ -548,6 +585,7 @@ def build_head_to_head_payload(
                 "era_caption": None,
                 "themes": themes,
                 "incumbent_only": True,
+                **({} if themes else _pending_for(race.chamber)),
             }
             continue
         ch_bio = svc.bioguide_id
