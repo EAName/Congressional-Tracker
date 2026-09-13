@@ -534,13 +534,25 @@ def build_env_grid_matrix(payload: dict[str, Any] | None = None) -> list[list[An
     for race_id, probs in (grid.get("probs") or {}).items():
         race = races.get(race_id) or {}
         district = race.get("district", "")
-        for margin, p in zip(margins, probs, strict=False):
-            p_dem = float(p)
+        label = f"VA-{district}" if district != "" else ""
+        rows = [(float(m), float(p), False) for m, p in zip(margins, probs, strict=False)]
+        # The forecast runs at the average's exact margin, which usually falls
+        # between grid steps. Emit that point as its own row with the model's
+        # actual P(Dem), rather than leaving the tab with no default or marking a
+        # neighbouring grid step that is not what the site forecasts.
+        on_grid = next((i for i, (m, _, _) in enumerate(rows) if abs(m - default) < 1e-9), None)
+        if on_grid is not None:
+            m, pd, _ = rows[on_grid]
+            rows[on_grid] = (m, float(race.get("prob_dem", pd)), True)
+        elif "prob_dem" in race:
+            rows.append((default, float(race["prob_dem"]), True))
+            rows.sort(key=lambda r: r[0])
+        for margin, p_dem, is_default in rows:
             out.append(
                 [
                     race_id,
-                    f"VA-{district}" if district != "" else "",
-                    "Yes" if abs(margin - default) < 1e-9 else "No",
+                    label,
+                    "Yes" if is_default else "No",
                     _format_margin_pp(margin),
                     margin,
                     round(p_dem, 4),

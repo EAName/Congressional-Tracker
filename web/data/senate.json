@@ -48,7 +48,7 @@
     "step": 0.5,
     "min": -4.0,
     "max": 12.0,
-    "default_margin_pp": 8.0,
+    "default_margin_pp": 7.8,
     "probs": {
       "va-sen": [
         0.7745,
@@ -93,12 +93,12 @@
       "state_po": "VA",
       "as_of": "2026-09-13",
       "model_version": "senate-v0.1",
-      "prob_dem": 0.9419,
-      "prob_rep": 0.0581,
-      "mu_dem_two_party": 0.6153,
-      "mu_fundamentals": 0.6153,
-      "share_lo": 0.5213,
-      "share_hi": 0.7093,
+      "prob_dem": 0.9403,
+      "prob_rep": 0.0597,
+      "mu_dem_two_party": 0.6143,
+      "mu_fundamentals": 0.6143,
+      "share_lo": 0.5203,
+      "share_hi": 0.7083,
       "sigma": 0.0734,
       "blend": "fundamentals_only",
       "plain_language": "Democrats are clear favorites",
@@ -109,7 +109,7 @@
         "intercept": 0.4941,
         "lean_rel_dem": 0.0197,
         "inc_dem": 0.0615,
-        "nat_env": 0.04
+        "nat_env": 0.039
       },
       "meta": {
         "lean_status": "pres_2024",

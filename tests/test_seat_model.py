@@ -209,3 +209,29 @@ def test_environment_never_inverts() -> None:
                 f"{race_id}: P(Dem) fell from {p1} to {p2} as the environment "
                 f"moved from D{m1:+g} to D{m2:+g}"
             )
+
+
+def _assert_forecast_at_exact_margin(payload) -> None:
+    import pytest
+
+    from vact.analysis.seat_model import ENV_MARGIN_MAX, ENV_MARGIN_MIN, generic_to_margin_pp
+
+    exact = max(ENV_MARGIN_MIN, min(ENV_MARGIN_MAX, generic_to_margin_pp(payload["generic_ballot"])))
+    grid = payload["env_grid"]
+    assert grid["default_margin_pp"] == pytest.approx(round(exact, 2))
+    lo = max(m for m in grid["margin_pp"] if m <= exact)
+    hi = min(m for m in grid["margin_pp"] if m >= exact)
+    for race in payload["races"]:
+        at = dict(zip(grid["margin_pp"], race["env_probs"]))
+        bottom, top = sorted((at[lo], at[hi]))
+        assert bottom - 1e-4 <= race["prob_dem"] <= top + 1e-4, race["race_id"]
+
+
+def test_forecast_uses_the_exact_margin_not_the_grid_step() -> None:
+    """The forecast was computed at the average rounded to the slider's half-point
+    step: D+7.8 ran as D+8, overstating Democratic chances by up to half a point
+    and moving every forecast in half-point jumps. It must sit at the exact
+    margin, between the two grid points that bracket it."""
+    from vact.analysis.seat_model import predict_races
+
+    _assert_forecast_at_exact_margin(predict_races())

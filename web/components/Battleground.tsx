@@ -40,7 +40,13 @@ export default function Battleground({
     if (!grid) return [];
     return seats.races.map((seat) => {
       const series = grid.probs[seat.race_id] ?? seat.env_probs ?? [];
-      const p = interpolateGrid(grid.margin_pp, series, margin);
+      // At the current average show the model's own forecast, computed at the
+      // exact margin. Interpolating the half-point grid there would be slightly
+      // off; the grid is for scenarios the slider is dragged to.
+      const p =
+        Math.abs(margin - grid.default_margin_pp) <= 0.05
+          ? seat.prob_dem
+          : interpolateGrid(grid.margin_pp, series, margin);
       return { seat, p };
     });
   }, [seats.races, grid, margin]);
@@ -51,7 +57,10 @@ export default function Battleground({
     const sgrid = senate.env_grid;
     return senate.races.map((race) => {
       const series = sgrid?.probs[race.race_id] ?? race.env_probs ?? [];
-      const p = sgrid ? interpolateGrid(sgrid.margin_pp, series, margin) : race.prob_dem;
+      const p =
+        !sgrid || Math.abs(margin - sgrid.default_margin_pp) <= 0.05
+          ? race.prob_dem
+          : interpolateGrid(sgrid.margin_pp, series, margin);
       return { race, p };
     });
   }, [senate, margin]);
