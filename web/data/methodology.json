@@ -243,6 +243,11 @@
   },
   "changelog": [
     {
+      "sha": "2a849c8",
+      "date": "2026-09-04",
+      "subject": "Apply Warner's Senate valence adjudication; both modules now render"
+    },
+    {
       "sha": "867ab09",
       "date": "2026-08-22",
       "subject": "Close spec/implementation drift and add rigor tooling."

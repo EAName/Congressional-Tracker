@@ -9,7 +9,9 @@ from pathlib import Path
 import pytest
 
 from vact.analysis.poll_average import (
+    Poll,
     PollArchiveError,
+    gate_limits,
     build_generic_ballot,
     environment_support,
     estimate_house_effects,
@@ -287,9 +289,9 @@ def test_committed_archive_firm_influence_is_reported() -> None:
     assert gate["n_firms"] >= 3
 
 
-def test_threshold_is_derived_from_sampling_error_not_picked(tmp_path: Path) -> None:
-    """A fixed constant does not age: as the archive deepens, sampling error
-    falls and a static bar quietly loosens in relative terms."""
+def test_threshold_scales_with_sampling_error(tmp_path: Path) -> None:
+    """A fixed constant does not age. The calibrated bar is simulated from the
+    archive's own sample sizes, so noisier polls must earn a looser threshold."""
     base = date(2026, 8, 16)
     small = [_poll(f"S{i}", base - timedelta(days=i * 3), 52, 48, n=400) for i in range(8)]
     big = [_poll(f"B{i}", base - timedelta(days=i * 3), 52, 48, n=4000) for i in range(8)]
@@ -298,27 +300,54 @@ def test_threshold_is_derived_from_sampling_error_not_picked(tmp_path: Path) -> 
     assert se_small > se_big, "smaller samples must carry more sampling error"
     lim_small = influence_limit_pp(load_polls(_write(tmp_path / "s.csv", small)), as_of=base)
     lim_big = influence_limit_pp(load_polls(_write(tmp_path / "b.csv", big)), as_of=base)
-    assert lim_small > lim_big, "the bar must tighten as the aggregate gets more precise"
+    assert lim_small > lim_big, "the bar must tighten as the polls get more precise"
 
 
-def test_threshold_never_falls_below_its_floor(tmp_path: Path) -> None:
-    """A very precise aggregate must not drive the limit toward zero and start
-    rejecting archives for noise."""
+def test_threshold_is_reproducible(tmp_path: Path) -> None:
+    """Same archive, same threshold. The gate state has to be auditable, so the
+    simulation runs on a fixed seed and a rerun cannot flip it."""
+    from vact.analysis import poll_average as pa
+
     base = date(2026, 8, 16)
-    huge = [_poll(f"H{i}", base - timedelta(days=i), 52, 48, n=50_000) for i in range(30)]
-    polls = load_polls(_write(tmp_path / "h.csv", huge))
-    assert aggregate_sampling_se_pp(polls, as_of=base) < 0.5
-    assert influence_limit_pp(polls, as_of=base) == pytest.approx(0.5)
+    rows = [
+        _poll(f"F{i % 4}", base - timedelta(days=i * 3), 50 + (i % 3), 44, n=900)
+        for i in range(10)
+    ]
+    polls = load_polls(_write(tmp_path / "r.csv", rows))
+    first = gate_limits(polls, as_of=base)
+    pa._calibrate.cache_clear()
+    second = gate_limits(polls, as_of=base)
+    assert first == second
+    assert first["single"] > 0 and first["firm"] > 0
 
 
-def test_influence_stays_well_inside_the_aggregate_margin_of_error() -> None:
-    """The gate polices a directional error, deliberately at a tighter bar than
-    the random error it sits inside. If that inverts, the gate is meaningless."""
-    gate = build_generic_ballot()["environment_gate"]
-    se = gate["aggregate_sampling_se_pp"]
-    assert gate["max_single_poll_influence_pp"] < 1.96 * se, (
-        "limit must sit inside the aggregate's own 95% margin of error"
-    )
+def test_healthy_archives_rarely_close_the_gate() -> None:
+    """The regression this exists for: version 1 compared the worst of N noisy
+    drop-one moves against half the aggregate's sampling SE and closed 84% of
+    weeks on archives with nothing wrong in them. Twenty healthy archives drawn
+    with sampling noise and 1-point firm spread should close about once at a 5%
+    false-alarm rate; more than four means the calibration has broken again."""
+    import random
+
+    cfg = load_config()
+    cfg["environment_gate"]["null_sims"] = 150
+    rng = random.Random(99)
+    base = date(2026, 9, 6)
+    firms = ["A", "B", "C", "D", "E"]
+    closures = 0
+    for _ in range(20):
+        he = {f: rng.gauss(0, 0.005) for f in firms}
+        polls = []
+        for i in range(14):
+            firm = firms[i % len(firms)]
+            day = base - timedelta(days=i * 4)
+            share = min(0.99, max(0.01, rng.gauss(0.54 + he[firm], (0.25 / 850) ** 0.5)))
+            polls.append(Poll(firm, "", day, day, 1000, "lv", share * 0.85,
+                              (1 - share) * 0.85, "", f"https://example.invalid/{firm}/{i}"))
+        polls.sort(key=lambda p: p.mid_date)
+        gate = environment_support({"n_polls": len(polls), "series": []}, cfg, polls=polls)
+        closures += not gate["ok"]
+    assert closures <= 4, f"healthy archives closed the gate {closures}/20 times"
 
 
 def test_append_rejects_a_duplicate_source(tmp_path: Path) -> None:
