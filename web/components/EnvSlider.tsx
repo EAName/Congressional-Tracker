@@ -1,16 +1,20 @@
 "use client";
 
+import MarginExplainer from "@/components/MarginExplainer";
 import { formatMargin } from "@/lib/env";
-import type { EnvGrid } from "@/lib/types";
+import type { EnvGrid, GenericBallotInput } from "@/lib/types";
 
 export default function EnvSlider({
   grid,
   value,
   onChange,
+  generic,
 }: {
   grid: EnvGrid;
   value: number;
   onChange: (next: number) => void;
+  /** The poll average behind the current average; enables the "how it's calculated" panel. */
+  generic?: GenericBallotInput | null;
 }) {
   const offDefault = Math.abs(value - grid.default_margin_pp) > 0.05;
   return (
@@ -45,6 +49,9 @@ export default function EnvSlider({
       ) : (
         <p className="seat-cap">Slider at the latest generic-ballot row (or even if none is logged).</p>
       )}
+      {generic ? (
+        <MarginExplainer generic={generic} current={formatMargin(grid.default_margin_pp)} />
+      ) : null}
     </div>
   );
 }

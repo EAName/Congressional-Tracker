@@ -170,6 +170,17 @@ export interface SeatRace {
   };
 }
 
+/** The poll average that sets the slider's current average. */
+export interface GenericBallotInput {
+  date: string;
+  dem_two_party: number;
+  /** Headline shares with undecided voters still counted. Absent on older payloads. */
+  dem?: number;
+  rep?: number;
+  source?: string;
+  source_url?: string;
+}
+
 export interface EnvGrid {
   margin_pp: number[];
   default_margin_pp: number;
@@ -186,6 +197,7 @@ export interface SeatsDoc {
   /** Tracked races the House-fit model does not score (e.g. the statewide Senate race). */
   unmodeled_races?: string[];
   env_grid?: EnvGrid;
+  generic_ballot?: GenericBallotInput | null;
   log: Array<{ race_id: string; date: string; prob_dem: string; model_version: string }>;
 }
 
@@ -656,6 +668,7 @@ export interface SenateDoc {
   as_of: string;
   sigma_fundamentals: number;
   env_grid?: EnvGrid;
+  generic_ballot?: GenericBallotInput | null;
   races: SenateRace[];
   fit: {
     n_train: number;

@@ -465,3 +465,13 @@ def test_generated_at_is_distinct_from_the_newest_poll_date(tmp_path: Path) -> N
     assert doc["as_of"] == "2026-08-15"          # newest poll's field midpoint
     assert doc["generated_at"] == date.today().isoformat()
     assert doc["generated_at"] > doc["as_of"]
+
+
+def test_environment_carries_the_shares_behind_its_two_party_margin() -> None:
+    """The site explains the slider's margin from the headline shares, so the
+    object that sets the slider has to carry them, and they have to reproduce it."""
+    env = latest_two_party()
+    if env is None:
+        pytest.skip("gate closed on the live archive; the slider sits at neutral")
+    assert 0 < env["dem"] < 1 and 0 < env["rep"] < 1
+    assert env["dem"] / (env["dem"] + env["rep"]) == pytest.approx(env["dem_two_party"], abs=1e-3)

@@ -77,7 +77,7 @@ export default function Battleground({
 
   return (
     <div className="battle">
-      <EnvSlider grid={grid} value={margin} onChange={setMargin} />
+      <EnvSlider grid={grid} value={margin} onChange={setMargin} generic={seats.generic_ballot} />
       <div className="battle-grid">
         {live.map(({ seat, p }) => {
           const entry = races.find((r) => r.race_id === seat.race_id);

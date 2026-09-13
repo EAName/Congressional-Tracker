@@ -5,6 +5,8 @@
   "generic_ballot": {
     "date": "2026-09-13",
     "dem_two_party": 0.539,
+    "dem": 0.45276,
+    "rep": 0.38724,
     "source": "vact poll average (17 primary polls)",
     "source_url": ""
   },

@@ -730,6 +730,11 @@ def latest_two_party(
     return {
         "date": current["date"],
         "dem_two_party": current["dem_two_party"],
+        # Headline shares with undecided voters still counted. The site shows how
+        # the two-party share above is derived from them, and it must read them
+        # from the same object that sets the slider, or the two could disagree.
+        "dem": current["dem"],
+        "rep": current["rep"],
         "source": f"vact poll average ({doc['n_polls']} primary polls)",
         "source_url": "",
     }

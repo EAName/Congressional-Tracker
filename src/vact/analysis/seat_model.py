@@ -371,6 +371,8 @@ def latest_generic_ballot(as_of: date | None = None) -> dict[str, Any] | None:
     return {
         "date": row["date"],
         "dem_two_party": dem / (dem + rep) if dem + rep else 0.5,
+        "dem": dem,
+        "rep": rep,
         "source": row.get("source") or "",
         "source_url": row.get("source_url") or "",
     }

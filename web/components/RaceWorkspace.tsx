@@ -127,7 +127,12 @@ export default function RaceWorkspace({
     <div className="module-grid">
       {(live || liveSenate) && activeGrid ? (
         <div className="span-12">
-          <EnvSlider grid={activeGrid} value={margin} onChange={setMargin} />
+          <EnvSlider
+            grid={activeGrid}
+            value={margin}
+            onChange={setMargin}
+            generic={seats.generic_ballot ?? senateDoc?.generic_ballot}
+          />
         </div>
       ) : null}
       {live ? (
