@@ -157,3 +157,26 @@ def test_no_tracked_race_is_left_unscored() -> None:
     scored = {r["race_id"] for r in house["races"]}
     scored |= {r["race_id"] for r in predict(as_of=date(2026, 8, 20))["races"]}
     assert tracked == scored, f"unscored: {tracked - scored}"
+
+
+def _assert_forecast_at_exact_margin(payload) -> None:
+    import pytest
+
+    from vact.analysis.seat_model import ENV_MARGIN_MAX, ENV_MARGIN_MIN, generic_to_margin_pp
+
+    exact = max(ENV_MARGIN_MIN, min(ENV_MARGIN_MAX, generic_to_margin_pp(payload["generic_ballot"])))
+    grid = payload["env_grid"]
+    assert grid["default_margin_pp"] == pytest.approx(round(exact, 2))
+    lo = max(m for m in grid["margin_pp"] if m <= exact)
+    hi = min(m for m in grid["margin_pp"] if m >= exact)
+    for race in payload["races"]:
+        at = dict(zip(grid["margin_pp"], race["env_probs"]))
+        bottom, top = sorted((at[lo], at[hi]))
+        assert bottom - 1e-4 <= race["prob_dem"] <= top + 1e-4, race["race_id"]
+
+
+def test_senate_forecast_uses_the_exact_margin_not_the_grid_step() -> None:
+    """Same rounding as the House model; both read one slider, so both move."""
+    from vact.analysis.senate_model import predict
+
+    _assert_forecast_at_exact_margin(predict())

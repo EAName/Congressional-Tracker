@@ -251,8 +251,13 @@ def predict(
     sigma = float(doc["sigma"])
     reg = registry or load_races()
     generic = latest_generic_ballot(as_of=day)
-    default_margin = round(generic_to_margin_pp(generic) / ENV_MARGIN_STEP) * ENV_MARGIN_STEP
-    default_margin = float(max(ENV_MARGIN_MIN, min(ENV_MARGIN_MAX, default_margin)))
+    # Forecast at the average's exact two-party margin. Rounding it to the
+    # slider's half-point step overstated Democratic chances by up to half a
+    # point and moved every forecast in half-point jumps week to week. The grid
+    # keeps its step; only a dragged scenario snaps to it.
+    default_margin = float(
+        max(ENV_MARGIN_MIN, min(ENV_MARGIN_MAX, generic_to_margin_pp(generic)))
+    )
     margins = env_margin_grid()
 
     races_out = []
@@ -322,7 +327,7 @@ def predict(
             "step": ENV_MARGIN_STEP,
             "min": ENV_MARGIN_MIN,
             "max": ENV_MARGIN_MAX,
-            "default_margin_pp": default_margin,
+            "default_margin_pp": round(default_margin, 2),
             "probs": grid_probs,
         },
         "races": races_out,

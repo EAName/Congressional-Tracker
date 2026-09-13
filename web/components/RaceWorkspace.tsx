@@ -89,7 +89,10 @@ export default function RaceWorkspace({
   let live: SeatRace | null = null;
   if (seat && houseGrid) {
     const series = houseGrid.probs[seat.race_id] ?? seat.env_probs ?? [];
-    const p = interpolateGrid(houseGrid.margin_pp, series, margin);
+    const p =
+      Math.abs(margin - houseGrid.default_margin_pp) <= 0.05
+        ? seat.prob_dem
+        : interpolateGrid(houseGrid.margin_pp, series, margin);
     live = {
       ...seat,
       prob_dem: p,
@@ -106,7 +109,10 @@ export default function RaceWorkspace({
     const grid = senateGrid;
     if (grid) {
       const series = grid.probs[senate.race_id] ?? senate.env_probs ?? [];
-      const p = interpolateGrid(grid.margin_pp, series, margin);
+      const p =
+        Math.abs(margin - grid.default_margin_pp) <= 0.05
+          ? senate.prob_dem
+          : interpolateGrid(grid.margin_pp, series, margin);
       liveSenate = { ...senate, prob_dem: p, prob_rep: 1 - p };
     } else {
       liveSenate = senate;

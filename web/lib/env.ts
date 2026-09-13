@@ -18,5 +18,7 @@ export function interpolateGrid(margins: number[], values: number[], x: number):
 
 export function formatMargin(pp: number): string {
   const sign = pp > 0 ? "+" : "";
-  return `D${sign}${pp}`;
+  // The current average is an exact margin such as 7.8, not a grid step.
+  const shown = Number.isInteger(pp) ? String(pp) : pp.toFixed(1);
+  return `D${sign}${shown}`;
 }
