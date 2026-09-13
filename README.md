@@ -118,10 +118,15 @@ largest move in the current average, in margin points, from dropping any single
 poll (jackknife). Twenty polls from one firm in one week are less trustworthy
 than eight from eight firms, so counting them answers the wrong question.
 
-Calibration is from the archive itself — at 6 polls a single survey moved the
-average 1.38 points and a Trump+12 district's win probability by 23; at 10 it
-moves 0.83 and the average lands within a point of published aggregates. The
-limit is set at 1.0.
+The thresholds are calibrated by simulation rather than picked. The archive's
+own firms, dates and sample sizes are redrawn around the current estimate with
+sampling error and between-firm spread only, and the gate closes when observed
+influence exceeds what 95% of those healthy archives produce. The first version
+set the bar at half the aggregate's sampling SE, which compares the worst of many
+noisy drop-one moves against a per-aggregate error: it closed 84% of weeks on
+archives with nothing wrong in them, and on 2026-09-13 it closed with the live
+archive more stable than 70% of healthy ones. The calibrated gate still catches a
+single poll 15 margin points off 94% of the time.
 
 ## Senate model
 

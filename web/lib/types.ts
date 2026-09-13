@@ -597,6 +597,12 @@ export interface GenericBallotDoc {
     /** Largest move in the average, in margin points, from dropping any one poll. */
     single_poll_influence_pp: number | null;
     max_single_poll_influence_pp: number;
+    firm_influence_pp?: number | null;
+    max_firm_influence_pp?: number;
+    /** Chance a healthy archive of this shape closes the gate by accident. */
+    false_alarm_rate?: number;
+    null_house_effect_sd_pp?: number;
+    null_sims?: number;
     min_polls: number;
     reasons: string[];
   };

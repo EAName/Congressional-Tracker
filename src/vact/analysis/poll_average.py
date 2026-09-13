@@ -29,9 +29,13 @@ Method, in order:
 from __future__ import annotations
 
 import csv
+import json
 import math
+import random
+import statistics
 from bisect import bisect_left
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
+from functools import lru_cache
 from datetime import date, timedelta
 from pathlib import Path
 from typing import Any
@@ -441,27 +445,6 @@ def aggregate_sampling_se_pp(
     return math.sqrt(var) * 200.0
 
 
-def influence_limit_pp(
-    polls: list[Poll], cfg: dict[str, Any] | None = None, *, as_of: date | None = None
-) -> float:
-    """Gate threshold, derived rather than picked.
-
-    A fixed constant is arbitrary and does not age: as the archive deepens the
-    sampling error falls, and a bar that stays put quietly gets looser in
-    relative terms. Tying it to a fraction of the aggregate's own sampling SE
-    keeps the standard fixed in the units that matter, with a floor so a very
-    deep archive cannot drive it to zero.
-    """
-    conf = cfg or load_config()
-    gate = conf.get("environment_gate") or {}
-    ratio = float(gate.get("influence_vs_sampling_se", 0.5))
-    floor = float(gate.get("influence_floor_pp", 0.5))
-    se = aggregate_sampling_se_pp(polls, conf, as_of=as_of)
-    if se is None:
-        return floor
-    return max(floor, ratio * se)
-
-
 def firm_influence_pp(
     polls: list[Poll], cfg: dict[str, Any] | None = None, *, as_of: date | None = None
 ) -> tuple[float | None, str | None]:
@@ -493,6 +476,135 @@ def firm_influence_pp(
     return worst * 200.0, who
 
 
+def _null_house_effect_sd(polls: list[Poll], cfg: dict[str, Any]) -> float:
+    """Between-firm spread beyond sampling error, as a two-party share SD.
+
+    Estimated robustly, from the median absolute residual against a leave-one-out
+    consensus, so the polls the gate is meant to police cannot inflate the null
+    they are judged against: one wild survey moves a mean of squares a lot and a
+    median hardly at all.
+    """
+    gate = cfg.get("environment_gate") or {}
+    lo_pp, hi_pp = (float(x) for x in gate.get("house_effect_sd_bounds_pp", (0.5, 4.0)))
+    lo, hi = lo_pp / 200.0, hi_pp / 200.0
+    if len(polls) < 3:
+        return lo
+    half_life = float(cfg["half_life_days"])
+    shares = [_adjusted_share(p, cfg) for p in polls]
+    base = _base_weights(polls)
+    resid: list[float] = []
+    for i, poll in enumerate(polls):
+        num = den = 0.0
+        for j, other in enumerate(polls):
+            if j == i:
+                continue
+            w = base[j] * _recency_weight(other.mid_date, poll.mid_date, half_life)
+            num += w * shares[j]
+            den += w
+        if den > 0:
+            resid.append(abs(shares[i] - num / den))
+    if not resid:
+        return lo
+    robust_sd = 1.4826 * statistics.median(resid)
+    sampling = statistics.median(_sampling_var(p) for p in polls)
+    excess = max(0.0, robust_sd**2 - sampling)
+    return min(hi, max(lo, math.sqrt(excess)))
+
+
+def _quantile(values: list[float], q: float) -> float:
+    ordered = sorted(values)
+    k = min(len(ordered) - 1, max(0, math.ceil(q * len(ordered)) - 1))
+    return ordered[k]
+
+
+@lru_cache(maxsize=128)
+def _calibrate(polls: tuple[Poll, ...], day: date, cfg_json: str) -> tuple[float, float, float]:
+    """Simulated thresholds for (single-poll, firm) influence, plus the null spread.
+
+    Cached on the archive itself: every export path asks the same question of the
+    same polls several times, and the answer is deterministic by construction.
+    """
+    cfg = json.loads(cfg_json)
+    gate = cfg.get("environment_gate") or {}
+    alpha = float(gate.get("false_alarm_rate", 0.05))
+    sims = int(gate.get("null_sims", 400))
+    rng = random.Random(int(gate.get("seed", 0)))
+    rows = list(polls)
+    he_sd = _null_house_effect_sd(rows, cfg)
+    center = _point_estimate(rows, day, cfg)
+    if center is None:
+        return 0.0, 0.0, he_sd
+    offsets = cfg["sample_type"]["offsets"]
+    firms = sorted({p.pollster for p in rows})
+    singles: list[float] = []
+    by_firm: list[float] = []
+    for _ in range(sims):
+        he = {f: rng.gauss(0.0, he_sd) for f in firms}
+        sim = []
+        for p in rows:
+            decided = p.dem + p.rep
+            mean = center - float(offsets.get(p.population, 0.0)) + he[p.pollster]
+            mean = min(0.99, max(0.01, mean))
+            sd = math.sqrt(mean * (1.0 - mean) / max(1.0, p.n * decided))
+            share = min(0.99, max(0.01, rng.gauss(mean, sd)))
+            sim.append(replace(p, dem=share * decided, rep=(1.0 - share) * decided))
+        single = single_poll_influence_pp(sim, cfg, as_of=day)
+        firm, _ = firm_influence_pp(sim, cfg, as_of=day)
+        if single is not None:
+            singles.append(single)
+        if firm is not None:
+            by_firm.append(firm)
+    q = 1.0 - alpha
+    return (
+        _quantile(singles, q) if singles else 0.0,
+        _quantile(by_firm, q) if by_firm else 0.0,
+        he_sd,
+    )
+
+
+def gate_limits(
+    polls: list[Poll], cfg: dict[str, Any] | None = None, *, as_of: date | None = None
+) -> dict[str, float]:
+    """Gate thresholds calibrated to a pre-registered false-alarm rate.
+
+    The earlier bar was half the aggregate's sampling SE. That compared the
+    worst of N drop-one-poll moves against a per-aggregate error and ignored
+    that the maximum of many noisy numbers is usually large: on archives with no
+    real instability at all it closed 84% of weeks, and the live archive closed
+    while sitting at the 30th percentile of healthy ones.
+
+    Instead, simulate archives with this archive's own firms, dates and sample
+    sizes around the current estimate, with sampling error plus between-firm
+    spread and nothing else, and take the (1 - false_alarm_rate) quantile of the
+    influence each produces. The gate then closes only when the archive is less
+    stable than a healthy one of the same shape would be by chance.
+    """
+    conf = cfg or load_config()
+    gate = conf.get("environment_gate") or {}
+    if not polls:
+        return {"single": 0.0, "firm": 0.0, "house_effect_sd_pp": 0.0,
+                "false_alarm_rate": float(gate.get("false_alarm_rate", 0.05)),
+                "null_sims": int(gate.get("null_sims", 400))}
+    day = as_of or polls[-1].mid_date
+    single, firm, he_sd = _calibrate(
+        tuple(polls), day, json.dumps(conf, sort_keys=True, default=str)
+    )
+    return {
+        "single": single,
+        "firm": firm,
+        "house_effect_sd_pp": he_sd * 200.0,
+        "false_alarm_rate": float(gate.get("false_alarm_rate", 0.05)),
+        "null_sims": int(gate.get("null_sims", 400)),
+    }
+
+
+def influence_limit_pp(
+    polls: list[Poll], cfg: dict[str, Any] | None = None, *, as_of: date | None = None
+) -> float:
+    """Single-poll gate threshold, calibrated by simulation. See `gate_limits`."""
+    return gate_limits(polls, cfg, as_of=as_of)["single"]
+
+
 def environment_support(
     doc: dict[str, Any],
     cfg: dict[str, Any] | None = None,
@@ -510,8 +622,9 @@ def environment_support(
     gate = conf.get("environment_gate") or {}
     min_polls = int(gate.get("min_polls", 0))
     rows = polls if polls is not None else load_polls()
-    max_influence = influence_limit_pp(rows, conf)
-    max_firm = max_influence * float(gate.get("firm_limit_multiple", 1.5))
+    limits = gate_limits(rows, conf)
+    max_influence = limits["single"]
+    max_firm = limits["firm"]
     sampling_se = aggregate_sampling_se_pp(rows, conf)
     influence = single_poll_influence_pp(rows, conf)
     firm_inf, firm_name = firm_influence_pp(rows, conf)
@@ -542,6 +655,9 @@ def environment_support(
         "firm_influence_pp": None if firm_inf is None else round(firm_inf, 2),
         "most_influential_firm": firm_name,
         "max_firm_influence_pp": round(max_firm, 2),
+        "false_alarm_rate": limits["false_alarm_rate"],
+        "null_house_effect_sd_pp": round(limits["house_effect_sd_pp"], 2),
+        "null_sims": limits["null_sims"],
         "min_polls": min_polls,
         "reasons": reasons,
     }

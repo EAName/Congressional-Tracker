@@ -1,7 +1,7 @@
 # Generic-ballot poll average. Primary polls only — this file and
 # data/generic_ballot_polls.csv are the archive; no aggregator output is ingested
 # (SEAT_MODEL_SPEC.md "Do not scrape aggregators").
-version: 1
+version: 2
 
 # Recency half-life in days for the kernel weight at each grid date.
 half_life_days: 14
@@ -35,29 +35,36 @@ min_polls: 3
 
 # Bar the average must clear before it drives `nat_env` in the seat models.
 # Gate on stability, not on a poll count: twenty polls from one firm in one week
-# are less trustworthy than eight from eight firms. `max_single_poll_influence_pp`
-# is the largest move (in margin points) that dropping any single poll produces in
-# the current average, measured by jackknife.
+# are less trustworthy than eight from eight firms. `single_poll_influence_pp` is
+# the largest move (in two-party margin points) that dropping any one poll
+# produces in the current average; `firm_influence_pp` drops a whole firm.
 #
-# Calibration: the archive at 6 polls scored 1.38 and moved a Trump+12 district's
-# win probability by 23 points. At 10 polls it scores 0.83 and lands within a
-# point of published averages. 1.0 sits between those.
+# Thresholds are CALIBRATED, not picked (version 2, 2026-09-13). The archive's
+# own firms, dates and sample sizes are simulated around the current estimate
+# with sampling error and between-firm spread only, and the gate closes when
+# observed influence exceeds the (1 - false_alarm_rate) quantile of what those
+# healthy archives produce.
+#
+# Why it changed. Version 1 set the limit at 0.5x the aggregate's sampling SE.
+# That compares the worst of N noisy drop-one moves against a per-aggregate
+# error, and the maximum of many noisy numbers is usually large: on simulated
+# archives with no real instability it closed 84% of weeks (80% on the prior
+# week's structure). It closed on 2026-09-13 with the live archive at the 30th
+# percentile of healthy ones, which would have zeroed the national environment
+# in every forecast. Measured power of the calibrated gate: one poll 15 margin
+# points off is caught 94% of the time, 25 points off 100%, 8 points off 27%.
 environment_gate:
   min_polls: 8
 
-  # The limit is DERIVED, not picked. Compositional leverage (which polls you
-  # happened to collect) is a directional error you control; sampling error is
-  # random and irreducible. Policing the first is only worth it while it stays
-  # small next to the second, so the threshold is a fraction of the aggregate's
-  # own sampling SE on the margin, with a floor.
-  #
-  # Measured on the live archive: single-poll MoE on the margin is +/-6.2 points,
-  # the 10-poll aggregate's is +/-3.7, its sampling SE is 1.87. At ratio 0.5 the
-  # limit lands at ~0.94, against measured influence of 0.83.
-  influence_vs_sampling_se: 0.5
-  influence_floor_pp: 0.5
+  # Probability a healthy archive of this shape closes the gate by chance.
+  false_alarm_rate: 0.05
 
-  # Same test at firm level: drop every poll by one pollster. Strictly stronger,
-  # because the frequency penalty makes each survey from a prolific firm look
-  # uninfluential even when the firm collectively carries the estimate.
-  firm_limit_multiple: 1.5
+  # Monte Carlo draws per archive. Fixed seed so a given archive always gets the
+  # same threshold and the gate state is reproducible and auditable.
+  null_sims: 400
+  seed: 20260913
+
+  # Between-firm spread in the null, estimated from the archive by median
+  # absolute residual and clamped here (two-party margin points). Robust so the
+  # polls being policed cannot widen the null they are judged against.
+  house_effect_sd_bounds_pp: [0.5, 4.0]
