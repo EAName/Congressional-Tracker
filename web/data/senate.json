@@ -1,13 +1,13 @@
 {
   "model_version": "senate-v0.1",
-  "as_of": "2026-09-13",
+  "as_of": "2026-09-24",
   "sigma_fundamentals": 0.07337974090800067,
   "generic_ballot": {
-    "date": "2026-09-13",
-    "dem_two_party": 0.539,
-    "dem": 0.45276,
-    "rep": 0.38724,
-    "source": "vact poll average (17 primary polls)",
+    "date": "2026-09-24",
+    "dem_two_party": 0.54383,
+    "dem": 0.46008,
+    "rep": 0.38592,
+    "source": "vact poll average (21 primary polls)",
     "source_url": ""
   },
   "env_grid": {
@@ -50,7 +50,7 @@
     "step": 0.5,
     "min": -4.0,
     "max": 12.0,
-    "default_margin_pp": 7.8,
+    "default_margin_pp": 8.77,
     "probs": {
       "va-sen": [
         0.7745,
@@ -93,14 +93,14 @@
     {
       "race_id": "va-sen",
       "state_po": "VA",
-      "as_of": "2026-09-13",
+      "as_of": "2026-09-24",
       "model_version": "senate-v0.1",
-      "prob_dem": 0.9403,
-      "prob_rep": 0.0597,
-      "mu_dem_two_party": 0.6143,
-      "mu_fundamentals": 0.6143,
-      "share_lo": 0.5203,
-      "share_hi": 0.7083,
+      "prob_dem": 0.9478,
+      "prob_rep": 0.0522,
+      "mu_dem_two_party": 0.6191,
+      "mu_fundamentals": 0.6191,
+      "share_lo": 0.5251,
+      "share_hi": 0.7132,
       "sigma": 0.0734,
       "blend": "fundamentals_only",
       "plain_language": "Democrats are clear favorites",
@@ -111,7 +111,7 @@
         "intercept": 0.4941,
         "lean_rel_dem": 0.0197,
         "inc_dem": 0.0615,
-        "nat_env": 0.039
+        "nat_env": 0.0438
       },
       "meta": {
         "lean_status": "pres_2024",
