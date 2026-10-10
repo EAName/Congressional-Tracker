@@ -1,13 +1,13 @@
 {
   "model_version": "senate-v0.1",
-  "as_of": "2026-09-24",
+  "as_of": "2026-10-10",
   "sigma_fundamentals": 0.07337974090800067,
   "generic_ballot": {
-    "date": "2026-09-24",
-    "dem_two_party": 0.54383,
-    "dem": 0.46008,
-    "rep": 0.38592,
-    "source": "vact poll average (21 primary polls)",
+    "date": "2026-10-10",
+    "dem_two_party": 0.5454,
+    "dem": 0.46359,
+    "rep": 0.38641,
+    "source": "vact poll average (24 primary polls)",
     "source_url": ""
   },
   "env_grid": {
@@ -50,7 +50,7 @@
     "step": 0.5,
     "min": -4.0,
     "max": 12.0,
-    "default_margin_pp": 8.77,
+    "default_margin_pp": 9.08,
     "probs": {
       "va-sen": [
         0.7745,
@@ -93,17 +93,17 @@
     {
       "race_id": "va-sen",
       "state_po": "VA",
-      "as_of": "2026-09-24",
+      "as_of": "2026-10-10",
       "model_version": "senate-v0.1",
-      "prob_dem": 0.9478,
-      "prob_rep": 0.0522,
-      "mu_dem_two_party": 0.6191,
-      "mu_fundamentals": 0.6191,
-      "share_lo": 0.5251,
-      "share_hi": 0.7132,
+      "prob_dem": 0.95,
+      "prob_rep": 0.05,
+      "mu_dem_two_party": 0.6207,
+      "mu_fundamentals": 0.6207,
+      "share_lo": 0.5267,
+      "share_hi": 0.7147,
       "sigma": 0.0734,
       "blend": "fundamentals_only",
-      "plain_language": "Democrats are clear favorites",
+      "plain_language": "Democrats are overwhelming favorites",
       "takeaway": "VA-Sen stays above 50% Democratic win probability even if the national environment reaches D-4.",
       "flip_threshold_pp": -4.0,
       "n_polls": 0,
@@ -111,7 +111,7 @@
         "intercept": 0.4941,
         "lean_rel_dem": 0.0197,
         "inc_dem": 0.0615,
-        "nat_env": 0.0438
+        "nat_env": 0.0454
       },
       "meta": {
         "lean_status": "pres_2024",

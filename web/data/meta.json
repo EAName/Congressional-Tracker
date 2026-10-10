@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-09-25T00:40:14Z",
+  "generated_at_utc": "2026-10-10T13:31:16Z",
   "map_version": "2021",
   "axis": {
     "name": "small_business_climate",
@@ -159,6 +159,6 @@
     }
   ],
   "election_date": "2026-11-03",
-  "days_until_election": 40,
-  "races_as_of": "2026-09-24"
+  "days_until_election": 24,
+  "races_as_of": "2026-10-10"
 }
