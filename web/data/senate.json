@@ -4,10 +4,10 @@
   "sigma_fundamentals": 0.07337974090800067,
   "generic_ballot": {
     "date": "2026-10-27",
-    "dem_two_party": 0.54417,
-    "dem": 0.47615,
-    "rep": 0.39885,
-    "source": "vact poll average (31 primary polls)",
+    "dem_two_party": 0.54804,
+    "dem": 0.48392,
+    "rep": 0.39908,
+    "source": "vact poll average (32 primary polls)",
     "source_url": ""
   },
   "env_grid": {
@@ -50,7 +50,7 @@
     "step": 0.5,
     "min": -4.0,
     "max": 12.0,
-    "default_margin_pp": 8.83,
+    "default_margin_pp": 9.61,
     "probs": {
       "va-sen": [
         0.7745,
@@ -95,15 +95,15 @@
       "state_po": "VA",
       "as_of": "2026-10-27",
       "model_version": "senate-v0.1",
-      "prob_dem": 0.9483,
-      "prob_rep": 0.0517,
-      "mu_dem_two_party": 0.6195,
-      "mu_fundamentals": 0.6195,
-      "share_lo": 0.5254,
-      "share_hi": 0.7135,
+      "prob_dem": 0.9536,
+      "prob_rep": 0.0464,
+      "mu_dem_two_party": 0.6233,
+      "mu_fundamentals": 0.6233,
+      "share_lo": 0.5293,
+      "share_hi": 0.7174,
       "sigma": 0.0734,
       "blend": "fundamentals_only",
-      "plain_language": "Democrats are clear favorites",
+      "plain_language": "Democrats are overwhelming favorites",
       "takeaway": "VA-Sen stays above 50% Democratic win probability even if the national environment reaches D-4.",
       "flip_threshold_pp": -4.0,
       "n_polls": 0,
@@ -111,7 +111,7 @@
         "intercept": 0.4941,
         "lean_rel_dem": 0.0197,
         "inc_dem": 0.0615,
-        "nat_env": 0.0442
+        "nat_env": 0.048
       },
       "meta": {
         "lean_status": "pres_2024",
