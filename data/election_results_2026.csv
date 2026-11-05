@@ -1,0 +1,13 @@
+race_id,dem_votes,rep_votes,localities_reporting,localities_total,status,source_url,retrieved_at_utc
+va-01,207882,198417,18,18,unofficial,https://enr.elections.virginia.gov/results/public/virginia/elections/2026-November-General,2026-11-05T15:00:00Z
+va-02,178741,150095,8,8,unofficial,https://enr.elections.virginia.gov/results/public/virginia/elections/2026-November-General,2026-11-05T15:00:00Z
+va-03,179594,59523,5,5,unofficial,https://enr.elections.virginia.gov/results/public/virginia/elections/2026-November-General,2026-11-05T15:00:00Z
+va-04,223022,81047,15,15,unofficial,https://enr.elections.virginia.gov/results/public/virginia/elections/2026-November-General,2026-11-05T15:00:00Z
+va-05,173426,181268,24,24,unofficial,https://enr.elections.virginia.gov/results/public/virginia/elections/2026-November-General,2026-11-05T15:00:00Z
+va-06,140223,175802,23,23,unofficial,https://enr.elections.virginia.gov/results/public/virginia/elections/2026-November-General,2026-11-05T15:00:00Z
+va-07,191361,121014,11,11,unofficial,https://enr.elections.virginia.gov/results/public/virginia/elections/2026-November-General,2026-11-05T15:00:00Z
+va-08,248071,56298,4,4,unofficial,https://enr.elections.virginia.gov/results/public/virginia/elections/2026-November-General,2026-11-05T15:00:00Z
+va-09,99453,193804,28,28,unofficial,https://enr.elections.virginia.gov/results/public/virginia/elections/2026-November-General,2026-11-05T15:00:00Z
+va-10,201952,120509,7,7,unofficial,https://enr.elections.virginia.gov/results/public/virginia/elections/2026-November-General,2026-11-05T15:00:00Z
+va-11,247201,81357,2,2,unofficial,https://enr.elections.virginia.gov/results/public/virginia/elections/2026-November-General,2026-11-05T15:00:00Z
+va-sen,2182741,1376584,133,133,unofficial,https://enr.elections.virginia.gov/results/public/virginia/elections/2026-November-General,2026-11-05T15:00:00Z

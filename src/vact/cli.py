@@ -414,6 +414,32 @@ def reclassify_cmd(
     typer.echo(f"Reclassify complete. Diff: {path}")
 
 
+@app.command("score-forecasts")
+def score_forecasts_cmd() -> None:
+    """Score published forecasts against returns in data/election_results_2026.csv."""
+    from vact.analysis.forecast_scoring import score
+
+    rep = score()
+    print(f"{'race':<8}{'P(Dem)':>9}{'pred':>8}{'actual':>9}{'error':>9}  call")
+    for r in rep["races"]:
+        print("%-8s%8.1f%%%8.3f%9.3f%+9.3f  %s" % (
+            r["race_id"], r["prob_dem"] * 100, r["mu_dem_two_party"],
+            r["actual_dem_two_party"], r["share_error"],
+            "ok" if r["called"] else "MISS"))
+    for key in ("all", "competitive", "safe"):
+        a = rep[key]
+        if not a.get("n"):
+            continue
+        print("%-12s n=%2d  Brier %.4f  winners %2d/%-2d  share MAE %.1f pp  bias %+.1f pp" % (
+            key, a["n"], a["brier"], a["winners_called"], a["n"],
+            a["share_mae_pp"], a["share_bias_pp"]))
+    b = rep["baselines"]
+    print("baselines    always-incumbent Brier %.4f | coin flip %.4f | pres-lean share MAE %.1f pp" % (
+        b["always_incumbent_brier"], b["coin_flip_brier"], b["pres_lean_share_mae_pp"]))
+    if rep["incomplete_races"]:
+        print("NOTE results still incomplete: " + ", ".join(rep["incomplete_races"]))
+
+
 @app.command("recategorize")
 def recategorize_cmd(
     all_: bool = typer.Option(
